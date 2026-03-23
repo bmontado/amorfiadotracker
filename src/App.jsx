@@ -16,6 +16,7 @@ import {
   Cell,
   AreaChart,
   Area,
+  ReferenceArea,
 } from 'recharts';
 
 // ─── Datos dinámicos — fuente de verdad en public/data.json ───────────────────
@@ -65,6 +66,7 @@ const DEFAULT_LIVE_DATA = {
         moderate: { total: 131037, listeners: 5875,  pct: 4.5  },
         light:    { total: 249894, listeners: 2722,  pct: 1.1  },
       }}],
+      campaigns: [],
     },
     '7GqXSd7cxRcsfQV6S2cHUM': {
       name: 'ATBLM', type: 'single',
@@ -82,6 +84,7 @@ const DEFAULT_LIVE_DATA = {
         light:    [{date:'2026-02-26',y:75},{date:'2026-02-27',y:1191},{date:'2026-02-28',y:1838},{date:'2026-03-01',y:2368},{date:'2026-03-04',y:3521},{date:'2026-03-08',y:5256},{date:'2026-03-11',y:6914},{date:'2026-03-15',y:9050},{date:'2026-03-19',y:10607},{date:'2026-03-22',y:11353}],
       },
       history: [],
+      campaigns: [],
     },
     '4QCM6aNuH8D1eBm1qp07Jg': {
       name: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'single',
@@ -99,6 +102,7 @@ const DEFAULT_LIVE_DATA = {
         light:    [{date:'2026-02-05',y:132},{date:'2026-02-07',y:1625},{date:'2026-02-09',y:2265},{date:'2026-02-12',y:3170},{date:'2026-02-15',y:3614},{date:'2026-02-19',y:4043},{date:'2026-02-23',y:4539},{date:'2026-02-26',y:4972},{date:'2026-03-01',y:5176},{date:'2026-03-04',y:5350}],
       },
       history: [],
+      campaigns: [],
     },
   },
 };
@@ -2643,6 +2647,69 @@ const AmorFiadoDashboard = () => {
 
         const hasHistory = trendData.length >= 2;
 
+        // ── Campaign bands ─────────────────────────────────────────────────────
+        const campaigns = eng?.campaigns ?? [];
+        // Convert YYYY-MM-DD → MM/DD label used on chart x-axis
+        const toLabel = d => d ? d.slice(5).replace('-', '/') : null;
+        const campaignBands = campaigns.map(c => ({
+          ...c,
+          startLabel: toLabel(c.start),
+          endLabel:   toLabel(c.end),
+        }));
+
+        // ── Interpretation signals ─────────────────────────────────────────────
+        const superL    = segs.super?.listeners    ?? 0;
+        const moderateL = segs.moderate?.listeners ?? 0;
+        const lightL    = segs.light?.listeners    ?? 0;
+        const segTotal  = superL + moderateL + lightL; // basis for composition bar
+
+        const superShare    = segTotal > 0 ? (superL    / segTotal * 100) : 0;
+        const moderateShare = segTotal > 0 ? (moderateL / segTotal * 100) : 0;
+        const lightShare    = segTotal > 0 ? (lightL    / segTotal * 100) : 0;
+
+        const monthlyPct = segs.monthly?.pct ?? 0;
+        const superPct   = segs.super?.pct   ?? 0;
+        const lightPct   = segs.light?.pct   ?? 0;
+
+        const signals = [];
+        // 1. Overall conversion rate
+        if (monthlyPct >= 12)
+          signals.push({ color: '#4ade80', text: `Conversión general muy alta (${monthlyPct}%) — la release está resonando fuerte entre tu base de oyentes mensuales.` });
+        else if (monthlyPct >= 7)
+          signals.push({ color: '#4ade80', text: `Conversión general sólida (${monthlyPct}%) — por encima del promedio típico para este tipo de lanzamiento.` });
+        else if (monthlyPct >= 4)
+          signals.push({ color: '#fbbf24', text: `Conversión general estándar (${monthlyPct}%) — margen de crecimiento disponible con amplificación editorial o campaña.` });
+        else
+          signals.push({ color: '#f87171', text: `Conversión general baja (${monthlyPct}%) — la mayoría de oyentes mensuales aún no llegaron a la release; Marquee o Showcase pueden acelerar la activación.` });
+
+        // 2. Super listener depth
+        if (superPct >= 35)
+          signals.push({ color: '#f97316', text: `Super Listeners muy activos (${superPct}%) — tus fans más leales ya escuchan la release; señal orgánica fuerte.` });
+        else if (superPct >= 20)
+          signals.push({ color: '#fbbf24', text: `Super Listeners moderados (${superPct}%) — hay margen para profundizar el engagement con tus oyentes más habituales.` });
+        else
+          signals.push({ color: '#f87171', text: `Super Listeners bajos (${superPct}%) — si tenés una campaña activa, puede estar inflando temporalmente el alcance sin llegar a tus fans core.` });
+
+        // 3. Light listener signal
+        if (lightShare >= 30 && campaigns.length > 0)
+          signals.push({ color: '#60a5fa', text: `${lightShare.toFixed(0)}% de los oyentes son Light Listeners — patrón típico de campaña (Marquee/Showcase). Esperar 14 días post-campaña para ver cuántos convierten a moderate.` });
+        else if (lightPct >= 5)
+          signals.push({ color: '#60a5fa', text: `Light Listeners respondiendo bien (${lightPct}%) — parte del alcance está llegando a oyentes casuales; buen indicador de descubrimiento.` });
+        else
+          signals.push({ color: '#94a3b8', text: `Light Listeners aún bajos (${lightPct}%) — el alcance está concentrado en fans activos; un Marquee enfocado en light/programmed puede ampliar el funnel.` });
+
+        // 4. Segment mix commentary
+        if (superShare >= 40)
+          signals.push({ color: '#f97316', text: `Mix concentrado en Super Listeners (${superShare.toFixed(0)}%) — base leal sólida, aunque el crecimiento a largo plazo requiere convertir oyentes moderados y casuales.` });
+        else if (moderateShare >= 40)
+          signals.push({ color: '#a78bfa', text: `Mix equilibrado con dominancia Moderate (${moderateShare.toFixed(0)}%) — oyentes con intención media, potencial de upgrade a super con más streams. Guardar canciones y agregar a playlists es la señal clave.` });
+
+        // 5. Campaign-aware note
+        if (campaigns.length > 0) {
+          const names = campaigns.map(c => c.type).join(' y ');
+          signals.push({ color: '#fbbf24', text: `Campaña activa (${names}): los datos de segmento incluyen conversiones dentro de la ventana de 14 días de atribución. Los resultados finales estarán disponibles ~2 semanas después del cierre.` });
+        }
+
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
@@ -2751,6 +2818,86 @@ const AmorFiadoDashboard = () => {
               </p>
             </div>
 
+            {/* ── Interpretación · Señales de Audiencia ──────────────────────── */}
+            <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
+              <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 1rem' }}>
+                Interpretación · Señales de Audiencia
+              </p>
+
+              {/* Segment composition bar */}
+              {segTotal > 0 && (
+                <div style={{ marginBottom: '1.1rem' }}>
+                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: '0 0 0.45rem' }}>Mix de oyentes que escucharon la release (super / moderate / light)</p>
+                  <div style={{ display: 'flex', height: '18px', borderRadius: '6px', overflow: 'hidden', gap: '2px' }}>
+                    <div style={{ width: `${superShare}%`,    background: '#f97316', transition: 'width 0.4s', minWidth: superShare > 1 ? '2px' : 0 }} title={`Super: ${superShare.toFixed(1)}%`} />
+                    <div style={{ width: `${moderateShare}%`, background: '#a78bfa', transition: 'width 0.4s', minWidth: moderateShare > 1 ? '2px' : 0 }} title={`Moderate: ${moderateShare.toFixed(1)}%`} />
+                    <div style={{ width: `${lightShare}%`,    background: '#60a5fa', transition: 'width 0.4s', minWidth: lightShare > 1 ? '2px' : 0 }} title={`Light: ${lightShare.toFixed(1)}%`} />
+                  </div>
+                  <div style={{ display: 'flex', gap: '1.25rem', marginTop: '0.4rem', flexWrap: 'wrap' }}>
+                    {[
+                      { label: 'Super',    pct: superShare,    color: '#f97316', listeners: superL    },
+                      { label: 'Moderate', pct: moderateShare, color: '#a78bfa', listeners: moderateL },
+                      { label: 'Light',    pct: lightShare,    color: '#60a5fa', listeners: lightL    },
+                    ].map(s => (
+                      <span key={s.label} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.72rem', color: '#94a3b8' }}>
+                        <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: s.color, display: 'inline-block', flexShrink: 0 }} />
+                        <span style={{ color: s.color, fontWeight: 700 }}>{s.pct.toFixed(0)}%</span>
+                        {s.label} <span style={{ color: '#475569' }}>({s.listeners.toLocaleString('es-AR')})</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Signal bullets */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+                {signals.map((s, i) => (
+                  <div key={i} style={{ display: 'flex', gap: '0.55rem', alignItems: 'flex-start' }}>
+                    <span style={{ color: s.color, fontSize: '0.7rem', fontWeight: 900, flexShrink: 0, paddingTop: '0.1rem', lineHeight: 1.5 }}>▪</span>
+                    <p style={{ color: '#cbd5e1', fontSize: '0.8rem', margin: 0, lineHeight: 1.6 }}>{s.text}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Campaign list (if any configured) */}
+              {campaigns.length > 0 && (
+                <div style={{ marginTop: '1rem', borderTop: '1px solid rgba(51,65,85,0.4)', paddingTop: '0.85rem' }}>
+                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: '0 0 0.5rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Campañas registradas</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    {campaigns.map((c, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                        <span style={{
+                          fontSize: '0.72rem', fontWeight: 700, padding: '0.15rem 0.55rem', borderRadius: '4px',
+                          background: c.type === 'Marquee' ? 'rgba(251,191,36,0.15)' : 'rgba(167,139,250,0.15)',
+                          color:      c.type === 'Marquee' ? '#fbbf24' : '#a78bfa',
+                        }}>{c.type}</span>
+                        <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{c.start} → {c.end}</span>
+                        {c.target && <span style={{ color: '#64748b', fontSize: '0.72rem' }}>· objetivo: {c.target}</span>}
+                        {c.budget && <span style={{ color: '#64748b', fontSize: '0.72rem' }}>· ${c.budget.toLocaleString('es-AR')}</span>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Marquee / Showcase info pills */}
+              <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {[
+                  { name: 'Marquee', color: '#fbbf24', desc: 'Pantalla completa al abrir app · solo releases nuevas (≤18 días) · hasta 10 días · target por segmento' },
+                  { name: 'Showcase', color: '#a78bfa', desc: 'Card en el Home feed · cualquier release · hasta 14 días · $100 mín · ideal para catálogo' },
+                ].map(t => (
+                  <div key={t.name} style={{
+                    flex: '1 1 240px', padding: '0.6rem 0.8rem', borderRadius: '8px',
+                    border: `1px solid rgba(${t.color === '#fbbf24' ? '251,191,36' : '167,139,250'},0.2)`,
+                    background: `rgba(${t.color === '#fbbf24' ? '251,191,36' : '167,139,250'},0.05)`,
+                  }}>
+                    <p style={{ color: t.color, fontSize: '0.72rem', fontWeight: 700, margin: '0 0 0.2rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t.name}</p>
+                    <p style={{ color: '#64748b', fontSize: '0.7rem', margin: 0, lineHeight: 1.5 }}>{t.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Streamed this release — area chart (S4A style) */}
             {hasStreamData && (
               <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
@@ -2792,6 +2939,15 @@ const AmorFiadoDashboard = () => {
                         return [display, cfg?.label ?? name];
                       }}
                     />
+                    {campaignBands.map((c, i) => (
+                      <ReferenceArea key={i}
+                        x1={c.startLabel} x2={c.endLabel}
+                        fill={c.type === 'Marquee' ? 'rgba(251,191,36,0.07)' : 'rgba(167,139,250,0.07)'}
+                        stroke={c.type === 'Marquee' ? 'rgba(251,191,36,0.35)' : 'rgba(167,139,250,0.35)'}
+                        strokeDasharray="3 3"
+                        label={{ value: c.type, fill: c.type === 'Marquee' ? '#fbbf24' : '#a78bfa', fontSize: 10, position: 'insideTop' }}
+                      />
+                    ))}
                     {segConfig.map(s => (
                       <Area key={s.key} type="monotone" dataKey={s.key}
                         stroke={s.color} strokeWidth={2}
