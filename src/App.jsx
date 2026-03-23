@@ -1393,10 +1393,17 @@ const AmorFiadoDashboard = () => {
                     <div style={{ textAlign: 'center', padding: '2rem 0', color: '#475569', fontSize: '0.85rem' }}>Faltan al menos 2 días de datos para trazar la curva.</div>
                   ) : (
                     <>
-                      <ResponsiveContainer width="100%" height={340}>
-                        <LineChart data={decayCurveData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+                      {/* Ancho proporcional a los puntos disponibles: evita que 2 puntos queden muy separados */}
+                      <div style={{ maxWidth: decayCurveData.length <= 2 ? 480 : decayCurveData.length <= 4 ? 680 : '100%', margin: '0 auto' }}>
+                      <ResponsiveContainer width="100%" height={320}>
+                        <LineChart data={decayCurveData} margin={{ top: 10, right: 40, left: 10, bottom: 5 }}>
                           <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.07)" />
-                          <XAxis dataKey="label" stroke="#64748b" tick={{ fontSize: 12 }} />
+                          <XAxis
+                            dataKey="label"
+                            stroke="#64748b"
+                            tick={{ fontSize: 12 }}
+                            padding={{ left: decayCurveData.length <= 2 ? 80 : 30, right: decayCurveData.length <= 2 ? 80 : 30 }}
+                          />
                           <YAxis
                             stroke="#64748b"
                             tick={{ fontSize: 11 }}
@@ -1434,6 +1441,7 @@ const AmorFiadoDashboard = () => {
                           ))}
                         </LineChart>
                       </ResponsiveContainer>
+                      </div>
                       {/* Tabla resumen: última transición por track */}
                       {decayCurveData.length >= 1 && (() => {
                         const latest = decayCurveData[decayCurveData.length - 1];
