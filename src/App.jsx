@@ -22,7 +22,7 @@ const AmorFiadoDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [growthZoom, setGrowthZoom] = useState('all'); // 'all' | 'zoom'
   const [expandedDays, setExpandedDays] = useState(new Set());
-  const [socialView, setSocialView] = useState('list'); // 'list' | 'chart'
+  const [socialView, setSocialView] = useState('chart'); // 'list' | 'chart'
   const [decayView, setDecayView] = useState('chart'); // 'chart' | 'table'
   const [histGrouping, setHistGrouping] = useState('day'); // 'day' | 'month'
   const [hoveredDecayTrack, setHoveredDecayTrack] = useState(null);
@@ -368,11 +368,19 @@ const AmorFiadoDashboard = () => {
       {/* Header */}
       <div style={{ borderBottom: '1px solid rgba(251, 146, 60, 0.3)', paddingBottom: '2rem', marginBottom: '2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <p style={{ color: '#94a3b8', fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Spotify for Artists — Analytics</p>
-            <h1 style={{ fontSize: '3rem', fontWeight: 800, background: 'linear-gradient(135deg, #f97316, #fbbf24)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0, lineHeight: 1.1 }}>{albumName}</h1>
-            <p style={{ fontSize: '1.25rem', color: '#cbd5e1', marginTop: '0.25rem' }}>{artist}</p>
-            <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.25rem' }}>{releaseDate}</p>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem' }}>
+            {/* Cover art */}
+            <img
+              src="/cover.jpg"
+              alt="Amor Fiado cover"
+              style={{ width: '90px', height: '90px', borderRadius: '8px', objectFit: 'cover', flexShrink: 0, boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
+            />
+            <div>
+              <p style={{ color: '#94a3b8', fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>PCM Analytics</p>
+              <h1 style={{ fontSize: '3rem', fontWeight: 800, background: 'linear-gradient(135deg, #f97316, #fbbf24)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0, lineHeight: 1.1 }}>{albumName}</h1>
+              <p style={{ fontSize: '1.25rem', color: '#cbd5e1', marginTop: '0.25rem' }}>{artist}</p>
+              <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.25rem' }}>{releaseDate}</p>
+            </div>
           </div>
           <div style={{ textAlign: 'right' }}>
             <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.15em' }}>All-time Streams · LIVE</p>
