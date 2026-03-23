@@ -1891,39 +1891,85 @@ const AmorFiadoDashboard = () => {
                 const negDeltas = correlation.filter(p => p.streamDelta !== null && p.streamDelta < 0).sort((a, b) => a.streamDelta - b.streamDelta);
                 const insights = [
                   tkDropPct !== null && tkDropPct > 0 ? {
-                    dot: '#f87171',
-                    text: `TikTok colapsó post-lanzamiento: el alcance promedio pasó de ${formatNumber(tkPreAvg)} a ${formatNumber(tkPostAvg)} views/video (−${tkDropPct}%). El canal que impulsó todo el pre-release está prácticamente apagado. Retomar la cadencia en TK es urgente.`,
+                    color: '#f87171', badge: 'URGENTE', category: 'TikTok',
+                    title: 'TK colapsó post-lanzamiento',
+                    metric: `−${tkDropPct}%`, metricSub: 'alcance promedio',
+                    body: `De ${formatNumber(tkPreAvg)} → ${formatNumber(tkPostAvg)} views/video. El canal que impulsó todo el pre-release está prácticamente apagado.`,
+                    action: 'Retomar cadencia de snippets en TK esta semana.',
                   } : null,
                   topTkTeaser ? {
-                    dot: '#fbbf24',
-                    text: `El formato snippet/teaser en TikTok fue el motor de la campaña (${formatNumber(topTkTeaser.views)} views el mejor). Sin embargo, ningún track nuevo del álbum recibió un snippet viral equivalente post-lanzamiento. Hay tracks sin presencia en TK todavía.`,
+                    color: '#fbbf24', badge: 'ATENCIÓN', category: 'Formato',
+                    title: 'Snippets/teasers = el formato ganador',
+                    metric: formatNumber(topTkTeaser.views), metricSub: 'views · mejor teaser TK',
+                    body: `Ningún track nuevo del álbum recibió un snippet viral equivalente post-lanzamiento. Hay tracks sin presencia en TK todavía.`,
+                    action: 'Producir snippets nuevos para los tracks sin TK.',
                   } : null,
                   teaserAvg > launchAvg ? {
-                    dot: '#f87171',
-                    text: `Los teasers promediaron ${formatNumber(teaserAvg)} views vs ${formatNumber(launchAvg)} de los posts de lanzamiento — la expectativa generó ${Math.round(teaserAvg / launchAvg * 10) / 10}× más alcance que el estreno. Los posts de lanzamiento del álbum fueron los de menor impacto. Hay que trabajar el formato.`,
+                    color: '#fb923c', badge: 'ALERTA', category: 'Lanzamiento',
+                    title: 'Posts de estreno: el peor formato de la campaña',
+                    metric: `${Math.round(teaserAvg / launchAvg * 10) / 10}×`, metricSub: 'más alcance teasers vs lanzamiento',
+                    body: `Teasers promediaron ${formatNumber(teaserAvg)} views vs ${formatNumber(launchAvg)} los posts de estreno. El día del álbum fue el de menor engagement relativo.`,
+                    action: 'Revisar el formato/hook de posts de release para la próxima campaña.',
                   } : {
-                    dot: '#4ade80',
-                    text: `Los posts de lanzamiento/release promediaron ${formatNumber(launchAvg)} views vs ${formatNumber(teaserAvg)} de los teasers — el momentum del estreno superó la campaña de expectativa.`,
+                    color: '#4ade80', badge: 'POSITIVO', category: 'Lanzamiento',
+                    title: 'Posts de estreno superaron los teasers',
+                    metric: formatNumber(launchAvg), metricSub: 'views prom · posts lanzamiento',
+                    body: `El momentum del día del álbum fue mayor que el promedio de la campaña de expectativa (${formatNumber(teaserAvg)} views/teaser).`,
+                    action: null,
                   },
                   maxGap > 5 ? {
-                    dot: '#fb923c',
-                    text: `Gap de silencio más largo de la campaña: ${maxGap} días sin posts (${new Date(maxGapStart + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} → ${new Date(maxGapEnd + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}). En ese período el algoritmo enfría el perfil y el alcance orgánico baja. No repetir en la próxima campaña.`,
+                    color: '#fb923c', badge: 'ALERTA', category: 'Timing',
+                    title: `${maxGap} días de silencio en la campaña`,
+                    metric: `${maxGap}d`, metricSub: 'gap sin posts',
+                    body: `${new Date(maxGapStart + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} → ${new Date(maxGapEnd + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}. El algoritmo enfría el perfil y el alcance orgánico cae con gaps largos.`,
+                    action: 'Mantener frecuencia mínima de 1 post cada 3 días.',
                   } : null,
                   bestSave ? {
-                    dot: '#a78bfa',
-                    text: `El snippet de ATBLM tiene el mejor save rate de TikTok (${(bestSave.saves / bestSave.views * 100).toFixed(2)}% — ${formatNumber(bestSave.saves)} saves). Ese nivel de intención de playlist no se replicó en ningún track nuevo del álbum. Los saves son el indicador más directo de que el algoritmo va a distribuir el contenido.`,
+                    color: '#a78bfa', badge: 'INFO', category: 'Saves · Playlists',
+                    title: 'ATBLM lidera intención de playlist en TK',
+                    metric: `${(bestSave.saves / bestSave.views * 100).toFixed(2)}%`, metricSub: 'save rate · mejor video',
+                    body: `${formatNumber(bestSave.saves)} saves. Ese nivel no se replicó en ningún track nuevo. Los saves son el indicador más directo de distribución algorítmica.`,
+                    action: 'Replicar el formato del snippet de ATBLM para los tracks nuevos.',
                   } : null,
                   negDeltas.length > 0 ? {
-                    dot: '#64748b',
-                    text: `${negDeltas.length} post${negDeltas.length > 1 ? 's' : ''} correlacionan con una caída de streams al día siguiente (${negDeltas.slice(0, 2).map(p => `${p.platform === 'instagram' ? 'IG' : 'TK'} del ${new Date(p.date + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} (${formatNumber(p.streamDelta)})`).join(', ')}). No implica causalidad, pero vale seguirlo.`,
+                    color: '#64748b', badge: 'INFO', category: 'D+1 Correlación',
+                    title: `${negDeltas.length} post${negDeltas.length > 1 ? 's' : ''} correlacionan con caída de streams`,
+                    metric: String(negDeltas.length), metricSub: `post${negDeltas.length > 1 ? 's' : ''} con delta negativo`,
+                    body: `${negDeltas.slice(0, 2).map(p => `${p.platform === 'instagram' ? 'IG' : 'TK'} ${new Date(p.date + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} (${formatNumber(p.streamDelta)})`).join(' · ')}. No implica causalidad directa.`,
+                    action: 'Monitorear en próximas semanas para confirmar patrón.',
                   } : null,
                 ].filter(Boolean);
                 return (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0.85rem' }}>
                     {insights.map((ins, i) => (
-                      <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: ins.dot, flexShrink: 0, marginTop: '6px', boxShadow: `0 0 6px ${ins.dot}88` }} />
-                        <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>{ins.text}</p>
+                      <div key={i} style={{
+                        background: 'rgba(15,23,42,0.6)',
+                        border: `1px solid ${ins.color}33`,
+                        borderLeft: `3px solid ${ins.color}`,
+                        borderRadius: '10px',
+                        padding: '1rem 1.1rem',
+                        display: 'flex', flexDirection: 'column', gap: '0.45rem',
+                      }}>
+                        {/* Badge + Category */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ fontSize: '0.6rem', fontWeight: 800, letterSpacing: '0.08em', color: ins.color, background: `${ins.color}18`, border: `1px solid ${ins.color}44`, borderRadius: '4px', padding: '0.15rem 0.45rem' }}>{ins.badge}</span>
+                          <span style={{ fontSize: '0.7rem', color: '#475569', fontWeight: 500 }}>{ins.category}</span>
+                        </div>
+                        {/* Title */}
+                        <p style={{ color: '#e2e8f0', fontSize: '0.85rem', fontWeight: 700, margin: 0, lineHeight: 1.3 }}>{ins.title}</p>
+                        {/* Key metric */}
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
+                          <span style={{ color: ins.color, fontSize: '1.4rem', fontWeight: 800, lineHeight: 1 }}>{ins.metric}</span>
+                          <span style={{ color: '#64748b', fontSize: '0.7rem' }}>{ins.metricSub}</span>
+                        </div>
+                        {/* Body */}
+                        <p style={{ color: '#94a3b8', fontSize: '0.78rem', margin: 0, lineHeight: 1.5 }}>{ins.body}</p>
+                        {/* Action */}
+                        {ins.action && (
+                          <p style={{ color: ins.color, fontSize: '0.75rem', margin: 0, fontWeight: 600, borderTop: `1px solid ${ins.color}22`, paddingTop: '0.4rem', marginTop: '0.1rem' }}>
+                            → {ins.action}
+                          </p>
+                        )}
                       </div>
                     ))}
                   </div>
