@@ -445,19 +445,51 @@ const AmorFiadoDashboard = () => {
           <div style={{ background: 'linear-gradient(135deg, rgba(251,146,60,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(251,146,60,0.2)' }}>
             <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem' }}>Insights Clave</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {[
-                `UN GUSTO lidera el álbum con ${formatNumber(16320)} streams en su primer día completo, superando al segundo (CALL ME) por ~${formatNumber(16320 - 11305)}.`,
-                `El álbum acumuló ${formatNumber(metrics.totalLiveStreams)} streams totales (live) en ~50 horas desde el lanzamiento.`,
-                `El "efecto álbum" multiplicó ATBLM por ${metrics.singlesAnalysis['ATBLM'].multiplier}x y CUANDO ESCRIBÍA ASIMETRÍA por ${metrics.singlesAnalysis['CUANDO ESCRIBÍA ASIMETRÍA'].multiplier}x vs. sus promedios pre-álbum.`,
-                `Día 20 generó ${formatNumber(metrics.day20Streams)} streams totales — el primer día completo (ciclo Spotify 00:00–23:59 UTC).`,
-                `Día 21 cerró con ${formatNumber(metrics.day21Streams)} streams — un decay de ${((1 - metrics.day21Streams / metrics.day20Streams) * 100).toFixed(0)}% vs D20, típico de la caída post-lanzamiento.`,
-                `Los 10 tracks nuevos promediaron ${formatNumber(metrics.avgDay20Album)} streams el día 20, con UN GUSTO como claro outlier positivo.`,
-              ].map((text, i) => (
-                <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#f97316', fontWeight: 700, marginTop: '2px' }}>▸</span>
-                  <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>{text}</p>
-                </div>
-              ))}
+              {(() => {
+                const top1 = metrics.day20ByTrack[0];
+                const top2 = metrics.day20ByTrack[1];
+                const top3 = metrics.day20ByTrack[2];
+                const top3Sum = top1.streams + top2.streams + top3.streams;
+                const top3Pct = Math.round(top3Sum / metrics.day20Streams * 100);
+                const decayPct = Math.round((1 - metrics.day21Streams / metrics.day20Streams) * 100);
+                const atblmMult = parseFloat(metrics.singlesAnalysis['ATBLM'].multiplier);
+                const ceaMult = parseFloat(metrics.singlesAnalysis['CUANDO ESCRIBÍA ASIMETRÍA'].multiplier);
+                const outperformers = metrics.trackAnalysis.filter(t => t.anomaly === 'Outperformer');
+                const insights = [
+                  {
+                    dot: '#4ade80',
+                    text: `${top1.fullName} lidera el álbum con ${formatNumber(top1.streams)} streams en D20, superando a ${top2.fullName} por ${formatNumber(top1.streams - top2.streams)} (+${((top1.streams / top2.streams - 1) * 100).toFixed(0)}%).`,
+                  },
+                  {
+                    dot: '#4ade80',
+                    text: `El "efecto álbum" multiplicó ATBLM por ${atblmMult}x y CEA por ${ceaMult}x vs. sus promedios pre-álbum. El boost fue ${atblmMult >= ceaMult ? 'mayor' : 'menor'} en ATBLM, track más reciente al momento del lanzamiento.`,
+                  },
+                  {
+                    dot: '#38bdf8',
+                    text: `El álbum acumuló ${formatNumber(metrics.totalLiveStreams)} streams totales (live) en los primeros 3 días desde el lanzamiento.`,
+                  },
+                  {
+                    dot: decayPct < 45 ? '#4ade80' : decayPct < 60 ? '#fbbf24' : '#f87171',
+                    text: `Día 21 cerró con ${formatNumber(metrics.day21Streams)} streams — un decay de ${decayPct}% vs D20. ${decayPct < 45 ? 'Decay suave, por debajo del rango esperado — buena retención.' : decayPct < 60 ? 'Decay moderado, dentro del rango esperado post-lanzamiento.' : 'Decay elevado — monitorear en los próximos días.'}`,
+                  },
+                  {
+                    dot: top3Pct <= 55 ? '#4ade80' : '#fbbf24',
+                    text: `Concentración: los 3 tracks top (${[top1, top2, top3].map(t => t.fullName.split(' ')[0]).join(', ')}) representan el ${top3Pct}% de los streams del D20. ${top3Pct <= 55 ? 'Distribución equilibrada — buen long tail.' : 'Catálogo con hit dominante — considerar push en tracks menores.'}`,
+                  },
+                  {
+                    dot: outperformers.length > 0 ? '#4ade80' : '#94a3b8',
+                    text: outperformers.length > 0
+                      ? `Outperformer estadístico (Z > 1.5): ${outperformers.map(t => t.name).join(', ')} — superó significativamente el promedio del álbum en D20 (${formatNumber(metrics.avgDay20Album)} streams).`
+                      : `Los 10 tracks nuevos promediaron ${formatNumber(metrics.avgDay20Album)} streams el D20. Sin outliers negativos estadísticos (Z < -1.5).`,
+                  },
+                ];
+                return insights.map((ins, i) => (
+                  <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: ins.dot, flexShrink: 0, marginTop: '6px', boxShadow: `0 0 6px ${ins.dot}88` }} />
+                    <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>{ins.text}</p>
+                  </div>
+                ));
+              })()}
             </div>
           </div>
         </div>
@@ -492,6 +524,40 @@ const AmorFiadoDashboard = () => {
                 <span style={{ color: '#94a3b8' }}>Tracks Nuevos del Álbum</span>
               </div>
             </div>
+          </div>
+
+          {/* Track Insights */}
+          <div style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(249,115,22,0.2)', marginBottom: '2.5rem' }}>
+            <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Análisis de Tracks</h2>
+            {(() => {
+              const top3 = metrics.day20ByTrack.slice(0, 3);
+              const top3Pct = Math.round(top3.reduce((s, t) => s + t.streams, 0) / metrics.day20Streams * 100);
+              const withDecay = [...metrics.trackAnalysis].filter(t => t.decayD20toD21 !== 'N/A');
+              const sortedByDecay = [...withDecay].sort((a, b) => parseFloat(b.decayD20toD21) - parseFloat(a.decayD20toD21));
+              const bestRetention = sortedByDecay[0];
+              const worstRetention = sortedByDecay[sortedByDecay.length - 1];
+              const outperformers = metrics.trackAnalysis.filter(t => t.anomaly === 'Outperformer');
+              const underperformers = metrics.trackAnalysis.filter(t => t.anomaly === 'Underperformer');
+              const bestRetVal = parseFloat(bestRetention.decayD20toD21);
+              const worstRetVal = parseFloat(worstRetention.decayD20toD21);
+              const insights = [
+                { dot: top3Pct <= 55 ? '#4ade80' : '#fbbf24', text: `Top 3 tracks (${top3.map(t => t.fullName.split(' ')[0]).join(', ')}) concentran el ${top3Pct}% de los streams del D20. ${top3Pct <= 55 ? 'Distribución equilibrada — el long tail tiene potencial.' : 'Catálogo con hit dominante — los tracks menores necesitan más tracción.'}` },
+                { dot: bestRetVal >= 0 ? '#4ade80' : '#fbbf24', text: `Mejor retención D20→D21: ${bestRetention.name} (${bestRetVal >= 0 ? '+' : ''}${bestRetention.decayD20toD21}%). ${bestRetVal >= 0 ? 'Creció en su segundo día completo — posible efecto de social media o playlist tardío.' : 'Menor caída entre todos los tracks del álbum.'}` },
+                { dot: Math.abs(worstRetVal) > 55 ? '#f87171' : '#fb923c', text: `Mayor decay D20→D21: ${worstRetention.name} (${worstRetention.decayD20toD21}%). ${Math.abs(worstRetVal) > 55 ? 'Caída pronunciada — candidato para push en playlist o social.' : 'Dentro del rango esperado para el segundo día de un álbum nuevo.'}` },
+                outperformers.length > 0 ? { dot: '#4ade80', text: `Outperformer${outperformers.length > 1 ? 's' : ''} estadístico${outperformers.length > 1 ? 's' : ''} (Z > 1.5): ${outperformers.map(t => t.name).join(', ')} — superaron significativamente el promedio del álbum en D20 (${formatNumber(metrics.avgDay20Album)} streams).` } : null,
+                underperformers.length > 0 ? { dot: '#f87171', text: `Underperformer${underperformers.length > 1 ? 's' : ''} estadístico${underperformers.length > 1 ? 's' : ''} (Z < -1.5): ${underperformers.map(t => t.name).join(', ')} — por debajo del promedio. Candidatos para push en social o colaboración con el artista.` } : null,
+              ].filter(Boolean);
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {insights.map((ins, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: ins.dot, flexShrink: 0, marginTop: '6px', boxShadow: `0 0 6px ${ins.dot}88` }} />
+                      <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>{ins.text}</p>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Live totals table */}
@@ -761,6 +827,51 @@ const AmorFiadoDashboard = () => {
             </div>}
           </div>
 
+          {/* Insights de Crecimiento */}
+          <div style={{ background: 'linear-gradient(135deg, rgba(56,189,248,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(56,189,248,0.2)', marginBottom: '2.5rem' }}>
+            <h2 style={{ color: '#38bdf8', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Insights de Crecimiento</h2>
+            {(() => {
+              const preAlbumSnaps = dailyHistory.filter(d => d.date < '2026-03-19');
+              const postAlbumSnaps = dailyHistory.filter(d => d.date >= '2026-03-19');
+              const preAvgDaily = preAlbumSnaps.length > 1
+                ? Math.round(preAlbumSnaps.reduce((s, d, i, arr) => i === 0 ? s : s + (d.albumTotal - arr[i - 1].albumTotal), 0) / (preAlbumSnaps.length - 1))
+                : 0;
+              const d19 = dailyHistory.find(d => d.date === '2026-03-19');
+              const d20 = dailyHistory.find(d => d.date === '2026-03-20');
+              const d21 = dailyHistory.find(d => d.date === '2026-03-21');
+              const d20Streams = d20 && d19 ? d20.albumTotal - d19.albumTotal : 0;
+              const d21Streams = d21 && d20 ? d21.albumTotal - d20.albumTotal : 0;
+              const launchMultiplier = preAvgDaily > 0 ? (d20Streams / preAvgDaily).toFixed(1) : null;
+              // Spike detection: day with >1.5x prev day streams (only post-release)
+              const spikes = [...dailyHistory].reduce((acc, snap, i, arr) => {
+                if (i < 2) return acc;
+                const today = snap.albumTotal - arr[i - 1].albumTotal;
+                const yesterday = arr[i - 1].albumTotal - arr[i - 2].albumTotal;
+                if (yesterday > 0 && today / yesterday >= 1.5) acc.push({ label: snap.label, ratio: (today / yesterday).toFixed(1), streams: today });
+                return acc;
+              }, []);
+              const last = dailyHistory[dailyHistory.length - 1];
+              const overallAvg = last ? Math.round(last.albumTotal / dailyHistory.length) : 0;
+              const decay21vs20 = d20Streams > 0 ? ((d21Streams / d20Streams - 1) * 100).toFixed(1) : null;
+              const insights = [
+                launchMultiplier ? { dot: '#38bdf8', text: `Antes del álbum, el catálogo promedió ${formatNumber(preAvgDaily)} streams/día (CEA + ATBLM). El lanzamiento multiplicó ese volumen por ${launchMultiplier}x en el primer día completo (D20: ${formatNumber(d20Streams)}).` } : null,
+                decay21vs20 ? { dot: parseFloat(decay21vs20) > -60 ? '#fbbf24' : '#f87171', text: `D20 → D21: el álbum pasó de ${formatNumber(d20Streams)} a ${formatNumber(d21Streams)} streams diarios (${parseFloat(decay21vs20) >= 0 ? '+' : ''}${decay21vs20}%). ${parseFloat(decay21vs20) > -50 ? 'Retención saludable para el segundo día.' : 'Caída pronunciada — patrón normal en lanzamientos nuevos.'}` } : null,
+                spikes.length > 0 ? { dot: '#4ade80', text: `Spike${spikes.length > 1 ? 's' : ''} detectado${spikes.length > 1 ? 's' : ''} (>1.5× el día anterior): ${spikes.slice(0, 3).map(s => `${s.label} (×${s.ratio}, +${formatNumber(s.streams)})`).join(' · ')}. Pueden indicar playlist adds, notas de prensa o impacto viral.` } : { dot: '#64748b', text: 'No se detectaron spikes de crecimiento aún — se necesitan más días de datos para detectar anomalías post-lanzamiento.' },
+                { dot: '#a78bfa', text: `El álbum acumula ${formatNumber(last?.albumTotal || 0)} streams en ${dailyHistory.length} días de datos. Promedio diario general: ${formatNumber(overallAvg)} streams/día. A medida que se agreguen días post-lanzamiento, se podrá trazar la curva de deceleración real.` },
+              ].filter(Boolean);
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {insights.map((ins, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: ins.dot, flexShrink: 0, marginTop: '6px', boxShadow: `0 0 6px ${ins.dot}88` }} />
+                      <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>{ins.text}</p>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
+
           {/* Snapshots en tiempo real (scraper 8h) */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)' }}>
             <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.25rem' }}>Snapshots en Tiempo Real</h2>
@@ -856,22 +967,27 @@ const AmorFiadoDashboard = () => {
             <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Insights de Engagement</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {(() => {
-                const sorted = Object.entries(trackMetrics).sort((a, b) => b[1].saves - a[1].saves);
-                const topSaves = sorted[0];
+                const topSaves = Object.entries(trackMetrics).sort((a, b) => b[1].saves - a[1].saves)[0];
                 const topSPL = Object.entries(trackMetrics).sort((a, b) => b[1].streamsPerListener - a[1].streamsPerListener)[0];
                 const topPL = Object.entries(trackMetrics).sort((a, b) => b[1].playlistAdds - a[1].playlistAdds)[0];
                 const totalSaves = Object.values(trackMetrics).reduce((s, t) => s + t.saves, 0);
-                const totalListeners = Object.values(trackMetrics).reduce((s, t) => s + t.listeners, 0);
-                return [
-                  `${topSaves[0]} lidera en saves con ${formatNumber(topSaves[1].saves)}, indicando alta retención.`,
-                  `${topSPL[0]} tiene el mayor ratio de streams/listener (${topSPL[1].streamsPerListener.toFixed(2)}), lo que sugiere alto replay value.`,
-                  `${topPL[0]} acumula la mayor cantidad de playlist adds (${formatNumber(topPL[1].playlistAdds)}), clave para el crecimiento orgánico.`,
-                  `En total, el álbum generó ${formatNumber(totalSaves)} saves en 28 días — un promedio de ${(totalSaves / 12).toFixed(0)} saves por track.`,
-                  `CUANDO ESCRIBÍA ASIMETRÍA es el único track con datos de período anterior: creció 13.4% vs. los 28 días previos.`,
-                ].map((text, i) => (
+                const totalStreams28 = Object.values(trackMetrics).reduce((s, t) => s + t.streams28d, 0);
+                const totalPlAdds = Object.values(trackMetrics).reduce((s, t) => s + t.playlistAdds, 0);
+                const saveRate = (totalSaves / totalStreams28 * 100).toFixed(2);
+                const topSaveRateEntry = Object.entries(trackMetrics).sort((a, b) => (b[1].saves / b[1].streams28d) - (a[1].saves / a[1].streams28d))[0];
+                const prevTrack = Object.entries(trackMetrics).find(([, m]) => m.prevPeriod !== null);
+                const insights = [
+                  { dot: '#4ade80', text: `${topSaves[0]} lidera en saves con ${formatNumber(topSaves[1].saves)} — la mayor intención de playlist y retención a largo plazo del álbum.` },
+                  { dot: '#4ade80', text: `${topSPL[0]} tiene el mayor ratio streams/listener (${topSPL[1].streamsPerListener.toFixed(2)}x) — señal fuerte de replay value y conexión emocional con la audiencia.` },
+                  { dot: '#a78bfa', text: `${topPL[0]} acumula la mayor cantidad de playlist adds (${formatNumber(topPL[1].playlistAdds)} de ${formatNumber(totalPlAdds)} totales) — clave para el crecimiento orgánico. Alta tracción editorial.` },
+                  { dot: parseFloat(saveRate) >= 10 ? '#4ade80' : '#fbbf24', text: `Save rate total del álbum: ${saveRate}% (${formatNumber(totalSaves)} saves / ${formatNumber(totalStreams28)} streams en 28d). ${parseFloat(saveRate) >= 10 ? 'Tasa muy alta — audiencia altamente comprometida.' : 'Tasa saludable para un álbum nuevo.'}` },
+                  { dot: '#38bdf8', text: `Mayor save rate individual: ${topSaveRateEntry[0]} con ${(topSaveRateEntry[1].saves / topSaveRateEntry[1].streams28d * 100).toFixed(1)}% — por cada 100 streams, ${Math.round(topSaveRateEntry[1].saves / topSaveRateEntry[1].streams28d * 100)} personas guardaron el track.` },
+                  prevTrack ? { dot: parseFloat(prevTrack[1].change) >= 0 ? '#4ade80' : '#f87171', text: `${prevTrack[0]} ${parseFloat(prevTrack[1].change) >= 0 ? 'creció' : 'cayó'} un ${Math.abs(prevTrack[1].change)}% vs. el período anterior (${formatNumber(prevTrack[1].prevPeriod)} → ${formatNumber(prevTrack[1].streams28d)} streams) — único track con comparativa histórica disponible.` } : null,
+                ].filter(Boolean);
+                return insights.map((ins, i) => (
                   <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                    <span style={{ color: '#f97316', fontWeight: 700, marginTop: '2px' }}>▸</span>
-                    <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>{text}</p>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: ins.dot, flexShrink: 0, marginTop: '6px', boxShadow: `0 0 6px ${ins.dot}88` }} />
+                    <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>{ins.text}</p>
                   </div>
                 ));
               })()}
@@ -912,7 +1028,7 @@ const AmorFiadoDashboard = () => {
           </div>
 
           {/* Singles detail cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
             {Object.entries(metrics.singlesAnalysis).map(([name, stats]) => (
               <div key={name} style={{ background: 'rgba(30,41,59,0.5)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)' }}>
                 <h3 style={{ color: '#fbbf24', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem' }}>{name}</h3>
@@ -933,6 +1049,38 @@ const AmorFiadoDashboard = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Singles Insights */}
+          <div style={{ background: 'linear-gradient(135deg, rgba(251,191,36,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(251,191,36,0.2)' }}>
+            <h2 style={{ color: '#fbbf24', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Insights de Singles</h2>
+            {(() => {
+              const cea = metrics.singlesAnalysis['CUANDO ESCRIBÍA ASIMETRÍA'];
+              const atblm = metrics.singlesAnalysis['ATBLM'];
+              const avgMultiplier = ((parseFloat(cea.multiplier) + parseFloat(atblm.multiplier)) / 2).toFixed(2);
+              const ceaD21Ratio = (cea.day21 / cea.preAlbumAvg).toFixed(1);
+              const atblmD21Ratio = (atblm.day21 / atblm.preAlbumAvg).toFixed(1);
+              const ceaDaysOld = Math.round((new Date('2026-03-21') - new Date('2026-02-06')) / 86400000);
+              const atblmDaysOld = Math.round((new Date('2026-03-21') - new Date('2026-02-27')) / 86400000);
+              const biggerBoost = parseFloat(atblm.multiplier) >= parseFloat(cea.multiplier) ? 'ATBLM' : 'CEA';
+              const insights = [
+                { dot: '#4ade80', text: `Album Bump promedio: ${avgMultiplier}x — el lanzamiento del álbum multiplicó los streams diarios de los singles por ${avgMultiplier} vs. su baseline pre-lanzamiento.` },
+                { dot: '#fbbf24', text: `${biggerBoost} recibió el mayor boost (${biggerBoost === 'ATBLM' ? atblm.multiplier : cea.multiplier}x vs ${biggerBoost === 'ATBLM' ? cea.multiplier : atblm.multiplier}x), probablemente por ser el track más reciente al momento del lanzamiento — menos decay acumulado en el algoritmo.` },
+                { dot: parseFloat(ceaD21Ratio) > 1 ? '#4ade80' : '#fbbf24', text: `En D21, CEA mantiene ${ceaD21Ratio}x su promedio pre-álbum (${formatNumber(cea.day21)} streams vs baseline ${formatNumber(cea.preAlbumAvg)}/día). Lleva ${ceaDaysOld} días desde su lanzamiento.` },
+                { dot: parseFloat(atblmD21Ratio) > 1 ? '#4ade80' : '#fbbf24', text: `ATBLM mantiene ${atblmD21Ratio}x su baseline en D21 (${formatNumber(atblm.day21)} vs ${formatNumber(atblm.preAlbumAvg)}/día baseline). Lleva ${atblmDaysOld} días desde su lanzamiento.` },
+                { dot: '#38bdf8', text: `Ambos singles siguen por encima de su baseline pre-álbum en D21 — el efecto álbum sigue activo. La proyección en Decay Intel muestra cuándo cada track vuelve a niveles de baseline.` },
+              ];
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {insights.map((ins, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: ins.dot, flexShrink: 0, marginTop: '6px', boxShadow: `0 0 6px ${ins.dot}88` }} />
+                      <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>{ins.text}</p>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}
@@ -997,6 +1145,54 @@ const AmorFiadoDashboard = () => {
                       </div>
                     );
                   })()}
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Diagnóstico de Decay */}
+          <div style={{ background: 'linear-gradient(135deg, rgba(248,113,113,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(248,113,113,0.2)', marginBottom: '2.5rem' }}>
+            <h2 style={{ color: '#f87171', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Diagnóstico de Decay</h2>
+            {(() => {
+              // Rebuild reference ratio inline
+              const ceaStr = streamData['CUANDO ESCRIBÍA ASIMETRÍA'].streams;
+              const ceaDts = Object.keys(ceaStr).filter(d => d >= '2026-02-06' && d <= '2026-03-18').sort();
+              const ceaD1v = ceaStr['2026-02-06'];
+              const ceaN = ceaDts.map(d => ceaStr[d] / ceaD1v);
+              const atStr = streamData['ATBLM'].streams;
+              const atDts = Object.keys(atStr).filter(d => d >= '2026-02-27' && d <= '2026-03-18').sort();
+              const atD1v = atStr['2026-02-27'];
+              const atN = atDts.map(d => atStr[d] / atD1v);
+              const refRatio = (ceaN[1] + atN[1]) / 2; // D2/D1 ratio from reference curve
+              const expectedDecayPct = ((1 - refRatio) * 100).toFixed(0);
+              const tracksWithDecay = metrics.trackAnalysis.filter(t => t.decayD20toD21 !== 'N/A');
+              const growing = tracksWithDecay.filter(t => parseFloat(t.decayD20toD21) > 5);
+              const inline = tracksWithDecay.filter(t => { const v = parseFloat(t.decayD20toD21); return v <= 5 && v >= -(parseFloat(expectedDecayPct) + 10); });
+              const faster = tracksWithDecay.filter(t => parseFloat(t.decayD20toD21) < -(parseFloat(expectedDecayPct) + 10));
+              // Estimate days to cross 500 streams/day using daily decay ≈ refRatio per day
+              const approxDailyDecay = refRatio; // multiplicative factor per day
+              const crossings = metrics.trackAnalysis
+                .filter(t => t.day21 > 500)
+                .map(t => {
+                  const days = Math.ceil(Math.log(500 / t.day21) / Math.log(approxDailyDecay));
+                  return { name: t.name, daysFromD21: Math.max(1, days) };
+                })
+                .sort((a, b) => a.daysFromD21 - b.daysFromD21);
+              const insights = [
+                { dot: '#38bdf8', text: `Decay de referencia D20→D21 (curva CEA+ATBLM): ~${expectedDecayPct}% de caída esperada. Los tracks dentro de ±10% de ese rango tienen un comportamiento normal.` },
+                growing.length > 0 ? { dot: '#4ade80', text: `Tracks por encima de la referencia (creciendo o decay < ${Math.round(parseFloat(expectedDecayPct) - 10)}%): ${growing.map(t => `${t.name} (${parseFloat(t.decayD20toD21) >= 0 ? '+' : ''}${t.decayD20toD21}%)`).join(', ')} — posible impulso de social media o playlisting.` } : null,
+                inline.length > 0 ? { dot: '#fbbf24', text: `Tracks dentro del rango esperado: ${inline.map(t => t.name).join(', ')} — comportamiento de decay normal para un lanzamiento nuevo.` } : null,
+                faster.length > 0 ? { dot: '#f87171', text: `Tracks con decay por encima de lo esperado (>${parseInt(expectedDecayPct) + 10}%): ${faster.map(t => `${t.name} (${t.decayD20toD21}%)`).join(', ')} — candidatos para push en social o pitching a playlists.` } : null,
+                crossings.length > 0 ? { dot: '#94a3b8', text: `Proyección de cruce a 500 streams/día (umbral "frío"): ${crossings.slice(0, 4).map(t => `${t.name} en ~${t.daysFromD21}d`).join(' · ')}. Los que cruzan más lento son los más saludables.` } : null,
+              ].filter(Boolean);
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {insights.map((ins, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: ins.dot, flexShrink: 0, marginTop: '6px', boxShadow: `0 0 6px ${ins.dot}88` }} />
+                      <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>{ins.text}</p>
+                    </div>
+                  ))}
                 </div>
               );
             })()}
@@ -1516,6 +1712,56 @@ const AmorFiadoDashboard = () => {
                   </tbody>
                 </table>
               </div>
+            </div>
+
+            {/* Social Insights */}
+            <div style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(167,139,250,0.2)', marginBottom: '2.5rem' }}>
+              <h2 style={{ color: '#a78bfa', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Insights de Social</h2>
+              {(() => {
+                // Best format by average views per type+platform
+                const byTypePlat = {};
+                socialPosts.forEach(p => {
+                  const k = `${p.platform}:${p.type}`;
+                  if (!byTypePlat[k]) byTypePlat[k] = { views: 0, posts: 0, likes: 0, platform: p.platform, type: p.type };
+                  byTypePlat[k].views += p.views; byTypePlat[k].posts++; byTypePlat[k].likes += p.likes;
+                });
+                const typeArr = Object.values(byTypePlat).map(v => ({ ...v, avgViews: Math.round(v.views / v.posts), engRate: (v.likes / v.views * 100).toFixed(1) })).sort((a, b) => b.avgViews - a.avgViews);
+                const bestFormat = typeArr[0];
+                const typeLabelsLocal = { teaser: 'Teaser', release: 'Lanzamiento', promo: 'Promo', launch: 'Álbum launch' };
+                const platLabel = { instagram: 'Instagram', tiktok: 'TikTok' };
+                // Platform averages
+                const igAvgViews = Math.round(igViews / igPosts.length);
+                const tkAvgViews = Math.round(tkViews / tkPosts.length);
+                const igEngRate = (igLikes / igViews * 100).toFixed(1);
+                const tkEngRate = (tkLikes / tkViews * 100).toFixed(1);
+                const engMultiplier = (parseFloat(tkEngRate) / parseFloat(igEngRate)).toFixed(1);
+                // TikTok best save rate
+                const tkWithSaves = socialPosts.filter(p => p.platform === 'tiktok' && p.saves > 0).sort((a, b) => (b.saves / b.views) - (a.saves / a.views));
+                const bestSave = tkWithSaves[0];
+                // Best stream delta post
+                const posDeltas = correlation.filter(p => p.streamDelta !== null && p.streamDelta > 0).sort((a, b) => b.streamDelta - a.streamDelta);
+                const bestDelta = posDeltas[0];
+                // Teasers vs launches comparison
+                const teaserAvg = Math.round(socialPosts.filter(p => p.type === 'teaser').reduce((s, p) => s + p.views, 0) / Math.max(socialPosts.filter(p => p.type === 'teaser').length, 1));
+                const launchAvg = Math.round(socialPosts.filter(p => p.type === 'launch' || p.type === 'release').reduce((s, p) => s + p.views, 0) / Math.max(socialPosts.filter(p => p.type === 'launch' || p.type === 'release').length, 1));
+                const insights = [
+                  { dot: '#4ade80', text: `Mejor formato por alcance: ${platLabel[bestFormat.platform]} ${typeLabelsLocal[bestFormat.type] || bestFormat.type} con ${formatNumber(bestFormat.avgViews)} views promedio por post (${bestFormat.posts} post${bestFormat.posts > 1 ? 's' : ''}, ${bestFormat.engRate}% eng).` },
+                  { dot: '#e879f9', text: `Comparativa plataformas: Instagram ${formatNumber(igAvgViews)} views/post (${igEngRate}% eng) vs TikTok ${formatNumber(tkAvgViews)} views/post (${tkEngRate}% eng). TikTok tiene ${engMultiplier}× más engagement rate, ${igAvgViews > tkAvgViews ? 'Instagram tiene mayor alcance promedio por post' : 'TikTok tiene mayor alcance por post también'}.` },
+                  teaserAvg > launchAvg ? { dot: '#fbbf24', text: `Los teasers promediaron ${formatNumber(teaserAvg)} views vs ${formatNumber(launchAvg)} views los posts de lanzamiento/release — la expectativa generó más alcance que el estreno en sí. Clave para la próxima campaña.` } : { dot: '#4ade80', text: `Los posts de lanzamiento/release promediaron ${formatNumber(launchAvg)} views vs ${formatNumber(teaserAvg)} de los teasers — el momentum del estreno superó la campaña de expectativa.` },
+                  bestSave ? { dot: '#a78bfa', text: `Mejor save rate en TikTok: "${bestSave.caption.slice(0, 50)}${bestSave.caption.length > 50 ? '…' : ''}" — ${(bestSave.saves / bestSave.views * 100).toFixed(2)}% saves/view (${formatNumber(bestSave.saves)} saves de ${formatNumber(bestSave.views)} views). Los saves son el indicador más fuerte de intención de agregar a playlist.` } : null,
+                  bestDelta ? { dot: '#38bdf8', text: `Post con mayor correlación streams D+1: "${bestDelta.caption.slice(0, 45)}${bestDelta.caption.length > 45 ? '…' : ''}" (${bestDelta.platform === 'instagram' ? 'IG' : 'TK'}, ${new Date(bestDelta.date + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}) — el día siguiente tuvo +${formatNumber(bestDelta.streamDelta)} streams.` } : null,
+                ].filter(Boolean);
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {insights.map((ins, i) => (
+                      <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: ins.dot, flexShrink: 0, marginTop: '6px', boxShadow: `0 0 6px ${ins.dot}88` }} />
+                        <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>{ins.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Methodology */}
