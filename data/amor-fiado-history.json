@@ -1,0 +1,53 @@
+{
+  "album": "AMOR FIADO",
+  "artist": "ZEBALLOS",
+  "releaseDate": "2026-03-19T21:00:00-03:00",
+  "tracks": [
+    "CUANDO ESCRIBÍA ASIMETRÍA",
+    "ATBLM",
+    "UN GUSTO",
+    "CALL ME",
+    "MAN OF WORD",
+    "OJOS TRISTES",
+    "HIELO",
+    "CHANGES",
+    "ALQUILER",
+    "YA NO",
+    "HAZLO CALLAO",
+    "TOP TIER"
+  ],
+  "snapshots": [
+    {
+      "timestamp": "2026-03-22T15:00:00-03:00",
+      "albumLiveTotal": 678677,
+      "liveByTrack": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 273884,
+        "ATBLM": 200669,
+        "UN GUSTO": 31749,
+        "CALL ME": 23750,
+        "MAN OF WORD": 22919,
+        "OJOS TRISTES": 21652,
+        "HIELO": 19885,
+        "CHANGES": 19758,
+        "ALQUILER": 18508,
+        "YA NO": 16522,
+        "HAZLO CALLAO": 15226,
+        "TOP TIER": 14298
+      },
+      "metrics": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": { "streams28d": 142541, "listeners": 48293, "saves": 9327, "playlistAdds": 3239 },
+        "ATBLM": { "streams28d": 192790, "listeners": 66579, "saves": 17036, "playlistAdds": 7921 },
+        "UN GUSTO": { "streams28d": 25380, "listeners": 15341, "saves": 7742, "playlistAdds": 1670 },
+        "CALL ME": { "streams28d": 18631, "listeners": 8669, "saves": 7184, "playlistAdds": 1314 },
+        "MAN OF WORD": { "streams28d": 18259, "listeners": 9369, "saves": 7133, "playlistAdds": 1152 },
+        "OJOS TRISTES": { "streams28d": 17262, "listeners": 9297, "saves": 7158, "playlistAdds": 1262 },
+        "HIELO": { "streams28d": 15713, "listeners": 7587, "saves": 7036, "playlistAdds": 1168 },
+        "CHANGES": { "streams28d": 15059, "listeners": 7663, "saves": 6975, "playlistAdds": 1147 },
+        "ALQUILER": { "streams28d": 14867, "listeners": 7906, "saves": 6800, "playlistAdds": 913 },
+        "YA NO": { "streams28d": 12929, "listeners": 6512, "saves": 6901, "playlistAdds": 1041 },
+        "HAZLO CALLAO": { "streams28d": 12154, "listeners": 6927, "saves": 6742, "playlistAdds": 864 },
+        "TOP TIER": { "streams28d": 11308, "listeners": 6043, "saves": 6819, "playlistAdds": 955 }
+      }
+    }
+  ]
+}
