@@ -2680,7 +2680,7 @@ const AmorFiadoDashboard = () => {
         else if (monthlyPct >= 4)
           signals.push({ color: '#fbbf24', text: `Conversión general estándar (${monthlyPct}%) — margen de crecimiento disponible con amplificación editorial o campaña.` });
         else
-          signals.push({ color: '#f87171', text: `Conversión general baja (${monthlyPct}%) — la mayoría de oyentes mensuales aún no llegaron a la release; Marquee o Showcase pueden acelerar la activación.` });
+          signals.push({ color: '#f87171', text: `Conversión general baja (${monthlyPct}%) — la mayoría de oyentes mensuales aún no llegaron a la release; ${eng.type === 'album' ? 'Marquee o Showcase pueden acelerar la activación' : 'Showcase puede acelerar la activación (Marquee aplica solo a álbumes)'}.` });
 
         // 2. Super listener depth
         if (superPct >= 35)
@@ -2691,12 +2691,13 @@ const AmorFiadoDashboard = () => {
           signals.push({ color: '#f87171', text: `Super Listeners bajos (${superPct}%) — si tenés una campaña activa, puede estar inflando temporalmente el alcance sin llegar a tus fans core.` });
 
         // 3. Light listener signal
+        const campLabel = eng.type === 'album' ? 'Marquee/Showcase' : 'Showcase';
         if (lightShare >= 30 && campaigns.length > 0)
-          signals.push({ color: '#60a5fa', text: `${lightShare.toFixed(0)}% de los oyentes son Light Listeners — patrón típico de campaña (Marquee/Showcase). Esperar 14 días post-campaña para ver cuántos convierten a moderate.` });
+          signals.push({ color: '#60a5fa', text: `${lightShare.toFixed(0)}% de los oyentes son Light Listeners — patrón típico de campaña (${campLabel}). Esperar 14 días post-campaña para ver cuántos convierten a moderate.` });
         else if (lightPct >= 5)
           signals.push({ color: '#60a5fa', text: `Light Listeners respondiendo bien (${lightPct}%) — parte del alcance está llegando a oyentes casuales; buen indicador de descubrimiento.` });
         else
-          signals.push({ color: '#94a3b8', text: `Light Listeners aún bajos (${lightPct}%) — el alcance está concentrado en fans activos; un Marquee enfocado en light/programmed puede ampliar el funnel.` });
+          signals.push({ color: '#94a3b8', text: `Light Listeners aún bajos (${lightPct}%) — el alcance está concentrado en fans activos; ${eng.type === 'album' ? 'un Marquee enfocado en light/programmed puede ampliar el funnel' : 'Showcase puede ampliar el funnel apuntando a light/programmed'}.` });
 
         // 4. Segment mix commentary
         if (superShare >= 40)
