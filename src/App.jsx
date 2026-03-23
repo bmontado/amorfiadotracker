@@ -40,7 +40,7 @@ const AmorFiadoDashboard = () => {
   // Last data update timestamps — updated automatically by the scrapers each run
   const lastUpdated = {
     spotify: '2026-03-23T12:06:43-03:00',
-    social:  '2026-03-23T12:00:00-03:00',
+    social:  '2026-03-22T15:00:00-03:00',
   };
   const formatLastUpdated = (isoStr) => {
     const d = new Date(isoStr);
@@ -168,29 +168,29 @@ const AmorFiadoDashboard = () => {
   const socialPosts = [
     // === Instagram (@zeballos17) ===
     { date: '2026-02-02', url: '/reel/DURexnHjuy4/', caption: 'CEA teaser con Juan Minujín — Estreno jueves 5/2', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'teaser', views: 406000, likes: 17000, saves: 0, platform: 'instagram' },
-    { date: '2026-02-06', url: '/reel/DUa9-8bjgmB/', caption: 'CUANDO ESCRIBÍA ASIMETRÍA — Ya disponible', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'release', views: 133000, likes: 6501, saves: 0, platform: 'instagram' },
-    { date: '2026-02-12', url: '/reel/DUrNhIvDmv2/', caption: 'AMOR FIADO promo (audio: CEA)', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'promo', views: 108000, likes: 5611, saves: 0, platform: 'instagram' },
-    { date: '2026-02-28', url: '/reel/DVUSGuKjviG/', caption: 'ATBLM — Segundo adelanto de Amor Fiado', track: 'ATBLM', type: 'release', views: 167000, likes: 9418, saves: 0, platform: 'instagram' },
-    { date: '2026-03-10', url: '/reel/DVuLW64Dssw/', caption: 'Nueve días para AMOR FIADO (audio: CEA)', track: 'AMOR FIADO', type: 'promo', views: 116000, likes: 6587, saves: 0, platform: 'instagram' },
-    { date: '2026-03-19', url: '/reel/DWEezrPjpH9/', caption: 'Gracias Buenos Aires, estrenamos AMOR FIADO', track: 'AMOR FIADO', type: 'launch', views: 90100, likes: 4928, saves: 0, platform: 'instagram' },
-    { date: '2026-03-20', url: '/reel/DWFzDpbjpuS/', caption: 'AMOR FIADO YA DISPONIBLE en todas las plataformas', track: 'AMOR FIADO', type: 'launch', views: 96200, likes: 5736, saves: 0, platform: 'instagram' },
-    { date: '2026-03-21', url: '/reel/DWJqPCdjqMF/', caption: 'UN GUSTO ft @mesita — Videoclip', track: 'UN GUSTO', type: 'release', views: 125000, likes: 8092, saves: 0, platform: 'instagram' },
+    { date: '2026-02-06', url: '/reel/DUa9-8bjgmB/', caption: 'CUANDO ESCRIBÍA ASIMETRÍA — Ya disponible', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'release', views: 133000, likes: 6497, saves: 0, platform: 'instagram' },
+    { date: '2026-02-12', url: '/reel/DUrNhIvDmv2/', caption: 'AMOR FIADO promo (audio: CEA)', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'promo', views: 108000, likes: 5609, saves: 0, platform: 'instagram' },
+    { date: '2026-02-28', url: '/reel/DVUSGuKjviG/', caption: 'ATBLM — Segundo adelanto de Amor Fiado', track: 'ATBLM', type: 'release', views: 166000, likes: 9381, saves: 0, platform: 'instagram' },
+    { date: '2026-03-10', url: '/reel/DVuLW64Dssw/', caption: 'Nueve días para AMOR FIADO (audio: CEA)', track: 'AMOR FIADO', type: 'promo', views: 116000, likes: 6556, saves: 0, platform: 'instagram' },
+    { date: '2026-03-19', url: '/reel/DWEezrPjpH9/', caption: 'Gracias Buenos Aires, estrenamos AMOR FIADO', track: 'AMOR FIADO', type: 'launch', views: 89000, likes: 4902, saves: 0, platform: 'instagram' },
+    { date: '2026-03-20', url: '/reel/DWFzDpbjpuS/', caption: 'AMOR FIADO YA DISPONIBLE en todas las plataformas', track: 'AMOR FIADO', type: 'launch', views: 95100, likes: 5679, saves: 0, platform: 'instagram' },
+    { date: '2026-03-21', url: '/reel/DWJqPCdjqMF/', caption: 'UN GUSTO ft @mesita — Videoclip', track: 'UN GUSTO', type: 'release', views: 118000, likes: 7703, saves: 0, platform: 'instagram' },
     // === TikTok (@zeballos1717) ===
-    { date: '2026-01-28', url: '/video/7600558176781520149', caption: '05.02 @asimetria17 — Teaser fecha CEA', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'teaser', views: 12000, likes: 950, saves: 40, platform: 'tiktok' },
-    { date: '2026-01-30', url: '/video/7601302776626384149', caption: 'Se viene @asimetria17', track: 'AMOR FIADO', type: 'teaser', views: 59900, likes: 8121, saves: 251, platform: 'tiktok' },
-    { date: '2026-02-04', url: '/video/7603157705921957141', caption: 'Es mañana mi gente @asimetria17 — CEA eve', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'teaser', views: 29500, likes: 4600, saves: 115, platform: 'tiktok' },
-    { date: '2026-02-06', url: '/video/7603879276328373525', caption: 'Sigo haciendo temas de lo que me gusta — CEA lyrics', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'release', views: 44100, likes: 5922, saves: 267, platform: 'tiktok' },
-    { date: '2026-02-12', url: '/video/7606141408382160149', caption: 'Pero afuera nada invita a ir #amorfiado — CEA promo', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'promo', views: 77500, likes: 11100, saves: 716, platform: 'tiktok' },
-    { date: '2026-02-19', url: '/video/7608593812587416852', caption: 'ATBLM snippet — viral', track: 'ATBLM', type: 'teaser', views: 184300, likes: 25800, saves: 2782, platform: 'tiktok' },
-    { date: '2026-02-21', url: '/video/7609155471529856276', caption: 'ATBLM snippet 2', track: 'ATBLM', type: 'teaser', views: 135000, likes: 23200, saves: 1424, platform: 'tiktok' },
-    { date: '2026-02-21', url: '/video/7609510867570576661', caption: 'ATBLM snippet — pool vibes', track: 'ATBLM', type: 'teaser', views: 64200, likes: 10800, saves: 509, platform: 'tiktok' },
-    { date: '2026-02-25', url: '/video/7610835979628203284', caption: 'ATBLM 26/02 Es mañana dalee', track: 'ATBLM', type: 'teaser', views: 43500, likes: 7374, saves: 209, platform: 'tiktok' },
-    { date: '2026-02-26', url: '/video/7611317540157017364', caption: 'ATBLM YA DISPONIBLE @asimetria17', track: 'ATBLM', type: 'release', views: 38100, likes: 5563, saves: 297, platform: 'tiktok' },
-    { date: '2026-02-28', url: '/video/7612070065856433428', caption: 'Segundo adelanto de AMOR FIADO — ATBLM video', track: 'ATBLM', type: 'release', views: 103200, likes: 15400, saves: 1059, platform: 'tiktok' },
-    { date: '2026-03-10', url: '/video/7615777036631657749', caption: 'MENOS DE 9 DÍAS PARA AMOR FIADO @asimetria17', track: 'AMOR FIADO', type: 'promo', views: 17100, likes: 2694, saves: 123, platform: 'tiktok' },
-    { date: '2026-03-14', url: '/video/7617125475596455189', caption: '5 días para AMOR FIADO', track: 'AMOR FIADO', type: 'promo', views: 26100, likes: 3713, saves: 73, platform: 'tiktok' },
-    { date: '2026-03-21', url: '/video/7619728786610785556', caption: 'UN GUSTO ft @Mesa Tra', track: 'UN GUSTO', type: 'release', views: 20800, likes: 2595, saves: 120, platform: 'tiktok' },
-    { date: '2026-03-22', url: '/video/7620071012536749333', caption: 'Ya escucharon ojos tristes ft @Rei?', track: 'OJOS TRISTES', type: 'promo', views: 11300, likes: 1197, saves: 24, platform: 'tiktok' },
+    { date: '2026-01-28', url: '/video/7600558176781520149', caption: '05.02 @asimetria17 — Teaser fecha CEA', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'teaser', views: 11800, likes: 948, saves: 40, platform: 'tiktok' },
+    { date: '2026-01-30', url: '/video/7601302776626384149', caption: 'Se viene @asimetria17', track: 'AMOR FIADO', type: 'teaser', views: 59800, likes: 8118, saves: 251, platform: 'tiktok' },
+    { date: '2026-02-04', url: '/video/7603157705921957141', caption: 'Es mañana mi gente @asimetria17 — CEA eve', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'teaser', views: 29400, likes: 4589, saves: 115, platform: 'tiktok' },
+    { date: '2026-02-06', url: '/video/7603879276328373525', caption: 'Sigo haciendo temas de lo que me gusta — CEA lyrics', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'release', views: 43900, likes: 5915, saves: 267, platform: 'tiktok' },
+    { date: '2026-02-12', url: '/video/7606141408382160149', caption: 'Pero afuera nada invita a ir #amorfiado — CEA promo', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'promo', views: 77200, likes: 11000, saves: 713, platform: 'tiktok' },
+    { date: '2026-02-19', url: '/video/7608593812587416852', caption: 'ATBLM snippet — viral', track: 'ATBLM', type: 'teaser', views: 183900, likes: 25800, saves: 2782, platform: 'tiktok' },
+    { date: '2026-02-21', url: '/video/7609155471529856276', caption: 'ATBLM snippet 2', track: 'ATBLM', type: 'teaser', views: 134500, likes: 23100, saves: 1422, platform: 'tiktok' },
+    { date: '2026-02-21', url: '/video/7609510867570576661', caption: 'ATBLM snippet — pool vibes', track: 'ATBLM', type: 'teaser', views: 63700, likes: 10700, saves: 508, platform: 'tiktok' },
+    { date: '2026-02-25', url: '/video/7610835979628203284', caption: 'ATBLM 26/02 Es mañana dalee', track: 'ATBLM', type: 'teaser', views: 43200, likes: 7366, saves: 209, platform: 'tiktok' },
+    { date: '2026-02-26', url: '/video/7611317540157017364', caption: 'ATBLM YA DISPONIBLE @asimetria17', track: 'ATBLM', type: 'release', views: 37600, likes: 5552, saves: 297, platform: 'tiktok' },
+    { date: '2026-02-28', url: '/video/7612070065856433428', caption: 'Segundo adelanto de AMOR FIADO — ATBLM video', track: 'ATBLM', type: 'release', views: 101700, likes: 15300, saves: 1059, platform: 'tiktok' },
+    { date: '2026-03-10', url: '/video/7615777036631657749', caption: 'MENOS DE 9 DÍAS PARA AMOR FIADO @asimetria17', track: 'AMOR FIADO', type: 'promo', views: 16400, likes: 2665, saves: 123, platform: 'tiktok' },
+    { date: '2026-03-14', url: '/video/7617125475596455189', caption: '5 días para AMOR FIADO', track: 'AMOR FIADO', type: 'promo', views: 24300, likes: 3670, saves: 73, platform: 'tiktok' },
+    { date: '2026-03-21', url: '/video/7619728786610785556', caption: 'UN GUSTO ft @Mesa Tra', track: 'UN GUSTO', type: 'release', views: 18600, likes: 2445, saves: 120, platform: 'tiktok' },
+    { date: '2026-03-22', url: '/video/7620071012536749333', caption: 'Ya escucharon ojos tristes ft @Rei?', track: 'OJOS TRISTES', type: 'promo', views: 9128, likes: 1013, saves: 24, platform: 'tiktok' },
   ];
 
   // Derived from dailyLog — no editar manualmente
@@ -389,15 +389,42 @@ const AmorFiadoDashboard = () => {
       };
     }).sort((a, b) => b.day20 - a.day20);
 
-    // Multi-day comparison chart data (all tracks, days 19-21)
-    const multiDayData = Object.entries(fullStreamData).map(([name, data]) => ({
-      name: name.length > 18 ? name.substring(0, 16) + '...' : name,
-      fullName: name,
-      'Día 19 (~1h)': data.streams['2026-03-19'] || 0,
-      'Día 20': data.streams['2026-03-20'] || 0,
-      'Día 21': data.streams['2026-03-21'] || 0,
-      type: data.type,
-    })).sort((a, b) => b['Día 20'] - a['Día 20']);
+    // Multi-day comparison — dynamic: auto-includes every entry in dailyLog (D19, D20, D21, D22…)
+    const d20LogEntry = dailyLog.find(e => e.date === '2026-03-20');
+    const multiDayData = Object.entries(fullStreamData).map(([name, data]) => {
+      const row = {
+        name: name.length > 18 ? name.substring(0, 16) + '...' : name,
+        fullName: name,
+        type: data.type,
+      };
+      dailyLog.forEach(entry => {
+        row[entry.label] = entry.tracks[name] != null ? entry.tracks[name] : (data.streams[entry.date] || 0);
+      });
+      return row;
+    }).sort((a, b) => {
+      const key = d20LogEntry ? d20LogEntry.label : (dailyLog[1] || dailyLog[0])?.label;
+      return (b[key] || 0) - (a[key] || 0);
+    });
+
+    // ── Album health & summary KPIs ──
+    const LAUNCH_DATE = '2026-03-19';
+    const daysLive = Math.max(1, Math.floor((Date.now() - new Date(LAUNCH_DATE + 'T23:00:00Z').getTime()) / 86400000));
+    const albumDecayD20D21 = day20Streams > 0 ? (day21Streams - day20Streams) / day20Streams * 100 : null;
+    const EXPECTED_DECAY_PCT = -46; // ref curve CEA+ATBLM D20→D21 ≈ -46%
+    const decayDiff = albumDecayD20D21 !== null ? albumDecayD20D21 - EXPECTED_DECAY_PCT : null;
+    const healthStatus = decayDiff === null ? 'Calculando'
+      : decayDiff > 12  ? 'Buena retención'
+      : decayDiff > -8  ? 'Decaimiento normal'
+      : 'Bajo presión';
+    const healthColor = decayDiff === null ? '#64748b'
+      : decayDiff > 12  ? '#4ade80'
+      : decayDiff > -8  ? '#fbbf24'
+      : '#f87171';
+    const albumTracksOnly = trackAnalysis.filter(t => t.type === 'album' && t.decayD20toD21 !== 'N/A');
+    const sortedByRetention = [...albumTracksOnly].sort((a, b) => parseFloat(b.decayD20toD21) - parseFloat(a.decayD20toD21));
+    const bestRetentionTrack  = sortedByRetention[0] || null;
+    const worstDecayTrack     = sortedByRetention[sortedByRetention.length - 1] || null;
+    const topLiveTrack        = [...trackAnalysis].sort((a, b) => (b.liveTotal || 0) - (a.liveTotal || 0))[0] || null;
 
     // Timeline chart data (for pre-release singles)
     const timelineData = [];
@@ -419,6 +446,8 @@ const AmorFiadoDashboard = () => {
       totalLiveStreams, day19Streams, day20Streams, day21Streams,
       day20ByTrack, avgDay20Album, topTrackDay20, singlesAnalysis,
       trackAnalysis, multiDayData, timelineData, mar21Streams,
+      daysLive, albumDecayD20D21, healthStatus, healthColor, decayDiff,
+      bestRetentionTrack, worstDecayTrack, topLiveTrack,
     };
   }, []);
 
@@ -483,98 +512,147 @@ const AmorFiadoDashboard = () => {
       {/* === OVERVIEW TAB === */}
       {activeTab === 'overview' && (
         <div>
-          {/* KPI Cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
-            {[
-              { label: 'Día 19 (~1h)', value: formatNumber(metrics.day19Streams), sub: 'Lanzamiento 20:00 UTC-3 · ciclo Spotify ~1h' },
-              { label: 'Día 20 (completo)', value: formatNumber(metrics.day20Streams), sub: 'Primer día completo', highlight: true },
-              { label: 'Día 21 (completo)', value: formatNumber(metrics.day21Streams), sub: 'Día completo' },
-              { label: 'Promedio/Track D20', value: formatNumber(metrics.avgDay20Album), sub: 'Solo tracks nuevos' },
-              { label: 'Track #1', value: metrics.topTrackDay20.fullName, sub: formatNumber(metrics.topTrackDay20.streams) + ' streams D20', highlight: true },
-            ].map((card, i) => (
-              <div key={i} style={{
-                background: card.highlight ? 'linear-gradient(135deg, rgba(251,146,60,0.15), rgba(30,41,59,0.8))' : 'rgba(30, 41, 59, 0.5)',
-                borderRadius: '12px', padding: '1.25rem',
-                border: card.highlight ? '1px solid rgba(251,146,60,0.3)' : '1px solid rgba(51,65,85,0.5)',
-              }}>
-                <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.5rem 0' }}>{card.label}</p>
-                <p style={{ fontSize: card.value.length > 12 ? '1.1rem' : '1.75rem', fontWeight: 700, color: card.highlight ? '#f97316' : '#f1f5f9', margin: 0 }}>{card.value}</p>
-                <p style={{ color: '#64748b', fontSize: '0.7rem', margin: '0.25rem 0 0 0' }}>{card.sub}</p>
+
+          {/* ── 1. Estado del Álbum ── */}
+          <div style={{ background: `linear-gradient(135deg, ${metrics.healthColor}0d, rgba(15,23,42,0.7))`, borderRadius: '12px', padding: '1.1rem 1.5rem', marginBottom: '1.5rem', border: `1px solid ${metrics.healthColor}33`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+              <span style={{ background: `${metrics.healthColor}1a`, border: `1px solid ${metrics.healthColor}55`, color: metrics.healthColor, fontSize: '0.72rem', fontWeight: 800, padding: '0.3rem 0.9rem', borderRadius: '9999px', letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                {metrics.healthStatus}
+              </span>
+              <span style={{ color: '#475569', fontSize: '0.78rem' }}>D+{metrics.daysLive} · lanzamiento 19/03/26</span>
+              {metrics.albumDecayD20D21 !== null && (
+                <span style={{ fontSize: '0.73rem', color: '#475569' }}>
+                  Decay D20→D21: <span style={{ color: metrics.healthColor, fontWeight: 700 }}>{metrics.albumDecayD20D21.toFixed(1)}%</span>
+                  <span style={{ color: '#334155' }}> (esperado ~-46%)</span>
+                </span>
+              )}
+            </div>
+            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ color: '#475569', fontSize: '0.68rem', margin: 0, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Acumulado</p>
+                <p style={{ color: '#f97316', fontSize: '1.6rem', fontWeight: 800, margin: 0, lineHeight: 1.1 }}>{formatNumber(albumLiveTotal)}</p>
               </div>
-            ))}
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ color: '#475569', fontSize: '0.68rem', margin: 0, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Ventana D28</p>
+                <p style={{ color: '#94a3b8', fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>
+                  {28 - metrics.daysLive > 0 ? `${28 - metrics.daysLive}d restantes` : 'completada'}
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Multi-day grouped bar chart */}
-          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>Comparativa Diaria por Track</h2>
-            <ResponsiveContainer width="100%" height={420}>
+          {/* ── 2. KPI Cards ── */}
+          {(() => {
+            const socialByTrack = {};
+            socialPosts.forEach(p => {
+              if (!socialByTrack[p.track]) socialByTrack[p.track] = 0;
+              socialByTrack[p.track] += p.views;
+            });
+            const topSocialEntry = Object.entries(socialByTrack).sort((a, b) => b[1] - a[1])[0];
+            const cards = [
+              { label: 'Streams acumulados', value: formatNumber(albumLiveTotal), sub: `12 tracks · ${formatLastUpdated(lastUpdated.spotify)}`, color: '#f97316' },
+              { label: `Días activo`, value: `D+${metrics.daysLive}`, sub: 'Desde lanzamiento', color: '#38bdf8' },
+              { label: 'Líder acumulado', value: metrics.topLiveTrack?.name || '—', sub: formatNumber(metrics.topLiveTrack?.liveTotal || 0) + ' streams live', color: '#4ade80' },
+              { label: 'Mejor retención', value: metrics.bestRetentionTrack?.name || '—', sub: `D20→D21: ${metrics.bestRetentionTrack?.decayD20toD21}%`, color: '#a78bfa' },
+              { label: 'Decay álbum D20→D21', value: metrics.albumDecayD20D21 !== null ? `${metrics.albumDecayD20D21.toFixed(1)}%` : '—', sub: 'esperado ~-46%', color: metrics.healthColor },
+              { label: 'Top social', value: topSocialEntry ? topSocialEntry[0] : '—', sub: topSocialEntry ? formatNumber(topSocialEntry[1]) + ' views totales' : '', color: '#e879f9' },
+            ];
+            return (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(175px, 1fr))', gap: '0.75rem', marginBottom: '1.75rem' }}>
+                {cards.map((card, i) => (
+                  <div key={i} style={{ background: 'rgba(30,41,59,0.5)', borderRadius: '10px', padding: '0.9rem 1rem', border: '1px solid rgba(51,65,85,0.45)' }}>
+                    <p style={{ color: '#475569', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.4rem' }}>{card.label}</p>
+                    <p style={{ color: card.color, fontSize: card.value.length > 10 ? '1rem' : '1.4rem', fontWeight: 700, margin: '0 0 0.2rem', lineHeight: 1.15 }}>{card.value}</p>
+                    <p style={{ color: '#334155', fontSize: '0.67rem', margin: 0 }}>{card.sub}</p>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
+
+          {/* ── 3. Comparativa Diaria — dinámica desde dailyLog ── */}
+          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '1.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>Comparativa Diaria por Track</h2>
+              <span style={{ color: '#334155', fontSize: '0.7rem' }}>Se actualiza automáticamente con cada nuevo día en dailyLog</span>
+            </div>
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart data={metrics.multiDayData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.08)" />
                 <XAxis dataKey="name" stroke="#64748b" tick={{ fontSize: 10 }} angle={-35} textAnchor="end" height={80} />
-                <YAxis stroke="#64748b" tick={{ fontSize: 11 }} tickFormatter={(v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(251,146,60,0.3)', borderRadius: '8px' }} formatter={(v) => formatNumber(v)} />
-                <Legend />
-                <Bar dataKey="Día 19 (3h)" fill="#475569" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Día 20" fill="#f97316" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Día 21" fill="#fbbf24" radius={[4, 4, 0, 0]} />
+                <YAxis stroke="#64748b" tick={{ fontSize: 11 }} tickFormatter={v => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
+                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '8px' }} formatter={v => formatNumber(v)} />
+                <Legend wrapperStyle={{ fontSize: '0.75rem' }} />
+                {dailyLog.map((entry, i) => {
+                  const colors = ['#475569', '#f97316', '#fbbf24', '#4ade80', '#38bdf8', '#a78bfa', '#fb7185'];
+                  return <Bar key={entry.label} dataKey={entry.label} name={`${entry.label} · ${entry.note}`} fill={colors[i % colors.length]} radius={[4, 4, 0, 0]} />;
+                })}
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Insights */}
-          <div style={{ background: 'linear-gradient(135deg, rgba(251,146,60,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(251,146,60,0.2)' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem' }}>Insights Clave</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {(() => {
-                const top1 = metrics.day20ByTrack[0];
-                const top2 = metrics.day20ByTrack[1];
-                const top3 = metrics.day20ByTrack[2];
-                const top3Sum = top1.streams + top2.streams + top3.streams;
-                const top3Pct = Math.round(top3Sum / metrics.day20Streams * 100);
-                const decayPct = Math.round((1 - metrics.day21Streams / metrics.day20Streams) * 100);
-                const atblmMult = parseFloat(metrics.singlesAnalysis['ATBLM'].multiplier);
-                const ceaMult = parseFloat(metrics.singlesAnalysis['CUANDO ESCRIBÍA ASIMETRÍA'].multiplier);
-                const outperformers = metrics.trackAnalysis.filter(t => t.anomaly === 'Outperformer');
-                const insights = [
-                  {
-                    dot: '#4ade80',
-                    text: `${top1.fullName} lidera el álbum con ${formatNumber(top1.streams)} streams en D20, superando a ${top2.fullName} por ${formatNumber(top1.streams - top2.streams)} (+${((top1.streams / top2.streams - 1) * 100).toFixed(0)}%).`,
-                  },
-                  {
-                    dot: '#4ade80',
-                    text: `El "efecto álbum" multiplicó ATBLM por ${atblmMult}x y CEA por ${ceaMult}x vs. sus promedios pre-álbum. El boost fue ${atblmMult >= ceaMult ? 'mayor' : 'menor'} en ATBLM, track más reciente al momento del lanzamiento.`,
-                  },
-                  {
-                    dot: '#38bdf8',
-                    text: `El álbum acumuló ${formatNumber(metrics.totalLiveStreams)} streams totales (live) en los primeros 3 días desde el lanzamiento.`,
-                  },
-                  {
-                    dot: decayPct < 45 ? '#4ade80' : decayPct < 60 ? '#fbbf24' : '#f87171',
-                    text: `Día 21 cerró con ${formatNumber(metrics.day21Streams)} streams — un decay de ${decayPct}% vs D20. ${decayPct < 45 ? 'Decay suave, por debajo del rango esperado — buena retención.' : decayPct < 60 ? 'Decay moderado, dentro del rango esperado post-lanzamiento.' : 'Decay elevado — monitorear en los próximos días.'}`,
-                  },
-                  {
-                    dot: top3Pct <= 55 ? '#4ade80' : '#fbbf24',
-                    text: `Concentración: los 3 tracks top (${[top1, top2, top3].map(t => t.fullName.split(' ')[0]).join(', ')}) representan el ${top3Pct}% de los streams del D20. ${top3Pct <= 55 ? 'Distribución equilibrada — buen long tail.' : 'Catálogo con hit dominante — considerar push en tracks menores.'}`,
-                  },
-                  {
-                    dot: outperformers.length > 0 ? '#4ade80' : '#94a3b8',
-                    text: outperformers.length > 0
-                      ? `Outperformer estadístico (Z > 1.5): ${outperformers.map(t => t.name).join(', ')} — superó significativamente el promedio del álbum en D20 (${formatNumber(metrics.avgDay20Album)} streams).`
-                      : `Los 10 tracks nuevos promediaron ${formatNumber(metrics.avgDay20Album)} streams el D20. Sin outliers negativos estadísticos (Z < -1.5).`,
-                  },
-                ];
-                return insights.map((ins, i) => (
-                  <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: ins.dot, flexShrink: 0, marginTop: '6px', boxShadow: `0 0 6px ${ins.dot}88` }} />
-                    <p style={{ color: '#cbd5e1', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>{ins.text}</p>
+          {/* ── 4. Accionables ── */}
+          {(() => {
+            const socialByTrack = {};
+            const lastPostByTrack = {};
+            socialPosts.forEach(p => {
+              if (!socialByTrack[p.track]) socialByTrack[p.track] = 0;
+              socialByTrack[p.track] += p.views;
+              if (!lastPostByTrack[p.track] || p.date > lastPostByTrack[p.track]) {
+                lastPostByTrack[p.track] = p.date;
+              }
+            });
+            const launchDate = new Date('2026-03-19');
+            const needsPush = metrics.worstDecayTrack ? {
+              track: metrics.worstDecayTrack.name,
+              decay: metrics.worstDecayTrack.decayD20toD21,
+              lastPost: lastPostByTrack[metrics.worstDecayTrack.name] || null,
+              daysSincePost: lastPostByTrack[metrics.worstDecayTrack.name]
+                ? Math.floor((new Date() - new Date(lastPostByTrack[metrics.worstDecayTrack.name])) / 86400000)
+                : null,
+            } : null;
+            const momentumTrack = metrics.bestRetentionTrack;
+            const nextMilestone = [7, 14, 21, 28].find(m => m > metrics.daysLive) || null;
+            const daysToMilestone = nextMilestone ? nextMilestone - metrics.daysLive : null;
+            const actions = [
+              needsPush ? {
+                color: '#f87171', badge: 'PUSH', category: 'Esta semana',
+                title: `Activar ${needsPush.track}`,
+                body: `Mayor decay del álbum (${needsPush.decay}%). ${needsPush.lastPost ? `Último post: hace ${needsPush.daysSincePost}d.` : 'Sin cobertura social desde lanzamiento.'}`,
+                action: 'Publicar snippet o contenido de letra en TikTok o IG Reels.',
+              } : null,
+              momentumTrack ? {
+                color: '#4ade80', badge: 'MOMENTUM', category: 'Playlist',
+                title: `Pitch ${momentumTrack.name}`,
+                body: `Mejor retención del álbum (${momentumTrack.decayD20toD21}% D20→D21). Señal de fidelidad de oyentes — perfil ideal para playlists editoriales.`,
+                action: 'Enviar a curadoras de Spotify/Apple en los próximos días.',
+              } : null,
+              {
+                color: '#38bdf8', badge: nextMilestone ? `D${nextMilestone}` : 'D28', category: 'Proyección',
+                title: nextMilestone ? `Checkpoint D+${nextMilestone} en ${daysToMilestone}d` : 'Ventana D28 completada',
+                body: `${nextMilestone ? `En ${daysToMilestone} día${daysToMilestone !== 1 ? 's' : ''} se puede comparar la proyección del modelo vs. datos reales del D+${nextMilestone}.` : 'Los primeros 28 días ya transcurrieron. Revisar retención mensual.'}`,
+                action: nextMilestone ? 'Actualizar dailyLog y revisar precisión del modelo en Decay Intel.' : 'Analizar streams mensuales y streams/oyente.',
+              },
+            ].filter(Boolean);
+            return (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '0.85rem', marginBottom: '1.75rem' }}>
+                {actions.map((a, i) => (
+                  <div key={i} style={{ background: 'rgba(15,23,42,0.6)', border: `1px solid ${a.color}33`, borderLeft: `3px solid ${a.color}`, borderRadius: '10px', padding: '1rem 1.1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                      <span style={{ background: `${a.color}22`, color: a.color, fontSize: '0.6rem', fontWeight: 800, padding: '0.15rem 0.55rem', borderRadius: '9999px', letterSpacing: '0.1em' }}>{a.badge}</span>
+                      <span style={{ color: '#475569', fontSize: '0.68rem' }}>{a.category}</span>
+                    </div>
+                    <p style={{ color: '#f1f5f9', fontSize: '0.9rem', fontWeight: 700, margin: '0 0 0.4rem', lineHeight: 1.3 }}>{a.title}</p>
+                    <p style={{ color: '#64748b', fontSize: '0.77rem', margin: '0 0 0.6rem', lineHeight: 1.5 }}>{a.body}</p>
+                    <p style={{ color: a.color, fontSize: '0.73rem', margin: 0, fontWeight: 500 }}>→ {a.action}</p>
                   </div>
-                ));
-              })()}
-            </div>
-          </div>
+                ))}
+              </div>
+            );
+          })()}
 
-          {/* Alcance Social por Track */}
-          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginTop: '2.5rem' }}>
+          {/* ── 5. Alcance Social por Track ── */}
+          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)' }}>
             <h2 style={{ color: '#a78bfa', fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.4rem' }}>Alcance Social por Track</h2>
             <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem' }}>Posts de la campaña atribuidos por track — IG + TikTok combinados</p>
             <div style={{ overflowX: 'auto' }}>
