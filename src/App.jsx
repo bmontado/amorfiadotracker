@@ -46,11 +46,81 @@ const AmorFiadoDashboard = () => {
       + ' ' + d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  // Growth history — each entry is a snapshot captured every 8h by the scheduled task
-  // The scheduled task appends new entries here automatically
-  const growthHistory = [
-    { timestamp: '22/03 15:00', albumTotal: 678677, 'CEA': 273884, 'ATBLM': 200669, 'UN GUSTO': 31749, 'CALL ME': 23750, 'MAN OF WORD': 22919, 'OJOS TRISTES': 21652, 'HIELO': 19885, 'CHANGES': 19758, 'ALQUILER': 18508, 'YA NO': 16522, 'HAZLO CALLAO': 15226, 'TOP TIER': 14298 },
+  // ─────────────────────────────────────────────────────────────────────────
+  // DAILY LOG — streams diarios confirmados por track (fuente: S4A 28-day CSV)
+  // Para agregar un nuevo día: copiar el bloque de la última entrada y
+  // actualizar date, label, note y los valores por track.
+  // ─────────────────────────────────────────────────────────────────────────
+  const dailyLog = [
+    {
+      date: '2026-03-19', label: 'D19', note: '~1 h post-lanzamiento (20:00 UTC-3)',
+      tracks: {
+        'CUANDO ESCRIBÍA ASIMETRÍA': 5814, 'ATBLM': 8513, 'UN GUSTO': 806,
+        'CALL ME': 1032, 'MAN OF WORD': 1293, 'OJOS TRISTES': 649,
+        'HIELO': 753, 'ALQUILER': 879, 'CHANGES': 676,
+        'YA NO': 472, 'HAZLO CALLAO': 486, 'TOP TIER': 383,
+      },
+    },
+    {
+      date: '2026-03-20', label: 'D20', note: 'Primer día completo',
+      tracks: {
+        'CUANDO ESCRIBÍA ASIMETRÍA': 10875, 'ATBLM': 14710, 'UN GUSTO': 16320,
+        'CALL ME': 11305, 'MAN OF WORD': 10998, 'OJOS TRISTES': 10905,
+        'HIELO': 9626, 'ALQUILER': 9166, 'CHANGES': 9170,
+        'YA NO': 8069, 'HAZLO CALLAO': 7584, 'TOP TIER': 7061,
+      },
+    },
+    {
+      date: '2026-03-21', label: 'D21', note: 'Segundo día completo',
+      tracks: {
+        'CUANDO ESCRIBÍA ASIMETRÍA': 7079, 'ATBLM': 9742, 'UN GUSTO': 8254,
+        'CALL ME': 6294, 'MAN OF WORD': 5968, 'OJOS TRISTES': 5708,
+        'HIELO': 5334, 'ALQUILER': 4822, 'CHANGES': 5213,
+        'YA NO': 4388, 'HAZLO CALLAO': 4084, 'TOP TIER': 3864,
+      },
+    },
+    // ── AGREGAR D22 AQUÍ ──────────────────────────────────────────────────
+    // {
+    //   date: '2026-03-22', label: 'D22', note: 'Tercer día completo',
+    //   tracks: {
+    //     'CUANDO ESCRIBÍA ASIMETRÍA': XXXX, 'ATBLM': XXXX, 'UN GUSTO': XXXX,
+    //     'CALL ME': XXXX, 'MAN OF WORD': XXXX, 'OJOS TRISTES': XXXX,
+    //     'HIELO': XXXX, 'ALQUILER': XXXX, 'CHANGES': XXXX,
+    //     'YA NO': XXXX, 'HAZLO CALLAO': XXXX, 'TOP TIER': XXXX,
+    //   },
+    // },
   ];
+
+  // Live-totals history — snapshot de acumulados cada vez que se actualiza la data
+  // Para actualizar: agregar una nueva entrada al FINAL con la fecha y totales del día
+  const liveHistory = [
+    {
+      date: '2026-03-22', label: 'D+3', recordedAt: '2026-03-22T15:00:00-03:00',
+      albumTotal: 678677,
+      tracks: {
+        'CUANDO ESCRIBÍA ASIMETRÍA': 273884, 'ATBLM': 200669, 'UN GUSTO': 31749,
+        'CALL ME': 23750, 'MAN OF WORD': 22919, 'OJOS TRISTES': 21652,
+        'HIELO': 19885, 'CHANGES': 19758, 'ALQUILER': 18508,
+        'YA NO': 16522, 'HAZLO CALLAO': 15226, 'TOP TIER': 14298,
+      },
+    },
+    // {
+    //   date: '2026-03-23', label: 'D+4', recordedAt: '2026-03-23T15:00:00-03:00',
+    //   albumTotal: XXXXXX,
+    //   tracks: { ... },
+    // },
+  ];
+
+  // Growth history — mantener para compatibilidad con sección Snapshots
+  const growthHistory = liveHistory.map(s => ({
+    timestamp: s.label + ' · ' + new Date(s.recordedAt).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }),
+    albumTotal: s.albumTotal,
+    ...Object.fromEntries(
+      Object.entries(s.tracks).map(([k, v]) => [
+        k === 'CUANDO ESCRIBÍA ASIMETRÍA' ? 'CEA' : k, v
+      ])
+    ),
+  }));
 
   // Live totals from Spotify for Artists (scraped per-track Mar 22, 2026)
   const liveTotals = {
@@ -117,21 +187,8 @@ const AmorFiadoDashboard = () => {
     { date: '2026-03-22', url: '/video/7620071012536749333', caption: 'Ya escucharon ojos tristes ft @Rei?', track: 'OJOS TRISTES', type: 'promo', views: 9128, likes: 1013, saves: 24, platform: 'tiktok' },
   ];
 
-  // Verified Mar 21 daily streams (calculated from S4A 28-day totals minus CSV sums)
-  const mar21Verified = {
-    'CUANDO ESCRIBÍA ASIMETRÍA': 7079,
-    'ATBLM': 9742,
-    'UN GUSTO': 8254,
-    'CALL ME': 6294,
-    'MAN OF WORD': 5968,
-    'OJOS TRISTES': 5708,
-    'HIELO': 5334,
-    'ALQUILER': 4822,
-    'CHANGES': 5213,
-    'YA NO': 4388,
-    'HAZLO CALLAO': 4084,
-    'TOP TIER': 3864,
-  };
+  // Derived from dailyLog — no editar manualmente
+  const mar21Verified = dailyLog.find(d => d.date === '2026-03-21')?.tracks ?? {};
 
   // Raw stream data - all 12 tracks with daily breakdown
   const streamData = {
@@ -178,7 +235,8 @@ const AmorFiadoDashboard = () => {
   };
 
   // Computed cumulative stream totals per day (closed-day granularity)
-  // Built from streamData daily breakdowns + mar21Verified — no scraper needed
+  // Built from streamData + all dailyLog entries — adding a new day to dailyLog
+  // automatically extends this chart
   const dailyHistory = useMemo(() => {
     const nameMap = {
       'CUANDO ESCRIBÍA ASIMETRÍA': 'CEA', 'ATBLM': 'ATBLM', 'UN GUSTO': 'UN GUSTO',
@@ -186,12 +244,19 @@ const AmorFiadoDashboard = () => {
       'HIELO': 'HIELO', 'CHANGES': 'CHANGES', 'ALQUILER': 'ALQUILER',
       'YA NO': 'YA NO', 'HAZLO CALLAO': 'HAZLO CALLAO', 'TOP TIER': 'TOP TIER',
     };
-    // Build full per-track daily streams including Mar 21 verified
+    // Build full per-track daily streams from streamData
     const fullStreams = {};
     Object.entries(streamData).forEach(([name, data]) => {
       const short = nameMap[name] || name;
       fullStreams[short] = { ...data.streams };
-      if (mar21Verified[name]) fullStreams[short]['2026-03-21'] = mar21Verified[name];
+    });
+    // Overlay all dailyLog entries (covers D19, D20, D21, D22, …)
+    dailyLog.forEach(entry => {
+      Object.entries(entry.tracks).forEach(([name, val]) => {
+        const short = nameMap[name] || name;
+        if (!fullStreams[short]) fullStreams[short] = {};
+        fullStreams[short][entry.date] = val;
+      });
     });
     // Collect all dates and sort
     const allDates = new Set();
@@ -1375,6 +1440,39 @@ const AmorFiadoDashboard = () => {
                 return row;
               });
 
+              // === Confianza del Modelo ===
+              // Para cada día del dailyLog posterior a D20, compara la proyección anterior vs el real.
+              // D21: la proyección "a priori" (sin calibrar) usaba factor=1 → day20 × refCurve[1]
+              // D22+: proyección calibrada con el factor de D21 → day20 × refCurve[idx] × factor
+              const D20_DATE = '2026-03-20';
+              const confidenceData = dailyLog
+                .filter(e => e.date > D20_DATE)
+                .map(entry => {
+                  const albumDay = Math.round(
+                    (new Date(entry.date) - new Date(D20_DATE)) / 86400000
+                  ) + 1; // 1-indexed: D20=1, D21=2, D22=3…
+                  let projTotal = 0;
+                  trackData.forEach(t => {
+                    const proj = albumDay === 2
+                      ? t.day20 * refCurve[1]                         // D21: sin factor (sólo ref curve)
+                      : t.day20 * refCurve[albumDay - 1] * t.factor;  // D22+: calibrado
+                    projTotal += Math.max(proj, 0);
+                  });
+                  const actualTotal = Object.values(entry.tracks).reduce((s, v) => s + v, 0);
+                  const biasPct = (actualTotal - projTotal) / projTotal * 100;
+                  const errorPct = Math.abs(biasPct);
+                  return { label: entry.label, note: entry.note, albumDay, actual: actualTotal, projected: Math.round(projTotal), biasPct, errorPct };
+                });
+
+              const avgError = confidenceData.length > 0
+                ? confidenceData.reduce((s, p) => s + p.errorPct, 0) / confidenceData.length
+                : null;
+              const modelAccuracy = avgError !== null ? Math.max(0, 100 - avgError) : null;
+              const accuracyColor = modelAccuracy === null ? '#64748b'
+                : modelAccuracy >= 90 ? '#4ade80'
+                : modelAccuracy >= 75 ? '#fbbf24'
+                : '#f87171';
+
               return (
                 <div>
                   {/* Totales proyectados a 28 días */}
@@ -1405,6 +1503,51 @@ const AmorFiadoDashboard = () => {
                       </div>
                     );
                   })()}
+
+                  {/* Confianza del Modelo */}
+                  <div style={{ background: 'rgba(15,23,42,0.5)', borderRadius: '10px', padding: '0.9rem 1.1rem', marginBottom: '1rem', border: `1px solid ${accuracyColor}33` }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: confidenceData.length > 0 ? '0.75rem' : 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                        <span style={{ color: '#94a3b8', fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Precisión del Modelo</span>
+                        <span style={{ color: '#475569', fontSize: '0.65rem' }}>— error sobre total diario del álbum</span>
+                      </div>
+                      {modelAccuracy !== null ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                          <div style={{ width: '80px', height: '5px', borderRadius: '3px', background: 'rgba(51,65,85,0.5)', overflow: 'hidden' }}>
+                            <div style={{ width: `${modelAccuracy}%`, height: '100%', background: accuracyColor, borderRadius: '3px' }} />
+                          </div>
+                          <span style={{ color: accuracyColor, fontSize: '1rem', fontWeight: 800 }}>{modelAccuracy.toFixed(1)}%</span>
+                        </div>
+                      ) : (
+                        <span style={{ color: '#475569', fontSize: '0.72rem' }}>Sin datos verificables aún</span>
+                      )}
+                    </div>
+                    {confidenceData.length > 0 && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                        {confidenceData.map((p, i) => {
+                          const errColor = p.errorPct < 8 ? '#4ade80' : p.errorPct < 18 ? '#fbbf24' : '#f87171';
+                          const biasLabel = p.biasPct >= 0
+                            ? `▲ +${p.biasPct.toFixed(1)}% (modelo subestimó)`
+                            : `▼ ${p.biasPct.toFixed(1)}% (modelo sobrestimó)`;
+                          const biasColor = p.biasPct >= 0 ? '#4ade80' : '#f87171';
+                          return (
+                            <div key={i} style={{ display: 'grid', gridTemplateColumns: '4.5rem 1fr 1fr auto auto', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.65rem', background: 'rgba(30,41,59,0.5)', borderRadius: '6px', fontSize: '0.72rem' }}>
+                              <span style={{ color: '#e2e8f0', fontWeight: 700 }}>{p.label}</span>
+                              <span style={{ color: '#64748b' }}>Proyectado: <span style={{ color: '#94a3b8', fontWeight: 600 }}>{formatNumber(p.projected)}</span></span>
+                              <span style={{ color: '#64748b' }}>Real: <span style={{ color: '#e2e8f0', fontWeight: 600 }}>{formatNumber(p.actual)}</span></span>
+                              <span style={{ color: errColor, fontWeight: 700, whiteSpace: 'nowrap' }}>{p.errorPct.toFixed(1)}% error</span>
+                              <span style={{ color: biasColor, fontSize: '0.67rem', whiteSpace: 'nowrap' }}>{biasLabel}</span>
+                            </div>
+                          );
+                        })}
+                        {avgError !== null && (
+                          <div style={{ textAlign: 'right', paddingTop: '0.2rem', color: '#334155', fontSize: '0.67rem' }}>
+                            MAPE: {avgError.toFixed(1)}% · {confidenceData.length} día{confidenceData.length > 1 ? 's' : ''} verificado{confidenceData.length > 1 ? 's' : ''}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
                   {/* Nota del factor de ajuste */}
                   <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
