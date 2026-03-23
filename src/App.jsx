@@ -43,6 +43,17 @@ const DEFAULT_LIVE_DATA = {
     { date: '2026-03-22', label: 'D+3', recordedAt: '2026-03-22T15:00:00-03:00', albumTotal: 678677, tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 273884, 'ATBLM': 200669, 'UN GUSTO': 31749, 'CALL ME': 23750, 'MAN OF WORD': 22919, 'OJOS TRISTES': 21652, 'HIELO': 19885, 'CHANGES': 19758, 'ALQUILER': 18508, 'YA NO': 16522, 'HAZLO CALLAO': 15226, 'TOP TIER': 14298 } },
     { date: '2026-03-23', label: 'D+4', recordedAt: '2026-03-23T12:06:43-03:00', albumTotal: 704025, tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 276622, 'ATBLM': 204181, 'UN GUSTO': 34953, 'CALL ME': 26075, 'MAN OF WORD': 25068, 'OJOS TRISTES': 23695, 'HIELO': 21708, 'CHANGES': 21535, 'ALQUILER': 20058, 'YA NO': 18126, 'HAZLO CALLAO': 16594, 'TOP TIER': 15674 } },
   ],
+  releaseEngagement: {
+    scrapedAt: '2026-03-23T12:06:43-03:00',
+    dayNum: 4,
+    monthlyActiveListeners: 414288,
+    releaseListeners: 17836,
+    releaseListenersPct: 4.3,
+    releaseDate: 'Mar 19, 2026',
+    history: [
+      { date: '2026-03-23', dayNum: 4, releaseListeners: 17836, releaseListenersPct: 4.3, monthlyActiveListeners: 414288 },
+    ],
+  },
 };
 
 const AmorFiadoDashboard = () => {
@@ -93,11 +104,12 @@ const AmorFiadoDashboard = () => {
   };
 
   // ── Derivados de liveData (se actualizan automáticamente con cada poll) ──
-  const lastUpdated    = liveData.lastUpdated;
-  const albumLiveTotal = liveData.albumLiveTotal;
-  const liveTotals     = liveData.liveTotals;
-  const dailyLog       = liveData.dailyLog;
-  const liveHistory    = liveData.liveHistory;
+  const lastUpdated        = liveData.lastUpdated;
+  const albumLiveTotal     = liveData.albumLiveTotal;
+  const liveTotals         = liveData.liveTotals;
+  const dailyLog           = liveData.dailyLog;
+  const liveHistory        = liveData.liveHistory;
+  const releaseEngagement  = liveData.releaseEngagement ?? DEFAULT_LIVE_DATA.releaseEngagement;
 
   // growthHistory: memoizado para que reaccione al poll
   const growthHistory = useMemo(() => liveHistory.map(s => ({
@@ -426,6 +438,7 @@ const AmorFiadoDashboard = () => {
     { id: 'singles', label: 'Singles' },
     { id: 'decay', label: 'Decay Intel (DM)' },
     { id: 'social', label: 'Social Impact' },
+    { id: 'engagement', label: 'Release Engagement' },
   ];
 
   return (
@@ -2534,6 +2547,201 @@ const AmorFiadoDashboard = () => {
                   <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Atribución:</strong> Por track mencionado, audio usado o taggeado (#amorfiado).</p>
                 </div>
               )}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* ── Release Engagement tab ─────────────────────────────────────────── */}
+      {activeTab === 'engagement' && (() => {
+        const eng = releaseEngagement;
+        const history = eng?.history ?? [];
+        const pct = eng?.releaseListenersPct ?? 0;
+        const mal = eng?.monthlyActiveListeners ?? 0;
+        const relList = eng?.releaseListeners ?? 0;
+        const dayNum = eng?.dayNum ?? '—';
+        const scrapedAt = eng?.scrapedAt ?? null;
+
+        // Funnel bar widths
+        const funnelPct = mal > 0 ? (relList / mal * 100) : 0;
+
+        // Trend chart data: history sorted by date
+        const trendData = [...history].sort((a, b) => a.date.localeCompare(b.date)).map(h => ({
+          label: `D${h.dayNum}`,
+          pct: h.releaseListenersPct,
+          listeners: h.releaseListeners,
+          mal: h.monthlyActiveListeners,
+        }));
+
+        // Insight text
+        const latestTrend = trendData.length >= 2 ? trendData[trendData.length - 1].pct - trendData[trendData.length - 2].pct : null;
+
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+            {/* Header */}
+            <div>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f1f5f9', margin: 0 }}>Release Engagement</h2>
+              <p style={{ color: '#64748b', fontSize: '0.85rem', margin: '0.35rem 0 0' }}>
+                Oyentes que escucharon el álbum — Spotify for Artists · Día {dayNum} desde lanzamiento
+                {scrapedAt && (
+                  <span style={{ marginLeft: '0.75rem', color: '#475569' }}>
+                    · actualizado {new Date(scrapedAt).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })} {new Date(scrapedAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                  </span>
+                )}
+              </p>
+            </div>
+
+            {/* KPI cards row */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+              {/* Release listeners */}
+              <div style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.12), rgba(234,88,12,0.06))', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '12px', padding: '1.25rem' }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.5rem' }}>Oyentes del Release</p>
+                <p style={{ fontSize: '2rem', fontWeight: 800, color: '#f97316', margin: 0 }}>{relList.toLocaleString('es-AR')}</p>
+                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>en los últimos 7 días</p>
+              </div>
+
+              {/* Conversion rate */}
+              <div style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.12), rgba(139,92,246,0.06))', border: '1px solid rgba(168,85,247,0.3)', borderRadius: '12px', padding: '1.25rem' }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.5rem' }}>Conversión MAL → Release</p>
+                <p style={{ fontSize: '2rem', fontWeight: 800, color: '#a78bfa', margin: 0 }}>{pct}%</p>
+                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>del total de oyentes mensuales</p>
+              </div>
+
+              {/* MAL */}
+              <div style={{ background: 'linear-gradient(135deg, rgba(74,222,128,0.08), rgba(34,197,94,0.04))', border: '1px solid rgba(74,222,128,0.25)', borderRadius: '12px', padding: '1.25rem' }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.5rem' }}>Monthly Active Listeners</p>
+                <p style={{ fontSize: '2rem', fontWeight: 800, color: '#4ade80', margin: 0 }}>{mal.toLocaleString('es-AR')}</p>
+                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>total base de oyentes</p>
+              </div>
+
+              {/* Day counter */}
+              <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '12px', padding: '1.25rem' }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.5rem' }}>Día desde lanzamiento</p>
+                <p style={{ fontSize: '2rem', fontWeight: 800, color: '#f1f5f9', margin: 0 }}>D{dayNum}</p>
+                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>desde 19 Mar 2026</p>
+              </div>
+            </div>
+
+            {/* Conversion funnel bar */}
+            <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
+              <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 1rem' }}>Funnel de Conversión</p>
+              <div style={{ marginBottom: '0.75rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                  <span style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>Monthly Active Listeners</span>
+                  <span style={{ fontSize: '0.8rem', color: '#4ade80', fontWeight: 700 }}>{mal.toLocaleString('es-AR')}</span>
+                </div>
+                <div style={{ height: '10px', background: 'rgba(51,65,85,0.5)', borderRadius: '5px', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: '100%', background: 'linear-gradient(90deg, #4ade80, #22c55e)', borderRadius: '5px' }} />
+                </div>
+              </div>
+              <div style={{ marginBottom: '0.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                  <span style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>Oyentes del Release <span style={{ color: '#a78bfa', fontSize: '0.75rem' }}>({pct}%)</span></span>
+                  <span style={{ fontSize: '0.8rem', color: '#f97316', fontWeight: 700 }}>{relList.toLocaleString('es-AR')}</span>
+                </div>
+                <div style={{ height: '10px', background: 'rgba(51,65,85,0.5)', borderRadius: '5px', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${Math.min(funnelPct, 100)}%`, background: 'linear-gradient(90deg, #f97316, #ea580c)', borderRadius: '5px', transition: 'width 0.6s ease' }} />
+                </div>
+              </div>
+              <p style={{ color: '#475569', fontSize: '0.72rem', margin: '0.5rem 0 0' }}>
+                De cada 100 oyentes mensuales, <strong style={{ color: '#f97316' }}>{pct}</strong> escucharon Amor Fiado en los últimos 7 días.
+              </p>
+            </div>
+
+            {/* Trend chart — only show when there are ≥2 data points */}
+            {trendData.length >= 2 ? (
+              <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>% Conversión día a día</p>
+                  {latestTrend !== null && (
+                    <span style={{
+                      fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.65rem', borderRadius: '9999px',
+                      background: latestTrend >= 0 ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.12)',
+                      border: `1px solid ${latestTrend >= 0 ? 'rgba(74,222,128,0.35)' : 'rgba(248,113,113,0.35)'}`,
+                      color: latestTrend >= 0 ? '#4ade80' : '#f87171',
+                    }}>
+                      {latestTrend >= 0 ? '▲' : '▼'} {Math.abs(latestTrend).toFixed(1)}pp
+                    </span>
+                  )}
+                </div>
+                <div style={{ maxWidth: trendData.length <= 3 ? 480 : '100%', margin: '0 auto' }}>
+                  <ResponsiveContainer width="100%" height={240}>
+                    <LineChart data={trendData} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,65,85,0.4)" />
+                      <XAxis dataKey="label" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false}
+                        padding={{ left: trendData.length <= 3 ? 60 : 20, right: trendData.length <= 3 ? 60 : 20 }} />
+                      <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false}
+                        tickFormatter={v => `${v}%`} domain={['auto', 'auto']} />
+                      <Tooltip
+                        contentStyle={{ background: '#0f172a', border: '1px solid rgba(51,65,85,0.7)', borderRadius: '8px', fontSize: '0.8rem' }}
+                        labelStyle={{ color: '#f1f5f9', fontWeight: 700 }}
+                        formatter={(v, name) => name === 'pct' ? [`${v}%`, '% Conversión'] : [v.toLocaleString('es-AR'), 'Oyentes']}
+                      />
+                      <Line type="monotone" dataKey="pct" stroke="#a78bfa" strokeWidth={2.5} dot={{ r: 4, fill: '#a78bfa' }} activeDot={{ r: 6 }} name="pct" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            ) : (
+              /* Single data point placeholder */
+              <div style={{ background: 'rgba(15,23,42,0.3)', border: '1px dashed rgba(51,65,85,0.5)', borderRadius: '12px', padding: '1.5rem', textAlign: 'center' }}>
+                <p style={{ color: '#475569', fontSize: '0.85rem', margin: 0 }}>
+                  El gráfico de tendencia aparecerá cuando haya ≥2 snapshots diarios. Próximo update en ~24h.
+                </p>
+              </div>
+            )}
+
+            {/* Insight card */}
+            <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
+              <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.75rem' }}>Contexto & Benchmarks</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.82rem', color: '#94a3b8' }}>
+                <p style={{ margin: 0 }}>
+                  <strong style={{ color: '#f97316' }}>{pct}%</strong> de conversión en D{dayNum}. En lanzamientos independientes exitosos, el primer peak suele estar entre <strong style={{ color: '#cbd5e1' }}>4–8%</strong> en la primera semana.
+                </p>
+                <p style={{ margin: 0 }}>
+                  Con <strong style={{ color: '#4ade80' }}>{relList.toLocaleString('es-AR')}</strong> oyentes del release sobre una base de <strong style={{ color: '#4ade80' }}>{mal.toLocaleString('es-AR')}</strong> MAL, el álbum está llegando al <strong style={{ color: '#a78bfa' }}>{pct}%</strong> de tu audiencia activa.
+                </p>
+                {trendData.length >= 2 && latestTrend !== null && (
+                  <p style={{ margin: 0 }}>
+                    Variación respecto al día anterior: <strong style={{ color: latestTrend >= 0 ? '#4ade80' : '#f87171' }}>
+                      {latestTrend >= 0 ? '+' : ''}{latestTrend.toFixed(1)}pp
+                    </strong> — {latestTrend >= 0 ? 'engagement en crecimiento.' : 'decay normal esperado post-lanzamiento.'}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* History table — show when ≥2 rows */}
+            {history.length >= 2 && (
+              <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem', overflowX: 'auto' }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.85rem' }}>Histórico de snapshots</p>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid rgba(51,65,85,0.5)' }}>
+                      {['Fecha', 'Día', 'MAL', 'Oyentes Release', '% Conversión'].map(h => (
+                        <th key={h} style={{ padding: '0.4rem 0.75rem', textAlign: 'left', color: '#64748b', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...history].sort((a, b) => b.date.localeCompare(a.date)).map((row, i) => (
+                      <tr key={row.date} style={{ borderBottom: i < history.length - 1 ? '1px solid rgba(51,65,85,0.25)' : 'none' }}>
+                        <td style={{ padding: '0.4rem 0.75rem', color: '#94a3b8' }}>{row.date.slice(5).replace('-', '/')}</td>
+                        <td style={{ padding: '0.4rem 0.75rem', color: '#f1f5f9', fontWeight: 600 }}>D{row.dayNum}</td>
+                        <td style={{ padding: '0.4rem 0.75rem', color: '#4ade80' }}>{row.monthlyActiveListeners.toLocaleString('es-AR')}</td>
+                        <td style={{ padding: '0.4rem 0.75rem', color: '#f97316', fontWeight: 600 }}>{row.releaseListeners.toLocaleString('es-AR')}</td>
+                        <td style={{ padding: '0.4rem 0.75rem', color: '#a78bfa', fontWeight: 700 }}>{row.releaseListenersPct}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Methodology note */}
+            <div style={{ background: 'rgba(15,23,42,0.3)', border: '1px solid rgba(51,65,85,0.3)', borderRadius: '8px', padding: '0.85rem 1rem', fontSize: '0.75rem', color: '#475569' }}>
+              <strong style={{ color: '#64748b' }}>Fuente:</strong> Spotify for Artists — Release Engagement page. Scraper automático corre cada 24h (02:00 UTC-3). Datos: oyentes únicos de Amor Fiado en los últimos 7 días / total MAL.
             </div>
           </div>
         );

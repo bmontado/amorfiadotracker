@@ -56,6 +56,23 @@
       }
     }
   ],
+  "releaseEngagement": {
+    "scrapedAt": "2026-03-23T12:06:43-03:00",
+    "dayNum": 4,
+    "monthlyActiveListeners": 414288,
+    "releaseListeners": 17836,
+    "releaseListenersPct": 4.3,
+    "releaseDate": "Mar 19, 2026",
+    "history": [
+      {
+        "date": "2026-03-23",
+        "dayNum": 4,
+        "releaseListeners": 17836,
+        "releaseListenersPct": 4.3,
+        "monthlyActiveListeners": 414288
+      }
+    ]
+  },
   "liveHistory": [
     {
       "date": "2026-03-22", "label": "D+3", "recordedAt": "2026-03-22T15:00:00-03:00",
