@@ -354,7 +354,7 @@ const AmorFiadoDashboard = () => {
     { id: 'growth', label: 'Crecimiento' },
     { id: 'metrics', label: 'Métricas S4A' },
     { id: 'singles', label: 'Singles' },
-    { id: 'decay', label: 'Decay & Anomalías' },
+    { id: 'decay', label: 'Decay Intel (DM)' },
     { id: 'social', label: 'Social Impact' },
   ];
 
@@ -605,6 +605,13 @@ const AmorFiadoDashboard = () => {
                 <YAxis stroke="#64748b" tickFormatter={(v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
                 <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(251,146,60,0.3)', borderRadius: '8px' }} formatter={(v) => formatNumber(v)} labelFormatter={(l) => 'Día ' + l} />
                 <Legend />
+                {/* Markers de hitos — singles + álbum */}
+                <ReferenceLine x="02/05" stroke="#f97316" strokeDasharray="4 3" strokeWidth={1.5}
+                  label={{ value: 'CEA ▸', fill: '#f97316', fontSize: 10, position: 'insideTopLeft', offset: 4 }} />
+                <ReferenceLine x="02/28" stroke="#fbbf24" strokeDasharray="4 3" strokeWidth={1.5}
+                  label={{ value: 'ATBLM ▸', fill: '#fbbf24', fontSize: 10, position: 'insideTopLeft', offset: 4 }} />
+                <ReferenceLine x="03/19" stroke="#4ade80" strokeDasharray="4 3" strokeWidth={1.5}
+                  label={{ value: '🚀 Álbum', fill: '#4ade80', fontSize: 10, position: 'insideTopLeft', offset: 4 }} />
                 {growthZoom === 'all' && <>
                   <Line type="monotone" dataKey="CEA" stroke="#f97316" strokeWidth={2} dot={false} name="CEA" isAnimationActive={false} />
                   <Line type="monotone" dataKey="ATBLM" stroke="#fbbf24" strokeWidth={2} dot={false} name="ATBLM" isAnimationActive={false} />
