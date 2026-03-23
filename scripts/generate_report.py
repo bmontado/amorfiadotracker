@@ -78,6 +78,24 @@ def section_header(title, styles):
         HRFlowable(width='100%', thickness=1, color=rgb(*C_ORANGE), spaceAfter=6),
     ]
 
+def callout_note(text, styles):
+    """Orange-bordered callout box for editorial notes."""
+    if not text or not text.strip():
+        return []
+    t = Table(
+        [[Paragraph(f'<font color="#fbbf24">&#9998;</font>  {text}', styles['NoteBody'])]],
+        colWidths=[W - 4*cm],
+    )
+    t.setStyle(TableStyle([
+        ('BACKGROUND',    (0,0), (-1,-1), rgb(0.12, 0.09, 0.03)),
+        ('BOX',           (0,0), (-1,-1), 1.2, rgb(*C_ORANGE)),
+        ('LEFTPADDING',   (0,0), (-1,-1), 10),
+        ('RIGHTPADDING',  (0,0), (-1,-1), 10),
+        ('TOPPADDING',    (0,0), (-1,-1), 8),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
+    ]))
+    return [Spacer(1, 0.2*cm), t, Spacer(1, 0.3*cm)]
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Styles
 # ══════════════════════════════════════════════════════════════════════════════
@@ -98,6 +116,7 @@ def build_styles():
     add('KPISub',      fontSize=7,  textColor=rgb(*C_MUTED),  fontName='Helvetica',      alignment=TA_CENTER)
     add('Insight',     fontSize=8,  textColor=rgb(*C_TEXT),   fontName='Helvetica',      leading=12, spaceAfter=3,
         leftIndent=10, bulletIndent=0)
+    add('NoteBody',    fontSize=8.5, textColor=rgb(*C_TEXT),  fontName='Helvetica',      leading=13, spaceAfter=0)
     return s
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -187,6 +206,13 @@ def build_cover(data, config, styles, sections_active):
     }
     inc = ' · '.join(v for k, v in active_names.items() if sections_active.get(k))
     story.append(Paragraph(f'<font color="#64748b">Secciones: {inc}</font>', styles['Cover3']))
+
+    # Cover editorial note (if set in report-config.json)
+    cover_note = config.get('note', '').strip()
+    if cover_note:
+        story.append(Spacer(1, 1.2*cm))
+        story += callout_note(cover_note, styles)
+
     story.append(PageBreak())
     return story
 
@@ -653,11 +679,18 @@ def main():
         'engagement': build_engagement,
         'social':     build_social,
     }
+    section_notes = cfg.get('sectionNotes', {})
     first = True
     for key, builder in builders.items():
         if not sections.get(key): continue
         if not first: story.append(Spacer(1, 0.4*cm))
-        story += builder(data, styles)
+        sec_story = builder(data, styles)
+        note = section_notes.get(key, '').strip()
+        if note:
+            # Insert note right after the 3-element section header (Spacer + Paragraph + HRFlowable)
+            note_elems = callout_note(note, styles)
+            sec_story = sec_story[:3] + note_elems + sec_story[3:]
+        story += sec_story
         first = False
 
     # Build PDF
