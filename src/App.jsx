@@ -1525,7 +1525,7 @@ const AmorFiadoDashboard = () => {
               <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Proyección 28 Días — Día 1 al Día 28</h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
                 <span style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>Curva ref: CEA + ATBLM</span>
-                <span style={{ background: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.25)', color: '#38bdf8', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>Factor: {REAL_DAYS - 1}d reales calibrados</span>
+                <span style={{ background: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.25)', color: '#38bdf8', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>Factor: {Math.max(0, dailyLog.filter(e => e.date >= '2026-03-20').length - 1)}d reales calibrados</span>
                 <div style={{ display: 'flex', gap: '0.3rem' }}>
                   {[['chart', '▲ Absoluto'], ['norm', '% Retención'], ['table', '≡ Tabla']].map(([val, label]) => (
                     <button key={val} onClick={() => setDecayView(val)} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, background: decayView === val ? '#f97316' : 'rgba(51,65,85,0.5)', color: decayView === val ? '#0f172a' : '#94a3b8' }}>{label}</button>
