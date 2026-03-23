@@ -20,6 +20,7 @@ const AmorFiadoDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [growthZoom, setGrowthZoom] = useState('all'); // 'all' | 'zoom'
   const [expandedDays, setExpandedDays] = useState(new Set());
+  const [socialView, setSocialView] = useState('list'); // 'list' | 'chart'
   const toggleDay = (date) => setExpandedDays(prev => { const s = new Set(prev); s.has(date) ? s.delete(date) : s.add(date); return s; });
 
   // Album metadata
@@ -189,14 +190,16 @@ const AmorFiadoDashboard = () => {
     const allDates = new Set();
     Object.values(fullStreams).forEach(s => Object.keys(s).forEach(d => allDates.add(d)));
     const sortedDates = [...allDates].sort();
+    const releaseIdx = sortedDates.indexOf('2026-03-19');
     // Walk dates accumulating cumulative totals per track
     const cumulatives = Object.fromEntries(Object.keys(fullStreams).map(k => [k, 0]));
-    return sortedDates.map(date => {
+    return sortedDates.map((date, idx) => {
       Object.entries(fullStreams).forEach(([name, s]) => {
         cumulatives[name] = (cumulatives[name] || 0) + (s[date] || 0);
       });
       const albumTotal = Object.values(cumulatives).reduce((a, b) => a + b, 0);
-      const snap = { date, label: date.slice(5).replace('-', '/'), albumTotal };
+      const dayNum = releaseIdx >= 0 && idx >= releaseIdx ? idx - releaseIdx + 1 : null;
+      const snap = { date, label: date.slice(5).replace('-', '/'), dayNum, albumTotal };
       Object.entries(cumulatives).forEach(([k, v]) => { snap[k] = v; });
       return { ...snap };
     });
@@ -634,7 +637,9 @@ const AmorFiadoDashboard = () => {
                 <tbody>
                   {[...dailyHistory].reverse().map((snap, i, arr) => {
                     const prev = arr[i + 1];
+                    const prev2 = arr[i + 2];
                     const dayStreams = prev ? snap.albumTotal - prev.albumTotal : snap.albumTotal;
+                    const prevDayStreams = prev && prev2 ? prev.albumTotal - prev2.albumTotal : null;
                     const trackKeys = Object.keys(snap).filter(k => !['date','label','albumTotal'].includes(k));
                     const trackDay = trackKeys.map(k => ({ k, v: prev ? (snap[k] || 0) - (prev[k] || 0) : (snap[k] || 0) })).sort((a, b) => b.v - a.v);
                     const topTrack = trackDay[0];
@@ -649,12 +654,16 @@ const AmorFiadoDashboard = () => {
                             </span>
                           </td>
                           <td style={{ padding: '0.6rem 0.75rem', color: isLaunch ? '#f97316' : '#f1f5f9', fontWeight: isLaunch ? 700 : 400 }}>
-                            {snap.label}{isLaunch ? ' 🚀' : ''}
+                            {snap.dayNum
+                              ? <>Día {snap.dayNum} <span style={{ color: '#64748b', fontWeight: 400 }}>({snap.label})</span>{isLaunch ? ' 🚀' : ''}</>
+                              : snap.label}
                           </td>
                           <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(snap.albumTotal)}</td>
                           <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: '#4ade80' }}>+{formatNumber(dayStreams)}</td>
-                          <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: prev && dayStreams > 0 ? '#4ade80' : '#64748b', fontWeight: 600, fontSize: '0.78rem' }}>
-                            {prev ? '+' + (dayStreams / prev.albumTotal * 100).toFixed(2) + '%' : '—'}
+                          <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', fontWeight: 600, fontSize: '0.78rem', color: prevDayStreams ? (dayStreams >= prevDayStreams ? '#4ade80' : '#f87171') : '#64748b' }}>
+                            {prevDayStreams
+                              ? (dayStreams >= prevDayStreams ? '+' : '') + ((dayStreams - prevDayStreams) / prevDayStreams * 100).toFixed(1) + '%'
+                              : '—'}
                           </td>
                           <td style={{ padding: '0.6rem 0.75rem', color: '#fbbf24' }}>{topTrack ? topTrack.k + ' (+' + formatNumber(topTrack.v) + ')' : '—'}</td>
                         </tr>
@@ -950,8 +959,10 @@ const AmorFiadoDashboard = () => {
           const allTracksNext = Object.entries(streamData).reduce((sum, [, d]) => sum + (d.streams[nextStr] || 0), 0);
           const mar21Total = Object.values(mar21Verified).reduce((a, b) => a + b, 0);
           const dayStreams = dateStr === '2026-03-21' ? mar21Total : allTracksDay;
+          const hasNextData = nextStr === '2026-03-21' ? true : allTracksNext > 0;
           const nextDayStreams = nextStr === '2026-03-21' ? mar21Total : allTracksNext;
-          return { ...p, dayStreams, nextDayStreams, streamDelta: nextDayStreams - dayStreams };
+          const streamDelta = hasNextData ? nextDayStreams - dayStreams : null;
+          return { ...p, dayStreams, nextDayStreams, streamDelta };
         });
 
         // Aggregate by date for the chart (combine both platforms per date)
@@ -1010,9 +1021,66 @@ const AmorFiadoDashboard = () => {
 
             {/* Timeline — All Posts with Stream Correlation */}
             <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-              <h2 style={{ color: '#a78bfa', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Timeline Completo — IG + TikTok</h2>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <h2 style={{ color: '#a78bfa', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Timeline Completo — IG + TikTok</h2>
+                <div style={{ display: 'flex', gap: '0.4rem' }}>
+                  {[['list', '≡ Lista'], ['chart', '◎ Gráfico']].map(([val, label]) => (
+                    <button key={val} onClick={() => setSocialView(val)} style={{ padding: '0.3rem 0.85rem', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600, background: socialView === val ? '#a78bfa' : 'rgba(51,65,85,0.5)', color: socialView === val ? '#0f172a' : '#94a3b8', transition: 'all 0.15s' }}>{label}</button>
+                  ))}
+                </div>
+              </div>
               <p style={{ color: '#64748b', fontSize: '0.8rem', marginBottom: '1.5rem' }}>{socialPosts.length} posts de la campaña ordenados cronológicamente con engagement y correlación de streams.</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+
+              {/* === VISTA GRÁFICO === */}
+              {socialView === 'chart' && (() => {
+                const origin = new Date('2026-01-28T12:00:00').getTime();
+                const msPerDay = 86400000;
+                const releaseDay = Math.round((new Date('2026-03-19T12:00:00').getTime() - origin) / msPerDay);
+                const igDots = correlation.filter(p => p.platform === 'instagram').map(p => ({
+                  x: Math.round((new Date(p.date + 'T12:00:00').getTime() - origin) / msPerDay),
+                  y: p.views,
+                  caption: p.caption, date: p.date, likes: p.likes, track: p.track, saves: p.saves,
+                }));
+                const tkDots = correlation.filter(p => p.platform === 'tiktok').map(p => ({
+                  x: Math.round((new Date(p.date + 'T12:00:00').getTime() - origin) / msPerDay),
+                  y: p.views,
+                  caption: p.caption, date: p.date, likes: p.likes, track: p.track, saves: p.saves,
+                }));
+                const CustomTooltip = ({ active, payload }) => {
+                  if (!active || !payload?.length) return null;
+                  const d = payload[0]?.payload;
+                  if (!d) return null;
+                  return (
+                    <div style={{ background: '#1e293b', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '8px', padding: '0.6rem 0.85rem', fontSize: '0.75rem', maxWidth: '220px' }}>
+                      <p style={{ color: '#f1f5f9', fontWeight: 600, margin: '0 0 0.25rem' }}>{new Date(d.date + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}</p>
+                      <p style={{ color: '#94a3b8', margin: '0 0 0.15rem', fontSize: '0.7rem' }}>{d.caption}</p>
+                      <p style={{ color: '#fbbf24', margin: '0 0 0.1rem' }}>Track: {d.track}</p>
+                      <p style={{ color: '#e2e8f0', margin: 0 }}>{formatNumber(d.y)} views · {formatNumber(d.likes)} likes</p>
+                      {d.saves > 0 && <p style={{ color: '#a78bfa', margin: '0.1rem 0 0' }}>{formatNumber(d.saves)} saves</p>}
+                    </div>
+                  );
+                };
+                return (
+                  <ResponsiveContainer width="100%" height={340}>
+                    <LineChart margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.08)" />
+                      <XAxis type="number" dataKey="x" domain={[0, releaseDay + 5]} stroke="#64748b" tick={{ fontSize: 10 }}
+                        tickFormatter={v => { const d = new Date(origin + v * msPerDay); return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }); }}
+                        ticks={[0, 10, 20, 31, 41, releaseDay, releaseDay + 3]} />
+                      <YAxis stroke="#64748b" tickFormatter={v => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
+                      <Tooltip content={<CustomTooltip />} />
+                      <ReferenceLine x={releaseDay} stroke="#f97316" strokeDasharray="5 3" label={{ value: '🚀 Lanzamiento', fill: '#f97316', fontSize: 11, position: 'insideTopRight' }} />
+                      <Legend />
+                      {/* Render as Scatter using Line with dot only */}
+                      <Line data={igDots} dataKey="y" name="Instagram" dot={{ r: 6, fill: '#e879f9', stroke: '#1e293b', strokeWidth: 1.5 }} activeDot={{ r: 8 }} stroke="none" isAnimationActive={false} legendType="circle" />
+                      <Line data={tkDots} dataKey="y" name="TikTok" dot={{ r: 6, fill: '#22d3ee', stroke: '#1e293b', strokeWidth: 1.5 }} activeDot={{ r: 8 }} stroke="none" isAnimationActive={false} legendType="circle" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                );
+              })()}
+
+              {/* === VISTA LISTA === */}
+              {socialView === 'list' && <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {correlation.map((p, i) => {
                   const engRate = ((p.likes / p.views) * 100).toFixed(1);
                   const platIcon = p.platform === 'instagram' ? '📸' : '🎵';
@@ -1044,10 +1112,12 @@ const AmorFiadoDashboard = () => {
                       </div>
                       <div style={{ textAlign: 'right' }}>
                         <p style={{ color: platColor, fontSize: '0.95rem', fontWeight: 700, margin: 0 }}>{formatNumber(p.views)} views</p>
-                        <p style={{ color: '#f87171', fontSize: '0.75rem', margin: '0.1rem 0' }}>
-                          {formatNumber(p.likes)} likes ({engRate}%){p.saves > 0 ? ` · ${formatNumber(p.saves)} saves` : ''}
+                        <p style={{ fontSize: '0.75rem', margin: '0.1rem 0' }}>
+                          <span style={{ color: '#e879f9' }}>{formatNumber(p.likes)} likes</span>
+                          <span style={{ color: '#64748b' }}> ({engRate}%)</span>
+                          {p.saves > 0 && <span style={{ color: '#a78bfa' }}> · {formatNumber(p.saves)} saves</span>}
                         </p>
-                        {p.dayStreams > 0 && (
+                        {p.dayStreams > 0 && p.streamDelta !== null && (
                           <p style={{ color: p.streamDelta > 0 ? '#4ade80' : '#f87171', fontSize: '0.7rem', margin: 0 }}>
                             Streams D+1: {p.streamDelta > 0 ? '+' : ''}{formatNumber(p.streamDelta)}
                           </p>
@@ -1056,7 +1126,8 @@ const AmorFiadoDashboard = () => {
                     </div>
                   );
                 })}
-              </div>
+              </div>}
+
             </div>
 
             {/* Track-level social attribution */}
