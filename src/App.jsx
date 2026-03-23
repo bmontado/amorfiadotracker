@@ -25,6 +25,7 @@ const AmorFiadoDashboard = () => {
   const [socialView, setSocialView] = useState('chart'); // 'list' | 'chart'
   const [decayView, setDecayView] = useState('chart'); // 'chart' | 'table'
   const [histGrouping, setHistGrouping] = useState('day'); // 'day' | 'month'
+  const [rankDay, setRankDay] = useState('day20'); // 'day19' | 'day20' | 'day21'
   const [hoveredDecayTrack, setHoveredDecayTrack] = useState(null);
   const [decayTooltipPos, setDecayTooltipPos] = useState({ x: 0, y: 0 });
   const toggleDay = (date) => setExpandedDays(prev => { const s = new Set(prev); s.has(date) ? s.delete(date) : s.add(date); return s; });
@@ -555,36 +556,124 @@ const AmorFiadoDashboard = () => {
       {/* === TRACKS TAB === */}
       {activeTab === 'tracks' && (
         <div>
-          {/* Horizontal bar ranking */}
+          {/* ── 1. Streams Acumulados (Live) ── */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>Ranking — Día 20 (Primer Día Completo)</h2>
-            <ResponsiveContainer width="100%" height={450}>
-              <BarChart layout="vertical" data={metrics.day20ByTrack} margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.08)" />
-                <XAxis type="number" stroke="#64748b" tickFormatter={(v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
-                <YAxis dataKey="name" type="category" stroke="#94a3b8" width={190} tick={{ fontSize: 12 }} />
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(251,146,60,0.3)', borderRadius: '8px' }} formatter={(v) => formatNumber(v)} />
-                <Bar dataKey="streams" radius={[0, 6, 6, 0]}>
-                  {metrics.day20ByTrack.map((entry, idx) => (
-                    <Cell key={idx} fill={entry.type === 'single' ? '#fbbf24' : '#f97316'} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-            <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem', fontSize: '0.8rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <div style={{ width: '14px', height: '14px', background: '#fbbf24', borderRadius: '3px' }}></div>
-                <span style={{ color: '#94a3b8' }}>Singles Pre-lanzamiento</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <div style={{ width: '14px', height: '14px', background: '#f97316', borderRadius: '3px' }}></div>
-                <span style={{ color: '#94a3b8' }}>Tracks Nuevos del Álbum</span>
-              </div>
+            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem' }}>Streams Acumulados (Live)</h2>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
+                    <th style={{ textAlign: 'left', padding: '0.75rem', color: '#94a3b8' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '0.75rem', color: '#94a3b8' }}>Track</th>
+                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#f97316' }}>Live Total</th>
+                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>Día 19 (~1h)</th>
+                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>Día 20</th>
+                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>Día 21</th>
+                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>D20→D21</th>
+                    <th style={{ textAlign: 'center', padding: '0.75rem', color: '#94a3b8' }}>Tipo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...metrics.trackAnalysis].sort((a, b) => b.liveTotal - a.liveTotal).map((t, i) => {
+                    const decayVal = parseFloat(t.decayD20toD21);
+                    const decayColor = isNaN(decayVal) ? '#64748b' : decayVal >= 0 ? '#4ade80' : Math.abs(decayVal) > 55 ? '#f87171' : '#fbbf24';
+                    return (
+                      <tr key={t.name} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                        <td style={{ padding: '0.75rem', color: '#64748b', fontWeight: 600 }}>{i + 1}</td>
+                        <td style={{ padding: '0.75rem', color: '#f1f5f9', fontWeight: 500 }}>{t.name}</td>
+                        <td style={{ textAlign: 'right', padding: '0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(t.liveTotal)}</td>
+                        <td style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>{formatNumber(t.day19)}</td>
+                        <td style={{ textAlign: 'right', padding: '0.75rem', color: '#cbd5e1' }}>{formatNumber(t.day20)}</td>
+                        <td style={{ textAlign: 'right', padding: '0.75rem', color: '#fbbf24' }}>{formatNumber(t.day21)}</td>
+                        <td style={{ textAlign: 'right', padding: '0.75rem', color: decayColor, fontWeight: 600, fontSize: '0.8rem' }}>
+                          {t.decayD20toD21 === 'N/A' ? '—' : `${decayVal >= 0 ? '+' : ''}${t.decayD20toD21}%`}
+                        </td>
+                        <td style={{ textAlign: 'center', padding: '0.75rem' }}>
+                          <span style={{
+                            padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.7rem', fontWeight: 600,
+                            background: t.type === 'single' ? 'rgba(251,191,36,0.15)' : 'rgba(249,115,22,0.15)',
+                            color: t.type === 'single' ? '#fbbf24' : '#f97316',
+                            border: `1px solid ${t.type === 'single' ? 'rgba(251,191,36,0.3)' : 'rgba(249,115,22,0.3)'}`,
+                          }}>
+                            {t.type === 'single' ? 'Single' : 'Álbum'}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
 
-          {/* Track Insights */}
-          <div style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(249,115,22,0.2)', marginBottom: '2.5rem' }}>
+          {/* ── 2. Ranking con selector de día ── */}
+          {(() => {
+            const rankDays = [
+              { key: 'day19', label: 'Día 19', sub: '~1h post-lanzamiento' },
+              { key: 'day20', label: 'Día 20', sub: 'Primer día completo' },
+              { key: 'day21', label: 'Día 21', sub: 'Segundo día completo' },
+            ];
+            const idx = rankDays.findIndex(d => d.key === rankDay);
+            const current = rankDays[idx];
+            const rankData = [...metrics.trackAnalysis]
+              .map(t => ({
+                name: t.name.length > 22 ? t.name.substring(0, 20) + '…' : t.name,
+                fullName: t.name,
+                streams: t[rankDay] || 0,
+                type: t.type,
+              }))
+              .sort((a, b) => b.streams - a.streams);
+            return (
+              <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
+                {/* Header + navigator */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+                  <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Ranking por Día</h2>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <button
+                      onClick={() => setRankDay(rankDays[Math.max(0, idx - 1)].key)}
+                      disabled={idx === 0}
+                      style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.7)', background: idx === 0 ? 'rgba(51,65,85,0.2)' : 'rgba(51,65,85,0.5)', color: idx === 0 ? '#334155' : '#94a3b8', cursor: idx === 0 ? 'default' : 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >‹</button>
+                    <div style={{ textAlign: 'center', minWidth: '120px' }}>
+                      <p style={{ color: '#f97316', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>{current.label}</p>
+                      <p style={{ color: '#64748b', fontSize: '0.7rem', margin: 0 }}>{current.sub}</p>
+                    </div>
+                    <button
+                      onClick={() => setRankDay(rankDays[Math.min(rankDays.length - 1, idx + 1)].key)}
+                      disabled={idx === rankDays.length - 1}
+                      style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.7)', background: idx === rankDays.length - 1 ? 'rgba(51,65,85,0.2)' : 'rgba(51,65,85,0.5)', color: idx === rankDays.length - 1 ? '#334155' : '#94a3b8', cursor: idx === rankDays.length - 1 ? 'default' : 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >›</button>
+                  </div>
+                </div>
+                <ResponsiveContainer width="100%" height={420}>
+                  <BarChart layout="vertical" data={rankData} margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.08)" />
+                    <XAxis type="number" stroke="#64748b" tickFormatter={(v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
+                    <YAxis dataKey="name" type="category" stroke="#94a3b8" width={200} tick={{ fontSize: 11 }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(251,146,60,0.3)', borderRadius: '8px' }} formatter={(v) => formatNumber(v)} />
+                    <Bar dataKey="streams" radius={[0, 6, 6, 0]}>
+                      {rankData.map((entry, idx2) => (
+                        <Cell key={idx2} fill={entry.type === 'single' ? '#fbbf24' : '#f97316'} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+                <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem', fontSize: '0.8rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{ width: '12px', height: '12px', background: '#fbbf24', borderRadius: '3px' }}></div>
+                    <span style={{ color: '#94a3b8' }}>Singles pre-álbum</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{ width: '12px', height: '12px', background: '#f97316', borderRadius: '3px' }}></div>
+                    <span style={{ color: '#94a3b8' }}>Tracks nuevos</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* ── 3. Track Insights ── */}
+          <div style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(249,115,22,0.2)' }}>
             <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Análisis de Tracks</h2>
             {(() => {
               const top3 = metrics.day20ByTrack.slice(0, 3);
@@ -615,46 +704,6 @@ const AmorFiadoDashboard = () => {
                 </div>
               );
             })()}
-          </div>
-
-          {/* Live totals table */}
-          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem' }}>Streams Acumulados (Live)</h2>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
-                    <th style={{ textAlign: 'left', padding: '0.75rem', color: '#94a3b8' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '0.75rem', color: '#94a3b8' }}>Track</th>
-                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>Live Total</th>
-                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>Día 20</th>
-                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>Día 21</th>
-                    <th style={{ textAlign: 'center', padding: '0.75rem', color: '#94a3b8' }}>Tipo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {metrics.trackAnalysis.map((t, i) => (
-                    <tr key={t.name} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', transition: 'background 0.15s' }}>
-                      <td style={{ padding: '0.75rem', color: '#64748b', fontWeight: 600 }}>{i + 1}</td>
-                      <td style={{ padding: '0.75rem', color: '#f1f5f9', fontWeight: 500 }}>{t.name}</td>
-                      <td style={{ textAlign: 'right', padding: '0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(t.liveTotal)}</td>
-                      <td style={{ textAlign: 'right', padding: '0.75rem', color: '#cbd5e1' }}>{formatNumber(t.day20)}</td>
-                      <td style={{ textAlign: 'right', padding: '0.75rem', color: '#fbbf24' }}>{formatNumber(t.day21)}</td>
-                      <td style={{ textAlign: 'center', padding: '0.75rem' }}>
-                        <span style={{
-                          padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.7rem', fontWeight: 600,
-                          background: t.type === 'single' ? 'rgba(251,191,36,0.15)' : 'rgba(249,115,22,0.15)',
-                          color: t.type === 'single' ? '#fbbf24' : '#f97316',
-                          border: `1px solid ${t.type === 'single' ? 'rgba(251,191,36,0.3)' : 'rgba(249,115,22,0.3)'}`,
-                        }}>
-                          {t.type === 'single' ? 'Single' : 'Álbum'}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
       )}
