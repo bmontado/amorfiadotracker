@@ -39,7 +39,7 @@ const AmorFiadoDashboard = () => {
 
   // Last data update timestamps — updated automatically by the scrapers each run
   const lastUpdated = {
-    spotify: '2026-03-22T15:00:00-03:00',
+    spotify: '2026-03-23T12:06:43-03:00',
     social:  '2026-03-23T12:00:00-03:00',
   };
   const formatLastUpdated = (isoStr) => {
@@ -81,16 +81,15 @@ const AmorFiadoDashboard = () => {
         'YA NO': 4388, 'HAZLO CALLAO': 4084, 'TOP TIER': 3864,
       },
     },
-    // ── AGREGAR D22 AQUÍ ──────────────────────────────────────────────────
-    // {
-    //   date: '2026-03-22', label: 'D22', note: 'Tercer día completo',
-    //   tracks: {
-    //     'CUANDO ESCRIBÍA ASIMETRÍA': XXXX, 'ATBLM': XXXX, 'UN GUSTO': XXXX,
-    //     'CALL ME': XXXX, 'MAN OF WORD': XXXX, 'OJOS TRISTES': XXXX,
-    //     'HIELO': XXXX, 'ALQUILER': XXXX, 'CHANGES': XXXX,
-    //     'YA NO': XXXX, 'HAZLO CALLAO': XXXX, 'TOP TIER': XXXX,
-    //   },
-    // },
+    {
+      date: '2026-03-22', label: 'D22', note: 'Tercer día completo',
+      tracks: {
+        'CUANDO ESCRIBÍA ASIMETRÍA': 5464, 'ATBLM': 7568, 'UN GUSTO': 6120,
+        'CALL ME': 4926, 'MAN OF WORD': 4487, 'OJOS TRISTES': 4220,
+        'HIELO': 4022, 'ALQUILER': 3493, 'CHANGES': 4534,
+        'YA NO': 3470, 'HAZLO CALLAO': 2966, 'TOP TIER': 2879,
+      },
+    },
   ];
 
   // Live-totals history — snapshot de acumulados cada vez que se actualiza la data
@@ -106,11 +105,16 @@ const AmorFiadoDashboard = () => {
         'YA NO': 16522, 'HAZLO CALLAO': 15226, 'TOP TIER': 14298,
       },
     },
-    // {
-    //   date: '2026-03-23', label: 'D+4', recordedAt: '2026-03-23T15:00:00-03:00',
-    //   albumTotal: XXXXXX,
-    //   tracks: { ... },
-    // },
+    {
+      date: '2026-03-23', label: 'D+4', recordedAt: '2026-03-23T12:06:43-03:00',
+      albumTotal: 704025,
+      tracks: {
+        'CUANDO ESCRIBÍA ASIMETRÍA': 276622, 'ATBLM': 204181, 'UN GUSTO': 34953,
+        'CALL ME': 26075, 'MAN OF WORD': 25068, 'OJOS TRISTES': 23695,
+        'HIELO': 21708, 'CHANGES': 21535, 'ALQUILER': 20058,
+        'YA NO': 18126, 'HAZLO CALLAO': 16594, 'TOP TIER': 15674,
+      },
+    },
   ];
 
   // Growth history — mantener para compatibilidad con sección Snapshots
@@ -124,24 +128,24 @@ const AmorFiadoDashboard = () => {
     ),
   }));
 
-  // Live totals from Spotify for Artists (scraped per-track Mar 22, 2026)
+  // Live totals from Spotify for Artists (scraped per-track Mar 23, 2026)
   const liveTotals = {
-    'CUANDO ESCRIBÍA ASIMETRÍA': 273884,
-    'ATBLM': 200669,
-    'UN GUSTO': 31749,
-    'CALL ME': 23750,
-    'MAN OF WORD': 22919,
-    'OJOS TRISTES': 21652,
-    'HIELO': 19885,
-    'CHANGES': 19758,
-    'ALQUILER': 18508,
-    'YA NO': 16522,
-    'HAZLO CALLAO': 15226,
-    'TOP TIER': 14298,
+    'CUANDO ESCRIBÍA ASIMETRÍA': 276622,
+    'ATBLM': 204181,
+    'UN GUSTO': 34953,
+    'CALL ME': 26075,
+    'MAN OF WORD': 25068,
+    'OJOS TRISTES': 23695,
+    'HIELO': 21708,
+    'CHANGES': 21535,
+    'ALQUILER': 20058,
+    'YA NO': 18126,
+    'HAZLO CALLAO': 16594,
+    'TOP TIER': 15674,
   };
 
   // Album-level live total
-  const albumLiveTotal = 678677;
+  const albumLiveTotal = 704025;
 
   // 28-day period metrics per track (Feb 22 - Mar 21, 2026) — scraped Mar 22
   const trackMetrics = {
@@ -209,7 +213,7 @@ const AmorFiadoDashboard = () => {
         '2026-03-07': 4819, '2026-03-08': 3700, '2026-03-09': 4581, '2026-03-10': 4404,
         '2026-03-11': 4446, '2026-03-12': 4387, '2026-03-13': 4362, '2026-03-14': 3879,
         '2026-03-15': 3284, '2026-03-16': 4247, '2026-03-17': 4315, '2026-03-18': 4907,
-        '2026-03-19': 5814, '2026-03-20': 10875,
+        '2026-03-19': 5814, '2026-03-20': 10875, '2026-03-21': 7079, '2026-03-22': 5464,
       },
     },
     'ATBLM': {
@@ -221,19 +225,19 @@ const AmorFiadoDashboard = () => {
         '2026-03-06': 7414, '2026-03-07': 6347, '2026-03-08': 5559, '2026-03-09': 7681,
         '2026-03-10': 8485, '2026-03-11': 7458, '2026-03-12': 8165, '2026-03-13': 8139,
         '2026-03-14': 6627, '2026-03-15': 5713, '2026-03-16': 6869, '2026-03-17': 6617,
-        '2026-03-18': 7359, '2026-03-19': 8513, '2026-03-20': 14710,
+        '2026-03-18': 7359, '2026-03-19': 8513, '2026-03-20': 14710, '2026-03-21': 9742, '2026-03-22': 7568,
       },
     },
-    'UN GUSTO': { type: 'album', streams: { '2026-03-19': 806, '2026-03-20': 16320 } },
-    'CALL ME': { type: 'album', streams: { '2026-03-19': 1032, '2026-03-20': 11305 } },
-    'MAN OF WORD': { type: 'album', streams: { '2026-03-19': 1293, '2026-03-20': 10998 } },
-    'OJOS TRISTES': { type: 'album', streams: { '2026-03-19': 649, '2026-03-20': 10905 } },
-    'HIELO': { type: 'album', streams: { '2026-03-19': 753, '2026-03-20': 9626 } },
-    'ALQUILER': { type: 'album', streams: { '2026-03-19': 879, '2026-03-20': 9166 } },
-    'CHANGES': { type: 'album', streams: { '2026-03-19': 676, '2026-03-20': 9170 } },
-    'YA NO': { type: 'album', streams: { '2026-03-19': 472, '2026-03-20': 8069 } },
-    'HAZLO CALLAO': { type: 'album', streams: { '2026-03-19': 486, '2026-03-20': 7584 } },
-    'TOP TIER': { type: 'album', streams: { '2026-03-19': 383, '2026-03-20': 7061 } },
+    'UN GUSTO': { type: 'album', streams: { '2026-03-19': 806, '2026-03-20': 16320, '2026-03-21': 8254, '2026-03-22': 6120 } },
+    'CALL ME': { type: 'album', streams: { '2026-03-19': 1032, '2026-03-20': 11305, '2026-03-21': 6294, '2026-03-22': 4926 } },
+    'MAN OF WORD': { type: 'album', streams: { '2026-03-19': 1293, '2026-03-20': 10998, '2026-03-21': 5968, '2026-03-22': 4487 } },
+    'OJOS TRISTES': { type: 'album', streams: { '2026-03-19': 649, '2026-03-20': 10905, '2026-03-21': 5708, '2026-03-22': 4220 } },
+    'HIELO': { type: 'album', streams: { '2026-03-19': 753, '2026-03-20': 9626, '2026-03-21': 5334, '2026-03-22': 4022 } },
+    'ALQUILER': { type: 'album', streams: { '2026-03-19': 879, '2026-03-20': 9166, '2026-03-21': 4822, '2026-03-22': 3493 } },
+    'CHANGES': { type: 'album', streams: { '2026-03-19': 676, '2026-03-20': 9170, '2026-03-21': 5213, '2026-03-22': 4534 } },
+    'YA NO': { type: 'album', streams: { '2026-03-19': 472, '2026-03-20': 8069, '2026-03-21': 4388, '2026-03-22': 3470 } },
+    'HAZLO CALLAO': { type: 'album', streams: { '2026-03-19': 486, '2026-03-20': 7584, '2026-03-21': 4084, '2026-03-22': 2966 } },
+    'TOP TIER': { type: 'album', streams: { '2026-03-19': 383, '2026-03-20': 7061, '2026-03-21': 3864, '2026-03-22': 2879 } },
   };
 
   // Computed cumulative stream totals per day (closed-day granularity)

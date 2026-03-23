@@ -48,6 +48,24 @@
         "HAZLO CALLAO": { "streams28d": 12154, "listeners": 6927, "saves": 6742, "playlistAdds": 864 },
         "TOP TIER": { "streams28d": 11308, "listeners": 6043, "saves": 6819, "playlistAdds": 955 }
       }
+    },
+    {
+      "timestamp": "2026-03-23T12:06:43-03:00",
+      "albumLiveTotal": 704025,
+      "liveByTrack": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 276622,
+        "ATBLM": 204181,
+        "UN GUSTO": 34953,
+        "CALL ME": 26075,
+        "MAN OF WORD": 25068,
+        "OJOS TRISTES": 23695,
+        "HIELO": 21708,
+        "CHANGES": 21535,
+        "ALQUILER": 20058,
+        "YA NO": 18126,
+        "HAZLO CALLAO": 16594,
+        "TOP TIER": 15674
+      }
     }
   ]
 }
