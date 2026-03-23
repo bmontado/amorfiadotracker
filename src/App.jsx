@@ -492,6 +492,55 @@ const AmorFiadoDashboard = () => {
               })()}
             </div>
           </div>
+
+          {/* Alcance Social por Track */}
+          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginTop: '2.5rem' }}>
+            <h2 style={{ color: '#a78bfa', fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.4rem' }}>Alcance Social por Track</h2>
+            <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem' }}>Posts de la campaña atribuidos por track — IG + TikTok combinados</p>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
+                    {['Track', 'Posts', 'IG Views', 'TK Views', 'Total Views', 'Likes', 'TK Saves', 'Eng.', 'Streams Live'].map(h => (
+                      <th key={h} style={{ textAlign: h === 'Track' ? 'left' : 'right', padding: '0.6rem', color: '#94a3b8', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {(() => {
+                    const byTrack = {};
+                    socialPosts.forEach(p => {
+                      const key = p.track;
+                      if (!byTrack[key]) byTrack[key] = { posts: 0, igViews: 0, tkViews: 0, likes: 0, saves: 0 };
+                      byTrack[key].posts++;
+                      if (p.platform === 'instagram') byTrack[key].igViews += p.views;
+                      else byTrack[key].tkViews += p.views;
+                      byTrack[key].likes += p.likes;
+                      byTrack[key].saves += p.saves;
+                    });
+                    return Object.entries(byTrack).sort((a, b) => (b[1].igViews + b[1].tkViews) - (a[1].igViews + a[1].tkViews)).map(([track, d]) => {
+                      const total = d.igViews + d.tkViews;
+                      const eng = ((d.likes / total) * 100).toFixed(1);
+                      const liveStreams = liveTotals[track] || null;
+                      return (
+                        <tr key={track} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                          <td style={{ padding: '0.6rem', color: '#f1f5f9', fontWeight: 500 }}>{track}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem', color: '#a78bfa', fontWeight: 700 }}>{d.posts}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem', color: '#e879f9' }}>{d.igViews > 0 ? formatNumber(d.igViews) : '—'}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem', color: '#22d3ee' }}>{d.tkViews > 0 ? formatNumber(d.tkViews) : '—'}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem', color: '#38bdf8', fontWeight: 700 }}>{formatNumber(total)}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem', color: '#f87171' }}>{formatNumber(d.likes)}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem', color: '#fbbf24' }}>{d.saves > 0 ? formatNumber(d.saves) : '—'}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem', color: '#4ade80' }}>{eng}%</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem', color: '#f97316', fontWeight: 700 }}>{liveStreams ? formatNumber(liveStreams) : '—'}</td>
+                        </tr>
+                      );
+                    });
+                  })()}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
 
@@ -1789,54 +1838,6 @@ const AmorFiadoDashboard = () => {
 
             </div>
 
-            {/* Track-level social attribution */}
-            <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-              <h2 style={{ color: '#a78bfa', fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem' }}>Atribución Social por Track (Ambas Plataformas)</h2>
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
-                      {['Track', 'Posts', 'IG Views', 'TK Views', 'Total Views', 'Likes', 'TK Saves', 'Eng.', 'Streams'].map(h => (
-                        <th key={h} style={{ textAlign: h === 'Track' ? 'left' : 'right', padding: '0.6rem', color: '#94a3b8', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(() => {
-                      const byTrack = {};
-                      socialPosts.forEach(p => {
-                        const key = p.track;
-                        if (!byTrack[key]) byTrack[key] = { posts: 0, igViews: 0, tkViews: 0, likes: 0, saves: 0 };
-                        byTrack[key].posts++;
-                        if (p.platform === 'instagram') byTrack[key].igViews += p.views;
-                        else byTrack[key].tkViews += p.views;
-                        byTrack[key].likes += p.likes;
-                        byTrack[key].saves += p.saves;
-                      });
-                      return Object.entries(byTrack).sort((a, b) => (b[1].igViews + b[1].tkViews) - (a[1].igViews + a[1].tkViews)).map(([track, d]) => {
-                        const total = d.igViews + d.tkViews;
-                        const eng = ((d.likes / total) * 100).toFixed(1);
-                        const liveStreams = liveTotals[track] || null;
-                        return (
-                          <tr key={track} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
-                            <td style={{ padding: '0.6rem', color: '#f1f5f9', fontWeight: 500 }}>{track}</td>
-                            <td style={{ textAlign: 'right', padding: '0.6rem', color: '#a78bfa', fontWeight: 700 }}>{d.posts}</td>
-                            <td style={{ textAlign: 'right', padding: '0.6rem', color: '#e879f9' }}>{d.igViews > 0 ? formatNumber(d.igViews) : '—'}</td>
-                            <td style={{ textAlign: 'right', padding: '0.6rem', color: '#22d3ee' }}>{d.tkViews > 0 ? formatNumber(d.tkViews) : '—'}</td>
-                            <td style={{ textAlign: 'right', padding: '0.6rem', color: '#38bdf8', fontWeight: 700 }}>{formatNumber(total)}</td>
-                            <td style={{ textAlign: 'right', padding: '0.6rem', color: '#f87171' }}>{formatNumber(d.likes)}</td>
-                            <td style={{ textAlign: 'right', padding: '0.6rem', color: '#fbbf24' }}>{d.saves > 0 ? formatNumber(d.saves) : '—'}</td>
-                            <td style={{ textAlign: 'right', padding: '0.6rem', color: '#4ade80' }}>{eng}%</td>
-                            <td style={{ textAlign: 'right', padding: '0.6rem', color: '#f97316', fontWeight: 700 }}>{liveStreams ? formatNumber(liveStreams) : '—'}</td>
-                          </tr>
-                        );
-                      });
-                    })()}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
             {/* Social Insights */}
             <div style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(167,139,250,0.2)', marginBottom: '2.5rem' }}>
               <h2 style={{ color: '#a78bfa', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Insights de Social</h2>
@@ -1867,12 +1868,55 @@ const AmorFiadoDashboard = () => {
                 // Teasers vs launches comparison
                 const teaserAvg = Math.round(socialPosts.filter(p => p.type === 'teaser').reduce((s, p) => s + p.views, 0) / Math.max(socialPosts.filter(p => p.type === 'teaser').length, 1));
                 const launchAvg = Math.round(socialPosts.filter(p => p.type === 'launch' || p.type === 'release').reduce((s, p) => s + p.views, 0) / Math.max(socialPosts.filter(p => p.type === 'launch' || p.type === 'release').length, 1));
+                // TikTok pre vs post album
+                const tkPreAlbum = socialPosts.filter(p => p.platform === 'tiktok' && p.date < '2026-03-19');
+                const tkPostAlbum = socialPosts.filter(p => p.platform === 'tiktok' && p.date >= '2026-03-19');
+                const tkPreAvg = tkPreAlbum.length ? Math.round(tkPreAlbum.reduce((s, p) => s + p.views, 0) / tkPreAlbum.length) : 0;
+                const tkPostAvg = tkPostAlbum.length ? Math.round(tkPostAlbum.reduce((s, p) => s + p.views, 0) / tkPostAlbum.length) : 0;
+                const tkDropPct = tkPreAvg > 0 ? Math.round((1 - tkPostAvg / tkPreAvg) * 100) : null;
+                // Silence gaps (days between consecutive posts)
+                const allDatesSorted = [...socialPosts].sort((a, b) => a.date.localeCompare(b.date));
+                let maxGap = 0, maxGapStart = '', maxGapEnd = '';
+                for (let i = 1; i < allDatesSorted.length; i++) {
+                  const gap = Math.round((new Date(allDatesSorted[i].date) - new Date(allDatesSorted[i-1].date)) / 86400000);
+                  if (gap > maxGap) { maxGap = gap; maxGapStart = allDatesSorted[i-1].date; maxGapEnd = allDatesSorted[i].date; }
+                }
+                // Best TK snippet (teaser) views
+                const tkTeasers = socialPosts.filter(p => p.platform === 'tiktok' && p.type === 'teaser').sort((a, b) => b.views - a.views);
+                const topTkTeaser = tkTeasers[0];
+                // Post-album TK silence
+                const lastTkDate = tkPostAlbum.length ? tkPostAlbum.sort((a, b) => b.date.localeCompare(a.date))[0].date : null;
+                const daysSinceLastTk = lastTkDate ? Math.round((new Date('2026-03-22') - new Date(lastTkDate)) / 86400000) : null;
+                // Neg deltas (posts that hurt streams next day)
+                const negDeltas = correlation.filter(p => p.streamDelta !== null && p.streamDelta < 0).sort((a, b) => a.streamDelta - b.streamDelta);
                 const insights = [
-                  { dot: '#4ade80', text: `Mejor formato por alcance: ${platLabel[bestFormat.platform]} ${typeLabelsLocal[bestFormat.type] || bestFormat.type} con ${formatNumber(bestFormat.avgViews)} views promedio por post (${bestFormat.posts} post${bestFormat.posts > 1 ? 's' : ''}, ${bestFormat.engRate}% eng).` },
-                  { dot: '#e879f9', text: `Comparativa plataformas: Instagram ${formatNumber(igAvgViews)} views/post (${igEngRate}% eng) vs TikTok ${formatNumber(tkAvgViews)} views/post (${tkEngRate}% eng). TikTok tiene ${engMultiplier}× más engagement rate, ${igAvgViews > tkAvgViews ? 'Instagram tiene mayor alcance promedio por post' : 'TikTok tiene mayor alcance por post también'}.` },
-                  teaserAvg > launchAvg ? { dot: '#fbbf24', text: `Los teasers promediaron ${formatNumber(teaserAvg)} views vs ${formatNumber(launchAvg)} views los posts de lanzamiento/release — la expectativa generó más alcance que el estreno en sí. Clave para la próxima campaña.` } : { dot: '#4ade80', text: `Los posts de lanzamiento/release promediaron ${formatNumber(launchAvg)} views vs ${formatNumber(teaserAvg)} de los teasers — el momentum del estreno superó la campaña de expectativa.` },
-                  bestSave ? { dot: '#a78bfa', text: `Mejor save rate en TikTok: "${bestSave.caption.slice(0, 50)}${bestSave.caption.length > 50 ? '…' : ''}" — ${(bestSave.saves / bestSave.views * 100).toFixed(2)}% saves/view (${formatNumber(bestSave.saves)} saves de ${formatNumber(bestSave.views)} views). Los saves son el indicador más fuerte de intención de agregar a playlist.` } : null,
-                  bestDelta ? { dot: '#38bdf8', text: `Post con mayor correlación streams D+1: "${bestDelta.caption.slice(0, 45)}${bestDelta.caption.length > 45 ? '…' : ''}" (${bestDelta.platform === 'instagram' ? 'IG' : 'TK'}, ${new Date(bestDelta.date + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}) — el día siguiente tuvo +${formatNumber(bestDelta.streamDelta)} streams.` } : null,
+                  tkDropPct !== null && tkDropPct > 0 ? {
+                    dot: '#f87171',
+                    text: `TikTok colapsó post-lanzamiento: el alcance promedio pasó de ${formatNumber(tkPreAvg)} a ${formatNumber(tkPostAvg)} views/video (−${tkDropPct}%). El canal que impulsó todo el pre-release está prácticamente apagado. Retomar la cadencia en TK es urgente.`,
+                  } : null,
+                  topTkTeaser ? {
+                    dot: '#fbbf24',
+                    text: `El formato snippet/teaser en TikTok fue el motor de la campaña (${formatNumber(topTkTeaser.views)} views el mejor). Sin embargo, ningún track nuevo del álbum recibió un snippet viral equivalente post-lanzamiento. Hay tracks sin presencia en TK todavía.`,
+                  } : null,
+                  teaserAvg > launchAvg ? {
+                    dot: '#f87171',
+                    text: `Los teasers promediaron ${formatNumber(teaserAvg)} views vs ${formatNumber(launchAvg)} de los posts de lanzamiento — la expectativa generó ${Math.round(teaserAvg / launchAvg * 10) / 10}× más alcance que el estreno. Los posts de lanzamiento del álbum fueron los de menor impacto. Hay que trabajar el formato.`,
+                  } : {
+                    dot: '#4ade80',
+                    text: `Los posts de lanzamiento/release promediaron ${formatNumber(launchAvg)} views vs ${formatNumber(teaserAvg)} de los teasers — el momentum del estreno superó la campaña de expectativa.`,
+                  },
+                  maxGap > 5 ? {
+                    dot: '#fb923c',
+                    text: `Gap de silencio más largo de la campaña: ${maxGap} días sin posts (${new Date(maxGapStart + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} → ${new Date(maxGapEnd + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}). En ese período el algoritmo enfría el perfil y el alcance orgánico baja. No repetir en la próxima campaña.`,
+                  } : null,
+                  bestSave ? {
+                    dot: '#a78bfa',
+                    text: `El snippet de ATBLM tiene el mejor save rate de TikTok (${(bestSave.saves / bestSave.views * 100).toFixed(2)}% — ${formatNumber(bestSave.saves)} saves). Ese nivel de intención de playlist no se replicó en ningún track nuevo del álbum. Los saves son el indicador más directo de que el algoritmo va a distribuir el contenido.`,
+                  } : null,
+                  negDeltas.length > 0 ? {
+                    dot: '#64748b',
+                    text: `${negDeltas.length} post${negDeltas.length > 1 ? 's' : ''} correlacionan con una caída de streams al día siguiente (${negDeltas.slice(0, 2).map(p => `${p.platform === 'instagram' ? 'IG' : 'TK'} del ${new Date(p.date + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} (${formatNumber(p.streamDelta)})`).join(', ')}). No implica causalidad, pero vale seguirlo.`,
+                  } : null,
                 ].filter(Boolean);
                 return (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
