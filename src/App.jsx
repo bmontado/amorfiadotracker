@@ -1525,6 +1525,7 @@ const AmorFiadoDashboard = () => {
               <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Proyección 28 Días — Día 1 al Día 28</h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
                 <span style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>Curva ref: CEA + ATBLM</span>
+                <span style={{ background: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.25)', color: '#38bdf8', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>Factor: {REAL_DAYS - 1}d reales calibrados</span>
                 <div style={{ display: 'flex', gap: '0.3rem' }}>
                   {[['chart', '▲ Absoluto'], ['norm', '% Retención'], ['table', '≡ Tabla']].map(([val, label]) => (
                     <button key={val} onClick={() => setDecayView(val)} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, background: decayView === val ? '#f97316' : 'rgba(51,65,85,0.5)', color: decayView === val ? '#0f172a' : '#94a3b8' }}>{label}</button>
@@ -1533,7 +1534,7 @@ const AmorFiadoDashboard = () => {
               </div>
             </div>
             <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>
-              Proyección basada en el decay histórico de los dos singles de Zeballos (mismo fanbase). El <strong style={{ color: '#94a3b8' }}>factor de ajuste</strong> por track corrige en base al D21 real. La línea punteada marca el inicio de la proyección.
+              Proyección basada en el decay histórico de los dos singles de Zeballos (mismo fanbase). El <strong style={{ color: '#94a3b8' }}>factor de ajuste</strong> por track se recalibra automáticamente con cada nuevo día real — cuantos más días, más preciso. La línea punteada marca el inicio de la proyección.
             </p>
             {(() => {
               // === Construir curva de referencia normalizada ===
@@ -1570,11 +1571,24 @@ const AmorFiadoDashboard = () => {
               const REAL_DAYS = d20Idx >= 0 ? dailyLog.length - d20Idx : 2;
 
               const trackData = tracks.map((t, idx) => {
-                const factor = t.day21 / (t.day20 * refCurve[1]);
+                // Factor calibrado con TODOS los días reales disponibles (promedio de ratios).
+                // A medida que llegan D22, D23… el factor se vuelve más estable y preciso.
+                const factorSamples = [];
+                for (let day = 1; day < REAL_DAYS; day++) {
+                  const entry = dailyLog[d20Idx + day];
+                  const actual = entry?.tracks[t.name] ?? 0;
+                  const expected = t.day20 * refCurve[day];
+                  if (expected > 0 && actual > 0) factorSamples.push(actual / expected);
+                }
+                const factor = factorSamples.length > 0
+                  ? factorSamples.reduce((s, v) => s + v, 0) / factorSamples.length
+                  : 1;
+                const factorDays = factorSamples.length;
+
                 const projected = Array.from({ length: TOTAL_DAYS - REAL_DAYS }, (_, i) => {
                   return Math.max(Math.round(t.day20 * refCurve[i + REAL_DAYS] * factor), 0);
                 });
-                return { ...t, factor, projected, color: trackColors[idx % trackColors.length] };
+                return { ...t, factor, factorDays, projected, color: trackColors[idx % trackColors.length] };
               });
 
               // Datos del gráfico: días 1 a 28
@@ -1631,10 +1645,12 @@ const AmorFiadoDashboard = () => {
                   })).filter(t => t.retention != null).sort((a, b) => b.retention - a.retention)
                 : [];
 
-              // === Confianza del Modelo ===
-              // Para cada día del dailyLog posterior a D20, compara la proyección anterior vs el real.
-              // D21: la proyección "a priori" (sin calibrar) usaba factor=1 → day20 × refCurve[1]
-              // D22+: proyección calibrada con el factor de D21 → day20 × refCurve[idx] × factor
+              // === Confianza del Modelo — backtest honesto (leave-one-out rolling) ===
+              // Para predecir cada día usamos solo los datos que existían ANTES de ese día.
+              // D21: factor=1 (ningún día previo para calibrar)
+              // D22: factor calibrado solo con D21
+              // D23: factor calibrado con D21+D22
+              // … así el panel muestra cuán bien hubiera predicho el modelo en tiempo real.
               const D20_DATE = '2026-03-20';
               const confidenceData = dailyLog
                 .filter(e => e.date > D20_DATE)
@@ -1644,10 +1660,19 @@ const AmorFiadoDashboard = () => {
                   ) + 1; // 1-indexed: D20=1, D21=2, D22=3…
                   let projTotal = 0;
                   trackData.forEach(t => {
-                    const proj = albumDay === 2
-                      ? t.day20 * refCurve[1]                         // D21: sin factor (sólo ref curve)
-                      : t.day20 * refCurve[albumDay - 1] * t.factor;  // D22+: calibrado
-                    projTotal += Math.max(proj, 0);
+                    // Factor solo con días anteriores al actual
+                    let prevFactor = 1;
+                    if (albumDay >= 3) {
+                      const prevSamples = [];
+                      for (let day = 1; day < albumDay - 1; day++) {
+                        const prevEntry = dailyLog[d20Idx + day];
+                        const prevActual = prevEntry?.tracks[t.name] ?? 0;
+                        const prevExpected = t.day20 * refCurve[day];
+                        if (prevExpected > 0 && prevActual > 0) prevSamples.push(prevActual / prevExpected);
+                      }
+                      if (prevSamples.length > 0) prevFactor = prevSamples.reduce((s, v) => s + v, 0) / prevSamples.length;
+                    }
+                    projTotal += Math.max(t.day20 * refCurve[albumDay - 1] * prevFactor, 0);
                   });
                   const actualTotal = Object.values(entry.tracks).reduce((s, v) => s + v, 0);
                   const biasPct = (actualTotal - projTotal) / projTotal * 100;
@@ -1669,9 +1694,13 @@ const AmorFiadoDashboard = () => {
                   {/* Totales proyectados a 28 días */}
                   {(() => {
                     const totals28 = trackData.map(t => {
-                      const real = t.day20 + t.day21;
+                      // Suma días reales desde dailyLog (todos los disponibles, no hardcoded)
+                      const realTotal = Array.from({ length: REAL_DAYS }, (_, day) => {
+                        const entry = dailyLog[d20Idx + day];
+                        return entry?.tracks[t.name] ?? (day === 0 ? t.day20 : t.day21);
+                      }).reduce((s, v) => s + v, 0);
                       const proj = t.projected.reduce((s, v) => s + v, 0);
-                      return { name: t.name, color: t.color, total: real + proj };
+                      return { name: t.name, color: t.color, total: realTotal + proj };
                     });
                     const albumTotal28 = totals28.reduce((s, t) => s + t.total, 0);
                     return (
@@ -1930,7 +1959,10 @@ const AmorFiadoDashboard = () => {
                               </td>
                               <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#f97316', fontWeight: 600 }}>{formatNumber(t.day20)}</td>
                               <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#fbbf24', fontWeight: 600 }}>{formatNumber(t.day21)}</td>
-                              <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: factorColor, fontWeight: 700 }}>{t.factor.toFixed(2)}×</td>
+                              <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: factorColor, fontWeight: 700 }}>
+                                {t.factor.toFixed(2)}×
+                                <div style={{ fontSize: '0.58rem', color: '#475569', fontWeight: 400 }}>{t.factorDays}d cal.</div>
+                              </td>
                               {t.projected.map((v, i) => (
                                 <td key={i} style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: v < t.day21 * 0.4 ? '#f87171' : v < t.day21 * 0.6 ? '#fb923c' : '#94a3b8' }}>
                                   {formatNumber(v)}
