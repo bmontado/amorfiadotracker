@@ -53,6 +53,12 @@ const DEFAULT_LIVE_DATA = {
       moderate: { total: 131037, listeners: 5875,  pct: 4.5  },
       light:    { total: 249894, listeners: 2722,  pct: 1.1  },
     },
+    streamedThisRelease: {
+      monthly:  [{date:'2026-03-19',y:1591},{date:'2026-03-20',y:10659},{date:'2026-03-21',y:14315},{date:'2026-03-22',y:17836}],
+      super:    [{date:'2026-03-19',y:1184},{date:'2026-03-20',y:6748},{date:'2026-03-21',y:8621},{date:'2026-03-22',y:10094}],
+      moderate: [{date:'2026-03-19',y:346},{date:'2026-03-20',y:2878},{date:'2026-03-21',y:4357},{date:'2026-03-22',y:5875}],
+      light:    [{date:'2026-03-19',y:61},{date:'2026-03-20',y:1193},{date:'2026-03-21',y:1871},{date:'2026-03-22',y:2722}],
+    },
     history: [
       { date: '2026-03-23', dayNum: 4, segments: {
         monthly:  { total: 414288, listeners: 17836, pct: 4.3  },
@@ -2576,7 +2582,22 @@ const AmorFiadoDashboard = () => {
           { key: 'light',    label: 'Light Listeners',  color: '#60a5fa', bg: 'rgba(96,165,250,0.10)',  border: 'rgba(96,165,250,0.3)'  },
         ];
 
-        // Trend chart data from history
+        // "Streamed this release" area chart — cumulative listeners by day
+        const str = eng?.streamedThisRelease ?? {};
+        const allDates = [...new Set([
+          ...(str.monthly??[]), ...(str.super??[]), ...(str.moderate??[]), ...(str.light??[])
+        ].map(d => d.date))].sort();
+        const streamChartData = allDates.map(date => {
+          const row = { label: date.slice(5).replace('-', '/') };
+          segConfig.forEach(s => {
+            const point = (str[s.key] ?? []).find(d => d.date === date);
+            row[s.key] = point?.y ?? null;
+          });
+          return row;
+        });
+        const hasStreamData = streamChartData.length >= 1;
+
+        // Trend chart data from history (% conversion over scraper snapshots)
         const trendData = [...history]
           .sort((a, b) => a.date.localeCompare(b.date))
           .map(h => {
@@ -2650,12 +2671,64 @@ const AmorFiadoDashboard = () => {
               </p>
             </div>
 
-            {/* Evolution chart — multi-segment % conversion over time */}
-            {hasHistory ? (
+            {/* Streamed this release — area chart (S4A style) */}
+            {hasStreamData && (
+              <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>Streamed This Release — Oyentes acumulados por segmento</p>
+                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    {segConfig.map(s => (
+                      <span key={s.key} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.72rem', color: '#94a3b8' }}>
+                        <span style={{ width: '10px', height: '3px', background: s.color, borderRadius: '2px', display: 'inline-block' }} />
+                        {s.label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={streamChartData} margin={{ top: 10, right: 30, left: 10, bottom: 5 }}>
+                    <defs>
+                      {segConfig.map(s => (
+                        <linearGradient key={s.key} id={`grad-${s.key}`} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={s.color} stopOpacity={0.25} />
+                          <stop offset="95%" stopColor={s.color} stopOpacity={0.02} />
+                        </linearGradient>
+                      ))}
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,65,85,0.35)" />
+                    <XAxis dataKey="label" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false}
+                      tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v} />
+                    <Tooltip
+                      contentStyle={{ background: '#0f172a', border: '1px solid rgba(51,65,85,0.7)', borderRadius: '8px', fontSize: '0.8rem' }}
+                      labelStyle={{ color: '#f1f5f9', fontWeight: 700, marginBottom: '0.25rem' }}
+                      formatter={(v, name) => {
+                        const cfg = segConfig.find(s => s.key === name);
+                        return [v?.toLocaleString('es-AR'), cfg?.label ?? name];
+                      }}
+                    />
+                    {segConfig.map(s => (
+                      <Area key={s.key} type="monotone" dataKey={s.key}
+                        stroke={s.color} strokeWidth={2}
+                        fill={`url(#grad-${s.key})`}
+                        dot={{ r: 3, fill: s.color, strokeWidth: 0 }}
+                        activeDot={{ r: 5 }}
+                        connectNulls />
+                    ))}
+                  </AreaChart>
+                </ResponsiveContainer>
+                <p style={{ color: '#475569', fontSize: '0.7rem', margin: '0.5rem 0 0', textAlign: 'right' }}>
+                  Oyentes únicos acumulados que escucharon Amor Fiado desde el lanzamiento · Datos S4A
+                </p>
+              </div>
+            )}
+
+            {/* % Conversión por día — evolución (aparece con ≥2 snapshots del scraper) */}
+            {hasHistory && (
               <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
                 <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 1rem' }}>Evolución % Conversión por Segmento</p>
                 <div style={{ maxWidth: trendData.length <= 3 ? 520 : '100%', margin: '0 auto' }}>
-                  <ResponsiveContainer width="100%" height={280}>
+                  <ResponsiveContainer width="100%" height={260}>
                     <LineChart data={trendData} margin={{ top: 10, right: 40, left: 0, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,65,85,0.4)" />
                       <XAxis dataKey="label" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false}
@@ -2665,10 +2738,7 @@ const AmorFiadoDashboard = () => {
                       <Tooltip
                         contentStyle={{ background: '#0f172a', border: '1px solid rgba(51,65,85,0.7)', borderRadius: '8px', fontSize: '0.8rem' }}
                         labelStyle={{ color: '#f1f5f9', fontWeight: 700, marginBottom: '0.3rem' }}
-                        formatter={(v, name) => {
-                          const cfg = segConfig.find(s => s.key === name);
-                          return [`${v}%`, cfg?.label ?? name];
-                        }}
+                        formatter={(v, name) => [`${v}%`, segConfig.find(s => s.key === name)?.label ?? name]}
                       />
                       <Legend wrapperStyle={{ fontSize: '0.75rem', color: '#94a3b8', paddingTop: '0.5rem' }}
                         formatter={(value) => segConfig.find(s => s.key === value)?.label ?? value} />
@@ -2679,12 +2749,6 @@ const AmorFiadoDashboard = () => {
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
-              </div>
-            ) : (
-              <div style={{ background: 'rgba(15,23,42,0.3)', border: '1px dashed rgba(51,65,85,0.5)', borderRadius: '12px', padding: '1.5rem', textAlign: 'center' }}>
-                <p style={{ color: '#475569', fontSize: '0.85rem', margin: 0 }}>
-                  El gráfico de evolución aparecerá cuando haya ≥2 snapshots. Próximo update en ~24h.
-                </p>
               </div>
             )}
 
