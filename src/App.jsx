@@ -248,13 +248,15 @@ const AmorFiadoDashboard = () => {
     // Use verified Mar 21 daily streams
     const mar21Streams = { ...mar21Verified };
 
-    // Add Mar 21 to stream data for calculations
+    // Build fullStreamData: base streamData + every dailyLog entry overlaid
+    // This ensures Singles, Crecimiento, and Decay charts see D21, D22, D23…
     const fullStreamData = {};
     Object.entries(streamData).forEach(([name, data]) => {
-      fullStreamData[name] = {
-        ...data,
-        streams: { ...data.streams, '2026-03-21': mar21Streams[name] },
-      };
+      const dailyOverlay = {};
+      dailyLog.forEach(entry => {
+        if (entry.tracks[name] != null) dailyOverlay[entry.date] = entry.tracks[name];
+      });
+      fullStreamData[name] = { ...data, streams: { ...data.streams, ...dailyOverlay } };
     });
 
     // Total live streams
@@ -388,9 +390,11 @@ const AmorFiadoDashboard = () => {
     const topLiveTrack        = [...trackAnalysis].sort((a, b) => (b.liveTotal || 0) - (a.liveTotal || 0))[0] || null;
 
     // Timeline chart data (for pre-release singles)
+    // Extends automatically to the last date in dailyLog
     const timelineData = [];
     const dateRange = [];
-    for (let d = new Date('2026-02-05'); d <= new Date('2026-03-21'); d.setDate(d.getDate() + 1)) {
+    const lastLogDate = dailyLog.length > 0 ? dailyLog[dailyLog.length - 1].date : '2026-03-21';
+    for (let d = new Date('2026-02-05'); d <= new Date(lastLogDate + 'T12:00:00'); d.setDate(d.getDate() + 1)) {
       dateRange.push(d.toISOString().split('T')[0]);
     }
     dateRange.forEach((date) => {
@@ -678,68 +682,97 @@ const AmorFiadoDashboard = () => {
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
             <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem' }}>Streams Acumulados (Live)</h2>
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
-                    <th style={{ textAlign: 'left', padding: '0.75rem', color: '#94a3b8' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '0.75rem', color: '#94a3b8' }}>Track</th>
-                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#f97316' }}>Live Total</th>
-                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>Día 19 (~1h)</th>
-                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>Día 20</th>
-                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>Día 21</th>
-                    <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>D20→D21</th>
-                    <th style={{ textAlign: 'center', padding: '0.75rem', color: '#94a3b8' }}>Tipo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[...metrics.trackAnalysis].sort((a, b) => b.liveTotal - a.liveTotal).map((t, i) => {
-                    const decayVal = parseFloat(t.decayD20toD21);
-                    const decayColor = isNaN(decayVal) ? '#64748b' : decayVal >= 0 ? '#4ade80' : Math.abs(decayVal) > 55 ? '#f87171' : '#fbbf24';
-                    return (
-                      <tr key={t.name} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
-                        <td style={{ padding: '0.75rem', color: '#64748b', fontWeight: 600 }}>{i + 1}</td>
-                        <td style={{ padding: '0.75rem', color: '#f1f5f9', fontWeight: 500 }}>{t.name}</td>
-                        <td style={{ textAlign: 'right', padding: '0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(t.liveTotal)}</td>
-                        <td style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>{formatNumber(t.day19)}</td>
-                        <td style={{ textAlign: 'right', padding: '0.75rem', color: '#cbd5e1' }}>{formatNumber(t.day20)}</td>
-                        <td style={{ textAlign: 'right', padding: '0.75rem', color: '#fbbf24' }}>{formatNumber(t.day21)}</td>
-                        <td style={{ textAlign: 'right', padding: '0.75rem', color: decayColor, fontWeight: 600, fontSize: '0.8rem' }}>
-                          {t.decayD20toD21 === 'N/A' ? '—' : `${decayVal >= 0 ? '+' : ''}${t.decayD20toD21}%`}
-                        </td>
-                        <td style={{ textAlign: 'center', padding: '0.75rem' }}>
-                          <span style={{
-                            padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.7rem', fontWeight: 600,
-                            background: t.type === 'single' ? 'rgba(251,191,36,0.15)' : 'rgba(249,115,22,0.15)',
-                            color: t.type === 'single' ? '#fbbf24' : '#f97316',
-                            border: `1px solid ${t.type === 'single' ? 'rgba(251,191,36,0.3)' : 'rgba(249,115,22,0.3)'}`,
-                          }}>
-                            {t.type === 'single' ? 'Single' : 'Álbum'}
-                          </span>
-                        </td>
+              {(() => {
+                // Columnas de días dinámicas desde dailyLog
+                const abbrevNote = (note) => {
+                  if (note.includes('post-lanzamiento') || note.includes('~1')) return '~1h lanz.';
+                  const m = note.match(/^(Primer|Segundo|Tercer|Cuarto|Quinto|Sexto|Séptimo)/);
+                  if (m) return m[0].replace('Primer','1er').replace('Segundo','2do').replace('Tercer','3er').replace('Cuarto','4to').replace('Quinto','5to').replace('Sexto','6to').replace('Séptimo','7mo') + ' día';
+                  return note.substring(0, 12);
+                };
+                const d20entry = dailyLog.find(e => e.date === '2026-03-20');
+                const fullDays = dailyLog.filter(e => e.date >= '2026-03-20');
+                const lastFullDay = fullDays[fullDays.length - 1];
+                const decayColLabel = d20entry && lastFullDay && lastFullDay.date !== d20entry.date
+                  ? `${d20entry.label}→${lastFullDay.label}`
+                  : 'D20→D21';
+                return (
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
+                        <th style={{ textAlign: 'left', padding: '0.75rem', color: '#94a3b8' }}>#</th>
+                        <th style={{ textAlign: 'left', padding: '0.75rem', color: '#94a3b8' }}>Track</th>
+                        <th style={{ textAlign: 'right', padding: '0.75rem', color: '#f97316' }}>Live Total</th>
+                        {dailyLog.map(entry => (
+                          <th key={entry.date} style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>
+                            <div style={{ fontWeight: 600 }}>{entry.label}</div>
+                            <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 400 }}>{abbrevNote(entry.note)}</div>
+                          </th>
+                        ))}
+                        <th style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>{decayColLabel}</th>
+                        <th style={{ textAlign: 'center', padding: '0.75rem', color: '#94a3b8' }}>Tipo</th>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                    </thead>
+                    <tbody>
+                      {[...metrics.trackAnalysis].sort((a, b) => b.liveTotal - a.liveTotal).map((t, i) => {
+                        const d20streams = d20entry?.tracks[t.name] ?? 0;
+                        const lastStreams = lastFullDay?.tracks[t.name] ?? 0;
+                        const dynamicDecay = d20streams > 0 ? ((lastStreams - d20streams) / d20streams * 100).toFixed(1) : 'N/A';
+                        const decayVal = parseFloat(dynamicDecay);
+                        const decayColor = isNaN(decayVal) ? '#64748b' : decayVal >= 0 ? '#4ade80' : Math.abs(decayVal) > 55 ? '#f87171' : '#fbbf24';
+                        return (
+                          <tr key={t.name} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                            <td style={{ padding: '0.75rem', color: '#64748b', fontWeight: 600 }}>{i + 1}</td>
+                            <td style={{ padding: '0.75rem', color: '#f1f5f9', fontWeight: 500 }}>{t.name}</td>
+                            <td style={{ textAlign: 'right', padding: '0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(t.liveTotal)}</td>
+                            {dailyLog.map(entry => (
+                              <td key={entry.date} style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>
+                                {formatNumber(entry.tracks[t.name] ?? 0)}
+                              </td>
+                            ))}
+                            <td style={{ textAlign: 'right', padding: '0.75rem', color: decayColor, fontWeight: 600, fontSize: '0.8rem' }}>
+                              {dynamicDecay === 'N/A' ? '—' : `${decayVal >= 0 ? '+' : ''}${dynamicDecay}%`}
+                            </td>
+                            <td style={{ textAlign: 'center', padding: '0.75rem' }}>
+                              <span style={{
+                                padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.7rem', fontWeight: 600,
+                                background: t.type === 'single' ? 'rgba(251,191,36,0.15)' : 'rgba(249,115,22,0.15)',
+                                color: t.type === 'single' ? '#fbbf24' : '#f97316',
+                                border: `1px solid ${t.type === 'single' ? 'rgba(251,191,36,0.3)' : 'rgba(249,115,22,0.3)'}`,
+                              }}>
+                                {t.type === 'single' ? 'Single' : 'Álbum'}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                );
+              })()}
             </div>
           </div>
 
           {/* ── 2. Ranking con selector de día ── */}
           {(() => {
-            const rankDays = [
-              { key: 'day19', label: 'Día 19', sub: '~1h post-lanzamiento' },
-              { key: 'day20', label: 'Día 20', sub: 'Primer día completo' },
-              { key: 'day21', label: 'Día 21', sub: 'Segundo día completo' },
-            ];
-            const idx = rankDays.findIndex(d => d.key === rankDay);
-            const current = rankDays[idx];
+            // rankDays derivado de dailyLog — se expande solo con D23, D24, etc.
+            const rankDays = dailyLog.map(e => ({ key: e.date, label: e.label, sub: e.note }));
+            // Si el rankDay actual no existe en la nueva lista (ej. venía de 'day20'), usar D20 o el último
+            const validKey = rankDays.find(d => d.key === rankDay)
+              ? rankDay
+              : (rankDays.find(d => d.label === 'D20')?.key ?? rankDays[rankDays.length - 1]?.key);
+            const idx = rankDays.findIndex(d => d.key === validKey);
+            const current = rankDays[idx] || rankDays[0];
+            // Streams del día seleccionado leídos directo del dailyLog
+            const selectedEntry = dailyLog.find(e => e.key === validKey) || dailyLog.find(e => e.date === validKey);
             const rankData = [...metrics.trackAnalysis]
               .map(t => ({
                 name: t.name.length > 22 ? t.name.substring(0, 20) + '…' : t.name,
                 fullName: t.name,
-                streams: t[rankDay] || 0,
+                streams: selectedEntry?.tracks[t.name] ?? 0,
                 type: t.type,
               }))
+              .filter(t => t.streams > 0)
               .sort((a, b) => b.streams - a.streams);
             return (
               <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
@@ -749,8 +782,8 @@ const AmorFiadoDashboard = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <button
                       onClick={() => setRankDay(rankDays[Math.max(0, idx - 1)].key)}
-                      disabled={idx === 0}
-                      style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.7)', background: idx === 0 ? 'rgba(51,65,85,0.2)' : 'rgba(51,65,85,0.5)', color: idx === 0 ? '#334155' : '#94a3b8', cursor: idx === 0 ? 'default' : 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      disabled={idx <= 0}
+                      style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.7)', background: idx <= 0 ? 'rgba(51,65,85,0.2)' : 'rgba(51,65,85,0.5)', color: idx <= 0 ? '#334155' : '#94a3b8', cursor: idx <= 0 ? 'default' : 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     >‹</button>
                     <div style={{ textAlign: 'center', minWidth: '120px' }}>
                       <p style={{ color: '#f97316', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>{current.label}</p>
@@ -758,8 +791,8 @@ const AmorFiadoDashboard = () => {
                     </div>
                     <button
                       onClick={() => setRankDay(rankDays[Math.min(rankDays.length - 1, idx + 1)].key)}
-                      disabled={idx === rankDays.length - 1}
-                      style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.7)', background: idx === rankDays.length - 1 ? 'rgba(51,65,85,0.2)' : 'rgba(51,65,85,0.5)', color: idx === rankDays.length - 1 ? '#334155' : '#94a3b8', cursor: idx === rankDays.length - 1 ? 'default' : 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      disabled={idx >= rankDays.length - 1}
+                      style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.7)', background: idx >= rankDays.length - 1 ? 'rgba(51,65,85,0.2)' : 'rgba(51,65,85,0.5)', color: idx >= rankDays.length - 1 ? '#334155' : '#94a3b8', cursor: idx >= rankDays.length - 1 ? 'default' : 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     >›</button>
                   </div>
                 </div>
@@ -859,7 +892,13 @@ const AmorFiadoDashboard = () => {
           {/* Album total cumulative — día cerrado */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
             <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>Acumulado Total del Álbum</h2>
-            <p style={{ color: '#64748b', fontSize: '0.8rem', margin: '0 0 1.5rem 0' }}>Streams acumulados a día cerrado — desde lanzamiento de CEA (05/02) hasta 21/03</p>
+            <p style={{ color: '#64748b', fontSize: '0.8rem', margin: '0 0 1.5rem 0' }}>
+              {(() => {
+                const last = dailyHistory[dailyHistory.length - 1];
+                const lastLabel = last ? last.date.slice(5).replace('-', '/') : '—';
+                return `Streams acumulados a día cerrado — desde lanzamiento de CEA (05/02) hasta ${lastLabel}`;
+              })()}
+            </p>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={dailyHistory} margin={{ top: 10, right: 30, left: 10, bottom: 5 }}>
                 <defs>
@@ -1468,27 +1507,30 @@ const AmorFiadoDashboard = () => {
               const tracks = metrics.trackAnalysis.filter(t => t.day20 > 0 && t.day21 > 0).sort((a, b) => b.day21 - a.day21);
               const trackColors = ['#4ade80','#38bdf8','#a78bfa','#fb7185','#67e8f9','#d946ef','#fdba74','#86efac','#c4b5fd','#94a3b8'];
 
-              // Días reales disponibles: Día 1 y Día 2 (D20/D21)
-              // Días proyectados: 3 a 28
-              const REAL_DAYS = 2; // actualizar cuando el scraper traiga D22+
+              // REAL_DAYS: días completos desde D20 con data real en dailyLog (auto-incrementa)
+              const d20Idx = dailyLog.findIndex(e => e.date === '2026-03-20');
+              const REAL_DAYS = d20Idx >= 0 ? dailyLog.length - d20Idx : 2;
 
               const trackData = tracks.map((t, idx) => {
                 const factor = t.day21 / (t.day20 * refCurve[1]);
-                // Para cada día 3-28 (índice 2-27 en refCurve)
                 const projected = Array.from({ length: TOTAL_DAYS - REAL_DAYS }, (_, i) => {
                   return Math.max(Math.round(t.day20 * refCurve[i + REAL_DAYS] * factor), 0);
                 });
                 return { ...t, factor, projected, color: trackColors[idx % trackColors.length] };
               });
 
-              // Datos del gráfico: días 1 a 28, etiquetados como "Día N"
+              // Datos del gráfico: días 1 a 28
+              // Para días reales, lee directamente de dailyLog; para proyectados, usa el modelo
               const chartData = Array.from({ length: TOTAL_DAYS }, (_, i) => {
                 const albumDay = i + 1;
                 const row = { day: `Día ${albumDay}`, isReal: albumDay <= REAL_DAYS };
                 trackData.forEach(t => {
-                  if (albumDay === 1) row[t.name] = t.day20;
-                  else if (albumDay === 2) row[t.name] = t.day21;
-                  else row[t.name] = t.projected[albumDay - 1 - REAL_DAYS];
+                  if (albumDay <= REAL_DAYS) {
+                    const entry = dailyLog[d20Idx + albumDay - 1];
+                    row[t.name] = entry?.tracks[t.name] ?? (albumDay === 1 ? t.day20 : t.day21);
+                  } else {
+                    row[t.name] = t.projected[albumDay - 1 - REAL_DAYS];
+                  }
                 });
                 return row;
               });
@@ -1629,7 +1671,7 @@ const AmorFiadoDashboard = () => {
                             contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '8px', fontSize: '0.75rem' }}
                             formatter={(v, name) => [formatNumber(v), name]}
                           />
-                          <ReferenceLine x="Día 3" stroke="rgba(148,163,184,0.35)" strokeDasharray="6 3"
+                          <ReferenceLine x={`Día ${REAL_DAYS + 1}`} stroke="rgba(148,163,184,0.35)" strokeDasharray="6 3"
                             label={{ value: '← real  proyectado →', fill: '#64748b', fontSize: 10, position: 'insideTopLeft' }} />
                           <Legend wrapperStyle={{ fontSize: '0.72rem' }} />
                           {trackData.map(t => (
