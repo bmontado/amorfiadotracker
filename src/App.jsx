@@ -27,6 +27,7 @@ const AmorFiadoDashboard = () => {
   const [histGrouping, setHistGrouping] = useState('day'); // 'day' | 'month'
   const [hoveredDecayTrack, setHoveredDecayTrack] = useState(null);
   const [decayTooltipPos, setDecayTooltipPos] = useState({ x: 0, y: 0 });
+  const [decayVelView, setDecayVelView] = useState('bars'); // 'bars' | 'chart'
   const toggleDay = (date) => setExpandedDays(prev => { const s = new Set(prev); s.has(date) ? s.delete(date) : s.add(date); return s; });
 
   // Album metadata
@@ -1091,13 +1092,81 @@ const AmorFiadoDashboard = () => {
 
           {/* Gráfico de velocidad de decay D20→D21 */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>Velocidad de Decay — D20 → D21</h2>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.25rem' }}>
+              <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Velocidad de Decay — D20 → D21</h2>
+              <div style={{ display: 'flex', gap: '0.3rem' }}>
+                {[['bars', '≡ Visual'], ['chart', '▲ Gráfico']].map(([val, label]) => (
+                  <button key={val} onClick={() => setDecayVelView(val)} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, background: decayVelView === val ? '#f97316' : 'rgba(51,65,85,0.5)', color: decayVelView === val ? '#0f172a' : '#94a3b8' }}>{label}</button>
+                ))}
+              </div>
+            </div>
             <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>% de variación de streams entre el primer día completo (D20) y el segundo (D21). Verde = creciendo · Rojo = cayendo.</p>
             {(() => {
               const sorted = [...metrics.trackAnalysis]
                 .filter(t => t.decayD20toD21 !== 'N/A')
                 .sort((a, b) => parseFloat(b.decayD20toD21) - parseFloat(a.decayD20toD21));
               const max = Math.max(...sorted.map(t => Math.abs(parseFloat(t.decayD20toD21))));
+
+              // === VISTA GRÁFICO (Recharts) ===
+              if (decayVelView === 'chart') {
+                const chartData = [...sorted].reverse().map(t => ({
+                  name: t.name.length > 16 ? t.name.slice(0, 14) + '…' : t.name,
+                  fullName: t.name,
+                  decay: parseFloat(parseFloat(t.decayD20toD21).toFixed(2)),
+                  day20: t.day20,
+                  day21: t.day21,
+                  delta: t.day21 - t.day20,
+                  anomaly: t.anomaly,
+                }));
+                const CustomTooltip = ({ active, payload }) => {
+                  if (!active || !payload?.length) return null;
+                  const d = payload[0].payload;
+                  const val = d.decay;
+                  const color = val >= 0 ? '#4ade80' : val < -40 ? '#f87171' : val < -20 ? '#fb923c' : '#fbbf24';
+                  return (
+                    <div style={{ background: '#0f172a', border: `1px solid ${color}44`, borderRadius: '10px', padding: '0.65rem 0.9rem', fontSize: '0.75rem', minWidth: '190px', boxShadow: `0 4px 20px ${color}22` }}>
+                      <p style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 0.4rem' }}>{d.fullName}</p>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.2rem 0.75rem' }}>
+                        <span style={{ color: '#64748b' }}>D20 (Día 1)</span><span style={{ color: '#f97316', fontWeight: 600 }}>{formatNumber(d.day20)}</span>
+                        <span style={{ color: '#64748b' }}>D21 (Día 2)</span><span style={{ color: '#fbbf24', fontWeight: 600 }}>{formatNumber(d.day21)}</span>
+                        <span style={{ color: '#64748b' }}>Δ streams</span><span style={{ color, fontWeight: 600 }}>{d.delta >= 0 ? '+' : ''}{formatNumber(d.delta)}</span>
+                        <span style={{ color: '#64748b' }}>Decay</span><span style={{ color, fontWeight: 700 }}>{val >= 0 ? '+' : ''}{val.toFixed(2)}%</span>
+                        {d.anomaly && <><span style={{ color: '#64748b' }}>Estado</span><span style={{ color: d.anomaly === 'Outperformer' ? '#4ade80' : d.anomaly === 'Underperformer' ? '#f87171' : '#fbbf24', fontWeight: 600 }}>{d.anomaly}</span></>}
+                      </div>
+                    </div>
+                  );
+                };
+                return (
+                  <div>
+                    <ResponsiveContainer width="100%" height={420}>
+                      <BarChart layout="vertical" data={chartData} margin={{ top: 5, right: 60, left: 10, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.08)" horizontal={false} />
+                        <XAxis
+                          type="number"
+                          stroke="#64748b"
+                          tick={{ fontSize: 11 }}
+                          tickFormatter={v => (v >= 0 ? '+' : '') + v + '%'}
+                          domain={['dataMin - 5', 'dataMax + 5']}
+                        />
+                        <YAxis dataKey="name" type="category" stroke="#94a3b8" width={140} tick={{ fontSize: 11 }} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(148,163,184,0.06)' }} />
+                        <ReferenceLine x={0} stroke="rgba(148,163,184,0.3)" strokeWidth={1.5} />
+                        <Bar dataKey="decay" radius={[0, 4, 4, 0]} isAnimationActive={false}
+                          label={{ position: 'right', formatter: v => (v >= 0 ? '+' : '') + v.toFixed(1) + '%', fill: '#94a3b8', fontSize: 11 }}>
+                          {chartData.map((entry, idx) => (
+                            <Cell key={idx} fill={entry.decay >= 0 ? '#4ade80' : entry.decay < -40 ? '#f87171' : entry.decay < -20 ? '#fb923c' : '#fbbf24'} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                    <p style={{ color: '#475569', fontSize: '0.7rem', textAlign: 'center', margin: '0.5rem 0 0' }}>
+                      Verde = creciendo · Amarillo = decay leve (&lt;20%) · Naranja = moderado (20–40%) · Rojo = pronunciado (&gt;40%)
+                    </p>
+                  </div>
+                );
+              }
+
+              // === VISTA VISUAL (barras custom) ===
               return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', position: 'relative' }}>
                   {sorted.map(t => {
