@@ -2784,7 +2784,12 @@ const AmorFiadoDashboard = () => {
                       labelStyle={{ color: '#f1f5f9', fontWeight: 700, marginBottom: '0.25rem' }}
                       formatter={(v, name) => {
                         const cfg = segConfig.find(s => s.key === name);
-                        return [v?.toLocaleString('es-AR'), cfg?.label ?? name];
+                        const total = segs[name]?.total;
+                        const pct = total && v != null ? (v / total * 100).toFixed(1) : null;
+                        const display = pct != null
+                          ? `${v?.toLocaleString('es-AR')} oyentes · ${pct}%`
+                          : v?.toLocaleString('es-AR');
+                        return [display, cfg?.label ?? name];
                       }}
                     />
                     {segConfig.map(s => (
@@ -2798,7 +2803,7 @@ const AmorFiadoDashboard = () => {
                   </AreaChart>
                 </ResponsiveContainer>
                 <p style={{ color: '#475569', fontSize: '0.7rem', margin: '0.5rem 0 0', textAlign: 'right' }}>
-                  Oyentes únicos acumulados que escucharon Amor Fiado desde el lanzamiento · Datos S4A
+                  Oyentes únicos acumulados que escucharon {eng.name} desde el lanzamiento · Datos S4A
                 </p>
               </div>
             )}
