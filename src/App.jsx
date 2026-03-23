@@ -2087,19 +2087,22 @@ const AmorFiadoDashboard = () => {
         const sorted = [...socialPosts].sort((a, b) => a.date.localeCompare(b.date) || a.platform.localeCompare(b.platform));
 
         // Map posts to stream data for correlation
+        // streamDelta = streams del track mencionado en el post ese día vs. el día anterior
+        const getTrackDay = (track, date) => {
+          const fromStream = streamData[track]?.streams?.[date] ?? 0;
+          if (fromStream > 0) return fromStream;
+          const logEntry = dailyLog.find(e => e.date === date);
+          return logEntry?.tracks?.[track] ?? 0;
+        };
         const correlation = sorted.map(p => {
           const dateStr = p.date;
-          const allTracksDay = Object.entries(streamData).reduce((sum, [, d]) => sum + (d.streams[dateStr] || 0), 0);
-          const nextDate = new Date(dateStr + 'T12:00:00');
-          nextDate.setDate(nextDate.getDate() + 1);
-          const nextStr = nextDate.toISOString().split('T')[0];
-          const allTracksNext = Object.entries(streamData).reduce((sum, [, d]) => sum + (d.streams[nextStr] || 0), 0);
-          const mar21Total = Object.values(mar21Verified).reduce((a, b) => a + b, 0);
-          const dayStreams = dateStr === '2026-03-21' ? mar21Total : allTracksDay;
-          const hasNextData = nextStr === '2026-03-21' ? true : allTracksNext > 0;
-          const nextDayStreams = nextStr === '2026-03-21' ? mar21Total : allTracksNext;
-          const streamDelta = hasNextData ? nextDayStreams - dayStreams : null;
-          return { ...p, dayStreams, nextDayStreams, streamDelta };
+          const prevDate = new Date(dateStr + 'T12:00:00');
+          prevDate.setDate(prevDate.getDate() - 1);
+          const prevStr = prevDate.toISOString().split('T')[0];
+          const dayStreams  = getTrackDay(p.track, dateStr);
+          const prevStreams = getTrackDay(p.track, prevStr);
+          const streamDelta = dayStreams > 0 && prevStreams > 0 ? dayStreams - prevStreams : null;
+          return { ...p, dayStreams, prevStreams: prevStreams, streamDelta };
         });
 
         // Aggregate by date for the chart (combine both platforms per date)
@@ -2224,7 +2227,7 @@ const AmorFiadoDashboard = () => {
                           {p.streamDelta !== null && (
                             <div style={{ marginTop: '0.3rem', padding: '0.25rem 0.4rem', borderRadius: '5px', background: p.streamDelta > 0 ? 'rgba(74,222,128,0.1)' : 'rgba(248,113,113,0.1)', border: `1px solid ${p.streamDelta > 0 ? 'rgba(74,222,128,0.25)' : 'rgba(248,113,113,0.25)'}` }}>
                               <span style={{ color: p.streamDelta > 0 ? '#4ade80' : '#f87171', fontWeight: 700 }}>
-                                Streams D+1: {p.streamDelta > 0 ? '+' : ''}{formatNumber(p.streamDelta)}
+                                Δ {p.track.length > 18 ? p.track.slice(0, 16) + '…' : p.track}: {p.streamDelta > 0 ? '+' : ''}{formatNumber(p.streamDelta)} vs día anterior
                               </span>
                             </div>
                           )}
@@ -2441,7 +2444,7 @@ const AmorFiadoDashboard = () => {
                         </p>
                         {p.dayStreams > 0 && p.streamDelta !== null && (
                           <p style={{ color: p.streamDelta > 0 ? '#4ade80' : '#f87171', fontSize: '0.7rem', margin: 0 }}>
-                            Streams D+1: {p.streamDelta > 0 ? '+' : ''}{formatNumber(p.streamDelta)}
+                            Δ {p.track.length > 18 ? p.track.slice(0, 16) + '…' : p.track}: {p.streamDelta > 0 ? '+' : ''}{formatNumber(p.streamDelta)} vs día anterior
                           </p>
                         )}
                       </div>
@@ -2602,7 +2605,7 @@ const AmorFiadoDashboard = () => {
                   <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Instagram:</strong> @zeballos17 — 8 reels (Feb 2 – Mar 21). Views y likes desde perfil público.</p>
                   <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>TikTok:</strong> @zeballos1717 — 15 videos (Ene 28 – Mar 22). Eng. rate ~12% vs ~5% en IG.</p>
                   <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Engagement Rate:</strong> Likes / Views × 100.</p>
-                  <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Stream Delta D+1:</strong> Diferencia en streams entre el día del post y el siguiente (correlación, no causalidad).</p>
+                  <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Δ Streams:</strong> Streams del track mencionado en el post ese día vs. el día anterior (correlación, no causalidad).</p>
                   <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Atribución:</strong> Por track mencionado, audio usado o taggeado (#amorfiado).</p>
                 </div>
               )}
