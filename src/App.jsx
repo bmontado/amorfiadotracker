@@ -1468,7 +1468,7 @@ const AmorFiadoDashboard = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
                 <span style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>Curva ref: CEA + ATBLM</span>
                 <div style={{ display: 'flex', gap: '0.3rem' }}>
-                  {[['chart', '▲ Gráfico'], ['table', '≡ Tabla']].map(([val, label]) => (
+                  {[['chart', '▲ Absoluto'], ['norm', '% Retención'], ['table', '≡ Tabla']].map(([val, label]) => (
                     <button key={val} onClick={() => setDecayView(val)} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, background: decayView === val ? '#f97316' : 'rgba(51,65,85,0.5)', color: decayView === val ? '#0f172a' : '#94a3b8' }}>{label}</button>
                   ))}
                 </div>
@@ -1534,6 +1534,44 @@ const AmorFiadoDashboard = () => {
                 });
                 return row;
               });
+
+              // === Datos normalizados (% retención relativa a D20 = 100%) ===
+              const normChartData = chartData.map((row) => {
+                const normRow = { day: row.day, isReal: row.isReal };
+                trackData.forEach(t => {
+                  const base = chartData[0][t.name] || 1;
+                  normRow[t.name] = row[t.name] != null ? parseFloat((row[t.name] / base * 100).toFixed(1)) : null;
+                });
+                return normRow;
+              });
+
+              // === Velocidad de Decay — métricas reales del dailyLog ===
+              const postAlbumEntries = dailyLog.filter(e => e.date >= '2026-03-20');
+              const albumDayTotals = postAlbumEntries.map(e => ({
+                label: e.label,
+                total: Object.values(e.tracks).reduce((s, v) => s + v, 0),
+              }));
+              const decayRates = albumDayTotals.slice(1).map((curr, i) => {
+                const prev = albumDayTotals[i];
+                const pct = prev.total > 0 ? (curr.total - prev.total) / prev.total * 100 : null;
+                return { label: `${prev.label}→${curr.label}`, pct };
+              });
+              const lastDecayRate = decayRates[decayRates.length - 1];
+              const prevDecayRate = decayRates[decayRates.length - 2];
+              const isDecelerating = lastDecayRate && prevDecayRate
+                ? Math.abs(lastDecayRate.pct) < Math.abs(prevDecayRate.pct)
+                : null;
+              // Per-track retention: last real day vs D20
+              const d20LogEntry = dailyLog.find(e => e.date === '2026-03-20');
+              const lastRealEntry = postAlbumEntries[postAlbumEntries.length - 1];
+              const trackRetentions = d20LogEntry && lastRealEntry
+                ? trackData.map(t => ({
+                    name: t.name, color: t.color,
+                    retention: d20LogEntry.tracks[t.name] > 0
+                      ? lastRealEntry.tracks[t.name] / d20LogEntry.tracks[t.name] * 100
+                      : null,
+                  })).filter(t => t.retention != null).sort((a, b) => b.retention - a.retention)
+                : [];
 
               // === Confianza del Modelo ===
               // Para cada día del dailyLog posterior a D20, compara la proyección anterior vs el real.
@@ -1659,7 +1697,65 @@ const AmorFiadoDashboard = () => {
                     </div>
                   </div>
 
-                  {/* === VISTA GRÁFICO === */}
+                  {/* === Cards de Velocidad de Decay === */}
+                  {decayRates.length > 0 && (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '0.65rem', marginBottom: '1.25rem' }}>
+                      {/* Caída más reciente */}
+                      {lastDecayRate && (
+                        <div style={{ background: 'rgba(15,23,42,0.5)', borderRadius: '8px', padding: '0.75rem 1rem', border: '1px solid rgba(51,65,85,0.5)' }}>
+                          <p style={{ color: '#64748b', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.3rem' }}>Caída {lastDecayRate.label}</p>
+                          <p style={{ color: lastDecayRate.pct >= 0 ? '#4ade80' : '#f87171', fontSize: '1.35rem', fontWeight: 800, margin: 0 }}>
+                            {lastDecayRate.pct != null ? `${lastDecayRate.pct >= 0 ? '+' : ''}${lastDecayRate.pct.toFixed(1)}%` : '—'}
+                          </p>
+                          <p style={{ color: '#475569', fontSize: '0.68rem', margin: '0.2rem 0 0', fontStyle: 'italic' }}>álbum total del día</p>
+                        </div>
+                      )}
+                      {/* Tendencia: ¿se desacelera el decay? */}
+                      {isDecelerating !== null && (
+                        <div style={{ background: 'rgba(15,23,42,0.5)', borderRadius: '8px', padding: '0.75rem 1rem', border: `1px solid ${isDecelerating ? 'rgba(74,222,128,0.25)' : 'rgba(248,113,113,0.25)'}` }}>
+                          <p style={{ color: '#64748b', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.3rem' }}>Tendencia del decay</p>
+                          <p style={{ color: isDecelerating ? '#4ade80' : '#f87171', fontSize: '1.05rem', fontWeight: 800, margin: 0 }}>
+                            {isDecelerating ? '↘ Desacelerando' : '↗ Acelerando'}
+                          </p>
+                          <p style={{ color: '#475569', fontSize: '0.68rem', margin: '0.2rem 0 0', fontStyle: 'italic' }}>
+                            {isDecelerating ? 'Buen signo — la caída se modera' : 'Caída se profundiza día a día'}
+                          </p>
+                        </div>
+                      )}
+                      {/* Track con mejor retención */}
+                      {trackRetentions.length > 0 && (
+                        <div style={{ background: 'rgba(15,23,42,0.5)', borderRadius: '8px', padding: '0.75rem 1rem', border: '1px solid rgba(51,65,85,0.5)' }}>
+                          <p style={{ color: '#64748b', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.3rem' }}>Mejor retención vs D20</p>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: trackRetentions[0].color, flexShrink: 0 }} />
+                            <p style={{ color: '#e2e8f0', fontSize: '0.85rem', fontWeight: 700, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {trackRetentions[0].name}
+                            </p>
+                          </div>
+                          <p style={{ color: '#4ade80', fontSize: '1.1rem', fontWeight: 800, margin: '0.2rem 0 0' }}>
+                            {trackRetentions[0].retention.toFixed(1)}% de D20
+                          </p>
+                        </div>
+                      )}
+                      {/* Track con mayor decay */}
+                      {trackRetentions.length > 1 && (
+                        <div style={{ background: 'rgba(15,23,42,0.5)', borderRadius: '8px', padding: '0.75rem 1rem', border: '1px solid rgba(51,65,85,0.5)' }}>
+                          <p style={{ color: '#64748b', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.3rem' }}>Mayor decay vs D20</p>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: trackRetentions[trackRetentions.length - 1].color, flexShrink: 0 }} />
+                            <p style={{ color: '#e2e8f0', fontSize: '0.85rem', fontWeight: 700, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {trackRetentions[trackRetentions.length - 1].name}
+                            </p>
+                          </div>
+                          <p style={{ color: '#f87171', fontSize: '1.1rem', fontWeight: 800, margin: '0.2rem 0 0' }}>
+                            {trackRetentions[trackRetentions.length - 1].retention.toFixed(1)}% de D20
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* === VISTA GRÁFICO (absoluto) === */}
                   {decayView === 'chart' && (
                     <div>
                       <ResponsiveContainer width="100%" height={380}>
@@ -1683,17 +1779,73 @@ const AmorFiadoDashboard = () => {
                               strokeWidth={1.8}
                               dot={(props) => {
                                 const { cx, cy, index } = props;
-                                if (index <= 1) return <circle key={`dot-${t.name}-${index}`} cx={cx} cy={cy} r={3} fill={t.color} stroke="#0f172a" strokeWidth={1} />;
+                                if (index < REAL_DAYS) return <circle key={`dot-${t.name}-${index}`} cx={cx} cy={cy} r={3} fill={t.color} stroke="#0f172a" strokeWidth={1} />;
                                 return <circle key={`dot-${t.name}-${index}`} cx={cx} cy={cy} r={2} fill="none" stroke={t.color} strokeWidth={1} />;
                               }}
-                              strokeDasharray={undefined}
                               isAnimationActive={false}
                             />
                           ))}
                         </LineChart>
                       </ResponsiveContainer>
                       <p style={{ color: '#475569', fontSize: '0.7rem', textAlign: 'center', margin: '0.5rem 0 0' }}>
-                        Puntos rellenos = datos reales (D20–D21) · Puntos vacíos = proyección (D22+)
+                        Puntos rellenos = datos reales (D20–D{(postAlbumEntries[postAlbumEntries.length - 1]?.label) || 'D21'}) · Puntos vacíos = proyección
+                      </p>
+                    </div>
+                  )}
+                  {/* === VISTA % RETENCIÓN === */}
+                  {decayView === 'norm' && (
+                    <div>
+                      <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 0.75rem' }}>
+                        Todos los tracks normalizados a <strong style={{ color: '#f97316' }}>100% en D20</strong>. La pendiente muestra la velocidad de decay — cuanto más plana, mejor retención.
+                      </p>
+                      <ResponsiveContainer width="100%" height={380}>
+                        <LineChart data={normChartData} margin={{ top: 10, right: 30, left: 10, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.07)" />
+                          <XAxis dataKey="day" stroke="#64748b" tick={{ fontSize: 11 }} />
+                          <YAxis stroke="#64748b" tickFormatter={v => `${v}%`} domain={[0, 105]} />
+                          <Tooltip
+                            contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(167,139,250,0.35)', borderRadius: '8px', fontSize: '0.75rem' }}
+                            formatter={(v, name) => [`${v != null ? v.toFixed(1) : '—'}%`, name]}
+                          />
+                          <ReferenceLine x={`Día ${REAL_DAYS + 1}`} stroke="rgba(148,163,184,0.35)" strokeDasharray="6 3"
+                            label={{ value: '← real  proyectado →', fill: '#64748b', fontSize: 10, position: 'insideTopLeft' }} />
+                          <ReferenceLine y={75} stroke="rgba(148,163,184,0.12)" strokeDasharray="4 2" label={{ value: '75%', fill: '#334155', fontSize: 9, position: 'insideLeft' }} />
+                          <ReferenceLine y={50} stroke="rgba(148,163,184,0.18)" strokeDasharray="4 2" label={{ value: '50%', fill: '#475569', fontSize: 9, position: 'insideLeft' }} />
+                          <ReferenceLine y={25} stroke="rgba(148,163,184,0.12)" strokeDasharray="4 2" label={{ value: '25%', fill: '#334155', fontSize: 9, position: 'insideLeft' }} />
+                          <Legend wrapperStyle={{ fontSize: '0.72rem' }} />
+                          {trackData.map(t => (
+                            <Line
+                              key={t.name}
+                              type="monotone"
+                              dataKey={t.name}
+                              stroke={t.color}
+                              strokeWidth={2}
+                              dot={(props) => {
+                                const { cx, cy, index } = props;
+                                if (index < REAL_DAYS) return <circle key={`ndot-${t.name}-${index}`} cx={cx} cy={cy} r={3} fill={t.color} stroke="#0f172a" strokeWidth={1} />;
+                                return <circle key={`ndot-${t.name}-${index}`} cx={cx} cy={cy} r={2} fill="none" stroke={t.color} strokeWidth={1} />;
+                              }}
+                              isAnimationActive={false}
+                            />
+                          ))}
+                        </LineChart>
+                      </ResponsiveContainer>
+                      {/* Tabla de retención actual por track */}
+                      {trackRetentions.length > 0 && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '0.75rem', justifyContent: 'center' }}>
+                          {trackRetentions.map(t => (
+                            <div key={t.name} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(15,23,42,0.5)', padding: '0.25rem 0.6rem', borderRadius: '9999px', border: '1px solid rgba(51,65,85,0.4)' }}>
+                              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: t.color }} />
+                              <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>{t.name.split(' ')[0]}</span>
+                              <span style={{ color: t.retention >= 60 ? '#4ade80' : t.retention >= 40 ? '#fbbf24' : '#f87171', fontSize: '0.7rem', fontWeight: 700 }}>
+                                {t.retention.toFixed(0)}%
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <p style={{ color: '#475569', fontSize: '0.7rem', textAlign: 'center', margin: '0.5rem 0 0' }}>
+                        % respecto a streams de D20 — muestra quién cae más rápido en escala relativa
                       </p>
                     </div>
                   )}
