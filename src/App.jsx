@@ -884,9 +884,83 @@ const AmorFiadoDashboard = () => {
         </div>
       )}
 
-      {/* === DECAY & ANOMALÍAS TAB === */}
+      {/* === DECAY INTEL TAB === */}
       {activeTab === 'decay' && (
         <div>
+
+          {/* Gráfico de velocidad de decay D20→D21 */}
+          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
+            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>Velocidad de Decay — D20 → D21</h2>
+            <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>% de variación de streams entre el primer día completo (D20) y el segundo (D21). Verde = creciendo · Rojo = cayendo.</p>
+            {(() => {
+              const sorted = [...metrics.trackAnalysis]
+                .filter(t => t.decayD20toD21 !== 'N/A')
+                .sort((a, b) => parseFloat(b.decayD20toD21) - parseFloat(a.decayD20toD21));
+              const max = Math.max(...sorted.map(t => Math.abs(parseFloat(t.decayD20toD21))));
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+                  {sorted.map(t => {
+                    const val = parseFloat(t.decayD20toD21);
+                    const isPos = val >= 0;
+                    const pct = Math.abs(val) / max * 100;
+                    const color = isPos ? '#4ade80' : val < -40 ? '#f87171' : val < -20 ? '#fb923c' : '#fbbf24';
+                    return (
+                      <div key={t.name} style={{ display: 'grid', gridTemplateColumns: '140px 1fr 60px', gap: '0.75rem', alignItems: 'center' }}>
+                        <span style={{ color: '#e2e8f0', fontSize: '0.78rem', fontWeight: 500, textAlign: 'right', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.name}</span>
+                        <div style={{ background: 'rgba(15,23,42,0.6)', borderRadius: '4px', height: '20px', position: 'relative', overflow: 'hidden' }}>
+                          <div style={{ position: 'absolute', left: isPos ? '50%' : `calc(50% - ${pct / 2}%)`, width: `${pct / 2}%`, height: '100%', background: color, opacity: 0.85, borderRadius: isPos ? '0 3px 3px 0' : '3px 0 0 3px', transition: 'width 0.4s' }} />
+                          <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: '1px', background: 'rgba(148,163,184,0.25)' }} />
+                        </div>
+                        <span style={{ color, fontWeight: 700, fontSize: '0.8rem', textAlign: 'right' }}>{isPos ? '+' : ''}{val.toFixed(1)}%</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Proyección básica a 7 días */}
+          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
+              <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Proyección D22 – D26</h2>
+              <span style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.3)', color: '#fbbf24', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>⚠ Basado en 1 punto de decay — orientativo</span>
+            </div>
+            <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>Proyección exponencial simple usando la tasa D20→D21. Se irá ajustando con más días de datos.</p>
+            {(() => {
+              const tracks = metrics.trackAnalysis.filter(t => t.decayD20toD21 !== 'N/A' && t.day21 > 0);
+              const days = [22, 23, 24, 25, 26];
+              return (
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
+                        <th style={{ textAlign: 'left', padding: '0.5rem 0.75rem', color: '#94a3b8' }}>Track</th>
+                        <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#fbbf24' }}>D21 (real)</th>
+                        {days.map(d => <th key={d} style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#64748b' }}>D{d} ~</th>)}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tracks.sort((a, b) => b.day21 - a.day21).map(t => {
+                        const rate = parseFloat(t.decayD20toD21) / 100;
+                        const projected = days.map(d => Math.round(t.day21 * Math.pow(1 + rate, d - 21)));
+                        return (
+                          <tr key={t.name} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                            <td style={{ padding: '0.5rem 0.75rem', color: '#e2e8f0', fontWeight: 500 }}>{t.name}</td>
+                            <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#fbbf24', fontWeight: 600 }}>{formatNumber(t.day21)}</td>
+                            {projected.map((v, i) => (
+                              <td key={i} style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: v < t.day21 * 0.5 ? '#f87171' : '#94a3b8' }}>{formatNumber(Math.max(v, 0))}</td>
+                            ))}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
+          </div>
+
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
             <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Tabla de Decay & Anomalías</h2>
             <p style={{ color: '#64748b', fontSize: '0.8rem', marginBottom: '1.5rem' }}>Nota: Día 19 ≈ 1h parcial (álbum lanzado 20:00 UTC-3 = 23:00 UTC · ciclo Spotify cierra 00:00 UTC). Día 21 = dato cerrado verificado desde S4A 28 días.</p>
