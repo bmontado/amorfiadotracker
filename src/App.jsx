@@ -24,6 +24,7 @@ const AmorFiadoDashboard = () => {
   const [expandedDays, setExpandedDays] = useState(new Set());
   const [socialView, setSocialView] = useState('list'); // 'list' | 'chart'
   const [decayView, setDecayView] = useState('chart'); // 'chart' | 'table'
+  const [histGrouping, setHistGrouping] = useState('day'); // 'day' | 'month'
   const toggleDay = (date) => setExpandedDays(prev => { const s = new Set(prev); s.has(date) ? s.delete(date) : s.add(date); return s; });
 
   // Album metadata
@@ -579,8 +580,9 @@ const AmorFiadoDashboard = () => {
                 <XAxis dataKey="label" stroke="#64748b" tick={{ fontSize: 11 }} interval={6} />
                 <YAxis stroke="#64748b" tickFormatter={(v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
                 <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(251,146,60,0.3)', borderRadius: '8px' }} formatter={(v) => [formatNumber(v), 'Acumulado']} labelFormatter={(l) => 'Día ' + l} />
+                <ReferenceLine x="02/05" stroke="#f97316" strokeDasharray="4 2" label={{ value: 'CEA', fill: '#f97316', fontSize: 10, position: 'top' }} />
                 <ReferenceLine x="02/26" stroke="#fbbf24" strokeDasharray="4 2" label={{ value: 'ATBLM', fill: '#fbbf24', fontSize: 10, position: 'top' }} />
-                <ReferenceLine x="03/19" stroke="#f97316" strokeDasharray="4 2" label={{ value: 'ÁLBUM', fill: '#f97316', fontSize: 10, position: 'top' }} />
+                <ReferenceLine x="03/19" stroke="#4ade80" strokeDasharray="4 2" label={{ value: '🚀 ÁLBUM', fill: '#4ade80', fontSize: 10, position: 'top' }} />
                 <Area type="monotone" dataKey="albumTotal" stroke="#f97316" fill="url(#gradAlbum)" strokeWidth={3} name="Acumulado" isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
@@ -633,9 +635,57 @@ const AmorFiadoDashboard = () => {
 
           {/* Tabla histórica día a día */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.4rem' }}>Histórico por Día — Acumulado</h2>
-            <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem 0' }}>Hacé clic en + para ver el desglose por track del día</p>
-            <div style={{ overflowX: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>Histórico por Día — Acumulado</h2>
+              <div style={{ display: 'flex', gap: '0.3rem' }}>
+                {[['day', 'Por día'], ['month', 'Por mes']].map(([val, label]) => (
+                  <button key={val} onClick={() => setHistGrouping(val)} style={{ padding: '0.25rem 0.7rem', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, background: histGrouping === val ? '#f97316' : 'rgba(51,65,85,0.5)', color: histGrouping === val ? '#0f172a' : '#94a3b8' }}>{label}</button>
+                ))}
+              </div>
+            </div>
+            <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem 0' }}>{histGrouping === 'day' ? 'Hacé clic en + para ver el desglose por track del día' : 'Streams totales y promedio diario agrupados por mes'}</p>
+            {/* Vista mensual */}
+            {histGrouping === 'month' && (() => {
+              const byMonth = {};
+              [...dailyHistory].forEach((snap, i, arr) => {
+                const month = snap.date.slice(0, 7); // '2026-02'
+                const prev = arr[i - 1];
+                const dayStreams = prev ? snap.albumTotal - prev.albumTotal : snap.albumTotal;
+                if (!byMonth[month]) byMonth[month] = { month, streams: 0, days: 0, acumEnd: 0, trackKeys: Object.keys(snap).filter(k => !['date','label','albumTotal','dayNum'].includes(k)) };
+                byMonth[month].streams += dayStreams;
+                byMonth[month].days += 1;
+                byMonth[month].acumEnd = snap.albumTotal;
+              });
+              const months = Object.values(byMonth);
+              const monthNames = { '2026-02': 'Febrero 2026', '2026-03': 'Marzo 2026', '2026-04': 'Abril 2026' };
+              return (
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
+                        {['Mes', 'Días', 'Streams del mes', 'Prom. diario', 'Acum. al cierre'].map(h => (
+                          <th key={h} style={{ textAlign: h === 'Mes' ? 'left' : 'right', padding: '0.6rem 0.75rem', color: '#94a3b8' }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {months.map(m => (
+                        <tr key={m.month} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                          <td style={{ padding: '0.6rem 0.75rem', color: '#f1f5f9', fontWeight: 600 }}>{monthNames[m.month] || m.month}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: '#64748b' }}>{m.days}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: '#4ade80', fontWeight: 700 }}>{formatNumber(m.streams)}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: '#94a3b8' }}>{formatNumber(Math.round(m.streams / m.days))}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(m.acumEnd)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
+
+            {/* Vista diaria */}
+            {histGrouping === 'day' && <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
@@ -706,7 +756,7 @@ const AmorFiadoDashboard = () => {
                   })}
                 </tbody>
               </table>
-            </div>
+            </div>}
           </div>
 
           {/* Snapshots en tiempo real (scraper 8h) */}
@@ -898,24 +948,55 @@ const AmorFiadoDashboard = () => {
                 .filter(t => t.decayD20toD21 !== 'N/A')
                 .sort((a, b) => parseFloat(b.decayD20toD21) - parseFloat(a.decayD20toD21));
               const max = Math.max(...sorted.map(t => Math.abs(parseFloat(t.decayD20toD21))));
+              const [hoveredTrack, setHoveredTrack] = React.useState(null);
+              const [tooltipPos, setTooltipPos] = React.useState({ x: 0, y: 0 });
               return (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', position: 'relative' }}>
                   {sorted.map(t => {
                     const val = parseFloat(t.decayD20toD21);
                     const isPos = val >= 0;
                     const pct = Math.abs(val) / max * 100;
                     const color = isPos ? '#4ade80' : val < -40 ? '#f87171' : val < -20 ? '#fb923c' : '#fbbf24';
                     return (
-                      <div key={t.name} style={{ display: 'grid', gridTemplateColumns: '140px 1fr 60px', gap: '0.75rem', alignItems: 'center' }}>
+                      <div key={t.name}
+                        style={{ display: 'grid', gridTemplateColumns: '140px 1fr 60px', gap: '0.75rem', alignItems: 'center', cursor: 'default' }}
+                        onMouseEnter={e => { setHoveredTrack(t); setTooltipPos({ x: e.clientX, y: e.clientY }); }}
+                        onMouseMove={e => setTooltipPos({ x: e.clientX, y: e.clientY })}
+                        onMouseLeave={() => setHoveredTrack(null)}
+                      >
                         <span style={{ color: '#e2e8f0', fontSize: '0.78rem', fontWeight: 500, textAlign: 'right', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.name}</span>
                         <div style={{ background: 'rgba(15,23,42,0.6)', borderRadius: '4px', height: '20px', position: 'relative', overflow: 'hidden' }}>
-                          <div style={{ position: 'absolute', left: isPos ? '50%' : `calc(50% - ${pct / 2}%)`, width: `${pct / 2}%`, height: '100%', background: color, opacity: 0.85, borderRadius: isPos ? '0 3px 3px 0' : '3px 0 0 3px', transition: 'width 0.4s' }} />
+                          <div style={{ position: 'absolute', left: isPos ? '50%' : `calc(50% - ${pct / 2}%)`, width: `${pct / 2}%`, height: '100%', background: color, opacity: hoveredTrack?.name === t.name ? 1 : 0.85, borderRadius: isPos ? '0 3px 3px 0' : '3px 0 0 3px', transition: 'opacity 0.15s' }} />
                           <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: '1px', background: 'rgba(148,163,184,0.25)' }} />
                         </div>
                         <span style={{ color, fontWeight: 700, fontSize: '0.8rem', textAlign: 'right' }}>{isPos ? '+' : ''}{val.toFixed(1)}%</span>
                       </div>
                     );
                   })}
+                  {/* Tooltip flotante */}
+                  {hoveredTrack && (() => {
+                    const val = parseFloat(hoveredTrack.decayD20toD21);
+                    const color = val >= 0 ? '#4ade80' : val < -40 ? '#f87171' : val < -20 ? '#fb923c' : '#fbbf24';
+                    const rank = sorted.findIndex(t => t.name === hoveredTrack.name) + 1;
+                    return (
+                      <div style={{ position: 'fixed', left: tooltipPos.x + 14, top: tooltipPos.y - 10, zIndex: 9999, background: '#0f172a', border: `1px solid ${color}44`, borderRadius: '10px', padding: '0.65rem 0.9rem', fontSize: '0.75rem', pointerEvents: 'none', minWidth: '200px', boxShadow: `0 4px 20px ${color}22` }}>
+                        <p style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 0.4rem' }}>{hoveredTrack.name}</p>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.2rem 0.75rem' }}>
+                          <span style={{ color: '#64748b' }}>D20 (Día 1)</span>
+                          <span style={{ color: '#f97316', fontWeight: 600 }}>{formatNumber(hoveredTrack.day20)}</span>
+                          <span style={{ color: '#64748b' }}>D21 (Día 2)</span>
+                          <span style={{ color: '#fbbf24', fontWeight: 600 }}>{formatNumber(hoveredTrack.day21)}</span>
+                          <span style={{ color: '#64748b' }}>Δ streams</span>
+                          <span style={{ color, fontWeight: 600 }}>{hoveredTrack.day21 - hoveredTrack.day20 > 0 ? '+' : ''}{formatNumber(hoveredTrack.day21 - hoveredTrack.day20)}</span>
+                          <span style={{ color: '#64748b' }}>Decay</span>
+                          <span style={{ color, fontWeight: 700 }}>{val >= 0 ? '+' : ''}{val.toFixed(2)}%</span>
+                          <span style={{ color: '#64748b' }}>Ranking</span>
+                          <span style={{ color: '#94a3b8' }}>{rank}° de {sorted.length}</span>
+                          {hoveredTrack.anomaly && <><span style={{ color: '#64748b' }}>Estado</span><span style={{ color: hoveredTrack.anomalyColor === 'green' ? '#4ade80' : hoveredTrack.anomalyColor === 'red' ? '#f87171' : '#fbbf24', fontWeight: 600 }}>{hoveredTrack.anomaly}</span></>}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               );
             })()}
@@ -924,7 +1005,7 @@ const AmorFiadoDashboard = () => {
           {/* Proyección con curva de referencia CEA + ATBLM */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
-              <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Proyección D22 – D30</h2>
+              <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Proyección 28 Días — Día 1 al Día 28</h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
                 <span style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>Curva ref: CEA + ATBLM</span>
                 <div style={{ display: 'flex', gap: '0.3rem' }}>
@@ -994,6 +1075,35 @@ const AmorFiadoDashboard = () => {
 
               return (
                 <div>
+                  {/* Totales proyectados a 28 días */}
+                  {(() => {
+                    const totals28 = trackData.map(t => {
+                      const real = t.day20 + t.day21;
+                      const proj = t.projected.reduce((s, v) => s + v, 0);
+                      return { name: t.name, color: t.color, total: real + proj };
+                    });
+                    const albumTotal28 = totals28.reduce((s, t) => s + t.total, 0);
+                    return (
+                      <div style={{ background: 'rgba(15,23,42,0.5)', borderRadius: '10px', padding: '1rem 1.25rem', marginBottom: '1.25rem', border: '1px solid rgba(249,115,22,0.2)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                          <span style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Total proyectado 28 días</span>
+                          <span style={{ color: '#f97316', fontSize: '1.4rem', fontWeight: 800 }}>{formatNumber(albumTotal28)}</span>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.3rem' }}>
+                          {totals28.sort((a, b) => b.total - a.total).map(t => (
+                            <div key={t.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.2rem 0.4rem', borderRadius: '4px' }}>
+                              <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: t.color, flexShrink: 0 }} />
+                                <span style={{ color: '#94a3b8', fontSize: '0.72rem' }}>{t.name}</span>
+                              </span>
+                              <span style={{ color: '#e2e8f0', fontSize: '0.72rem', fontWeight: 600 }}>{formatNumber(t.total)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
                   {/* Nota del factor de ajuste */}
                   <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
                     <div style={{ fontSize: '0.72rem', color: '#64748b', background: 'rgba(15,23,42,0.4)', padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.4)' }}>
@@ -1087,48 +1197,7 @@ const AmorFiadoDashboard = () => {
             })()}
           </div>
 
-          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Tabla de Decay & Anomalías</h2>
-            <p style={{ color: '#64748b', fontSize: '0.8rem', marginBottom: '1.5rem' }}>Nota: Día 19 ≈ 1h parcial (álbum lanzado 20:00 UTC-3 = 23:00 UTC · ciclo Spotify cierra 00:00 UTC). Día 21 = dato cerrado verificado desde S4A 28 días.</p>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
-                    {['Track', 'D19 (~1h)', 'D20', 'D21', 'Decay D20→D21', 'Estado'].map((h) => (
-                      <th key={h} style={{ textAlign: h === 'Track' || h === 'Estado' ? (h === 'Estado' ? 'center' : 'left') : 'right', padding: '0.75rem', color: '#94a3b8', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {metrics.trackAnalysis.map((t) => (
-                    <tr key={t.name} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
-                      <td style={{ padding: '0.75rem', color: '#f1f5f9', fontWeight: 500, maxWidth: '200px' }}>{t.name}</td>
-                      <td style={{ textAlign: 'right', padding: '0.75rem', color: '#94a3b8' }}>{formatNumber(t.day19)}</td>
-                      <td style={{ textAlign: 'right', padding: '0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(t.day20)}</td>
-                      <td style={{ textAlign: 'right', padding: '0.75rem', color: '#fbbf24', fontWeight: 600 }}>{formatNumber(t.day21)}</td>
-                      <td style={{ textAlign: 'right', padding: '0.75rem', fontWeight: 600, color: t.decayD20toD21 !== 'N/A' && parseFloat(t.decayD20toD21) > 0 ? '#4ade80' : '#f87171' }}>
-                        {t.decayD20toD21 !== 'N/A' ? (parseFloat(t.decayD20toD21) > 0 ? '+' : '') + t.decayD20toD21 + '%' : 'N/A'}
-                      </td>
-                      <td style={{ textAlign: 'center', padding: '0.75rem' }}>
-                        {t.anomaly && (
-                          <span style={{
-                            padding: '0.2rem 0.7rem', borderRadius: '9999px', fontSize: '0.7rem', fontWeight: 600,
-                            background: t.anomalyColor === 'green' ? 'rgba(74,222,128,0.15)' : t.anomalyColor === 'red' ? 'rgba(248,113,113,0.15)' : 'rgba(251,191,36,0.15)',
-                            color: t.anomalyColor === 'green' ? '#4ade80' : t.anomalyColor === 'red' ? '#f87171' : '#fbbf24',
-                            border: `1px solid ${t.anomalyColor === 'green' ? 'rgba(74,222,128,0.3)' : t.anomalyColor === 'red' ? 'rgba(248,113,113,0.3)' : 'rgba(251,191,36,0.3)'}`,
-                          }}>
-                            {t.anomaly}
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Decay explanation */}
+          {/* Metodología */}
           <div style={{ background: 'linear-gradient(135deg, rgba(251,146,60,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(251,146,60,0.2)' }}>
             <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Metodología</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: '#94a3b8' }}>
