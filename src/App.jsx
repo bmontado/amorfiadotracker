@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   BarChart,
   Bar,
@@ -18,6 +18,33 @@ import {
   Area,
 } from 'recharts';
 
+// ─── Datos dinámicos — fuente de verdad en public/data.json ───────────────────
+// Este objeto es el fallback inicial. La app lo reemplaza al cargar data.json
+// y lo refresca automáticamente cada 5 minutos.
+const DEFAULT_LIVE_DATA = {
+  lastUpdated: {
+    spotify: '2026-03-23T12:06:43-03:00',
+    social:  '2026-03-22T15:00:00-03:00',
+  },
+  albumLiveTotal: 704025,
+  liveTotals: {
+    'CUANDO ESCRIBÍA ASIMETRÍA': 276622, 'ATBLM': 204181, 'UN GUSTO': 34953,
+    'CALL ME': 26075, 'MAN OF WORD': 25068, 'OJOS TRISTES': 23695,
+    'HIELO': 21708, 'CHANGES': 21535, 'ALQUILER': 20058,
+    'YA NO': 18126, 'HAZLO CALLAO': 16594, 'TOP TIER': 15674,
+  },
+  dailyLog: [
+    { date: '2026-03-19', label: 'D19', note: '~1 h post-lanzamiento (20:00 UTC-3)', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 5814, 'ATBLM': 8513, 'UN GUSTO': 806, 'CALL ME': 1032, 'MAN OF WORD': 1293, 'OJOS TRISTES': 649, 'HIELO': 753, 'ALQUILER': 879, 'CHANGES': 676, 'YA NO': 472, 'HAZLO CALLAO': 486, 'TOP TIER': 383 } },
+    { date: '2026-03-20', label: 'D20', note: 'Primer día completo', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 10875, 'ATBLM': 14710, 'UN GUSTO': 16320, 'CALL ME': 11305, 'MAN OF WORD': 10998, 'OJOS TRISTES': 10905, 'HIELO': 9626, 'ALQUILER': 9166, 'CHANGES': 9170, 'YA NO': 8069, 'HAZLO CALLAO': 7584, 'TOP TIER': 7061 } },
+    { date: '2026-03-21', label: 'D21', note: 'Segundo día completo', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 7079, 'ATBLM': 9742, 'UN GUSTO': 8254, 'CALL ME': 6294, 'MAN OF WORD': 5968, 'OJOS TRISTES': 5708, 'HIELO': 5334, 'ALQUILER': 4822, 'CHANGES': 5213, 'YA NO': 4388, 'HAZLO CALLAO': 4084, 'TOP TIER': 3864 } },
+    { date: '2026-03-22', label: 'D22', note: 'Tercer día completo', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 5464, 'ATBLM': 7568, 'UN GUSTO': 6120, 'CALL ME': 4926, 'MAN OF WORD': 4487, 'OJOS TRISTES': 4220, 'HIELO': 4022, 'ALQUILER': 3493, 'CHANGES': 4534, 'YA NO': 3470, 'HAZLO CALLAO': 2966, 'TOP TIER': 2879 } },
+  ],
+  liveHistory: [
+    { date: '2026-03-22', label: 'D+3', recordedAt: '2026-03-22T15:00:00-03:00', albumTotal: 678677, tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 273884, 'ATBLM': 200669, 'UN GUSTO': 31749, 'CALL ME': 23750, 'MAN OF WORD': 22919, 'OJOS TRISTES': 21652, 'HIELO': 19885, 'CHANGES': 19758, 'ALQUILER': 18508, 'YA NO': 16522, 'HAZLO CALLAO': 15226, 'TOP TIER': 14298 } },
+    { date: '2026-03-23', label: 'D+4', recordedAt: '2026-03-23T12:06:43-03:00', albumTotal: 704025, tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 276622, 'ATBLM': 204181, 'UN GUSTO': 34953, 'CALL ME': 26075, 'MAN OF WORD': 25068, 'OJOS TRISTES': 23695, 'HIELO': 21708, 'CHANGES': 21535, 'ALQUILER': 20058, 'YA NO': 18126, 'HAZLO CALLAO': 16594, 'TOP TIER': 15674 } },
+  ],
+};
+
 const AmorFiadoDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [growthZoom, setGrowthZoom] = useState('all'); // 'all' | 'zoom'
@@ -30,6 +57,27 @@ const AmorFiadoDashboard = () => {
   const [decayTooltipPos, setDecayTooltipPos] = useState({ x: 0, y: 0 });
   const [decayMethodOpen, setDecayMethodOpen] = useState(false);
   const [socialMethodOpen, setSocialMethodOpen] = useState(false);
+  const [liveData, setLiveData] = useState(DEFAULT_LIVE_DATA);
+  const [dataFreshAt, setDataFreshAt] = useState(null);
+
+  // Polling: carga data.json al montar y cada 5 minutos.
+  // La scheduled task solo necesita actualizar data.json y hacer push —
+  // el siguiente ciclo del polling lo refleja automáticamente en todos los componentes.
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch(`/data.json?t=${Date.now()}`);
+        if (res.ok) {
+          const json = await res.json();
+          setLiveData(json);
+          setDataFreshAt(Date.now());
+        }
+      } catch { /* red caída o build en curso: mantiene el estado anterior */ }
+    };
+    load();
+    const id = setInterval(load, 5 * 60 * 1000); // cada 5 min
+    return () => clearInterval(id);
+  }, []);
   const toggleDay = (date) => setExpandedDays(prev => { const s = new Set(prev); s.has(date) ? s.delete(date) : s.add(date); return s; });
 
   // Album metadata
@@ -38,114 +86,27 @@ const AmorFiadoDashboard = () => {
   const releaseDate = '19 de Marzo, 2026 — 20:00 (UTC-3)';
 
   // Last data update timestamps — updated automatically by the scrapers each run
-  const lastUpdated = {
-    spotify: '2026-03-23T12:06:43-03:00',
-    social:  '2026-03-22T15:00:00-03:00',
-  };
   const formatLastUpdated = (isoStr) => {
     const d = new Date(isoStr);
     return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
       + ' ' + d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // DAILY LOG — streams diarios confirmados por track (fuente: S4A 28-day CSV)
-  // Para agregar un nuevo día: copiar el bloque de la última entrada y
-  // actualizar date, label, note y los valores por track.
-  // ─────────────────────────────────────────────────────────────────────────
-  const dailyLog = [
-    {
-      date: '2026-03-19', label: 'D19', note: '~1 h post-lanzamiento (20:00 UTC-3)',
-      tracks: {
-        'CUANDO ESCRIBÍA ASIMETRÍA': 5814, 'ATBLM': 8513, 'UN GUSTO': 806,
-        'CALL ME': 1032, 'MAN OF WORD': 1293, 'OJOS TRISTES': 649,
-        'HIELO': 753, 'ALQUILER': 879, 'CHANGES': 676,
-        'YA NO': 472, 'HAZLO CALLAO': 486, 'TOP TIER': 383,
-      },
-    },
-    {
-      date: '2026-03-20', label: 'D20', note: 'Primer día completo',
-      tracks: {
-        'CUANDO ESCRIBÍA ASIMETRÍA': 10875, 'ATBLM': 14710, 'UN GUSTO': 16320,
-        'CALL ME': 11305, 'MAN OF WORD': 10998, 'OJOS TRISTES': 10905,
-        'HIELO': 9626, 'ALQUILER': 9166, 'CHANGES': 9170,
-        'YA NO': 8069, 'HAZLO CALLAO': 7584, 'TOP TIER': 7061,
-      },
-    },
-    {
-      date: '2026-03-21', label: 'D21', note: 'Segundo día completo',
-      tracks: {
-        'CUANDO ESCRIBÍA ASIMETRÍA': 7079, 'ATBLM': 9742, 'UN GUSTO': 8254,
-        'CALL ME': 6294, 'MAN OF WORD': 5968, 'OJOS TRISTES': 5708,
-        'HIELO': 5334, 'ALQUILER': 4822, 'CHANGES': 5213,
-        'YA NO': 4388, 'HAZLO CALLAO': 4084, 'TOP TIER': 3864,
-      },
-    },
-    {
-      date: '2026-03-22', label: 'D22', note: 'Tercer día completo',
-      tracks: {
-        'CUANDO ESCRIBÍA ASIMETRÍA': 5464, 'ATBLM': 7568, 'UN GUSTO': 6120,
-        'CALL ME': 4926, 'MAN OF WORD': 4487, 'OJOS TRISTES': 4220,
-        'HIELO': 4022, 'ALQUILER': 3493, 'CHANGES': 4534,
-        'YA NO': 3470, 'HAZLO CALLAO': 2966, 'TOP TIER': 2879,
-      },
-    },
-  ];
+  // ── Derivados de liveData (se actualizan automáticamente con cada poll) ──
+  const lastUpdated    = liveData.lastUpdated;
+  const albumLiveTotal = liveData.albumLiveTotal;
+  const liveTotals     = liveData.liveTotals;
+  const dailyLog       = liveData.dailyLog;
+  const liveHistory    = liveData.liveHistory;
 
-  // Live-totals history — snapshot de acumulados cada vez que se actualiza la data
-  // Para actualizar: agregar una nueva entrada al FINAL con la fecha y totales del día
-  const liveHistory = [
-    {
-      date: '2026-03-22', label: 'D+3', recordedAt: '2026-03-22T15:00:00-03:00',
-      albumTotal: 678677,
-      tracks: {
-        'CUANDO ESCRIBÍA ASIMETRÍA': 273884, 'ATBLM': 200669, 'UN GUSTO': 31749,
-        'CALL ME': 23750, 'MAN OF WORD': 22919, 'OJOS TRISTES': 21652,
-        'HIELO': 19885, 'CHANGES': 19758, 'ALQUILER': 18508,
-        'YA NO': 16522, 'HAZLO CALLAO': 15226, 'TOP TIER': 14298,
-      },
-    },
-    {
-      date: '2026-03-23', label: 'D+4', recordedAt: '2026-03-23T12:06:43-03:00',
-      albumTotal: 704025,
-      tracks: {
-        'CUANDO ESCRIBÍA ASIMETRÍA': 276622, 'ATBLM': 204181, 'UN GUSTO': 34953,
-        'CALL ME': 26075, 'MAN OF WORD': 25068, 'OJOS TRISTES': 23695,
-        'HIELO': 21708, 'CHANGES': 21535, 'ALQUILER': 20058,
-        'YA NO': 18126, 'HAZLO CALLAO': 16594, 'TOP TIER': 15674,
-      },
-    },
-  ];
-
-  // Growth history — mantener para compatibilidad con sección Snapshots
-  const growthHistory = liveHistory.map(s => ({
+  // growthHistory: memoizado para que reaccione al poll
+  const growthHistory = useMemo(() => liveHistory.map(s => ({
     timestamp: s.label + ' · ' + new Date(s.recordedAt).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }),
     albumTotal: s.albumTotal,
     ...Object.fromEntries(
-      Object.entries(s.tracks).map(([k, v]) => [
-        k === 'CUANDO ESCRIBÍA ASIMETRÍA' ? 'CEA' : k, v
-      ])
+      Object.entries(s.tracks).map(([k, v]) => [k === 'CUANDO ESCRIBÍA ASIMETRÍA' ? 'CEA' : k, v])
     ),
-  }));
-
-  // Live totals from Spotify for Artists (scraped per-track Mar 23, 2026)
-  const liveTotals = {
-    'CUANDO ESCRIBÍA ASIMETRÍA': 276622,
-    'ATBLM': 204181,
-    'UN GUSTO': 34953,
-    'CALL ME': 26075,
-    'MAN OF WORD': 25068,
-    'OJOS TRISTES': 23695,
-    'HIELO': 21708,
-    'CHANGES': 21535,
-    'ALQUILER': 20058,
-    'YA NO': 18126,
-    'HAZLO CALLAO': 16594,
-    'TOP TIER': 15674,
-  };
-
-  // Album-level live total
-  const albumLiveTotal = 704025;
+  })), [liveData]);
 
   // 28-day period metrics per track (Feb 22 - Mar 21, 2026) — scraped Mar 22
   const trackMetrics = {
@@ -281,7 +242,7 @@ const AmorFiadoDashboard = () => {
       Object.entries(cumulatives).forEach(([k, v]) => { snap[k] = v; });
       return { ...snap };
     });
-  }, []);
+  }, [liveData]);
 
   const metrics = useMemo(() => {
     // Use verified Mar 21 daily streams
@@ -449,7 +410,7 @@ const AmorFiadoDashboard = () => {
       daysLive, albumDecayD20D21, healthStatus, healthColor, decayDiff,
       bestRetentionTrack, worstDecayTrack, topLiveTrack,
     };
-  }, []);
+  }, [liveData]);
 
   const formatNumber = (num) => new Intl.NumberFormat('es-AR').format(Math.round(num));
 
@@ -486,7 +447,15 @@ const AmorFiadoDashboard = () => {
           <div style={{ textAlign: 'right' }}>
             <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.15em' }}>All-time Streams · LIVE</p>
             <p style={{ fontSize: '2.5rem', fontWeight: 800, color: '#f97316', margin: 0 }}>{formatNumber(albumLiveTotal)}</p>
-            <p style={{ color: '#64748b', fontSize: '0.75rem' }}>12 tracks · S4A: <span style={{ color: '#f97316' }}>{formatLastUpdated(lastUpdated.spotify)}</span></p>
+            <p style={{ color: '#64748b', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>12 tracks · S4A: <span style={{ color: '#f97316' }}>{formatLastUpdated(lastUpdated.spotify)}</span></span>
+              {dataFreshAt && (Date.now() - dataFreshAt) < 90000 && (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', fontSize: '0.65rem', fontWeight: 700, padding: '0.1rem 0.5rem', borderRadius: '9999px' }}>
+                  <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#4ade80', display: 'inline-block', animation: 'pulse 1.5s infinite' }} />
+                  Actualizado
+                </span>
+              )}
+            </p>
           </div>
         </div>
       </div>
