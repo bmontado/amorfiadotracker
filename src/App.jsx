@@ -23,6 +23,7 @@ const AmorFiadoDashboard = () => {
   const [growthZoom, setGrowthZoom] = useState('all'); // 'all' | 'zoom'
   const [expandedDays, setExpandedDays] = useState(new Set());
   const [socialView, setSocialView] = useState('list'); // 'list' | 'chart'
+  const [decayView, setDecayView] = useState('chart'); // 'chart' | 'table'
   const toggleDay = (date) => setExpandedDays(prev => { const s = new Set(prev); s.has(date) ? s.delete(date) : s.add(date); return s; });
 
   // Album metadata
@@ -922,12 +923,19 @@ const AmorFiadoDashboard = () => {
 
           {/* Proyección con curva de referencia CEA + ATBLM */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
               <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Proyección D22 – D30</h2>
-              <span style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>Curva de referencia: CEA + ATBLM (pre-álbum)</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+                <span style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>Curva ref: CEA + ATBLM</span>
+                <div style={{ display: 'flex', gap: '0.3rem' }}>
+                  {[['chart', '▲ Gráfico'], ['table', '≡ Tabla']].map(([val, label]) => (
+                    <button key={val} onClick={() => setDecayView(val)} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, background: decayView === val ? '#f97316' : 'rgba(51,65,85,0.5)', color: decayView === val ? '#0f172a' : '#94a3b8' }}>{label}</button>
+                  ))}
+                </div>
+              </div>
             </div>
             <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>
-              Proyección basada en el decay histórico de los dos singles de Zeballos (mismo fanbase). Cada track tiene un <strong style={{ color: '#94a3b8' }}>factor de ajuste</strong> calculado de su D21 real vs. el D21 que predice la curva — corrige el comportamiento individual de cada track.
+              Proyección basada en el decay histórico de los dos singles de Zeballos (mismo fanbase). El <strong style={{ color: '#94a3b8' }}>factor de ajuste</strong> por track corrige en base al D21 real. La línea punteada marca el inicio de la proyección.
             </p>
             {(() => {
               // === Construir curva de referencia normalizada ===
@@ -950,8 +958,33 @@ const AmorFiadoDashboard = () => {
               // refCurve[1] = ratio D21 esperado ≈ 0.544
 
               // === Proyectar tracks del álbum ===
-              const tracks = metrics.trackAnalysis.filter(t => t.day20 > 0 && t.day21 > 0);
+              const tracks = metrics.trackAnalysis.filter(t => t.day20 > 0 && t.day21 > 0).sort((a, b) => b.day21 - a.day21);
               const projDays = [22, 23, 24, 25, 26, 27, 28, 29, 30];
+              const trackColors = ['#4ade80','#38bdf8','#a78bfa','#fb7185','#67e8f9','#d946ef','#fdba74','#86efac','#c4b5fd','#94a3b8'];
+
+              // Pre-calcular factores y proyecciones para reutilizar en gráfico y tabla
+              const trackData = tracks.map((t, idx) => {
+                const d21predicted = t.day20 * refCurve[1];
+                const factor = t.day21 / d21predicted;
+                const projected = projDays.map((d, i) => {
+                  const refIdx = i + 2;
+                  const ratio = refIdx < refCurve.length ? refCurve[refIdx] : refCurve[refCurve.length - 1] * 0.97;
+                  return Math.max(Math.round(t.day20 * ratio * factor), 0);
+                });
+                return { ...t, factor, projected, color: trackColors[idx % trackColors.length] };
+              });
+
+              // Datos para el gráfico: D20 y D21 reales + D22-D30 proyectados
+              const allDays = [20, 21, ...projDays];
+              const chartData = allDays.map(d => {
+                const row = { day: `D${d}`, _isProjected: d >= 22 };
+                trackData.forEach(t => {
+                  if (d === 20) row[t.name] = t.day20;
+                  else if (d === 21) row[t.name] = t.day21;
+                  else row[t.name] = t.projected[projDays.indexOf(d)];
+                });
+                return row;
+              });
 
               return (
                 <div>
@@ -966,7 +999,47 @@ const AmorFiadoDashboard = () => {
                       <span style={{ color: '#fbbf24', fontWeight: 600 }}>{refLen} días CEA · {atblmNorm.length} días ATBLM</span>
                     </div>
                   </div>
-                  <div style={{ overflowX: 'auto' }}>
+
+                  {/* === VISTA GRÁFICO === */}
+                  {decayView === 'chart' && (
+                    <div>
+                      <ResponsiveContainer width="100%" height={380}>
+                        <LineChart data={chartData} margin={{ top: 10, right: 30, left: 10, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.07)" />
+                          <XAxis dataKey="day" stroke="#64748b" tick={{ fontSize: 11 }} />
+                          <YAxis stroke="#64748b" tickFormatter={v => v >= 1000 ? (v/1000).toFixed(0)+'K' : v} />
+                          <Tooltip
+                            contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '8px', fontSize: '0.75rem' }}
+                            formatter={(v, name) => [formatNumber(v), name]}
+                          />
+                          <ReferenceLine x="D22" stroke="rgba(148,163,184,0.4)" strokeDasharray="6 3"
+                            label={{ value: '← real  proyectado →', fill: '#64748b', fontSize: 10, position: 'insideTopLeft' }} />
+                          <Legend wrapperStyle={{ fontSize: '0.72rem' }} />
+                          {trackData.map(t => (
+                            <Line
+                              key={t.name}
+                              type="monotone"
+                              dataKey={t.name}
+                              stroke={t.color}
+                              strokeWidth={1.8}
+                              dot={(props) => {
+                                const { cx, cy, index } = props;
+                                if (index <= 1) return <circle key={`dot-${t.name}-${index}`} cx={cx} cy={cy} r={3} fill={t.color} stroke="#0f172a" strokeWidth={1} />;
+                                return <circle key={`dot-${t.name}-${index}`} cx={cx} cy={cy} r={2} fill="none" stroke={t.color} strokeWidth={1} />;
+                              }}
+                              strokeDasharray={undefined}
+                              isAnimationActive={false}
+                            />
+                          ))}
+                        </LineChart>
+                      </ResponsiveContainer>
+                      <p style={{ color: '#475569', fontSize: '0.7rem', textAlign: 'center', margin: '0.5rem 0 0' }}>
+                        Puntos rellenos = datos reales (D20–D21) · Puntos vacíos = proyección (D22+)
+                      </p>
+                    </div>
+                  )}
+                  {/* === VISTA TABLA === */}
+                  {decayView === 'table' && <div style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.75rem' }}>
                       <thead>
                         <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
@@ -978,28 +1051,20 @@ const AmorFiadoDashboard = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {tracks.sort((a, b) => b.day21 - a.day21).map(t => {
-                          // Factor de ajuste: qué tan diferente es el D21 real vs el predicho por la curva
-                          const d21predicted = t.day20 * refCurve[1];
-                          const factor = t.day21 / d21predicted;
-                          const factorColor = factor >= 1.1 ? '#4ade80' : factor <= 0.9 ? '#f87171' : '#94a3b8';
-
-                          // Proyectar desde D22 en adelante usando refCurve[2..N] × D20 × factor
-                          const projected = projDays.map((d, i) => {
-                            const refIdx = i + 2; // refCurve[0]=D20, [1]=D21, [2]=D22...
-                            const ratio = refIdx < refCurve.length ? refCurve[refIdx] : refCurve[refCurve.length - 1] * 0.97; // extrapola suavemente si se acaban los datos
-                            return Math.round(t.day20 * ratio * factor);
-                          });
-
+                        {trackData.map(t => {
+                          const factorColor = t.factor >= 1.1 ? '#4ade80' : t.factor <= 0.9 ? '#f87171' : '#94a3b8';
                           return (
                             <tr key={t.name} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
-                              <td style={{ padding: '0.5rem 0.75rem', color: '#e2e8f0', fontWeight: 500, whiteSpace: 'nowrap' }}>{t.name}</td>
+                              <td style={{ padding: '0.5rem 0.75rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
+                                <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: t.color, marginRight: '0.5rem' }} />
+                                <span style={{ color: '#e2e8f0' }}>{t.name}</span>
+                              </td>
                               <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#f97316', fontWeight: 600 }}>{formatNumber(t.day20)}</td>
                               <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#fbbf24', fontWeight: 600 }}>{formatNumber(t.day21)}</td>
-                              <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: factorColor, fontWeight: 700 }}>{factor.toFixed(2)}×</td>
-                              {projected.map((v, i) => (
+                              <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: factorColor, fontWeight: 700 }}>{t.factor.toFixed(2)}×</td>
+                              {t.projected.map((v, i) => (
                                 <td key={i} style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: v < t.day21 * 0.4 ? '#f87171' : v < t.day21 * 0.6 ? '#fb923c' : '#94a3b8' }}>
-                                  {formatNumber(Math.max(v, 0))}
+                                  {formatNumber(v)}
                                 </td>
                               ))}
                             </tr>
@@ -1007,7 +1072,7 @@ const AmorFiadoDashboard = () => {
                         })}
                       </tbody>
                     </table>
-                  </div>
+                  </div>}
                 </div>
               );
             })()}
