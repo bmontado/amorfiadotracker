@@ -105,6 +105,24 @@ const DEFAULT_LIVE_DATA = {
       campaigns: [],
     },
   },
+  trackMetricsMeta: {
+    periodLabel: 'Feb 22 – Mar 21, 2026',
+    scrapedAt: '2026-03-22T00:00:00-03:00',
+  },
+  trackMetrics: {
+    'CUANDO ESCRIBÍA ASIMETRÍA': { streams28d: 142541, listeners: 48293, streamsPerListener: 2.952, playlistAdds: 3239, saves: 9327, prevPeriod: 125709, change: 13.4 },
+    'ATBLM':         { streams28d: 192790, listeners: 66579, streamsPerListener: 2.896, playlistAdds: 7921, saves: 17036, prevPeriod: null, change: null },
+    'UN GUSTO':      { streams28d: 25380,  listeners: 15341, streamsPerListener: 1.654, playlistAdds: 1670, saves: 7742,  prevPeriod: null, change: null },
+    'CALL ME':       { streams28d: 18631,  listeners: 8669,  streamsPerListener: 2.149, playlistAdds: 1314, saves: 7184,  prevPeriod: null, change: null },
+    'MAN OF WORD':   { streams28d: 18259,  listeners: 9369,  streamsPerListener: 1.949, playlistAdds: 1152, saves: 7133,  prevPeriod: null, change: null },
+    'OJOS TRISTES':  { streams28d: 17262,  listeners: 9297,  streamsPerListener: 1.857, playlistAdds: 1262, saves: 7158,  prevPeriod: null, change: null },
+    'HIELO':         { streams28d: 15713,  listeners: 7587,  streamsPerListener: 2.071, playlistAdds: 1168, saves: 7036,  prevPeriod: null, change: null },
+    'CHANGES':       { streams28d: 15059,  listeners: 7663,  streamsPerListener: 1.965, playlistAdds: 1147, saves: 6975,  prevPeriod: null, change: null },
+    'ALQUILER':      { streams28d: 14867,  listeners: 7906,  streamsPerListener: 1.880, playlistAdds: 913,  saves: 6800,  prevPeriod: null, change: null },
+    'YA NO':         { streams28d: 12929,  listeners: 6512,  streamsPerListener: 1.985, playlistAdds: 1041, saves: 6901,  prevPeriod: null, change: null },
+    'HAZLO CALLAO':  { streams28d: 12154,  listeners: 6927,  streamsPerListener: 1.755, playlistAdds: 864,  saves: 6742,  prevPeriod: null, change: null },
+    'TOP TIER':      { streams28d: 11308,  listeners: 6043,  streamsPerListener: 1.871, playlistAdds: 955,  saves: 6819,  prevPeriod: null, change: null },
+  },
 };
 
 const AmorFiadoDashboard = () => {
@@ -173,21 +191,9 @@ const AmorFiadoDashboard = () => {
     ),
   })), [liveData]);
 
-  // 28-day period metrics per track (Feb 22 - Mar 21, 2026) — scraped Mar 22
-  const trackMetrics = {
-    'CUANDO ESCRIBÍA ASIMETRÍA': { streams28d: 142541, listeners: 48293, streamsPerListener: 2.952, playlistAdds: 3239, saves: 9327, prevPeriod: 125709, change: 13.4 },
-    'ATBLM': { streams28d: 192790, listeners: 66579, streamsPerListener: 2.896, playlistAdds: 7921, saves: 17036, prevPeriod: null, change: null },
-    'UN GUSTO': { streams28d: 25380, listeners: 15341, streamsPerListener: 1.654, playlistAdds: 1670, saves: 7742, prevPeriod: null, change: null },
-    'CALL ME': { streams28d: 18631, listeners: 8669, streamsPerListener: 2.149, playlistAdds: 1314, saves: 7184, prevPeriod: null, change: null },
-    'MAN OF WORD': { streams28d: 18259, listeners: 9369, streamsPerListener: 1.949, playlistAdds: 1152, saves: 7133, prevPeriod: null, change: null },
-    'OJOS TRISTES': { streams28d: 17262, listeners: 9297, streamsPerListener: 1.857, playlistAdds: 1262, saves: 7158, prevPeriod: null, change: null },
-    'HIELO': { streams28d: 15713, listeners: 7587, streamsPerListener: 2.071, playlistAdds: 1168, saves: 7036, prevPeriod: null, change: null },
-    'CHANGES': { streams28d: 15059, listeners: 7663, streamsPerListener: 1.965, playlistAdds: 1147, saves: 6975, prevPeriod: null, change: null },
-    'ALQUILER': { streams28d: 14867, listeners: 7906, streamsPerListener: 1.88, playlistAdds: 913, saves: 6800, prevPeriod: null, change: null },
-    'YA NO': { streams28d: 12929, listeners: 6512, streamsPerListener: 1.985, playlistAdds: 1041, saves: 6901, prevPeriod: null, change: null },
-    'HAZLO CALLAO': { streams28d: 12154, listeners: 6927, streamsPerListener: 1.755, playlistAdds: 864, saves: 6742, prevPeriod: null, change: null },
-    'TOP TIER': { streams28d: 11308, listeners: 6043, streamsPerListener: 1.871, playlistAdds: 955, saves: 6819, prevPeriod: null, change: null },
-  };
+  // 28-day period metrics per track — pulled from data.json (updated by amor-fiado-scraper)
+  const trackMetrics     = liveData.trackMetrics     ?? DEFAULT_LIVE_DATA.trackMetrics;
+  const trackMetricsMeta = liveData.trackMetricsMeta ?? DEFAULT_LIVE_DATA.trackMetricsMeta;
 
   // Social posts related to Amor Fiado campaign — scraped from @zeballos17 (IG) and @zeballos1717 (TikTok)
   // Each post has a unique URL used for dedup by the scheduled scraper
@@ -1263,8 +1269,8 @@ const AmorFiadoDashboard = () => {
 
           {/* Per-track metrics table */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Métricas por Track (28 días: Feb 22 - Mar 21)</h2>
-            <p style={{ color: '#64748b', fontSize: '0.8rem', marginBottom: '1.5rem' }}>Datos scrapeados directamente de cada página de track en Spotify for Artists</p>
+            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Métricas por Track (28 días: {trackMetricsMeta.periodLabel})</h2>
+            <p style={{ color: '#64748b', fontSize: '0.8rem', marginBottom: '1.5rem' }}>Datos scrapeados de Spotify for Artists · actualizado {new Date(trackMetricsMeta.scrapedAt).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })}</p>
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
                 <thead>

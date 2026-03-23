@@ -150,5 +150,23 @@
         "YA NO": 18126, "HAZLO CALLAO": 16594, "TOP TIER": 15674
       }
     }
-  ]
+  ],
+  "trackMetricsMeta": {
+    "periodLabel": "Feb 22 – Mar 21, 2026",
+    "scrapedAt": "2026-03-22T00:00:00-03:00"
+  },
+  "trackMetrics": {
+    "CUANDO ESCRIBÍA ASIMETRÍA": { "streams28d": 142541, "listeners": 48293, "streamsPerListener": 2.952, "playlistAdds": 3239, "saves": 9327, "prevPeriod": 125709, "change": 13.4 },
+    "ATBLM":        { "streams28d": 192790, "listeners": 66579, "streamsPerListener": 2.896, "playlistAdds": 7921, "saves": 17036, "prevPeriod": null, "change": null },
+    "UN GUSTO":     { "streams28d": 25380,  "listeners": 15341, "streamsPerListener": 1.654, "playlistAdds": 1670, "saves": 7742,  "prevPeriod": null, "change": null },
+    "CALL ME":      { "streams28d": 18631,  "listeners": 8669,  "streamsPerListener": 2.149, "playlistAdds": 1314, "saves": 7184,  "prevPeriod": null, "change": null },
+    "MAN OF WORD":  { "streams28d": 18259,  "listeners": 9369,  "streamsPerListener": 1.949, "playlistAdds": 1152, "saves": 7133,  "prevPeriod": null, "change": null },
+    "OJOS TRISTES": { "streams28d": 17262,  "listeners": 9297,  "streamsPerListener": 1.857, "playlistAdds": 1262, "saves": 7158,  "prevPeriod": null, "change": null },
+    "HIELO":        { "streams28d": 15713,  "listeners": 7587,  "streamsPerListener": 2.071, "playlistAdds": 1168, "saves": 7036,  "prevPeriod": null, "change": null },
+    "CHANGES":      { "streams28d": 15059,  "listeners": 7663,  "streamsPerListener": 1.965, "playlistAdds": 1147, "saves": 6975,  "prevPeriod": null, "change": null },
+    "ALQUILER":     { "streams28d": 14867,  "listeners": 7906,  "streamsPerListener": 1.880, "playlistAdds": 913,  "saves": 6800,  "prevPeriod": null, "change": null },
+    "YA NO":        { "streams28d": 12929,  "listeners": 6512,  "streamsPerListener": 1.985, "playlistAdds": 1041, "saves": 6901,  "prevPeriod": null, "change": null },
+    "HAZLO CALLAO": { "streams28d": 12154,  "listeners": 6927,  "streamsPerListener": 1.755, "playlistAdds": 864,  "saves": 6742,  "prevPeriod": null, "change": null },
+    "TOP TIER":     { "streams28d": 11308,  "listeners": 6043,  "streamsPerListener": 1.871, "playlistAdds": 955,  "saves": 6819,  "prevPeriod": null, "change": null }
+  }
 }
