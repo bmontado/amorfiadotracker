@@ -140,6 +140,7 @@ const AmorFiadoDashboard = () => {
   const [liveData, setLiveData] = useState(DEFAULT_LIVE_DATA);
   const [dataFreshAt, setDataFreshAt] = useState(null);
   const [selectedReleaseId, setSelectedReleaseId] = useState('6EPWuQUeAaRp61S8qG0fri');
+  const [showReportModal, setShowReportModal] = useState(false);
 
   // Polling: carga data.json al montar y cada 5 minutos.
   // La scheduled task solo necesita actualizar data.json y hacer push —
@@ -520,10 +521,10 @@ const AmorFiadoDashboard = () => {
               <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.25rem' }}>{releaseDate}</p>
             </div>
           </div>
-          <div style={{ textAlign: 'right' }}>
-            <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.15em' }}>All-time Streams · LIVE</p>
+          <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.15em', margin: 0 }}>All-time Streams · LIVE</p>
             <p style={{ fontSize: '2.5rem', fontWeight: 800, color: '#f97316', margin: 0 }}>{formatNumber(albumLiveTotal)}</p>
-            <p style={{ color: '#64748b', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <p style={{ color: '#64748b', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
               <span>12 tracks · S4A: <span style={{ color: '#f97316' }}>{formatLastUpdated(lastUpdated.spotify)}</span></span>
               {dataFreshAt && (Date.now() - dataFreshAt) < 90000 && (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', fontSize: '0.65rem', fontWeight: 700, padding: '0.1rem 0.5rem', borderRadius: '9999px' }}>
@@ -532,6 +533,19 @@ const AmorFiadoDashboard = () => {
                 </span>
               )}
             </p>
+            <button
+              onClick={() => setShowReportModal(true)}
+              style={{
+                marginTop: '0.25rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                padding: '0.5rem 1rem', borderRadius: '9999px', border: '1px solid rgba(249,115,22,0.4)',
+                background: 'rgba(249,115,22,0.08)', color: '#f97316', fontSize: '0.78rem',
+                fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(249,115,22,0.18)'; e.currentTarget.style.borderColor = '#f97316'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(249,115,22,0.08)'; e.currentTarget.style.borderColor = 'rgba(249,115,22,0.4)'; }}
+            >
+              <span style={{ fontSize: '1rem' }}>📄</span> Generar Reporte
+            </button>
           </div>
         </div>
       </div>
@@ -3026,6 +3040,236 @@ const AmorFiadoDashboard = () => {
         <p style={{ color: '#475569', fontSize: '0.75rem', margin: 0 }}>
           AMOR FIADO — ZEBALLOS &nbsp;·&nbsp; Spotify: <span style={{ color: '#f97316' }}>{formatLastUpdated(lastUpdated.spotify)}</span> &nbsp;·&nbsp; Social: <span style={{ color: '#a78bfa' }}>{formatLastUpdated(lastUpdated.social)}</span>
         </p>
+      </div>
+
+      {/* ── Report Modal ──────────────────────────────────────────────────── */}
+      {showReportModal && <ReportModal onClose={() => setShowReportModal(false)} />}
+    </div>
+  );
+};
+
+// ── ReportModal ───────────────────────────────────────────────────────────────
+const REPORT_SECTIONS = [
+  { key: 'overview',    label: 'Overview',             icon: '📊' },
+  { key: 'streams',     label: 'Streams globales',     icon: '📈' },
+  { key: 'metrics28d',  label: 'Métricas 28 días',     icon: '🎯' },
+  { key: 'decay',       label: 'Decay / Proyección D28', icon: '📉' },
+  { key: 'engagement',  label: 'Release Engagement',   icon: '👥' },
+  { key: 'social',      label: 'Social Impact',        icon: '📱' },
+];
+
+const ReportModal = ({ onClose }) => {
+  const [sections, setSections] = useState({
+    overview: true, streams: true, metrics28d: true,
+    decay: true, engagement: true, social: true,
+  });
+  const [coverNote, setCoverNote] = useState('');
+  const [sectionNotes, setSectionNotes] = useState({
+    overview: '', streams: '', metrics28d: '', decay: '', engagement: '', social: '',
+  });
+  const [expandedNotes, setExpandedNotes] = useState({});
+  const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error' | 'offline'
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const toggleSection = (key) =>
+    setSections(s => ({ ...s, [key]: !s[key] }));
+  const toggleNoteExpand = (key) =>
+    setExpandedNotes(s => ({ ...s, [key]: !s[key] }));
+
+  const handleGenerate = async () => {
+    setStatus('loading');
+    setErrorMsg('');
+    const payload = {
+      sections,
+      note: coverNote,
+      sectionNotes,
+    };
+    try {
+      const res = await fetch('http://localhost:8888/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(txt || `HTTP ${res.status}`);
+      }
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      const today = new Date().toISOString().slice(0, 10);
+      a.href     = url;
+      a.download = `${today}_amor-fiado-report.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setStatus('success');
+    } catch (err) {
+      if (err.message.includes('fetch') || err.message.includes('NetworkError') || err.name === 'TypeError') {
+        setStatus('offline');
+      } else {
+        setStatus('error');
+        setErrorMsg(err.message);
+      }
+    }
+  };
+
+  const overlay = {
+    position: 'fixed', inset: 0, background: 'rgba(5,10,20,0.85)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    zIndex: 1000, padding: '1rem',
+  };
+  const card = {
+    background: '#0d1728', border: '1px solid rgba(249,115,22,0.3)',
+    borderRadius: '16px', width: '100%', maxWidth: '560px',
+    maxHeight: '90vh', overflowY: 'auto',
+    boxShadow: '0 24px 60px rgba(0,0,0,0.7)',
+  };
+  const sectionRow = (active) => ({
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '0.6rem 0.75rem', borderRadius: '8px', cursor: 'pointer',
+    background: active ? 'rgba(249,115,22,0.08)' : 'transparent',
+    border: `1px solid ${active ? 'rgba(249,115,22,0.25)' : 'rgba(51,65,85,0.4)'}`,
+    transition: 'all 0.15s',
+  });
+
+  return (
+    <div style={overlay} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={card}>
+        {/* Header */}
+        <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(51,65,85,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span style={{ fontSize: '1.2rem' }}>📄</span>
+            <h2 style={{ margin: 0, color: '#f1f5f9', fontSize: '1rem', fontWeight: 700 }}>Generar Reporte PDF</h2>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '1.3rem', cursor: 'pointer', padding: '0.2rem 0.4rem', borderRadius: '4px' }}>✕</button>
+        </div>
+
+        <div style={{ padding: '1.25rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+          {/* Cover note */}
+          <div>
+            <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.4rem' }}>
+              Nota del reporte (portada)
+            </label>
+            <textarea
+              value={coverNote}
+              onChange={e => setCoverNote(e.target.value)}
+              placeholder="Contexto de la semana, campañas activas, objetivos…"
+              rows={2}
+              style={{
+                width: '100%', boxSizing: 'border-box', background: '#1e2e47',
+                border: '1px solid rgba(51,65,85,0.6)', borderRadius: '8px',
+                color: '#f1f5f9', fontSize: '0.85rem', padding: '0.6rem 0.75rem',
+                resize: 'vertical', outline: 'none', fontFamily: 'inherit',
+              }}
+            />
+          </div>
+
+          {/* Section toggles */}
+          <div>
+            <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
+              Secciones a incluir
+            </label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              {REPORT_SECTIONS.map(({ key, label, icon }) => (
+                <div key={key}>
+                  <div style={sectionRow(sections[key])} onClick={() => toggleSection(key)}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{
+                        width: '18px', height: '18px', borderRadius: '4px', flexShrink: 0,
+                        background: sections[key] ? '#f97316' : 'transparent',
+                        border: `2px solid ${sections[key] ? '#f97316' : '#475569'}`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '0.65rem', color: 'white', transition: 'all 0.15s',
+                      }}>
+                        {sections[key] ? '✓' : ''}
+                      </span>
+                      <span style={{ fontSize: '0.9rem' }}>{icon}</span>
+                      <span style={{ color: sections[key] ? '#f1f5f9' : '#64748b', fontSize: '0.88rem', fontWeight: 500 }}>{label}</span>
+                    </div>
+                    <button
+                      onClick={e => { e.stopPropagation(); toggleNoteExpand(key); }}
+                      style={{
+                        background: 'none', border: 'none', color: expandedNotes[key] ? '#f97316' : '#475569',
+                        fontSize: '0.75rem', cursor: 'pointer', padding: '0.1rem 0.35rem',
+                        borderRadius: '4px',
+                      }}
+                      title="Agregar nota para esta sección"
+                    >
+                      {sectionNotes[key] ? '✎ nota' : '+ nota'}
+                    </button>
+                  </div>
+                  {expandedNotes[key] && (
+                    <div style={{ paddingLeft: '0.75rem', paddingTop: '0.3rem' }}>
+                      <textarea
+                        value={sectionNotes[key]}
+                        onChange={e => setSectionNotes(s => ({ ...s, [key]: e.target.value }))}
+                        placeholder={`Nota para ${label}…`}
+                        rows={2}
+                        onClick={e => e.stopPropagation()}
+                        style={{
+                          width: '100%', boxSizing: 'border-box', background: '#1e2e47',
+                          border: '1px solid rgba(249,115,22,0.2)', borderRadius: '6px',
+                          color: '#f1f5f9', fontSize: '0.82rem', padding: '0.5rem 0.65rem',
+                          resize: 'vertical', outline: 'none', fontFamily: 'inherit',
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Status messages */}
+          {status === 'offline' && (
+            <div style={{ background: 'rgba(251,146,60,0.08)', border: '1px solid rgba(251,146,60,0.3)', borderRadius: '8px', padding: '0.75rem 1rem' }}>
+              <p style={{ color: '#fbbf24', fontSize: '0.82rem', fontWeight: 600, margin: '0 0 0.4rem' }}>⚠ Servidor local no disponible</p>
+              <p style={{ color: '#94a3b8', fontSize: '0.78rem', margin: '0 0 0.4rem' }}>Levantá el servidor local en una terminal:</p>
+              <code style={{ display: 'block', background: '#0a1020', color: '#4ade80', fontSize: '0.78rem', padding: '0.4rem 0.6rem', borderRadius: '4px', userSelect: 'all' }}>
+                python3 scripts/report_server.py
+              </code>
+              <p style={{ color: '#64748b', fontSize: '0.74rem', margin: '0.4rem 0 0' }}>Puerto: <span style={{ color: '#f97316' }}>8888</span> &nbsp;·&nbsp; Quedate en el directorio del repo</p>
+            </div>
+          )}
+          {status === 'error' && (
+            <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', padding: '0.75rem 1rem' }}>
+              <p style={{ color: '#f87171', fontSize: '0.82rem', margin: 0 }}>❌ {errorMsg}</p>
+            </div>
+          )}
+          {status === 'success' && (
+            <div style={{ background: 'rgba(74,222,128,0.08)', border: '1px solid rgba(74,222,128,0.3)', borderRadius: '8px', padding: '0.75rem 1rem' }}>
+              <p style={{ color: '#4ade80', fontSize: '0.82rem', margin: 0 }}>✅ PDF generado y descargado correctamente</p>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', paddingTop: '0.25rem' }}>
+            <button
+              onClick={onClose}
+              style={{ padding: '0.55rem 1.1rem', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.6)', background: 'transparent', color: '#94a3b8', fontSize: '0.85rem', cursor: 'pointer' }}
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleGenerate}
+              disabled={status === 'loading' || Object.values(sections).every(v => !v)}
+              style={{
+                padding: '0.55rem 1.4rem', borderRadius: '8px', border: 'none', cursor: 'pointer',
+                background: status === 'loading' ? 'rgba(249,115,22,0.5)' : 'linear-gradient(135deg, #f97316, #ea580c)',
+                color: 'white', fontSize: '0.88rem', fontWeight: 700,
+                display: 'flex', alignItems: 'center', gap: '0.4rem',
+                opacity: Object.values(sections).every(v => !v) ? 0.4 : 1,
+              }}
+            >
+              {status === 'loading' ? (
+                <><span style={{ display: 'inline-block', animation: 'spin 1s linear infinite' }}>⏳</span> Generando…</>
+              ) : (
+                <>📥 Generar PDF</>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
