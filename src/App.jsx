@@ -46,12 +46,20 @@ const DEFAULT_LIVE_DATA = {
   releaseEngagement: {
     scrapedAt: '2026-03-23T12:06:43-03:00',
     dayNum: 4,
-    monthlyActiveListeners: 414288,
-    releaseListeners: 17836,
-    releaseListenersPct: 4.3,
     releaseDate: 'Mar 19, 2026',
+    segments: {
+      monthly:  { total: 414288, listeners: 17836, pct: 4.3  },
+      super:    { total: 33357,  listeners: 10094, pct: 30.3 },
+      moderate: { total: 131037, listeners: 5875,  pct: 4.5  },
+      light:    { total: 249894, listeners: 2722,  pct: 1.1  },
+    },
     history: [
-      { date: '2026-03-23', dayNum: 4, releaseListeners: 17836, releaseListenersPct: 4.3, monthlyActiveListeners: 414288 },
+      { date: '2026-03-23', dayNum: 4, segments: {
+        monthly:  { total: 414288, listeners: 17836, pct: 4.3  },
+        super:    { total: 33357,  listeners: 10094, pct: 30.3 },
+        moderate: { total: 131037, listeners: 5875,  pct: 4.5  },
+        light:    { total: 249894, listeners: 2722,  pct: 1.1  },
+      }},
     ],
   },
 };
@@ -2556,25 +2564,28 @@ const AmorFiadoDashboard = () => {
       {activeTab === 'engagement' && (() => {
         const eng = releaseEngagement;
         const history = eng?.history ?? [];
-        const pct = eng?.releaseListenersPct ?? 0;
-        const mal = eng?.monthlyActiveListeners ?? 0;
-        const relList = eng?.releaseListeners ?? 0;
+        const segs = eng?.segments ?? {};
         const dayNum = eng?.dayNum ?? '—';
         const scrapedAt = eng?.scrapedAt ?? null;
 
-        // Funnel bar widths
-        const funnelPct = mal > 0 ? (relList / mal * 100) : 0;
+        // Segment config
+        const segConfig = [
+          { key: 'monthly',  label: 'Monthly Active',   color: '#4ade80', bg: 'rgba(74,222,128,0.10)',  border: 'rgba(74,222,128,0.3)'  },
+          { key: 'super',    label: 'Super Listeners',  color: '#f97316', bg: 'rgba(249,115,22,0.10)',  border: 'rgba(249,115,22,0.3)'  },
+          { key: 'moderate', label: 'Moderate Listeners', color: '#a78bfa', bg: 'rgba(167,139,250,0.10)', border: 'rgba(167,139,250,0.3)' },
+          { key: 'light',    label: 'Light Listeners',  color: '#60a5fa', bg: 'rgba(96,165,250,0.10)',  border: 'rgba(96,165,250,0.3)'  },
+        ];
 
-        // Trend chart data: history sorted by date
-        const trendData = [...history].sort((a, b) => a.date.localeCompare(b.date)).map(h => ({
-          label: `D${h.dayNum}`,
-          pct: h.releaseListenersPct,
-          listeners: h.releaseListeners,
-          mal: h.monthlyActiveListeners,
-        }));
+        // Trend chart data from history
+        const trendData = [...history]
+          .sort((a, b) => a.date.localeCompare(b.date))
+          .map(h => {
+            const row = { label: `D${h.dayNum}` };
+            segConfig.forEach(s => { row[s.key] = h.segments?.[s.key]?.pct ?? null; });
+            return row;
+          });
 
-        // Insight text
-        const latestTrend = trendData.length >= 2 ? trendData[trendData.length - 1].pct - trendData[trendData.length - 2].pct : null;
+        const hasHistory = trendData.length >= 2;
 
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -2583,7 +2594,7 @@ const AmorFiadoDashboard = () => {
             <div>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f1f5f9', margin: 0 }}>Release Engagement</h2>
               <p style={{ color: '#64748b', fontSize: '0.85rem', margin: '0.35rem 0 0' }}>
-                Oyentes que escucharon el álbum — Spotify for Artists · Día {dayNum} desde lanzamiento
+                Oyentes de Amor Fiado por segmento — Spotify for Artists · Día {dayNum} desde lanzamiento
                 {scrapedAt && (
                   <span style={{ marginLeft: '0.75rem', color: '#475569' }}>
                     · actualizado {new Date(scrapedAt).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })} {new Date(scrapedAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })}
@@ -2592,134 +2603,115 @@ const AmorFiadoDashboard = () => {
               </p>
             </div>
 
-            {/* KPI cards row */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-              {/* Release listeners */}
-              <div style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.12), rgba(234,88,12,0.06))', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '12px', padding: '1.25rem' }}>
-                <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.5rem' }}>Oyentes del Release</p>
-                <p style={{ fontSize: '2rem', fontWeight: 800, color: '#f97316', margin: 0 }}>{relList.toLocaleString('es-AR')}</p>
-                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>en los últimos 7 días</p>
-              </div>
-
-              {/* Conversion rate */}
-              <div style={{ background: 'linear-gradient(135deg, rgba(168,85,247,0.12), rgba(139,92,246,0.06))', border: '1px solid rgba(168,85,247,0.3)', borderRadius: '12px', padding: '1.25rem' }}>
-                <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.5rem' }}>Conversión MAL → Release</p>
-                <p style={{ fontSize: '2rem', fontWeight: 800, color: '#a78bfa', margin: 0 }}>{pct}%</p>
-                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>del total de oyentes mensuales</p>
-              </div>
-
-              {/* MAL */}
-              <div style={{ background: 'linear-gradient(135deg, rgba(74,222,128,0.08), rgba(34,197,94,0.04))', border: '1px solid rgba(74,222,128,0.25)', borderRadius: '12px', padding: '1.25rem' }}>
-                <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.5rem' }}>Monthly Active Listeners</p>
-                <p style={{ fontSize: '2rem', fontWeight: 800, color: '#4ade80', margin: 0 }}>{mal.toLocaleString('es-AR')}</p>
-                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>total base de oyentes</p>
-              </div>
-
-              {/* Day counter */}
-              <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '12px', padding: '1.25rem' }}>
-                <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.5rem' }}>Día desde lanzamiento</p>
-                <p style={{ fontSize: '2rem', fontWeight: 800, color: '#f1f5f9', margin: 0 }}>D{dayNum}</p>
-                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0.25rem 0 0' }}>desde 19 Mar 2026</p>
-              </div>
+            {/* Segment KPI cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '1rem' }}>
+              {segConfig.map(s => {
+                const d = segs[s.key] ?? {};
+                return (
+                  <div key={s.key} style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: '12px', padding: '1.25rem' }}>
+                    <p style={{ color: '#94a3b8', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.4rem' }}>{s.label}</p>
+                    <p style={{ fontSize: '1.7rem', fontWeight: 800, color: s.color, margin: 0 }}>
+                      {d.pct != null ? `${d.pct}%` : '—'}
+                    </p>
+                    <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0.2rem 0 0' }}>
+                      {d.listeners != null ? `${d.listeners.toLocaleString('es-AR')} de ${d.total?.toLocaleString('es-AR')}` : '—'}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Conversion funnel bar */}
+            {/* Segment funnel bars — % de oyentes por segmento */}
             <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
-              <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 1rem' }}>Funnel de Conversión</p>
-              <div style={{ marginBottom: '0.75rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
-                  <span style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>Monthly Active Listeners</span>
-                  <span style={{ fontSize: '0.8rem', color: '#4ade80', fontWeight: 700 }}>{mal.toLocaleString('es-AR')}</span>
-                </div>
-                <div style={{ height: '10px', background: 'rgba(51,65,85,0.5)', borderRadius: '5px', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: '100%', background: 'linear-gradient(90deg, #4ade80, #22c55e)', borderRadius: '5px' }} />
-                </div>
-              </div>
-              <div style={{ marginBottom: '0.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
-                  <span style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>Oyentes del Release <span style={{ color: '#a78bfa', fontSize: '0.75rem' }}>({pct}%)</span></span>
-                  <span style={{ fontSize: '0.8rem', color: '#f97316', fontWeight: 700 }}>{relList.toLocaleString('es-AR')}</span>
-                </div>
-                <div style={{ height: '10px', background: 'rgba(51,65,85,0.5)', borderRadius: '5px', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${Math.min(funnelPct, 100)}%`, background: 'linear-gradient(90deg, #f97316, #ea580c)', borderRadius: '5px', transition: 'width 0.6s ease' }} />
-                </div>
-              </div>
-              <p style={{ color: '#475569', fontSize: '0.72rem', margin: '0.5rem 0 0' }}>
-                De cada 100 oyentes mensuales, <strong style={{ color: '#f97316' }}>{pct}</strong> escucharon Amor Fiado en los últimos 7 días.
+              <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 1.1rem' }}>% Conversión por Segmento</p>
+              {segConfig.map(s => {
+                const d = segs[s.key] ?? {};
+                const barW = Math.min(d.pct ?? 0, 100);
+                // scale bar relative to super (max)
+                const maxPct = segs.super?.pct ?? 100;
+                const scaledW = maxPct > 0 ? (barW / maxPct * 100) : barW;
+                return (
+                  <div key={s.key} style={{ marginBottom: '0.85rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
+                      <span style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>{s.label}</span>
+                      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{d.listeners?.toLocaleString('es-AR') ?? '—'} oyentes</span>
+                        <span style={{ fontSize: '0.82rem', color: s.color, fontWeight: 700, minWidth: '3.5rem', textAlign: 'right' }}>{d.pct != null ? `${d.pct}%` : '—'}</span>
+                      </div>
+                    </div>
+                    <div style={{ height: '8px', background: 'rgba(51,65,85,0.5)', borderRadius: '4px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${scaledW}%`, background: s.color, borderRadius: '4px', opacity: 0.85, transition: 'width 0.6s ease' }} />
+                    </div>
+                  </div>
+                );
+              })}
+              <p style={{ color: '#475569', fontSize: '0.72rem', margin: '0.75rem 0 0' }}>
+                Los super listeners muestran <strong style={{ color: '#f97316' }}>{segs.super?.pct ?? '—'}%</strong> de conversión — {(segs.super?.pct ?? 0) > (segs.monthly?.pct ?? 0) ? `${((segs.super?.pct ?? 0) / (segs.monthly?.pct || 1)).toFixed(1)}×` : '—'} más que el promedio MAL.
               </p>
             </div>
 
-            {/* Trend chart — only show when there are ≥2 data points */}
-            {trendData.length >= 2 ? (
+            {/* Evolution chart — multi-segment % conversion over time */}
+            {hasHistory ? (
               <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>% Conversión día a día</p>
-                  {latestTrend !== null && (
-                    <span style={{
-                      fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.65rem', borderRadius: '9999px',
-                      background: latestTrend >= 0 ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.12)',
-                      border: `1px solid ${latestTrend >= 0 ? 'rgba(74,222,128,0.35)' : 'rgba(248,113,113,0.35)'}`,
-                      color: latestTrend >= 0 ? '#4ade80' : '#f87171',
-                    }}>
-                      {latestTrend >= 0 ? '▲' : '▼'} {Math.abs(latestTrend).toFixed(1)}pp
-                    </span>
-                  )}
-                </div>
-                <div style={{ maxWidth: trendData.length <= 3 ? 480 : '100%', margin: '0 auto' }}>
-                  <ResponsiveContainer width="100%" height={240}>
-                    <LineChart data={trendData} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 1rem' }}>Evolución % Conversión por Segmento</p>
+                <div style={{ maxWidth: trendData.length <= 3 ? 520 : '100%', margin: '0 auto' }}>
+                  <ResponsiveContainer width="100%" height={280}>
+                    <LineChart data={trendData} margin={{ top: 10, right: 40, left: 0, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,65,85,0.4)" />
                       <XAxis dataKey="label" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false}
                         padding={{ left: trendData.length <= 3 ? 60 : 20, right: trendData.length <= 3 ? 60 : 20 }} />
                       <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false}
-                        tickFormatter={v => `${v}%`} domain={['auto', 'auto']} />
+                        tickFormatter={v => `${v}%`} domain={[0, 'auto']} />
                       <Tooltip
                         contentStyle={{ background: '#0f172a', border: '1px solid rgba(51,65,85,0.7)', borderRadius: '8px', fontSize: '0.8rem' }}
-                        labelStyle={{ color: '#f1f5f9', fontWeight: 700 }}
-                        formatter={(v, name) => name === 'pct' ? [`${v}%`, '% Conversión'] : [v.toLocaleString('es-AR'), 'Oyentes']}
+                        labelStyle={{ color: '#f1f5f9', fontWeight: 700, marginBottom: '0.3rem' }}
+                        formatter={(v, name) => {
+                          const cfg = segConfig.find(s => s.key === name);
+                          return [`${v}%`, cfg?.label ?? name];
+                        }}
                       />
-                      <Line type="monotone" dataKey="pct" stroke="#a78bfa" strokeWidth={2.5} dot={{ r: 4, fill: '#a78bfa' }} activeDot={{ r: 6 }} name="pct" />
+                      <Legend wrapperStyle={{ fontSize: '0.75rem', color: '#94a3b8', paddingTop: '0.5rem' }}
+                        formatter={(value) => segConfig.find(s => s.key === value)?.label ?? value} />
+                      {segConfig.map(s => (
+                        <Line key={s.key} type="monotone" dataKey={s.key} stroke={s.color} strokeWidth={2}
+                          dot={{ r: 4, fill: s.color, strokeWidth: 0 }} activeDot={{ r: 6 }} connectNulls />
+                      ))}
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
               </div>
             ) : (
-              /* Single data point placeholder */
               <div style={{ background: 'rgba(15,23,42,0.3)', border: '1px dashed rgba(51,65,85,0.5)', borderRadius: '12px', padding: '1.5rem', textAlign: 'center' }}>
                 <p style={{ color: '#475569', fontSize: '0.85rem', margin: 0 }}>
-                  El gráfico de tendencia aparecerá cuando haya ≥2 snapshots diarios. Próximo update en ~24h.
+                  El gráfico de evolución aparecerá cuando haya ≥2 snapshots. Próximo update en ~24h.
                 </p>
               </div>
             )}
 
             {/* Insight card */}
             <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
-              <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.75rem' }}>Contexto & Benchmarks</p>
+              <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.75rem' }}>Interpretación</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.82rem', color: '#94a3b8' }}>
                 <p style={{ margin: 0 }}>
-                  <strong style={{ color: '#f97316' }}>{pct}%</strong> de conversión en D{dayNum}. En lanzamientos independientes exitosos, el primer peak suele estar entre <strong style={{ color: '#cbd5e1' }}>4–8%</strong> en la primera semana.
+                  <strong style={{ color: '#f97316' }}>{segs.super?.pct ?? '—'}%</strong> de tus super listeners ya escucharon el álbum en D{dayNum} — tu fanbase más fiel respondió primero.
                 </p>
                 <p style={{ margin: 0 }}>
-                  Con <strong style={{ color: '#4ade80' }}>{relList.toLocaleString('es-AR')}</strong> oyentes del release sobre una base de <strong style={{ color: '#4ade80' }}>{mal.toLocaleString('es-AR')}</strong> MAL, el álbum está llegando al <strong style={{ color: '#a78bfa' }}>{pct}%</strong> de tu audiencia activa.
+                  Los moderate listeners están en <strong style={{ color: '#a78bfa' }}>{segs.moderate?.pct ?? '—'}%</strong> y los light en <strong style={{ color: '#60a5fa' }}>{segs.light?.pct ?? '—'}%</strong> — hay runway para crecer con esos dos grupos durante la ventana D28.
                 </p>
-                {trendData.length >= 2 && latestTrend !== null && (
-                  <p style={{ margin: 0 }}>
-                    Variación respecto al día anterior: <strong style={{ color: latestTrend >= 0 ? '#4ade80' : '#f87171' }}>
-                      {latestTrend >= 0 ? '+' : ''}{latestTrend.toFixed(1)}pp
-                    </strong> — {latestTrend >= 0 ? 'engagement en crecimiento.' : 'decay normal esperado post-lanzamiento.'}
-                  </p>
-                )}
+                <p style={{ margin: 0 }}>
+                  Conversión general MAL: <strong style={{ color: '#4ade80' }}>{segs.monthly?.pct ?? '—'}%</strong> sobre {segs.monthly?.total?.toLocaleString('es-AR')} oyentes activos.
+                </p>
               </div>
             </div>
 
-            {/* History table — show when ≥2 rows */}
+            {/* History table */}
             {history.length >= 2 && (
               <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem', overflowX: 'auto' }}>
                 <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.85rem' }}>Histórico de snapshots</p>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', minWidth: '550px' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid rgba(51,65,85,0.5)' }}>
-                      {['Fecha', 'Día', 'MAL', 'Oyentes Release', '% Conversión'].map(h => (
+                      {['Día', 'Fecha', 'MAL', 'Super', 'Moderate', 'Light'].map(h => (
                         <th key={h} style={{ padding: '0.4rem 0.75rem', textAlign: 'left', color: '#64748b', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
@@ -2727,11 +2719,12 @@ const AmorFiadoDashboard = () => {
                   <tbody>
                     {[...history].sort((a, b) => b.date.localeCompare(a.date)).map((row, i) => (
                       <tr key={row.date} style={{ borderBottom: i < history.length - 1 ? '1px solid rgba(51,65,85,0.25)' : 'none' }}>
+                        <td style={{ padding: '0.4rem 0.75rem', color: '#f1f5f9', fontWeight: 700 }}>D{row.dayNum}</td>
                         <td style={{ padding: '0.4rem 0.75rem', color: '#94a3b8' }}>{row.date.slice(5).replace('-', '/')}</td>
-                        <td style={{ padding: '0.4rem 0.75rem', color: '#f1f5f9', fontWeight: 600 }}>D{row.dayNum}</td>
-                        <td style={{ padding: '0.4rem 0.75rem', color: '#4ade80' }}>{row.monthlyActiveListeners.toLocaleString('es-AR')}</td>
-                        <td style={{ padding: '0.4rem 0.75rem', color: '#f97316', fontWeight: 600 }}>{row.releaseListeners.toLocaleString('es-AR')}</td>
-                        <td style={{ padding: '0.4rem 0.75rem', color: '#a78bfa', fontWeight: 700 }}>{row.releaseListenersPct}%</td>
+                        <td style={{ padding: '0.4rem 0.75rem', color: '#4ade80', fontWeight: 600 }}>{row.segments?.monthly?.pct ?? '—'}%</td>
+                        <td style={{ padding: '0.4rem 0.75rem', color: '#f97316', fontWeight: 600 }}>{row.segments?.super?.pct ?? '—'}%</td>
+                        <td style={{ padding: '0.4rem 0.75rem', color: '#a78bfa', fontWeight: 600 }}>{row.segments?.moderate?.pct ?? '—'}%</td>
+                        <td style={{ padding: '0.4rem 0.75rem', color: '#60a5fa', fontWeight: 600 }}>{row.segments?.light?.pct ?? '—'}%</td>
                       </tr>
                     ))}
                   </tbody>
@@ -2741,7 +2734,7 @@ const AmorFiadoDashboard = () => {
 
             {/* Methodology note */}
             <div style={{ background: 'rgba(15,23,42,0.3)', border: '1px solid rgba(51,65,85,0.3)', borderRadius: '8px', padding: '0.85rem 1rem', fontSize: '0.75rem', color: '#475569' }}>
-              <strong style={{ color: '#64748b' }}>Fuente:</strong> Spotify for Artists — Release Engagement page. Scraper automático corre cada 24h (02:00 UTC-3). Datos: oyentes únicos de Amor Fiado en los últimos 7 días / total MAL.
+              <strong style={{ color: '#64748b' }}>Fuente:</strong> Spotify for Artists — Release Engagement, segmentos Monthly/Super/Moderate/Light. Scraper automático cada 24h (02:00 UTC-3). Definiciones S4A: Super = top ~8% fanbase, Moderate = oyentes regulares, Light = oyentes ocasionales.
             </div>
           </div>
         );

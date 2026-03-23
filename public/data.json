@@ -59,17 +59,23 @@
   "releaseEngagement": {
     "scrapedAt": "2026-03-23T12:06:43-03:00",
     "dayNum": 4,
-    "monthlyActiveListeners": 414288,
-    "releaseListeners": 17836,
-    "releaseListenersPct": 4.3,
     "releaseDate": "Mar 19, 2026",
+    "segments": {
+      "monthly":  { "total": 414288, "listeners": 17836, "pct": 4.3  },
+      "super":    { "total": 33357,  "listeners": 10094, "pct": 30.3 },
+      "moderate": { "total": 131037, "listeners": 5875,  "pct": 4.5  },
+      "light":    { "total": 249894, "listeners": 2722,  "pct": 1.1  }
+    },
     "history": [
       {
         "date": "2026-03-23",
         "dayNum": 4,
-        "releaseListeners": 17836,
-        "releaseListenersPct": 4.3,
-        "monthlyActiveListeners": 414288
+        "segments": {
+          "monthly":  { "total": 414288, "listeners": 17836, "pct": 4.3  },
+          "super":    { "total": 33357,  "listeners": 10094, "pct": 30.3 },
+          "moderate": { "total": 131037, "listeners": 5875,  "pct": 4.5  },
+          "light":    { "total": 249894, "listeners": 2722,  "pct": 1.1  }
+        }
       }
     ]
   },
