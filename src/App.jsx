@@ -155,6 +155,39 @@ const AmorFiadoDashboard = () => {
     'TOP TIER': { type: 'album', streams: { '2026-03-19': 383, '2026-03-20': 7061 } },
   };
 
+  // Computed cumulative stream totals per day (closed-day granularity)
+  // Built from streamData daily breakdowns + mar21Verified — no scraper needed
+  const dailyHistory = useMemo(() => {
+    const nameMap = {
+      'CUANDO ESCRIBÍA ASIMETRÍA': 'CEA', 'ATBLM': 'ATBLM', 'UN GUSTO': 'UN GUSTO',
+      'CALL ME': 'CALL ME', 'MAN OF WORD': 'MAN OF WORD', 'OJOS TRISTES': 'OJOS TRISTES',
+      'HIELO': 'HIELO', 'CHANGES': 'CHANGES', 'ALQUILER': 'ALQUILER',
+      'YA NO': 'YA NO', 'HAZLO CALLAO': 'HAZLO CALLAO', 'TOP TIER': 'TOP TIER',
+    };
+    // Build full per-track daily streams including Mar 21 verified
+    const fullStreams = {};
+    Object.entries(streamData).forEach(([name, data]) => {
+      const short = nameMap[name] || name;
+      fullStreams[short] = { ...data.streams };
+      if (mar21Verified[name]) fullStreams[short]['2026-03-21'] = mar21Verified[name];
+    });
+    // Collect all dates and sort
+    const allDates = new Set();
+    Object.values(fullStreams).forEach(s => Object.keys(s).forEach(d => allDates.add(d)));
+    const sortedDates = [...allDates].sort();
+    // Walk dates accumulating cumulative totals per track
+    const cumulatives = Object.fromEntries(Object.keys(fullStreams).map(k => [k, 0]));
+    return sortedDates.map(date => {
+      Object.entries(fullStreams).forEach(([name, s]) => {
+        cumulatives[name] = (cumulatives[name] || 0) + (s[date] || 0);
+      });
+      const albumTotal = Object.values(cumulatives).reduce((a, b) => a + b, 0);
+      const snap = { date, label: date.slice(5).replace('-', '/'), albumTotal };
+      Object.entries(cumulatives).forEach(([k, v]) => { snap[k] = v; });
+      return { ...snap };
+    });
+  }, []);
+
   const metrics = useMemo(() => {
     // Use verified Mar 21 daily streams
     const mar21Streams = { ...mar21Verified };
@@ -483,48 +516,39 @@ const AmorFiadoDashboard = () => {
       {/* === CRECIMIENTO TAB === */}
       {activeTab === 'growth' && (
         <div>
-          {/* Growth delta summary */}
-          {growthHistory.length >= 2 && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-              {(() => {
-                const latest = growthHistory[growthHistory.length - 1];
-                const prev = growthHistory[growthHistory.length - 2];
-                const delta = latest.albumTotal - prev.albumTotal;
-                const hours = (() => {
-                  const [dL, tL] = latest.timestamp.split(' ');
-                  const [dP, tP] = prev.timestamp.split(' ');
-                  return 8;
-                })();
-                const topGrower = Object.keys(latest).filter(k => k !== 'timestamp' && k !== 'albumTotal')
-                  .map(k => ({ name: k, delta: (latest[k] || 0) - (prev[k] || 0) }))
-                  .sort((a, b) => b.delta - a.delta)[0];
-                return [
-                  { label: 'Delta último snapshot', value: '+' + formatNumber(delta), color: '#4ade80' },
-                  { label: 'Snapshots totales', value: String(growthHistory.length), color: '#38bdf8' },
-                  { label: 'Mayor crecimiento', value: topGrower?.name || '—', sub: topGrower ? '+' + formatNumber(topGrower.delta) : '', color: '#fbbf24' },
+          {/* KPI cards — from dailyHistory */}
+          {(() => {
+            const last = dailyHistory[dailyHistory.length - 1];
+            const prev = dailyHistory[dailyHistory.length - 2];
+            const dayDelta = last && prev ? last.albumTotal - prev.albumTotal : null;
+            const topTrack = last ? Object.entries(last).filter(([k]) => k !== 'date' && k !== 'label' && k !== 'albumTotal').sort((a, b) => b[1] - a[1])[0] : null;
+            const day19entry = dailyHistory.find(d => d.date === '2026-03-19');
+            const day20entry = dailyHistory.find(d => d.date === '2026-03-20');
+            const launchDayStreams = day19entry && day20entry ? day20entry.albumTotal - day19entry.albumTotal : null;
+            return (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+                {[
+                  { label: 'Acumulado al ' + (last?.label || '—'), value: last ? formatNumber(last.albumTotal) : '—', color: '#f97316' },
+                  { label: 'Streams D+1 (20/03)', value: launchDayStreams ? formatNumber(launchDayStreams) : '—', color: '#4ade80' },
+                  { label: 'Días de datos', value: String(dailyHistory.length), color: '#38bdf8' },
+                  { label: 'Track líder total', value: topTrack?.[0] || '—', sub: topTrack ? formatNumber(topTrack[1]) + ' streams' : '', color: '#fbbf24' },
                 ].map((card, i) => (
                   <div key={i} style={{ background: 'rgba(30,41,59,0.5)', borderRadius: '12px', padding: '1.25rem', border: '1px solid rgba(51,65,85,0.5)' }}>
                     <p style={{ color: '#94a3b8', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.4rem 0' }}>{card.label}</p>
                     <p style={{ fontSize: '1.5rem', fontWeight: 700, color: card.color, margin: 0 }}>{card.value}</p>
                     {card.sub && <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0.2rem 0 0 0' }}>{card.sub}</p>}
                   </div>
-                ));
-              })()}
-            </div>
-          )}
+                ))}
+              </div>
+            );
+          })()}
 
-          {growthHistory.length < 2 && (
-            <div style={{ background: 'rgba(30,41,59,0.5)', borderRadius: '12px', padding: '2rem', border: '1px solid rgba(251,146,60,0.2)', marginBottom: '2rem', textAlign: 'center' }}>
-              <p style={{ color: '#fbbf24', fontSize: '1.1rem', fontWeight: 600, margin: '0 0 0.5rem 0' }}>Primer snapshot capturado</p>
-              <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: 0 }}>Las curvas de crecimiento se mostrarán a partir del segundo snapshot (en ~8 horas). El scraper automático se ejecuta a las 00:00, 08:00 y 16:00.</p>
-            </div>
-          )}
-
-          {/* Album total growth line */}
+          {/* Album total cumulative — día cerrado */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>Crecimiento Total del Álbum</h2>
+            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>Acumulado Total del Álbum</h2>
+            <p style={{ color: '#64748b', fontSize: '0.8rem', margin: '0 0 1.5rem 0' }}>Streams acumulados a día cerrado — desde lanzamiento de CEA (05/02) hasta 21/03</p>
             <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={growthHistory} margin={{ top: 10, right: 30, left: 10, bottom: 5 }}>
+              <AreaChart data={dailyHistory} margin={{ top: 10, right: 30, left: 10, bottom: 5 }}>
                 <defs>
                   <linearGradient id="gradAlbum" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#f97316" stopOpacity={0.4}/>
@@ -532,29 +556,32 @@ const AmorFiadoDashboard = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.08)" />
-                <XAxis dataKey="timestamp" stroke="#64748b" tick={{ fontSize: 11 }} />
+                <XAxis dataKey="label" stroke="#64748b" tick={{ fontSize: 11 }} interval={6} />
                 <YAxis stroke="#64748b" tickFormatter={(v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(251,146,60,0.3)', borderRadius: '8px' }} formatter={(v) => formatNumber(v)} />
-                <Area type="monotone" dataKey="albumTotal" stroke="#f97316" fill="url(#gradAlbum)" strokeWidth={3} name="Album Total" isAnimationActive={false} />
+                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(251,146,60,0.3)', borderRadius: '8px' }} formatter={(v) => [formatNumber(v), 'Acumulado']} labelFormatter={(l) => 'Día ' + l} />
+                <ReferenceLine x="02/26" stroke="#fbbf24" strokeDasharray="4 2" label={{ value: 'ATBLM', fill: '#fbbf24', fontSize: 10, position: 'top' }} />
+                <ReferenceLine x="03/19" stroke="#f97316" strokeDasharray="4 2" label={{ value: 'ÁLBUM', fill: '#f97316', fontSize: 10, position: 'top' }} />
+                <Area type="monotone" dataKey="albumTotal" stroke="#f97316" fill="url(#gradAlbum)" strokeWidth={3} name="Acumulado" isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Per-track growth lines */}
+          {/* Per-track cumulative — día cerrado */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>Crecimiento por Track</h2>
+            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>Acumulado por Track</h2>
+            <p style={{ color: '#64748b', fontSize: '0.8rem', margin: '0 0 1.5rem 0' }}>Streams acumulados a día cerrado por track</p>
             <ResponsiveContainer width="100%" height={420}>
-              <LineChart data={growthHistory} margin={{ top: 10, right: 30, left: 10, bottom: 5 }}>
+              <LineChart data={dailyHistory} margin={{ top: 10, right: 30, left: 10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.08)" />
-                <XAxis dataKey="timestamp" stroke="#64748b" tick={{ fontSize: 11 }} />
+                <XAxis dataKey="label" stroke="#64748b" tick={{ fontSize: 11 }} interval={6} />
                 <YAxis stroke="#64748b" tickFormatter={(v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(251,146,60,0.3)', borderRadius: '8px' }} formatter={(v) => formatNumber(v)} />
+                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(251,146,60,0.3)', borderRadius: '8px' }} formatter={(v) => formatNumber(v)} labelFormatter={(l) => 'Día ' + l} />
                 <Legend />
                 <Line type="monotone" dataKey="CEA" stroke="#f97316" strokeWidth={2} dot={false} name="CEA" isAnimationActive={false} />
                 <Line type="monotone" dataKey="ATBLM" stroke="#fbbf24" strokeWidth={2} dot={false} name="ATBLM" isAnimationActive={false} />
-                <Line type="monotone" dataKey="UN GUSTO" stroke="#4ade80" strokeWidth={2} dot={false} name="UN GUSTO" isAnimationActive={false} />
-                <Line type="monotone" dataKey="CALL ME" stroke="#38bdf8" strokeWidth={2} dot={false} name="CALL ME" isAnimationActive={false} />
-                <Line type="monotone" dataKey="MAN OF WORD" stroke="#a78bfa" strokeWidth={2} dot={false} name="MAN OF WORD" isAnimationActive={false} />
+                <Line type="monotone" dataKey="UN GUSTO" stroke="#4ade80" strokeWidth={1.5} dot={false} name="UN GUSTO" isAnimationActive={false} />
+                <Line type="monotone" dataKey="CALL ME" stroke="#38bdf8" strokeWidth={1.5} dot={false} name="CALL ME" isAnimationActive={false} />
+                <Line type="monotone" dataKey="MAN OF WORD" stroke="#a78bfa" strokeWidth={1.5} dot={false} name="MAN OF WORD" isAnimationActive={false} />
                 <Line type="monotone" dataKey="OJOS TRISTES" stroke="#fb7185" strokeWidth={1.5} dot={false} name="OJOS TRISTES" isAnimationActive={false} />
                 <Line type="monotone" dataKey="HIELO" stroke="#67e8f9" strokeWidth={1.5} dot={false} name="HIELO" isAnimationActive={false} />
                 <Line type="monotone" dataKey="CHANGES" stroke="#d946ef" strokeWidth={1.5} dot={false} name="CHANGES" isAnimationActive={false} />
@@ -566,35 +593,76 @@ const AmorFiadoDashboard = () => {
             </ResponsiveContainer>
           </div>
 
-          {/* Snapshot log */}
-          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Log de Snapshots</h2>
+          {/* Tabla histórica día a día */}
+          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
+            <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Histórico por Día — Acumulado</h2>
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
-                    {['Timestamp', 'Album Total', 'Delta', 'Top Track'].map(h => (
-                      <th key={h} style={{ textAlign: h === 'Timestamp' || h === 'Top Track' ? 'left' : 'right', padding: '0.75rem', color: '#94a3b8' }}>{h}</th>
+                    {['Fecha', 'Acumulado', 'Streams del día', 'Top Track'].map(h => (
+                      <th key={h} style={{ textAlign: h === 'Fecha' || h === 'Top Track' ? 'left' : 'right', padding: '0.75rem', color: '#94a3b8' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {[...growthHistory].reverse().map((snap, i, arr) => {
+                  {[...dailyHistory].reverse().map((snap, i, arr) => {
                     const prev = arr[i + 1];
-                    const delta = prev ? snap.albumTotal - prev.albumTotal : null;
-                    const topTrack = Object.entries(snap).filter(([k]) => k !== 'timestamp' && k !== 'albumTotal').sort((a, b) => b[1] - a[1])[0];
+                    const dayStreams = prev ? snap.albumTotal - prev.albumTotal : snap.albumTotal;
+                    const topTrack = Object.entries(snap).filter(([k]) => k !== 'date' && k !== 'label' && k !== 'albumTotal').map(([k, v]) => ({ k, v: prev ? v - (prev[k] || 0) : v })).sort((a, b) => b.v - a.v)[0];
                     return (
-                      <tr key={i} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
-                        <td style={{ padding: '0.75rem', color: '#f1f5f9' }}>{snap.timestamp}</td>
+                      <tr key={i} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', background: snap.date === '2026-03-19' ? 'rgba(249,115,22,0.06)' : 'transparent' }}>
+                        <td style={{ padding: '0.75rem', color: snap.date === '2026-03-19' ? '#f97316' : '#f1f5f9', fontWeight: snap.date === '2026-03-19' ? 700 : 400 }}>
+                          {snap.label}{snap.date === '2026-03-19' ? ' 🚀' : ''}
+                        </td>
                         <td style={{ textAlign: 'right', padding: '0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(snap.albumTotal)}</td>
-                        <td style={{ textAlign: 'right', padding: '0.75rem', color: delta !== null ? '#4ade80' : '#64748b', fontWeight: 600 }}>{delta !== null ? '+' + formatNumber(delta) : '—'}</td>
-                        <td style={{ padding: '0.75rem', color: '#fbbf24' }}>{topTrack ? topTrack[0] + ' (' + formatNumber(topTrack[1]) + ')' : '—'}</td>
+                        <td style={{ textAlign: 'right', padding: '0.75rem', color: '#4ade80' }}>+{formatNumber(dayStreams)}</td>
+                        <td style={{ padding: '0.75rem', color: '#fbbf24' }}>{topTrack ? topTrack.k + ' (+' + formatNumber(topTrack.v) + ')' : '—'}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
             </div>
+          </div>
+
+          {/* Snapshots en tiempo real (scraper 8h) */}
+          <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)' }}>
+            <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.25rem' }}>Snapshots en Tiempo Real</h2>
+            <p style={{ color: '#64748b', fontSize: '0.8rem', margin: '0 0 1rem 0' }}>Capturados automáticamente cada 8 horas por el scraper de Spotify</p>
+            {growthHistory.length < 2 && (
+              <div style={{ textAlign: 'center', padding: '1.5rem 0', color: '#94a3b8', fontSize: '0.9rem' }}>
+                Primer snapshot capturado — las comparativas aparecerán a partir del segundo snapshot (~8h).
+              </div>
+            )}
+            {growthHistory.length >= 2 && (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
+                      {['Timestamp', 'Album Total', 'Delta 8h', 'Top Track'].map(h => (
+                        <th key={h} style={{ textAlign: h === 'Timestamp' || h === 'Top Track' ? 'left' : 'right', padding: '0.75rem', color: '#94a3b8' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...growthHistory].reverse().map((snap, i, arr) => {
+                      const prev = arr[i + 1];
+                      const delta = prev ? snap.albumTotal - prev.albumTotal : null;
+                      const topTrack = Object.entries(snap).filter(([k]) => k !== 'timestamp' && k !== 'albumTotal').sort((a, b) => b[1] - a[1])[0];
+                      return (
+                        <tr key={i} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                          <td style={{ padding: '0.75rem', color: '#f1f5f9' }}>{snap.timestamp}</td>
+                          <td style={{ textAlign: 'right', padding: '0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(snap.albumTotal)}</td>
+                          <td style={{ textAlign: 'right', padding: '0.75rem', color: delta !== null ? '#4ade80' : '#64748b', fontWeight: 600 }}>{delta !== null ? '+' + formatNumber(delta) : '—'}</td>
+                          <td style={{ padding: '0.75rem', color: '#fbbf24' }}>{topTrack ? topTrack[0] + ' (' + formatNumber(topTrack[1]) + ')' : '—'}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       )}
