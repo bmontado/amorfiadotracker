@@ -920,42 +920,94 @@ const AmorFiadoDashboard = () => {
             })()}
           </div>
 
-          {/* Proyección básica a 7 días */}
+          {/* Proyección con curva de referencia CEA + ATBLM */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
-              <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Proyección D22 – D26</h2>
-              <span style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.3)', color: '#fbbf24', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>⚠ Basado en 1 punto de decay — orientativo</span>
+              <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Proyección D22 – D30</h2>
+              <span style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', fontSize: '0.65rem', fontWeight: 600, padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>Curva de referencia: CEA + ATBLM (pre-álbum)</span>
             </div>
-            <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>Proyección exponencial simple usando la tasa D20→D21. Se irá ajustando con más días de datos.</p>
+            <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>
+              Proyección basada en el decay histórico de los dos singles de Zeballos (mismo fanbase). Cada track tiene un <strong style={{ color: '#94a3b8' }}>factor de ajuste</strong> calculado de su D21 real vs. el D21 que predice la curva — corrige el comportamiento individual de cada track.
+            </p>
             {(() => {
-              const tracks = metrics.trackAnalysis.filter(t => t.decayD20toD21 !== 'N/A' && t.day21 > 0);
-              const days = [22, 23, 24, 25, 26];
+              // === Construir curva de referencia normalizada ===
+              // CEA: primer día completo = Feb 6 (D2 del single), hasta Mar 18 (pre-álbum)
+              const ceaStreams = streamData['CUANDO ESCRIBÍA ASIMETRÍA'].streams;
+              const ceaDates = Object.keys(ceaStreams).filter(d => d >= '2026-02-06' && d <= '2026-03-18').sort();
+              const ceaD1 = ceaStreams['2026-02-06'];
+              const ceaNorm = ceaDates.map(d => ceaStreams[d] / ceaD1); // [1.0, 0.528, ...]
+
+              // ATBLM: primer día completo = Feb 27, hasta Mar 18 (pre-álbum)
+              const atblmStreams = streamData['ATBLM'].streams;
+              const atblmDates = Object.keys(atblmStreams).filter(d => d >= '2026-02-27' && d <= '2026-03-18').sort();
+              const atblmD1 = atblmStreams['2026-02-27'];
+              const atblmNorm = atblmDates.map(d => atblmStreams[d] / atblmD1);
+
+              // Promedio de ambas curvas (usar la más corta como límite)
+              const refLen = Math.min(ceaNorm.length, atblmNorm.length); // ~20 días
+              const refCurve = Array.from({ length: refLen }, (_, i) => (ceaNorm[i] + atblmNorm[i]) / 2);
+              // refCurve[0] = 1.0 (D20 del álbum = D1 de referencia)
+              // refCurve[1] = ratio D21 esperado ≈ 0.544
+
+              // === Proyectar tracks del álbum ===
+              const tracks = metrics.trackAnalysis.filter(t => t.day20 > 0 && t.day21 > 0);
+              const projDays = [22, 23, 24, 25, 26, 27, 28, 29, 30];
+
               return (
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
-                    <thead>
-                      <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
-                        <th style={{ textAlign: 'left', padding: '0.5rem 0.75rem', color: '#94a3b8' }}>Track</th>
-                        <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#fbbf24' }}>D21 (real)</th>
-                        {days.map(d => <th key={d} style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#64748b' }}>D{d} ~</th>)}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tracks.sort((a, b) => b.day21 - a.day21).map(t => {
-                        const rate = parseFloat(t.decayD20toD21) / 100;
-                        const projected = days.map(d => Math.round(t.day21 * Math.pow(1 + rate, d - 21)));
-                        return (
-                          <tr key={t.name} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
-                            <td style={{ padding: '0.5rem 0.75rem', color: '#e2e8f0', fontWeight: 500 }}>{t.name}</td>
-                            <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#fbbf24', fontWeight: 600 }}>{formatNumber(t.day21)}</td>
-                            {projected.map((v, i) => (
-                              <td key={i} style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: v < t.day21 * 0.5 ? '#f87171' : '#94a3b8' }}>{formatNumber(Math.max(v, 0))}</td>
-                            ))}
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                <div>
+                  {/* Nota del factor de ajuste */}
+                  <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                    <div style={{ fontSize: '0.72rem', color: '#64748b', background: 'rgba(15,23,42,0.4)', padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.4)' }}>
+                      <span style={{ color: '#94a3b8' }}>Ref D21/D20 esperado: </span>
+                      <span style={{ color: '#f97316', fontWeight: 700 }}>{(refCurve[1] * 100).toFixed(1)}%</span>
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: '#64748b', background: 'rgba(15,23,42,0.4)', padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.4)' }}>
+                      <span style={{ color: '#94a3b8' }}>Basado en: </span>
+                      <span style={{ color: '#fbbf24', fontWeight: 600 }}>{refLen} días CEA · {atblmNorm.length} días ATBLM</span>
+                    </div>
+                  </div>
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.75rem' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
+                          <th style={{ textAlign: 'left', padding: '0.5rem 0.75rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>Track</th>
+                          <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#f97316', whiteSpace: 'nowrap' }}>D20</th>
+                          <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#fbbf24', whiteSpace: 'nowrap' }}>D21 real</th>
+                          <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#64748b', whiteSpace: 'nowrap' }}>Factor</th>
+                          {projDays.map(d => <th key={d} style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#475569', whiteSpace: 'nowrap' }}>D{d}</th>)}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {tracks.sort((a, b) => b.day21 - a.day21).map(t => {
+                          // Factor de ajuste: qué tan diferente es el D21 real vs el predicho por la curva
+                          const d21predicted = t.day20 * refCurve[1];
+                          const factor = t.day21 / d21predicted;
+                          const factorColor = factor >= 1.1 ? '#4ade80' : factor <= 0.9 ? '#f87171' : '#94a3b8';
+
+                          // Proyectar desde D22 en adelante usando refCurve[2..N] × D20 × factor
+                          const projected = projDays.map((d, i) => {
+                            const refIdx = i + 2; // refCurve[0]=D20, [1]=D21, [2]=D22...
+                            const ratio = refIdx < refCurve.length ? refCurve[refIdx] : refCurve[refCurve.length - 1] * 0.97; // extrapola suavemente si se acaban los datos
+                            return Math.round(t.day20 * ratio * factor);
+                          });
+
+                          return (
+                            <tr key={t.name} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                              <td style={{ padding: '0.5rem 0.75rem', color: '#e2e8f0', fontWeight: 500, whiteSpace: 'nowrap' }}>{t.name}</td>
+                              <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#f97316', fontWeight: 600 }}>{formatNumber(t.day20)}</td>
+                              <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#fbbf24', fontWeight: 600 }}>{formatNumber(t.day21)}</td>
+                              <td style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: factorColor, fontWeight: 700 }}>{factor.toFixed(2)}×</td>
+                              {projected.map((v, i) => (
+                                <td key={i} style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: v < t.day21 * 0.4 ? '#f87171' : v < t.day21 * 0.6 ? '#fb923c' : '#94a3b8' }}>
+                                  {formatNumber(Math.max(v, 0))}
+                                </td>
+                              ))}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               );
             })()}
