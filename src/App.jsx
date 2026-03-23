@@ -939,49 +939,55 @@ const AmorFiadoDashboard = () => {
             </p>
             {(() => {
               // === Construir curva de referencia normalizada ===
-              // CEA: primer día completo = Feb 6 (D2 del single), hasta Mar 18 (pre-álbum)
+              // Día 1 del álbum = D20 = primer día completo (Mar 20)
+              // Referencia: CEA (41 días limpios) + ATBLM (20 días limpios), ambos pre-álbum
+
               const ceaStreams = streamData['CUANDO ESCRIBÍA ASIMETRÍA'].streams;
               const ceaDates = Object.keys(ceaStreams).filter(d => d >= '2026-02-06' && d <= '2026-03-18').sort();
               const ceaD1 = ceaStreams['2026-02-06'];
-              const ceaNorm = ceaDates.map(d => ceaStreams[d] / ceaD1); // [1.0, 0.528, ...]
+              const ceaNorm = ceaDates.map(d => ceaStreams[d] / ceaD1); // 41 valores
 
-              // ATBLM: primer día completo = Feb 27, hasta Mar 18 (pre-álbum)
               const atblmStreams = streamData['ATBLM'].streams;
               const atblmDates = Object.keys(atblmStreams).filter(d => d >= '2026-02-27' && d <= '2026-03-18').sort();
               const atblmD1 = atblmStreams['2026-02-27'];
-              const atblmNorm = atblmDates.map(d => atblmStreams[d] / atblmD1);
+              const atblmNorm = atblmDates.map(d => atblmStreams[d] / atblmD1); // 20 valores
 
-              // Promedio de ambas curvas (usar la más corta como límite)
-              const refLen = Math.min(ceaNorm.length, atblmNorm.length); // ~20 días
-              const refCurve = Array.from({ length: refLen }, (_, i) => (ceaNorm[i] + atblmNorm[i]) / 2);
-              // refCurve[0] = 1.0 (D20 del álbum = D1 de referencia)
-              // refCurve[1] = ratio D21 esperado ≈ 0.544
+              // Días 1-20: promedio CEA + ATBLM
+              // Días 21-28: solo CEA (ATBLM no tiene más datos pre-álbum)
+              const TOTAL_DAYS = 28;
+              const sharedLen = Math.min(ceaNorm.length, atblmNorm.length); // 20
+              const refCurve = Array.from({ length: TOTAL_DAYS }, (_, i) => {
+                if (i < sharedLen) return (ceaNorm[i] + atblmNorm[i]) / 2; // promedio días 1-20
+                if (i < ceaNorm.length) return ceaNorm[i];                  // solo CEA días 21-28
+                return ceaNorm[ceaNorm.length - 1] * Math.pow(0.97, i - ceaNorm.length + 1); // extrapolación suave
+              });
+              // refCurve[0] = 1.0 → Día 1 (D20)  |  refCurve[1] ≈ 0.54 → Día 2 (D21)
 
-              // === Proyectar tracks del álbum ===
+              // === Tracks y proyecciones ===
               const tracks = metrics.trackAnalysis.filter(t => t.day20 > 0 && t.day21 > 0).sort((a, b) => b.day21 - a.day21);
-              const projDays = [22, 23, 24, 25, 26, 27, 28, 29, 30];
               const trackColors = ['#4ade80','#38bdf8','#a78bfa','#fb7185','#67e8f9','#d946ef','#fdba74','#86efac','#c4b5fd','#94a3b8'];
 
-              // Pre-calcular factores y proyecciones para reutilizar en gráfico y tabla
+              // Días reales disponibles: Día 1 y Día 2 (D20/D21)
+              // Días proyectados: 3 a 28
+              const REAL_DAYS = 2; // actualizar cuando el scraper traiga D22+
+
               const trackData = tracks.map((t, idx) => {
-                const d21predicted = t.day20 * refCurve[1];
-                const factor = t.day21 / d21predicted;
-                const projected = projDays.map((d, i) => {
-                  const refIdx = i + 2;
-                  const ratio = refIdx < refCurve.length ? refCurve[refIdx] : refCurve[refCurve.length - 1] * 0.97;
-                  return Math.max(Math.round(t.day20 * ratio * factor), 0);
+                const factor = t.day21 / (t.day20 * refCurve[1]);
+                // Para cada día 3-28 (índice 2-27 en refCurve)
+                const projected = Array.from({ length: TOTAL_DAYS - REAL_DAYS }, (_, i) => {
+                  return Math.max(Math.round(t.day20 * refCurve[i + REAL_DAYS] * factor), 0);
                 });
                 return { ...t, factor, projected, color: trackColors[idx % trackColors.length] };
               });
 
-              // Datos para el gráfico: D20 y D21 reales + D22-D30 proyectados
-              const allDays = [20, 21, ...projDays];
-              const chartData = allDays.map(d => {
-                const row = { day: `D${d}`, _isProjected: d >= 22 };
+              // Datos del gráfico: días 1 a 28, etiquetados como "Día N"
+              const chartData = Array.from({ length: TOTAL_DAYS }, (_, i) => {
+                const albumDay = i + 1;
+                const row = { day: `Día ${albumDay}`, isReal: albumDay <= REAL_DAYS };
                 trackData.forEach(t => {
-                  if (d === 20) row[t.name] = t.day20;
-                  else if (d === 21) row[t.name] = t.day21;
-                  else row[t.name] = t.projected[projDays.indexOf(d)];
+                  if (albumDay === 1) row[t.name] = t.day20;
+                  else if (albumDay === 2) row[t.name] = t.day21;
+                  else row[t.name] = t.projected[albumDay - 1 - REAL_DAYS];
                 });
                 return row;
               });
@@ -991,12 +997,15 @@ const AmorFiadoDashboard = () => {
                   {/* Nota del factor de ajuste */}
                   <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
                     <div style={{ fontSize: '0.72rem', color: '#64748b', background: 'rgba(15,23,42,0.4)', padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.4)' }}>
-                      <span style={{ color: '#94a3b8' }}>Ref D21/D20 esperado: </span>
+                      <span style={{ color: '#94a3b8' }}>Día 2/Día 1 esperado: </span>
                       <span style={{ color: '#f97316', fontWeight: 700 }}>{(refCurve[1] * 100).toFixed(1)}%</span>
                     </div>
                     <div style={{ fontSize: '0.72rem', color: '#64748b', background: 'rgba(15,23,42,0.4)', padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid rgba(51,65,85,0.4)' }}>
-                      <span style={{ color: '#94a3b8' }}>Basado en: </span>
-                      <span style={{ color: '#fbbf24', fontWeight: 600 }}>{refLen} días CEA · {atblmNorm.length} días ATBLM</span>
+                      <span style={{ color: '#94a3b8' }}>Ref días 1–20: </span>
+                      <span style={{ color: '#fbbf24', fontWeight: 600 }}>CEA + ATBLM</span>
+                      <span style={{ color: '#64748b' }}> · </span>
+                      <span style={{ color: '#94a3b8' }}>días 21–28: </span>
+                      <span style={{ color: '#fbbf24', fontWeight: 600 }}>solo CEA</span>
                     </div>
                   </div>
 
@@ -1012,7 +1021,7 @@ const AmorFiadoDashboard = () => {
                             contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '8px', fontSize: '0.75rem' }}
                             formatter={(v, name) => [formatNumber(v), name]}
                           />
-                          <ReferenceLine x="D22" stroke="rgba(148,163,184,0.4)" strokeDasharray="6 3"
+                          <ReferenceLine x="Día 3" stroke="rgba(148,163,184,0.35)" strokeDasharray="6 3"
                             label={{ value: '← real  proyectado →', fill: '#64748b', fontSize: 10, position: 'insideTopLeft' }} />
                           <Legend wrapperStyle={{ fontSize: '0.72rem' }} />
                           {trackData.map(t => (
@@ -1044,10 +1053,10 @@ const AmorFiadoDashboard = () => {
                       <thead>
                         <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
                           <th style={{ textAlign: 'left', padding: '0.5rem 0.75rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>Track</th>
-                          <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#f97316', whiteSpace: 'nowrap' }}>D20</th>
-                          <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#fbbf24', whiteSpace: 'nowrap' }}>D21 real</th>
+                          <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#f97316', whiteSpace: 'nowrap' }}>Día 1</th>
+                          <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#fbbf24', whiteSpace: 'nowrap' }}>Día 2 (real)</th>
                           <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#64748b', whiteSpace: 'nowrap' }}>Factor</th>
-                          {projDays.map(d => <th key={d} style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#475569', whiteSpace: 'nowrap' }}>D{d}</th>)}
+                          {Array.from({ length: TOTAL_DAYS - REAL_DAYS }, (_, i) => i + REAL_DAYS + 1).map(d => <th key={d} style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#475569', whiteSpace: 'nowrap' }}>D{d}</th>)}
                         </tr>
                       </thead>
                       <tbody>
