@@ -1352,63 +1352,113 @@ const AmorFiadoDashboard = () => {
       {activeTab === 'decay' && (
         <div>
 
-          {/* Gráfico de velocidad de decay D20→D21 */}
+          {/* Curva de Velocidad de Decay por track — multi-día */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>Velocidad de Decay — D20 → D21</h2>
-            <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>% de variación de streams entre el primer día completo (D20) y el segundo (D21). Verde = creciendo · Rojo = cayendo.</p>
             {(() => {
-              const sorted = [...metrics.trackAnalysis]
-                .filter(t => t.decayD20toD21 !== 'N/A')
-                .sort((a, b) => parseFloat(b.decayD20toD21) - parseFloat(a.decayD20toD21));
-              const max = Math.max(...sorted.map(t => Math.abs(parseFloat(t.decayD20toD21))));
+              const postAlbum = dailyLog.filter(e => e.date >= '2026-03-20');
+              // Datos: una entrada por transición de día (D20→D21, D21→D22, …)
+              const decayCurveData = postAlbum.slice(1).map((curr, i) => {
+                const prev = postAlbum[i];
+                const point = { label: `${prev.label}→${curr.label}` };
+                metrics.trackAnalysis.forEach(t => {
+                  const prevVal = prev.tracks[t.name] ?? 0;
+                  const currVal = curr.tracks[t.name] ?? 0;
+                  point[t.name] = prevVal > 0 ? parseFloat(((currVal - prevVal) / prevVal * 100).toFixed(1)) : null;
+                });
+                return point;
+              });
+              const trackColors = ['#4ade80','#38bdf8','#a78bfa','#fb7185','#67e8f9','#d946ef','#fdba74','#86efac','#c4b5fd','#94a3b8','#fbbf24','#f97316'];
+              const trackList = metrics.trackAnalysis.map((t, i) => ({ name: t.name, color: trackColors[i % trackColors.length] }));
+              // Valor de referencia: promedio de todos los tracks en el primer salto
+              const firstPoint = decayCurveData[0];
+              const refLine = firstPoint
+                ? parseFloat((trackList.reduce((s, t) => s + (firstPoint[t.name] ?? 0), 0) / trackList.length).toFixed(1))
+                : null;
+              const lastTransition = decayCurveData[decayCurveData.length - 1];
+              const lastRange = lastTransition ? `${lastTransition.label.split('→')[0]} → ${lastTransition.label.split('→')[1]}` : '';
               return (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', position: 'relative' }}>
-                  {sorted.map(t => {
-                    const val = parseFloat(t.decayD20toD21);
-                    const isPos = val >= 0;
-                    const pct = Math.abs(val) / max * 100;
-                    const color = isPos ? '#4ade80' : val < -40 ? '#f87171' : val < -20 ? '#fb923c' : '#fbbf24';
-                    return (
-                      <div key={t.name}
-                        style={{ display: 'grid', gridTemplateColumns: '140px 1fr 60px', gap: '0.75rem', alignItems: 'center', cursor: 'default' }}
-                        onMouseEnter={e => { setHoveredDecayTrack(t); setDecayTooltipPos({ x: e.clientX, y: e.clientY }); }}
-                        onMouseMove={e => setDecayTooltipPos({ x: e.clientX, y: e.clientY })}
-                        onMouseLeave={() => setHoveredDecayTrack(null)}
-                      >
-                        <span style={{ color: '#e2e8f0', fontSize: '0.78rem', fontWeight: 500, textAlign: 'right', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.name}</span>
-                        <div style={{ background: 'rgba(15,23,42,0.6)', borderRadius: '4px', height: '20px', position: 'relative', overflow: 'hidden' }}>
-                          <div style={{ position: 'absolute', left: isPos ? '50%' : `calc(50% - ${pct / 2}%)`, width: `${pct / 2}%`, height: '100%', background: color, opacity: hoveredDecayTrack?.name === t.name ? 1 : 0.85, borderRadius: isPos ? '0 3px 3px 0' : '3px 0 0 3px', transition: 'opacity 0.15s' }} />
-                          <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: '1px', background: 'rgba(148,163,184,0.25)' }} />
-                        </div>
-                        <span style={{ color, fontWeight: 700, fontSize: '0.8rem', textAlign: 'right' }}>{isPos ? '+' : ''}{val.toFixed(1)}%</span>
-                      </div>
-                    );
-                  })}
-                  {/* Tooltip flotante */}
-                  {hoveredDecayTrack && (() => {
-                    const val = parseFloat(hoveredDecayTrack.decayD20toD21);
-                    const color = val >= 0 ? '#4ade80' : val < -40 ? '#f87171' : val < -20 ? '#fb923c' : '#fbbf24';
-                    const rank = sorted.findIndex(t => t.name === hoveredDecayTrack.name) + 1;
-                    return (
-                      <div style={{ position: 'fixed', left: decayTooltipPos.x + 14, top: decayTooltipPos.y - 10, zIndex: 9999, background: '#0f172a', border: `1px solid ${color}44`, borderRadius: '10px', padding: '0.65rem 0.9rem', fontSize: '0.75rem', pointerEvents: 'none', minWidth: '200px', boxShadow: `0 4px 20px ${color}22` }}>
-                        <p style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 0.4rem' }}>{hoveredDecayTrack.name}</p>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.2rem 0.75rem' }}>
-                          <span style={{ color: '#64748b' }}>D20 (Día 1)</span>
-                          <span style={{ color: '#f97316', fontWeight: 600 }}>{formatNumber(hoveredDecayTrack.day20)}</span>
-                          <span style={{ color: '#64748b' }}>D21 (Día 2)</span>
-                          <span style={{ color: '#fbbf24', fontWeight: 600 }}>{formatNumber(hoveredDecayTrack.day21)}</span>
-                          <span style={{ color: '#64748b' }}>Δ streams</span>
-                          <span style={{ color, fontWeight: 600 }}>{hoveredDecayTrack.day21 - hoveredDecayTrack.day20 > 0 ? '+' : ''}{formatNumber(hoveredDecayTrack.day21 - hoveredDecayTrack.day20)}</span>
-                          <span style={{ color: '#64748b' }}>Decay</span>
-                          <span style={{ color, fontWeight: 700 }}>{val >= 0 ? '+' : ''}{val.toFixed(2)}%</span>
-                          <span style={{ color: '#64748b' }}>Ranking</span>
-                          <span style={{ color: '#94a3b8' }}>{rank}° de {sorted.length}</span>
-                          {hoveredDecayTrack.anomaly && <><span style={{ color: '#64748b' }}>Estado</span><span style={{ color: hoveredDecayTrack.anomalyColor === 'green' ? '#4ade80' : hoveredDecayTrack.anomalyColor === 'red' ? '#f87171' : '#fbbf24', fontWeight: 600 }}>{hoveredDecayTrack.anomaly}</span></>}
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </div>
+                <>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Curva de Decay por Track</h2>
+                    {decayCurveData.length > 0 && (
+                      <span style={{ fontSize: '0.7rem', color: '#475569', background: 'rgba(15,23,42,0.5)', padding: '0.2rem 0.6rem', borderRadius: '6px', border: '1px solid rgba(51,65,85,0.4)' }}>
+                        {decayCurveData.length} transición{decayCurveData.length !== 1 ? 'es' : ''} · último: {lastRange}
+                      </span>
+                    )}
+                  </div>
+                  <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>
+                    % de variación de streams entre días consecutivos por track. Una curva que sube hacia 0 indica que el decay se está frenando.
+                  </p>
+                  {decayCurveData.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '2rem 0', color: '#475569', fontSize: '0.85rem' }}>Faltan al menos 2 días de datos para trazar la curva.</div>
+                  ) : (
+                    <>
+                      <ResponsiveContainer width="100%" height={340}>
+                        <LineChart data={decayCurveData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.07)" />
+                          <XAxis dataKey="label" stroke="#64748b" tick={{ fontSize: 12 }} />
+                          <YAxis
+                            stroke="#64748b"
+                            tick={{ fontSize: 11 }}
+                            tickFormatter={v => `${v > 0 ? '+' : ''}${v}%`}
+                            domain={['auto', 5]}
+                          />
+                          <Tooltip
+                            contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '10px', fontSize: '0.75rem' }}
+                            formatter={(v, name) => [
+                              v != null ? `${v > 0 ? '+' : ''}${v.toFixed(1)}%` : '—',
+                              name,
+                            ]}
+                            itemSorter={(item) => -(item.value ?? -999)}
+                          />
+                          {/* Línea cero */}
+                          <ReferenceLine y={0} stroke="rgba(148,163,184,0.3)" strokeWidth={1} label={{ value: '0%', fill: '#475569', fontSize: 9, position: 'insideLeft' }} />
+                          {/* Promedio del primer salto como referencia */}
+                          {refLine !== null && (
+                            <ReferenceLine y={refLine} stroke="rgba(249,115,22,0.25)" strokeDasharray="5 3"
+                              label={{ value: `prom. álbum D20→D21 (${refLine > 0 ? '+' : ''}${refLine}%)`, fill: '#f97316', fontSize: 9, position: 'insideRight' }} />
+                          )}
+                          <Legend wrapperStyle={{ fontSize: '0.68rem', paddingTop: '0.5rem' }} />
+                          {trackList.map(t => (
+                            <Line
+                              key={t.name}
+                              type="monotone"
+                              dataKey={t.name}
+                              stroke={t.color}
+                              strokeWidth={2}
+                              dot={{ r: 4, fill: t.color, stroke: '#0f172a', strokeWidth: 1.5 }}
+                              activeDot={{ r: 6 }}
+                              connectNulls
+                              isAnimationActive={false}
+                            />
+                          ))}
+                        </LineChart>
+                      </ResponsiveContainer>
+                      {/* Tabla resumen: última transición por track */}
+                      {decayCurveData.length >= 1 && (() => {
+                        const latest = decayCurveData[decayCurveData.length - 1];
+                        const rows = trackList
+                          .map(t => ({ ...t, val: latest[t.name] }))
+                          .filter(t => t.val != null)
+                          .sort((a, b) => b.val - a.val);
+                        return (
+                          <div style={{ marginTop: '1rem', display: 'flex', flexWrap: 'wrap', gap: '0.35rem', justifyContent: 'center' }}>
+                            {rows.map(t => {
+                              const c = t.val >= 0 ? '#4ade80' : t.val > -30 ? '#fbbf24' : t.val > -50 ? '#fb923c' : '#f87171';
+                              return (
+                                <div key={t.name} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(15,23,42,0.5)', padding: '0.2rem 0.55rem', borderRadius: '9999px', border: `1px solid ${c}33` }}>
+                                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: t.color }} />
+                                  <span style={{ color: '#94a3b8', fontSize: '0.66rem' }}>{t.name.split(' ')[0]}</span>
+                                  <span style={{ color: c, fontSize: '0.7rem', fontWeight: 700 }}>{t.val > 0 ? '+' : ''}{t.val.toFixed(1)}%</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })()}
+                    </>
+                  )}
+                </>
               );
             })()}
           </div>
