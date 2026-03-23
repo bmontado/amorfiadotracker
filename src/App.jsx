@@ -22,7 +22,7 @@ const AmorFiadoDashboard = () => {
   // Album metadata
   const albumName = 'AMOR FIADO';
   const artist = 'ZEBALLOS';
-  const releaseDate = '19 de Marzo, 2026 — 21:00 (UTC-3)';
+  const releaseDate = '19 de Marzo, 2026 — 20:00 (UTC-3)';
 
   // Last data update timestamps — updated automatically by the scrapers each run
   const lastUpdated = {
@@ -309,7 +309,7 @@ const AmorFiadoDashboard = () => {
     const multiDayData = Object.entries(fullStreamData).map(([name, data]) => ({
       name: name.length > 18 ? name.substring(0, 16) + '...' : name,
       fullName: name,
-      'Día 19 (3h)': data.streams['2026-03-19'] || 0,
+      'Día 19 (~1h)': data.streams['2026-03-19'] || 0,
       'Día 20': data.streams['2026-03-20'] || 0,
       'Día 21': data.streams['2026-03-21'] || 0,
       type: data.type,
@@ -394,7 +394,7 @@ const AmorFiadoDashboard = () => {
           {/* KPI Cards */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
             {[
-              { label: 'Día 19 (3h)', value: formatNumber(metrics.day19Streams), sub: 'Lanzamiento 21:00' },
+              { label: 'Día 19 (~1h)', value: formatNumber(metrics.day19Streams), sub: 'Lanzamiento 20:00 UTC-3 · ciclo Spotify ~1h' },
               { label: 'Día 20 (completo)', value: formatNumber(metrics.day20Streams), sub: 'Primer día completo', highlight: true },
               { label: 'Día 21 (completo)', value: formatNumber(metrics.day21Streams), sub: 'Día completo' },
               { label: 'Promedio/Track D20', value: formatNumber(metrics.avgDay20Album), sub: 'Solo tracks nuevos' },
@@ -437,7 +437,7 @@ const AmorFiadoDashboard = () => {
                 `UN GUSTO lidera el álbum con ${formatNumber(16320)} streams en su primer día completo, superando al segundo (CALL ME) por ~${formatNumber(16320 - 11305)}.`,
                 `El álbum acumuló ${formatNumber(metrics.totalLiveStreams)} streams totales (live) en ~50 horas desde el lanzamiento.`,
                 `El "efecto álbum" multiplicó ATBLM por ${metrics.singlesAnalysis['ATBLM'].multiplier}x y CUANDO ESCRIBÍA ASIMETRÍA por ${metrics.singlesAnalysis['CUANDO ESCRIBÍA ASIMETRÍA'].multiplier}x vs. sus promedios pre-álbum.`,
-                `Día 20 generó ${formatNumber(metrics.day20Streams)} streams totales — un crecimiento de ${((metrics.day20Streams / metrics.day19Streams - 1) * 100).toFixed(0)}% vs. las 3h de lanzamiento.`,
+                `Día 20 generó ${formatNumber(metrics.day20Streams)} streams totales — el primer día completo (ciclo Spotify 00:00–23:59 UTC).`,
                 `Día 21 cerró con ${formatNumber(metrics.day21Streams)} streams — un decay de ${((1 - metrics.day21Streams / metrics.day20Streams) * 100).toFixed(0)}% vs D20, típico de la caída post-lanzamiento.`,
                 `Los 10 tracks nuevos promediaron ${formatNumber(metrics.avgDay20Album)} streams el día 20, con UN GUSTO como claro outlier positivo.`,
               ].map((text, i) => (
@@ -818,12 +818,12 @@ const AmorFiadoDashboard = () => {
         <div>
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
             <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Tabla de Decay & Anomalías</h2>
-            <p style={{ color: '#64748b', fontSize: '0.8rem', marginBottom: '1.5rem' }}>Nota: Día 19 = 3h parciales (21:00-00:00). Día 21 = dato cerrado (verificado con totales de 28 días de S4A).</p>
+            <p style={{ color: '#64748b', fontSize: '0.8rem', marginBottom: '1.5rem' }}>Nota: Día 19 ≈ 1h parcial (álbum lanzado 20:00 UTC-3 = 23:00 UTC · ciclo Spotify cierra 00:00 UTC). Día 21 = dato cerrado verificado desde S4A 28 días.</p>
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
-                    {['Track', 'D19 (3h)', 'D20', 'D21', 'Decay D20→D21', 'Estado'].map((h) => (
+                    {['Track', 'D19 (~1h)', 'D20', 'D21', 'Decay D20→D21', 'Estado'].map((h) => (
                       <th key={h} style={{ textAlign: h === 'Track' || h === 'Estado' ? (h === 'Estado' ? 'center' : 'left') : 'right', padding: '0.75rem', color: '#94a3b8', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
                     ))}
                   </tr>
