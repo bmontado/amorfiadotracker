@@ -2880,22 +2880,6 @@ const AmorFiadoDashboard = () => {
                 </div>
               )}
 
-              {/* Marquee / Showcase info pills */}
-              <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                {[
-                  { name: 'Marquee', color: '#fbbf24', desc: 'Pantalla completa al abrir app · solo releases nuevas (≤18 días) · hasta 10 días · target por segmento' },
-                  { name: 'Showcase', color: '#a78bfa', desc: 'Card en el Home feed · cualquier release · hasta 14 días · $100 mín · ideal para catálogo' },
-                ].map(t => (
-                  <div key={t.name} style={{
-                    flex: '1 1 240px', padding: '0.6rem 0.8rem', borderRadius: '8px',
-                    border: `1px solid rgba(${t.color === '#fbbf24' ? '251,191,36' : '167,139,250'},0.2)`,
-                    background: `rgba(${t.color === '#fbbf24' ? '251,191,36' : '167,139,250'},0.05)`,
-                  }}>
-                    <p style={{ color: t.color, fontSize: '0.72rem', fontWeight: 700, margin: '0 0 0.2rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t.name}</p>
-                    <p style={{ color: '#64748b', fontSize: '0.7rem', margin: 0, lineHeight: 1.5 }}>{t.desc}</p>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Streamed this release — area chart (S4A style) */}
@@ -2993,21 +2977,6 @@ const AmorFiadoDashboard = () => {
               </div>
             )}
 
-            {/* Insight card */}
-            <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
-              <p style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 0.75rem' }}>Interpretación</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.82rem', color: '#94a3b8' }}>
-                <p style={{ margin: 0 }}>
-                  <strong style={{ color: '#f97316' }}>{segs.super?.pct ?? '—'}%</strong> de tus super listeners ya escucharon el álbum en D{dayNum} — tu fanbase más fiel respondió primero.
-                </p>
-                <p style={{ margin: 0 }}>
-                  Los moderate listeners están en <strong style={{ color: '#a78bfa' }}>{segs.moderate?.pct ?? '—'}%</strong> y los light en <strong style={{ color: '#60a5fa' }}>{segs.light?.pct ?? '—'}%</strong> — hay runway para crecer con esos dos grupos durante la ventana D28.
-                </p>
-                <p style={{ margin: 0 }}>
-                  Conversión general MAL: <strong style={{ color: '#4ade80' }}>{segs.monthly?.pct ?? '—'}%</strong> sobre {segs.monthly?.total?.toLocaleString('es-AR')} oyentes activos.
-                </p>
-              </div>
-            </div>
 
             {/* History table */}
             {history.length >= 2 && (
