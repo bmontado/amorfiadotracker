@@ -28,6 +28,8 @@ const AmorFiadoDashboard = () => {
   const [rankDay, setRankDay] = useState('day20'); // 'day19' | 'day20' | 'day21'
   const [hoveredDecayTrack, setHoveredDecayTrack] = useState(null);
   const [decayTooltipPos, setDecayTooltipPos] = useState({ x: 0, y: 0 });
+  const [decayMethodOpen, setDecayMethodOpen] = useState(false);
+  const [socialMethodOpen, setSocialMethodOpen] = useState(false);
   const toggleDay = (date) => setExpandedDays(prev => { const s = new Set(prev); s.has(date) ? s.delete(date) : s.add(date); return s; });
 
   // Album metadata
@@ -1643,25 +1645,20 @@ const AmorFiadoDashboard = () => {
           </div>
 
           {/* Metodología — colapsada */}
-          {(() => {
-            const [open, setOpen] = React.useState(false);
-            return (
-              <div style={{ borderRadius: '8px', border: '1px solid rgba(51,65,85,0.35)', overflow: 'hidden' }}>
-                <button onClick={() => setOpen(o => !o)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 1rem', background: 'rgba(15,23,42,0.3)', border: 'none', cursor: 'pointer', color: '#475569', fontSize: '0.75rem', fontWeight: 500 }}>
-                  <span>Metodología</span>
-                  <span style={{ fontSize: '0.65rem', transition: 'transform 0.2s', display: 'inline-block', transform: open ? 'rotate(180deg)' : 'none' }}>▼</span>
-                </button>
-                {open && (
-                  <div style={{ padding: '0.85rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.78rem', color: '#64748b', background: 'rgba(15,23,42,0.2)', borderTop: '1px solid rgba(51,65,85,0.25)' }}>
-                    <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Decay D20→D21:</strong> Variación porcentual entre el día 20 y el día 21 completos.</p>
-                    <p style={{ margin: 0 }}><strong style={{ color: '#4ade80' }}>Outperformer:</strong> Z-score {'>'} 1.5 vs. promedio de tracks nuevos en D20.</p>
-                    <p style={{ margin: 0 }}><strong style={{ color: '#f87171' }}>Underperformer:</strong> Z-score {'<'} -1.5 vs. promedio.</p>
-                    <p style={{ margin: 0 }}><strong style={{ color: '#fbbf24' }}>Album Bump:</strong> Single pre-álbum con spike por efecto del lanzamiento.</p>
-                  </div>
-                )}
+          <div style={{ borderRadius: '8px', border: '1px solid rgba(51,65,85,0.35)', overflow: 'hidden' }}>
+            <button onClick={() => setDecayMethodOpen(o => !o)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 1rem', background: 'rgba(15,23,42,0.3)', border: 'none', cursor: 'pointer', color: '#475569', fontSize: '0.75rem', fontWeight: 500 }}>
+              <span>Metodología</span>
+              <span style={{ fontSize: '0.65rem', transition: 'transform 0.2s', display: 'inline-block', transform: decayMethodOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
+            </button>
+            {decayMethodOpen && (
+              <div style={{ padding: '0.85rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.78rem', color: '#64748b', background: 'rgba(15,23,42,0.2)', borderTop: '1px solid rgba(51,65,85,0.25)' }}>
+                <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Decay D20→D21:</strong> Variación porcentual entre el día 20 y el día 21 completos.</p>
+                <p style={{ margin: 0 }}><strong style={{ color: '#4ade80' }}>Outperformer:</strong> Z-score {'>'} 1.5 vs. promedio de tracks nuevos en D20.</p>
+                <p style={{ margin: 0 }}><strong style={{ color: '#f87171' }}>Underperformer:</strong> Z-score {'<'} -1.5 vs. promedio.</p>
+                <p style={{ margin: 0 }}><strong style={{ color: '#fbbf24' }}>Album Bump:</strong> Single pre-álbum con spike por efecto del lanzamiento.</p>
               </div>
-            );
-          })()}
+            )}
+          </div>
         </div>
       )}
 
@@ -2188,26 +2185,21 @@ const AmorFiadoDashboard = () => {
             </div>
 
             {/* Methodology — colapsada */}
-            {(() => {
-              const [open, setOpen] = React.useState(false);
-              return (
-                <div style={{ borderRadius: '8px', border: '1px solid rgba(51,65,85,0.35)', overflow: 'hidden' }}>
-                  <button onClick={() => setOpen(o => !o)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 1rem', background: 'rgba(15,23,42,0.3)', border: 'none', cursor: 'pointer', color: '#475569', fontSize: '0.75rem', fontWeight: 500 }}>
-                    <span>Metodología Social Impact</span>
-                    <span style={{ fontSize: '0.65rem', transition: 'transform 0.2s', display: 'inline-block', transform: open ? 'rotate(180deg)' : 'none' }}>▼</span>
-                  </button>
-                  {open && (
-                    <div style={{ padding: '0.85rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.78rem', color: '#64748b', background: 'rgba(15,23,42,0.2)', borderTop: '1px solid rgba(51,65,85,0.25)' }}>
-                      <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Instagram:</strong> @zeballos17 — 8 reels (Feb 2 – Mar 21). Views y likes desde perfil público.</p>
-                      <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>TikTok:</strong> @zeballos1717 — 15 videos (Ene 28 – Mar 22). Eng. rate ~12% vs ~5% en IG.</p>
-                      <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Engagement Rate:</strong> Likes / Views × 100.</p>
-                      <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Stream Delta D+1:</strong> Diferencia en streams entre el día del post y el siguiente (correlación, no causalidad).</p>
-                      <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Atribución:</strong> Por track mencionado, audio usado o taggeado (#amorfiado).</p>
-                    </div>
-                  )}
+            <div style={{ borderRadius: '8px', border: '1px solid rgba(51,65,85,0.35)', overflow: 'hidden' }}>
+              <button onClick={() => setSocialMethodOpen(o => !o)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 1rem', background: 'rgba(15,23,42,0.3)', border: 'none', cursor: 'pointer', color: '#475569', fontSize: '0.75rem', fontWeight: 500 }}>
+                <span>Metodología Social Impact</span>
+                <span style={{ fontSize: '0.65rem', transition: 'transform 0.2s', display: 'inline-block', transform: socialMethodOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
+              </button>
+              {socialMethodOpen && (
+                <div style={{ padding: '0.85rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.78rem', color: '#64748b', background: 'rgba(15,23,42,0.2)', borderTop: '1px solid rgba(51,65,85,0.25)' }}>
+                  <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Instagram:</strong> @zeballos17 — 8 reels (Feb 2 – Mar 21). Views y likes desde perfil público.</p>
+                  <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>TikTok:</strong> @zeballos1717 — 15 videos (Ene 28 – Mar 22). Eng. rate ~12% vs ~5% en IG.</p>
+                  <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Engagement Rate:</strong> Likes / Views × 100.</p>
+                  <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Stream Delta D+1:</strong> Diferencia en streams entre el día del post y el siguiente (correlación, no causalidad).</p>
+                  <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Atribución:</strong> Por track mencionado, audio usado o taggeado (#amorfiado).</p>
                 </div>
-              );
-            })()}
+              )}
+            </div>
           </div>
         );
       })()}
