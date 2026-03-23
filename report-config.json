@@ -1,0 +1,12 @@
+{
+  "title": "AMOR FIADO — Performance Report",
+  "artist": "ZEBALLOS",
+  "sections": {
+    "overview":    true,
+    "streams":     true,
+    "metrics28d":  true,
+    "decay":       true,
+    "engagement":  true,
+    "social":      true
+  }
+}
