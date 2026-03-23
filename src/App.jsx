@@ -27,7 +27,6 @@ const AmorFiadoDashboard = () => {
   const [histGrouping, setHistGrouping] = useState('day'); // 'day' | 'month'
   const [hoveredDecayTrack, setHoveredDecayTrack] = useState(null);
   const [decayTooltipPos, setDecayTooltipPos] = useState({ x: 0, y: 0 });
-  const [decayVelView, setDecayVelView] = useState('bars'); // 'bars' | 'chart'
   const toggleDay = (date) => setExpandedDays(prev => { const s = new Set(prev); s.has(date) ? s.delete(date) : s.add(date); return s; });
 
   // Album metadata
@@ -1092,81 +1091,13 @@ const AmorFiadoDashboard = () => {
 
           {/* Gráfico de velocidad de decay D20→D21 */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.25rem' }}>
-              <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Velocidad de Decay — D20 → D21</h2>
-              <div style={{ display: 'flex', gap: '0.3rem' }}>
-                {[['bars', '≡ Visual'], ['chart', '▲ Gráfico']].map(([val, label]) => (
-                  <button key={val} onClick={() => setDecayVelView(val)} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600, background: decayVelView === val ? '#f97316' : 'rgba(51,65,85,0.5)', color: decayVelView === val ? '#0f172a' : '#94a3b8' }}>{label}</button>
-                ))}
-              </div>
-            </div>
+            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>Velocidad de Decay — D20 → D21</h2>
             <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>% de variación de streams entre el primer día completo (D20) y el segundo (D21). Verde = creciendo · Rojo = cayendo.</p>
             {(() => {
               const sorted = [...metrics.trackAnalysis]
                 .filter(t => t.decayD20toD21 !== 'N/A')
                 .sort((a, b) => parseFloat(b.decayD20toD21) - parseFloat(a.decayD20toD21));
               const max = Math.max(...sorted.map(t => Math.abs(parseFloat(t.decayD20toD21))));
-
-              // === VISTA GRÁFICO (Recharts) ===
-              if (decayVelView === 'chart') {
-                const chartData = [...sorted].reverse().map(t => ({
-                  name: t.name.length > 16 ? t.name.slice(0, 14) + '…' : t.name,
-                  fullName: t.name,
-                  decay: parseFloat(parseFloat(t.decayD20toD21).toFixed(2)),
-                  day20: t.day20,
-                  day21: t.day21,
-                  delta: t.day21 - t.day20,
-                  anomaly: t.anomaly,
-                }));
-                const CustomTooltip = ({ active, payload }) => {
-                  if (!active || !payload?.length) return null;
-                  const d = payload[0].payload;
-                  const val = d.decay;
-                  const color = val >= 0 ? '#4ade80' : val < -40 ? '#f87171' : val < -20 ? '#fb923c' : '#fbbf24';
-                  return (
-                    <div style={{ background: '#0f172a', border: `1px solid ${color}44`, borderRadius: '10px', padding: '0.65rem 0.9rem', fontSize: '0.75rem', minWidth: '190px', boxShadow: `0 4px 20px ${color}22` }}>
-                      <p style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 0.4rem' }}>{d.fullName}</p>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.2rem 0.75rem' }}>
-                        <span style={{ color: '#64748b' }}>D20 (Día 1)</span><span style={{ color: '#f97316', fontWeight: 600 }}>{formatNumber(d.day20)}</span>
-                        <span style={{ color: '#64748b' }}>D21 (Día 2)</span><span style={{ color: '#fbbf24', fontWeight: 600 }}>{formatNumber(d.day21)}</span>
-                        <span style={{ color: '#64748b' }}>Δ streams</span><span style={{ color, fontWeight: 600 }}>{d.delta >= 0 ? '+' : ''}{formatNumber(d.delta)}</span>
-                        <span style={{ color: '#64748b' }}>Decay</span><span style={{ color, fontWeight: 700 }}>{val >= 0 ? '+' : ''}{val.toFixed(2)}%</span>
-                        {d.anomaly && <><span style={{ color: '#64748b' }}>Estado</span><span style={{ color: d.anomaly === 'Outperformer' ? '#4ade80' : d.anomaly === 'Underperformer' ? '#f87171' : '#fbbf24', fontWeight: 600 }}>{d.anomaly}</span></>}
-                      </div>
-                    </div>
-                  );
-                };
-                return (
-                  <div>
-                    <ResponsiveContainer width="100%" height={420}>
-                      <BarChart layout="vertical" data={chartData} margin={{ top: 5, right: 60, left: 10, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.08)" horizontal={false} />
-                        <XAxis
-                          type="number"
-                          stroke="#64748b"
-                          tick={{ fontSize: 11 }}
-                          tickFormatter={v => (v >= 0 ? '+' : '') + v + '%'}
-                          domain={['dataMin - 5', 'dataMax + 5']}
-                        />
-                        <YAxis dataKey="name" type="category" stroke="#94a3b8" width={140} tick={{ fontSize: 11 }} />
-                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(148,163,184,0.06)' }} />
-                        <ReferenceLine x={0} stroke="rgba(148,163,184,0.3)" strokeWidth={1.5} />
-                        <Bar dataKey="decay" radius={[0, 4, 4, 0]} isAnimationActive={false}
-                          label={{ position: 'right', formatter: v => (v >= 0 ? '+' : '') + v.toFixed(1) + '%', fill: '#94a3b8', fontSize: 11 }}>
-                          {chartData.map((entry, idx) => (
-                            <Cell key={idx} fill={entry.decay >= 0 ? '#4ade80' : entry.decay < -40 ? '#f87171' : entry.decay < -20 ? '#fb923c' : '#fbbf24'} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                    <p style={{ color: '#475569', fontSize: '0.7rem', textAlign: 'center', margin: '0.5rem 0 0' }}>
-                      Verde = creciendo · Amarillo = decay leve (&lt;20%) · Naranja = moderado (20–40%) · Rojo = pronunciado (&gt;40%)
-                    </p>
-                  </div>
-                );
-              }
-
-              // === VISTA VISUAL (barras custom) ===
               return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', position: 'relative' }}>
                   {sorted.map(t => {
@@ -1561,6 +1492,129 @@ const AmorFiadoDashboard = () => {
                 </BarChart>
               </ResponsiveContainer>
             </div>
+
+            {/* Impacto Social → Streams */}
+            {(() => {
+              // Daily streams per day from dailyHistory
+              const dailyStreamsArr = dailyHistory.map((snap, i, arr) => {
+                const dayStreams = i > 0 ? snap.albumTotal - arr[i - 1].albumTotal : snap.albumTotal;
+                return { date: snap.date, label: snap.label, streams: dayStreams };
+              });
+              // Map posts (with delta) by date
+              const postsByDate = {};
+              correlation.forEach(p => {
+                if (!postsByDate[p.date]) postsByDate[p.date] = [];
+                postsByDate[p.date].push(p);
+              });
+              // Merged dataset: every day in dailyHistory, with posts array attached
+              const impactData = dailyStreamsArr.map(d => ({
+                ...d,
+                posts: postsByDate[d.date] || [],
+              }));
+
+              // Custom dot: invisible unless there's a social post that day
+              const SocialDot = (props) => {
+                const { cx, cy, payload } = props;
+                if (!payload.posts || payload.posts.length === 0) return <circle key={`dot-${payload.date}`} cx={cx} cy={cy} r={2} fill="rgba(148,163,184,0.2)" />;
+                const hasIG = payload.posts.some(p => p.platform === 'instagram');
+                const hasTK = payload.posts.some(p => p.platform === 'tiktok');
+                const color = hasIG && hasTK ? '#a78bfa' : hasIG ? '#e879f9' : '#22d3ee';
+                return (
+                  <g key={`dot-${payload.date}`}>
+                    <circle cx={cx} cy={cy} r={10} fill={color} opacity={0.15} />
+                    <circle cx={cx} cy={cy} r={5} fill={color} stroke="#0f172a" strokeWidth={1.5} />
+                    <text x={cx} y={cy + 1} textAnchor="middle" dominantBaseline="middle" fontSize="7" fontWeight="900" fill="#0f172a">
+                      {hasIG && hasTK ? '★' : hasIG ? '●' : '♪'}
+                    </text>
+                  </g>
+                );
+              };
+
+              // Custom tooltip
+              const ImpactTooltip = ({ active, payload, label }) => {
+                if (!active || !payload?.length) return null;
+                const d = payload[0]?.payload;
+                if (!d) return null;
+                return (
+                  <div style={{ background: '#0f172a', border: '1px solid rgba(167,139,250,0.35)', borderRadius: '10px', padding: '0.7rem 0.9rem', fontSize: '0.74rem', maxWidth: '260px', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+                      <span style={{ color: '#94a3b8', fontWeight: 600 }}>{label}</span>
+                      <span style={{ color: '#f97316', fontWeight: 700 }}>{formatNumber(d.streams)} streams</span>
+                    </div>
+                    {d.posts.length === 0 && <p style={{ color: '#475569', margin: 0, fontStyle: 'italic' }}>Sin posts este día</p>}
+                    {d.posts.map((p, i) => {
+                      const platColor = p.platform === 'instagram' ? '#e879f9' : '#22d3ee';
+                      const platLabel = p.platform === 'instagram' ? 'IG' : 'TK';
+                      const engRate = (p.likes / p.views * 100).toFixed(1);
+                      return (
+                        <div key={i} style={{ borderTop: i > 0 ? '1px solid rgba(51,65,85,0.5)' : 'none', paddingTop: i > 0 ? '0.4rem' : 0, marginTop: i > 0 ? '0.4rem' : 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.2rem' }}>
+                            <span style={{ background: `${platColor}22`, color: platColor, fontWeight: 700, fontSize: '0.65rem', padding: '0.1rem 0.35rem', borderRadius: '4px' }}>{platLabel}</span>
+                            <span style={{ color: typeColors[p.type] || '#94a3b8', fontSize: '0.65rem', fontWeight: 600 }}>{typeLabels[p.type] || p.type}</span>
+                          </div>
+                          <p style={{ color: '#e2e8f0', margin: '0 0 0.25rem', lineHeight: 1.3 }}>{p.caption.length > 55 ? p.caption.slice(0, 53) + '…' : p.caption}</p>
+                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            <span style={{ color: '#38bdf8' }}>{formatNumber(p.views)} views</span>
+                            <span style={{ color: '#e879f9' }}>{engRate}% eng</span>
+                            {p.saves > 0 && <span style={{ color: '#a78bfa' }}>{formatNumber(p.saves)} saves</span>}
+                          </div>
+                          {p.streamDelta !== null && (
+                            <div style={{ marginTop: '0.3rem', padding: '0.25rem 0.4rem', borderRadius: '5px', background: p.streamDelta > 0 ? 'rgba(74,222,128,0.1)' : 'rgba(248,113,113,0.1)', border: `1px solid ${p.streamDelta > 0 ? 'rgba(74,222,128,0.25)' : 'rgba(248,113,113,0.25)'}` }}>
+                              <span style={{ color: p.streamDelta > 0 ? '#4ade80' : '#f87171', fontWeight: 700 }}>
+                                Streams D+1: {p.streamDelta > 0 ? '+' : ''}{formatNumber(p.streamDelta)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              };
+
+              return (
+                <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
+                  <h2 style={{ color: '#a78bfa', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>Impacto Social → Streams</h2>
+                  <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>
+                    Streams diarios del álbum con marcadores de posts. <span style={{ color: '#e879f9' }}>● Instagram</span> · <span style={{ color: '#22d3ee' }}>● TikTok</span> · <span style={{ color: '#a78bfa' }}>★ Ambos</span>. Hacé hover para ver el post y su impacto en D+1.
+                  </p>
+                  <ResponsiveContainer width="100%" height={360}>
+                    <AreaChart data={impactData} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
+                      <defs>
+                        <linearGradient id="gradImpact" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#a78bfa" stopOpacity={0.25} />
+                          <stop offset="95%" stopColor="#a78bfa" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.07)" />
+                      <XAxis dataKey="label" stroke="#64748b" tick={{ fontSize: 10 }} interval={5} />
+                      <YAxis stroke="#64748b" tickFormatter={v => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
+                      <Tooltip content={<ImpactTooltip />} />
+                      <ReferenceLine x="03/19" stroke="#4ade80" strokeDasharray="4 2" label={{ value: '🚀', fill: '#4ade80', fontSize: 11, position: 'top' }} />
+                      <Area
+                        type="monotone"
+                        dataKey="streams"
+                        stroke="#a78bfa"
+                        strokeWidth={2}
+                        fill="url(#gradImpact)"
+                        isAnimationActive={false}
+                        dot={<SocialDot />}
+                        activeDot={{ r: 6, fill: '#f97316', stroke: '#0f172a', strokeWidth: 2 }}
+                        name="Streams/día"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                  <div style={{ display: 'flex', gap: '1.25rem', marginTop: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    {[['#e879f9', '● Instagram'], ['#22d3ee', '● TikTok'], ['#a78bfa', '★ Ambos'], ['rgba(148,163,184,0.4)', '· Sin post']].map(([color, label]) => (
+                      <span key={label} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.72rem', color: '#64748b' }}>
+                        <span style={{ color, fontWeight: 700 }}>{label.split(' ')[0]}</span>
+                        <span>{label.split(' ').slice(1).join(' ')}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Timeline — All Posts with Stream Correlation */}
             <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
