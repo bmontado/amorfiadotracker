@@ -43,30 +43,63 @@ const DEFAULT_LIVE_DATA = {
     { date: '2026-03-22', label: 'D+3', recordedAt: '2026-03-22T15:00:00-03:00', albumTotal: 678677, tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 273884, 'ATBLM': 200669, 'UN GUSTO': 31749, 'CALL ME': 23750, 'MAN OF WORD': 22919, 'OJOS TRISTES': 21652, 'HIELO': 19885, 'CHANGES': 19758, 'ALQUILER': 18508, 'YA NO': 16522, 'HAZLO CALLAO': 15226, 'TOP TIER': 14298 } },
     { date: '2026-03-23', label: 'D+4', recordedAt: '2026-03-23T12:06:43-03:00', albumTotal: 704025, tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 276622, 'ATBLM': 204181, 'UN GUSTO': 34953, 'CALL ME': 26075, 'MAN OF WORD': 25068, 'OJOS TRISTES': 23695, 'HIELO': 21708, 'CHANGES': 21535, 'ALQUILER': 20058, 'YA NO': 18126, 'HAZLO CALLAO': 16594, 'TOP TIER': 15674 } },
   ],
-  releaseEngagement: {
-    scrapedAt: '2026-03-23T12:06:43-03:00',
-    dayNum: 4,
-    releaseDate: 'Mar 19, 2026',
-    segments: {
-      monthly:  { total: 414288, listeners: 17836, pct: 4.3  },
-      super:    { total: 33357,  listeners: 10094, pct: 30.3 },
-      moderate: { total: 131037, listeners: 5875,  pct: 4.5  },
-      light:    { total: 249894, listeners: 2722,  pct: 1.1  },
-    },
-    streamedThisRelease: {
-      monthly:  [{date:'2026-03-19',y:1591},{date:'2026-03-20',y:10659},{date:'2026-03-21',y:14315},{date:'2026-03-22',y:17836}],
-      super:    [{date:'2026-03-19',y:1184},{date:'2026-03-20',y:6748},{date:'2026-03-21',y:8621},{date:'2026-03-22',y:10094}],
-      moderate: [{date:'2026-03-19',y:346},{date:'2026-03-20',y:2878},{date:'2026-03-21',y:4357},{date:'2026-03-22',y:5875}],
-      light:    [{date:'2026-03-19',y:61},{date:'2026-03-20',y:1193},{date:'2026-03-21',y:1871},{date:'2026-03-22',y:2722}],
-    },
-    history: [
-      { date: '2026-03-23', dayNum: 4, segments: {
+  releaseEngagements: {
+    '6EPWuQUeAaRp61S8qG0fri': {
+      name: 'AMOR FIADO', type: 'album',
+      scrapedAt: '2026-03-23T12:06:43-03:00', dayNum: 4, releaseDate: 'Mar 19, 2026',
+      segments: {
         monthly:  { total: 414288, listeners: 17836, pct: 4.3  },
         super:    { total: 33357,  listeners: 10094, pct: 30.3 },
         moderate: { total: 131037, listeners: 5875,  pct: 4.5  },
         light:    { total: 249894, listeners: 2722,  pct: 1.1  },
-      }},
-    ],
+      },
+      streamedThisRelease: {
+        monthly:  [{date:'2026-03-19',y:1591},{date:'2026-03-20',y:10659},{date:'2026-03-21',y:14315},{date:'2026-03-22',y:17836}],
+        super:    [{date:'2026-03-19',y:1184},{date:'2026-03-20',y:6748},{date:'2026-03-21',y:8621},{date:'2026-03-22',y:10094}],
+        moderate: [{date:'2026-03-19',y:346},{date:'2026-03-20',y:2878},{date:'2026-03-21',y:4357},{date:'2026-03-22',y:5875}],
+        light:    [{date:'2026-03-19',y:61},{date:'2026-03-20',y:1193},{date:'2026-03-21',y:1871},{date:'2026-03-22',y:2722}],
+      },
+      history: [{ date: '2026-03-23', dayNum: 4, segments: {
+        monthly:  { total: 414288, listeners: 17836, pct: 4.3  },
+        super:    { total: 33357,  listeners: 10094, pct: 30.3 },
+        moderate: { total: 131037, listeners: 5875,  pct: 4.5  },
+        light:    { total: 249894, listeners: 2722,  pct: 1.1  },
+      }}],
+    },
+    '7GqXSd7cxRcsfQV6S2cHUM': {
+      name: 'ATBLM', type: 'single',
+      scrapedAt: '2026-03-23T12:06:43-03:00', dayNum: 25, releaseDate: 'Feb 26, 2026',
+      segments: {
+        monthly:  { total: 414288, listeners: 36780, pct: 8.9  },
+        super:    { total: 33357,  listeners: 14179, pct: 42.5 },
+        moderate: { total: 131037, listeners: 17112, pct: 13.1 },
+        light:    { total: 249894, listeners: 11353, pct: 4.5  },
+      },
+      streamedThisRelease: {
+        monthly:  [{date:'2026-02-26',y:692},{date:'2026-02-27',y:6654},{date:'2026-02-28',y:9223},{date:'2026-03-01',y:11323},{date:'2026-03-04',y:15747},{date:'2026-03-08',y:20827},{date:'2026-03-11',y:25405},{date:'2026-03-15',y:30818},{date:'2026-03-19',y:35004},{date:'2026-03-22',y:36780}],
+        super:    [{date:'2026-02-26',y:454},{date:'2026-02-27',y:3317},{date:'2026-02-28',y:4385},{date:'2026-03-01',y:5263},{date:'2026-03-04',y:7180},{date:'2026-03-08',y:8894},{date:'2026-03-11',y:10316},{date:'2026-03-15',y:11925},{date:'2026-03-19',y:13484},{date:'2026-03-22',y:14179}],
+        moderate: [{date:'2026-02-26',y:163},{date:'2026-02-27',y:2175},{date:'2026-02-28',y:3231},{date:'2026-03-01',y:4099},{date:'2026-03-04',y:6168},{date:'2026-03-08',y:8608},{date:'2026-03-11',y:10918},{date:'2026-03-15',y:13720},{date:'2026-03-19',y:16100},{date:'2026-03-22',y:17112}],
+        light:    [{date:'2026-02-26',y:75},{date:'2026-02-27',y:1191},{date:'2026-02-28',y:1838},{date:'2026-03-01',y:2368},{date:'2026-03-04',y:3521},{date:'2026-03-08',y:5256},{date:'2026-03-11',y:6914},{date:'2026-03-15',y:9050},{date:'2026-03-19',y:10607},{date:'2026-03-22',y:11353}],
+      },
+      history: [],
+    },
+    '4QCM6aNuH8D1eBm1qp07Jg': {
+      name: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'single',
+      scrapedAt: '2026-03-23T12:06:43-03:00', dayNum: 28, releaseDate: 'Feb 5, 2026', noLongerUpdating: true,
+      segments: {
+        monthly:  { total: 404806, listeners: 23738, pct: 5.9  },
+        super:    { total: 29112,  listeners: 11622, pct: 39.9 },
+        moderate: { total: 127186, listeners: 10714, pct: 8.4  },
+        light:    { total: 248508, listeners: 5350,  pct: 2.2  },
+      },
+      streamedThisRelease: {
+        monthly:  [{date:'2026-02-05',y:878},{date:'2026-02-07',y:8722},{date:'2026-02-09',y:11216},{date:'2026-02-12',y:14772},{date:'2026-02-15',y:16484},{date:'2026-02-19',y:18205},{date:'2026-02-23',y:20103},{date:'2026-02-26',y:21803},{date:'2026-03-01',y:22787},{date:'2026-03-04',y:23738}],
+        super:    [{date:'2026-02-05',y:518},{date:'2026-02-07',y:4268},{date:'2026-02-09',y:5341},{date:'2026-02-12',y:6935},{date:'2026-02-15',y:7834},{date:'2026-02-19',y:8710},{date:'2026-02-23',y:9593},{date:'2026-02-26',y:10346},{date:'2026-03-01',y:10968},{date:'2026-03-04',y:11622}],
+        moderate: [{date:'2026-02-05',y:228},{date:'2026-02-07',y:3067},{date:'2026-02-09',y:4206},{date:'2026-02-12',y:5909},{date:'2026-02-15',y:6761},{date:'2026-02-19',y:7660},{date:'2026-02-23',y:8591},{date:'2026-02-26',y:9557},{date:'2026-03-01',y:10134},{date:'2026-03-04',y:10714}],
+        light:    [{date:'2026-02-05',y:132},{date:'2026-02-07',y:1625},{date:'2026-02-09',y:2265},{date:'2026-02-12',y:3170},{date:'2026-02-15',y:3614},{date:'2026-02-19',y:4043},{date:'2026-02-23',y:4539},{date:'2026-02-26',y:4972},{date:'2026-03-01',y:5176},{date:'2026-03-04',y:5350}],
+      },
+      history: [],
+    },
   },
 };
 
@@ -84,6 +117,7 @@ const AmorFiadoDashboard = () => {
   const [socialMethodOpen, setSocialMethodOpen] = useState(false);
   const [liveData, setLiveData] = useState(DEFAULT_LIVE_DATA);
   const [dataFreshAt, setDataFreshAt] = useState(null);
+  const [selectedReleaseId, setSelectedReleaseId] = useState('6EPWuQUeAaRp61S8qG0fri');
 
   // Polling: carga data.json al montar y cada 5 minutos.
   // La scheduled task solo necesita actualizar data.json y hacer push —
@@ -123,7 +157,8 @@ const AmorFiadoDashboard = () => {
   const liveTotals         = liveData.liveTotals;
   const dailyLog           = liveData.dailyLog;
   const liveHistory        = liveData.liveHistory;
-  const releaseEngagement  = liveData.releaseEngagement ?? DEFAULT_LIVE_DATA.releaseEngagement;
+  const releaseEngagements = liveData.releaseEngagements ?? DEFAULT_LIVE_DATA.releaseEngagements;
+  const releaseEngagement  = releaseEngagements[selectedReleaseId] ?? Object.values(releaseEngagements)[0];
 
   // growthHistory: memoizado para que reaccione al poll
   const growthHistory = useMemo(() => liveHistory.map(s => ({
@@ -2612,16 +2647,61 @@ const AmorFiadoDashboard = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
             {/* Header */}
-            <div>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f1f5f9', margin: 0 }}>Release Engagement</h2>
-              <p style={{ color: '#64748b', fontSize: '0.85rem', margin: '0.35rem 0 0' }}>
-                Oyentes de Amor Fiado por segmento — Spotify for Artists · Día {dayNum} desde lanzamiento
-                {scrapedAt && (
-                  <span style={{ marginLeft: '0.75rem', color: '#475569' }}>
-                    · actualizado {new Date(scrapedAt).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })} {new Date(scrapedAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })}
-                  </span>
-                )}
-              </p>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+              <div>
+                <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f1f5f9', margin: 0 }}>Release Engagement</h2>
+                <p style={{ color: '#64748b', fontSize: '0.85rem', margin: '0.35rem 0 0' }}>
+                  Oyentes de {eng.name} por segmento — Spotify for Artists · Día {dayNum} desde lanzamiento
+                  {scrapedAt && (
+                    <span style={{ marginLeft: '0.75rem', color: '#475569' }}>
+                      · actualizado {new Date(scrapedAt).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })} {new Date(scrapedAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                    </span>
+                  )}
+                  {eng.noLongerUpdating && (
+                    <span style={{ marginLeft: '0.6rem', color: '#f97316', fontWeight: 600 }}>· sin actualizaciones</span>
+                  )}
+                </p>
+              </div>
+              {/* Release selector */}
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {Object.entries(releaseEngagements).map(([id, rel]) => {
+                  const isActive = id === selectedReleaseId;
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => setSelectedReleaseId(id)}
+                      style={{
+                        padding: '0.35rem 0.85rem',
+                        borderRadius: '999px',
+                        border: isActive ? '1px solid rgba(148,163,184,0.5)' : '1px solid rgba(51,65,85,0.4)',
+                        background: isActive ? 'rgba(51,65,85,0.6)' : 'rgba(15,23,42,0.3)',
+                        color: isActive ? '#f1f5f9' : '#64748b',
+                        fontSize: '0.78rem',
+                        fontWeight: isActive ? 700 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                      }}
+                    >
+                      {rel.name}
+                      <span style={{
+                        fontSize: '0.65rem',
+                        padding: '0.1rem 0.4rem',
+                        borderRadius: '4px',
+                        background: rel.type === 'album' ? 'rgba(74,222,128,0.15)' : 'rgba(96,165,250,0.15)',
+                        color: rel.type === 'album' ? '#4ade80' : '#60a5fa',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                      }}>
+                        {rel.type === 'album' ? 'álbum' : 'single'}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Segment KPI cards */}
