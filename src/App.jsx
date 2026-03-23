@@ -4,6 +4,8 @@ import {
   Bar,
   LineChart,
   Line,
+  ScatterChart,
+  Scatter,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -1036,45 +1038,107 @@ const AmorFiadoDashboard = () => {
                 const origin = new Date('2026-01-28T12:00:00').getTime();
                 const msPerDay = 86400000;
                 const releaseDay = Math.round((new Date('2026-03-19T12:00:00').getTime() - origin) / msPerDay);
+                const toX = date => Math.round((new Date(date + 'T12:00:00').getTime() - origin) / msPerDay);
                 const igDots = correlation.filter(p => p.platform === 'instagram').map(p => ({
-                  x: Math.round((new Date(p.date + 'T12:00:00').getTime() - origin) / msPerDay),
-                  y: p.views,
-                  caption: p.caption, date: p.date, likes: p.likes, track: p.track, saves: p.saves,
+                  x: toX(p.date), y: p.views,
+                  caption: p.caption, date: p.date, likes: p.likes, track: p.track, saves: p.saves, platform: 'instagram',
                 }));
                 const tkDots = correlation.filter(p => p.platform === 'tiktok').map(p => ({
-                  x: Math.round((new Date(p.date + 'T12:00:00').getTime() - origin) / msPerDay),
-                  y: p.views,
-                  caption: p.caption, date: p.date, likes: p.likes, track: p.track, saves: p.saves,
+                  x: toX(p.date), y: p.views,
+                  caption: p.caption, date: p.date, likes: p.likes, track: p.track, saves: p.saves, platform: 'tiktok',
                 }));
-                const CustomTooltip = ({ active, payload }) => {
+
+                // Instagram logo dot (rounded square + camera outline)
+                const IGShape = ({ cx, cy }) => {
+                  if (!cx || !cy) return null;
+                  const s = 18, r = s / 2;
+                  return (
+                    <g>
+                      <defs>
+                        <radialGradient id="igGrad" cx="30%" cy="110%" r="140%" gradientUnits="objectBoundingBox">
+                          <stop offset="0%"  stopColor="#fdf497"/>
+                          <stop offset="10%" stopColor="#fdf497"/>
+                          <stop offset="50%" stopColor="#fd5949"/>
+                          <stop offset="68%" stopColor="#d6249f"/>
+                          <stop offset="100%" stopColor="#285AEB"/>
+                        </radialGradient>
+                      </defs>
+                      <rect x={cx - r} y={cy - r} width={s} height={s} rx={5} fill="url(#igGrad)" />
+                      <rect x={cx - r + 4} y={cy - r + 4} width={s - 8} height={s - 8} rx={3} fill="none" stroke="white" strokeWidth="1.8" />
+                      <circle cx={cx} cy={cy} r={3} fill="none" stroke="white" strokeWidth="1.5" />
+                      <circle cx={cx + r - 5} cy={cy - r + 5} r={1.2} fill="white" />
+                    </g>
+                  );
+                };
+
+                // TikTok logo dot (black rounded square + musical note shape)
+                const TKShape = ({ cx, cy }) => {
+                  if (!cx || !cy) return null;
+                  const s = 18, r = s / 2;
+                  return (
+                    <g>
+                      <rect x={cx - r} y={cy - r} width={s} height={s} rx={4} fill="#010101" />
+                      {/* TikTok "d" note shape */}
+                      <text x={cx} y={cy + 5} textAnchor="middle" fontSize="12" fontWeight="900" fill="white" fontFamily="Arial">♪</text>
+                      {/* cyan accent top-right */}
+                      <rect x={cx + r - 6} y={cy - r} width={6} height={3} rx={1} fill="#69C9D0" opacity="0.9" />
+                    </g>
+                  );
+                };
+
+                // Tooltip rico
+                const ScatterTip = ({ active, payload }) => {
                   if (!active || !payload?.length) return null;
                   const d = payload[0]?.payload;
                   if (!d) return null;
+                  const isIG = d.platform === 'instagram';
+                  const platLabel = isIG ? 'Instagram' : 'TikTok';
+                  const platColor = isIG ? '#e879f9' : '#22d3ee';
+                  const engRate = ((d.likes / d.y) * 100).toFixed(1);
                   return (
-                    <div style={{ background: '#1e293b', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '8px', padding: '0.6rem 0.85rem', fontSize: '0.75rem', maxWidth: '220px' }}>
-                      <p style={{ color: '#f1f5f9', fontWeight: 600, margin: '0 0 0.25rem' }}>{new Date(d.date + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}</p>
-                      <p style={{ color: '#94a3b8', margin: '0 0 0.15rem', fontSize: '0.7rem' }}>{d.caption}</p>
-                      <p style={{ color: '#fbbf24', margin: '0 0 0.1rem' }}>Track: {d.track}</p>
-                      <p style={{ color: '#e2e8f0', margin: 0 }}>{formatNumber(d.y)} views · {formatNumber(d.likes)} likes</p>
-                      {d.saves > 0 && <p style={{ color: '#a78bfa', margin: '0.1rem 0 0' }}>{formatNumber(d.saves)} saves</p>}
+                    <div style={{ background: '#0f172a', border: `1px solid ${platColor}55`, borderRadius: '10px', padding: '0.75rem 1rem', fontSize: '0.75rem', maxWidth: '240px', boxShadow: `0 4px 20px ${platColor}22` }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                        <span style={{ color: platColor, fontWeight: 700, fontSize: '0.7rem' }}>{platLabel}</span>
+                        <span style={{ color: '#64748b', fontSize: '0.7rem' }}>{new Date(d.date + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                      </div>
+                      <p style={{ color: '#e2e8f0', margin: '0 0 0.35rem', fontSize: '0.78rem', lineHeight: 1.3 }}>{d.caption}</p>
+                      <p style={{ color: '#fbbf24', margin: '0 0 0.4rem', fontSize: '0.7rem' }}>🎵 {d.track}</p>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.25rem 0.75rem', borderTop: '1px solid rgba(51,65,85,0.5)', paddingTop: '0.35rem' }}>
+                        <span style={{ color: '#94a3b8' }}>Views</span>
+                        <span style={{ color: '#f1f5f9', fontWeight: 600 }}>{formatNumber(d.y)}</span>
+                        <span style={{ color: '#94a3b8' }}>Likes</span>
+                        <span style={{ color: '#e879f9', fontWeight: 600 }}>{formatNumber(d.likes)}</span>
+                        <span style={{ color: '#94a3b8' }}>Eng. rate</span>
+                        <span style={{ color: '#4ade80', fontWeight: 600 }}>{engRate}%</span>
+                        {d.saves > 0 && <><span style={{ color: '#94a3b8' }}>Saves</span><span style={{ color: '#a78bfa', fontWeight: 600 }}>{formatNumber(d.saves)}</span></>}
+                      </div>
                     </div>
                   );
                 };
+
                 return (
-                  <ResponsiveContainer width="100%" height={340}>
-                    <LineChart margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.08)" />
-                      <XAxis type="number" dataKey="x" domain={[0, releaseDay + 5]} stroke="#64748b" tick={{ fontSize: 10 }}
+                  <ResponsiveContainer width="100%" height={360}>
+                    <ScatterChart margin={{ top: 20, right: 30, left: 10, bottom: 30 }}>
+                      <defs>
+                        <radialGradient id="igGrad2" cx="30%" cy="110%" r="140%" gradientUnits="objectBoundingBox">
+                          <stop offset="0%" stopColor="#fdf497"/>
+                          <stop offset="50%" stopColor="#fd5949"/>
+                          <stop offset="68%" stopColor="#d6249f"/>
+                          <stop offset="100%" stopColor="#285AEB"/>
+                        </radialGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.06)" />
+                      <XAxis type="number" dataKey="x" name="Fecha" domain={[-1, releaseDay + 5]} stroke="#64748b" tick={{ fontSize: 10 }} label={{ value: '← campaña →', position: 'insideBottom', offset: -15, fill: '#475569', fontSize: 10 }}
                         tickFormatter={v => { const d = new Date(origin + v * msPerDay); return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }); }}
-                        ticks={[0, 10, 20, 31, 41, releaseDay, releaseDay + 3]} />
-                      <YAxis stroke="#64748b" tickFormatter={v => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
-                      <Tooltip content={<CustomTooltip />} />
-                      <ReferenceLine x={releaseDay} stroke="#f97316" strokeDasharray="5 3" label={{ value: '🚀 Lanzamiento', fill: '#f97316', fontSize: 11, position: 'insideTopRight' }} />
-                      <Legend />
-                      {/* Render as Scatter using Line with dot only */}
-                      <Line data={igDots} dataKey="y" name="Instagram" dot={{ r: 6, fill: '#e879f9', stroke: '#1e293b', strokeWidth: 1.5 }} activeDot={{ r: 8 }} stroke="none" isAnimationActive={false} legendType="circle" />
-                      <Line data={tkDots} dataKey="y" name="TikTok" dot={{ r: 6, fill: '#22d3ee', stroke: '#1e293b', strokeWidth: 1.5 }} activeDot={{ r: 8 }} stroke="none" isAnimationActive={false} legendType="circle" />
-                    </LineChart>
+                        ticks={[0, 10, 20, 31, 41, releaseDay]} />
+                      <YAxis type="number" dataKey="y" name="Views" stroke="#64748b" tickFormatter={v => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
+                      <Tooltip content={<ScatterTip />} cursor={{ stroke: 'rgba(167,139,250,0.3)', strokeWidth: 1 }} />
+                      <ReferenceLine x={releaseDay} stroke="#f97316" strokeDasharray="5 3"
+                        label={{ value: '🚀 Álbum', fill: '#f97316', fontSize: 11, position: 'insideTopRight', offset: 8 }} />
+                      <Legend formatter={name => <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{name}</span>} />
+                      <Scatter name="Instagram" data={igDots} shape={<IGShape />} legendType="square" fill="#e879f9" />
+                      <Scatter name="TikTok"    data={tkDots} shape={<TKShape />} legendType="square" fill="#22d3ee" />
+                    </ScatterChart>
                   </ResponsiveContainer>
                 );
               })()}
