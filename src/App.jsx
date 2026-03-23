@@ -18,6 +18,9 @@ import {
 
 const AmorFiadoDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [growthZoom, setGrowthZoom] = useState('all'); // 'all' | 'zoom'
+  const [expandedDays, setExpandedDays] = useState(new Set());
+  const toggleDay = (date) => setExpandedDays(prev => { const s = new Set(prev); s.has(date) ? s.delete(date) : s.add(date); return s; });
 
   // Album metadata
   const albumName = 'AMOR FIADO';
@@ -579,8 +582,17 @@ const AmorFiadoDashboard = () => {
 
           {/* Per-track cumulative — día cerrado */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>Acumulado por Track</h2>
-            <p style={{ color: '#64748b', fontSize: '0.8rem', margin: '0 0 1.5rem 0' }}>Streams acumulados a día cerrado por track</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.25rem' }}>
+              <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Acumulado por Track</h2>
+              <div style={{ display: 'flex', gap: '0.4rem' }}>
+                {[['all', 'Todos'], ['zoom', 'Zoom tracks menores']].map(([val, label]) => (
+                  <button key={val} onClick={() => setGrowthZoom(val)} style={{ padding: '0.35rem 0.85rem', borderRadius: '9999px', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600, background: growthZoom === val ? 'linear-gradient(135deg,#f97316,#ea580c)' : 'rgba(51,65,85,0.6)', color: growthZoom === val ? '#fff' : '#94a3b8' }}>{label}</button>
+                ))}
+              </div>
+            </div>
+            <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0.2rem 0 1.25rem 0' }}>
+              {growthZoom === 'zoom' ? 'Mostrando solo tracks del álbum (excluye CEA y ATBLM para ver escala real)' : 'Streams acumulados a día cerrado — todos los tracks'}
+            </p>
             <ResponsiveContainer width="100%" height={420}>
               <LineChart data={dailyHistory} margin={{ top: 10, right: 30, left: 10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.08)" />
@@ -588,10 +600,12 @@ const AmorFiadoDashboard = () => {
                 <YAxis stroke="#64748b" tickFormatter={(v) => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v} />
                 <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(251,146,60,0.3)', borderRadius: '8px' }} formatter={(v) => formatNumber(v)} labelFormatter={(l) => 'Día ' + l} />
                 <Legend />
-                <Line type="monotone" dataKey="CEA" stroke="#f97316" strokeWidth={2} dot={false} name="CEA" isAnimationActive={false} />
-                <Line type="monotone" dataKey="ATBLM" stroke="#fbbf24" strokeWidth={2} dot={false} name="ATBLM" isAnimationActive={false} />
-                <Line type="monotone" dataKey="UN GUSTO" stroke="#4ade80" strokeWidth={1.5} dot={false} name="UN GUSTO" isAnimationActive={false} />
-                <Line type="monotone" dataKey="CALL ME" stroke="#38bdf8" strokeWidth={1.5} dot={false} name="CALL ME" isAnimationActive={false} />
+                {growthZoom === 'all' && <>
+                  <Line type="monotone" dataKey="CEA" stroke="#f97316" strokeWidth={2} dot={false} name="CEA" isAnimationActive={false} />
+                  <Line type="monotone" dataKey="ATBLM" stroke="#fbbf24" strokeWidth={2} dot={false} name="ATBLM" isAnimationActive={false} />
+                </>}
+                <Line type="monotone" dataKey="UN GUSTO" stroke="#4ade80" strokeWidth={growthZoom === 'zoom' ? 2 : 1.5} dot={false} name="UN GUSTO" isAnimationActive={false} />
+                <Line type="monotone" dataKey="CALL ME" stroke="#38bdf8" strokeWidth={growthZoom === 'zoom' ? 2 : 1.5} dot={false} name="CALL ME" isAnimationActive={false} />
                 <Line type="monotone" dataKey="MAN OF WORD" stroke="#a78bfa" strokeWidth={1.5} dot={false} name="MAN OF WORD" isAnimationActive={false} />
                 <Line type="monotone" dataKey="OJOS TRISTES" stroke="#fb7185" strokeWidth={1.5} dot={false} name="OJOS TRISTES" isAnimationActive={false} />
                 <Line type="monotone" dataKey="HIELO" stroke="#67e8f9" strokeWidth={1.5} dot={false} name="HIELO" isAnimationActive={false} />
@@ -606,13 +620,14 @@ const AmorFiadoDashboard = () => {
 
           {/* Tabla histórica día a día */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Histórico por Día — Acumulado</h2>
+            <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.4rem' }}>Histórico por Día — Acumulado</h2>
+            <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem 0' }}>Hacé clic en + para ver el desglose por track del día</p>
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
-                    {['Fecha', 'Acumulado', 'Streams del día', 'Top Track'].map(h => (
-                      <th key={h} style={{ textAlign: h === 'Fecha' || h === 'Top Track' ? 'left' : 'right', padding: '0.75rem', color: '#94a3b8' }}>{h}</th>
+                    {['', 'Fecha', 'Acumulado', 'Streams del día', 'Top Track'].map(h => (
+                      <th key={h} style={{ textAlign: h === '' || h === 'Fecha' || h === 'Top Track' ? 'left' : 'right', padding: '0.6rem 0.75rem', color: '#94a3b8' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -620,16 +635,41 @@ const AmorFiadoDashboard = () => {
                   {[...dailyHistory].reverse().map((snap, i, arr) => {
                     const prev = arr[i + 1];
                     const dayStreams = prev ? snap.albumTotal - prev.albumTotal : snap.albumTotal;
-                    const topTrack = Object.entries(snap).filter(([k]) => k !== 'date' && k !== 'label' && k !== 'albumTotal').map(([k, v]) => ({ k, v: prev ? v - (prev[k] || 0) : v })).sort((a, b) => b.v - a.v)[0];
+                    const trackKeys = Object.keys(snap).filter(k => !['date','label','albumTotal'].includes(k));
+                    const trackDay = trackKeys.map(k => ({ k, v: prev ? (snap[k] || 0) - (prev[k] || 0) : (snap[k] || 0) })).sort((a, b) => b.v - a.v);
+                    const topTrack = trackDay[0];
+                    const isExpanded = expandedDays.has(snap.date);
+                    const isLaunch = snap.date === '2026-03-19';
                     return (
-                      <tr key={i} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', background: snap.date === '2026-03-19' ? 'rgba(249,115,22,0.06)' : 'transparent' }}>
-                        <td style={{ padding: '0.75rem', color: snap.date === '2026-03-19' ? '#f97316' : '#f1f5f9', fontWeight: snap.date === '2026-03-19' ? 700 : 400 }}>
-                          {snap.label}{snap.date === '2026-03-19' ? ' 🚀' : ''}
-                        </td>
-                        <td style={{ textAlign: 'right', padding: '0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(snap.albumTotal)}</td>
-                        <td style={{ textAlign: 'right', padding: '0.75rem', color: '#4ade80' }}>+{formatNumber(dayStreams)}</td>
-                        <td style={{ padding: '0.75rem', color: '#fbbf24' }}>{topTrack ? topTrack.k + ' (+' + formatNumber(topTrack.v) + ')' : '—'}</td>
-                      </tr>
+                      <>
+                        <tr key={snap.date} style={{ borderBottom: isExpanded ? 'none' : '1px solid rgba(51,65,85,0.3)', background: isLaunch ? 'rgba(249,115,22,0.06)' : 'transparent', cursor: 'pointer' }} onClick={() => toggleDay(snap.date)}>
+                          <td style={{ padding: '0.6rem 0.75rem', width: '28px' }}>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '18px', height: '18px', borderRadius: '4px', background: isExpanded ? 'rgba(249,115,22,0.25)' : 'rgba(51,65,85,0.6)', color: isExpanded ? '#f97316' : '#64748b', fontSize: '0.75rem', fontWeight: 700, lineHeight: 1 }}>
+                              {isExpanded ? '−' : '+'}
+                            </span>
+                          </td>
+                          <td style={{ padding: '0.6rem 0.75rem', color: isLaunch ? '#f97316' : '#f1f5f9', fontWeight: isLaunch ? 700 : 400 }}>
+                            {snap.label}{isLaunch ? ' 🚀' : ''}
+                          </td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(snap.albumTotal)}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: '#4ade80' }}>+{formatNumber(dayStreams)}</td>
+                          <td style={{ padding: '0.6rem 0.75rem', color: '#fbbf24' }}>{topTrack ? topTrack.k + ' (+' + formatNumber(topTrack.v) + ')' : '—'}</td>
+                        </tr>
+                        {isExpanded && (
+                          <tr key={snap.date + '-detail'} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                            <td colSpan={5} style={{ padding: '0 0.75rem 0.75rem 2.5rem', background: 'rgba(15,23,42,0.4)' }}>
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.4rem', paddingTop: '0.6rem' }}>
+                                {trackDay.map(({ k, v }) => (
+                                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.3rem 0.5rem', borderRadius: '6px', background: 'rgba(30,41,59,0.5)' }}>
+                                    <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{k}</span>
+                                    <span style={{ color: v > 0 ? '#4ade80' : '#64748b', fontWeight: 600, fontSize: '0.75rem' }}>{v > 0 ? '+' + formatNumber(v) : '—'}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </>
                     );
                   })}
                 </tbody>
