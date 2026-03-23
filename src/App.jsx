@@ -626,7 +626,7 @@ const AmorFiadoDashboard = () => {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid rgba(51,65,85,0.8)' }}>
-                    {['', 'Fecha', 'Acumulado', 'Streams del día', 'Top Track'].map(h => (
+                    {['', 'Fecha', 'Acumulado', 'Streams del día', '% var', 'Top Track'].map(h => (
                       <th key={h} style={{ textAlign: h === '' || h === 'Fecha' || h === 'Top Track' ? 'left' : 'right', padding: '0.6rem 0.75rem', color: '#94a3b8' }}>{h}</th>
                     ))}
                   </tr>
@@ -653,18 +653,31 @@ const AmorFiadoDashboard = () => {
                           </td>
                           <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: '#f97316', fontWeight: 700 }}>{formatNumber(snap.albumTotal)}</td>
                           <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: '#4ade80' }}>+{formatNumber(dayStreams)}</td>
+                          <td style={{ textAlign: 'right', padding: '0.6rem 0.75rem', color: prev && dayStreams > 0 ? '#4ade80' : '#64748b', fontWeight: 600, fontSize: '0.78rem' }}>
+                            {prev ? '+' + (dayStreams / prev.albumTotal * 100).toFixed(2) + '%' : '—'}
+                          </td>
                           <td style={{ padding: '0.6rem 0.75rem', color: '#fbbf24' }}>{topTrack ? topTrack.k + ' (+' + formatNumber(topTrack.v) + ')' : '—'}</td>
                         </tr>
                         {isExpanded && (
                           <tr key={snap.date + '-detail'} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
-                            <td colSpan={5} style={{ padding: '0 0.75rem 0.75rem 2.5rem', background: 'rgba(15,23,42,0.4)' }}>
-                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.4rem', paddingTop: '0.6rem' }}>
-                                {trackDay.map(({ k, v }) => (
-                                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.3rem 0.5rem', borderRadius: '6px', background: 'rgba(30,41,59,0.5)' }}>
-                                    <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{k}</span>
-                                    <span style={{ color: v > 0 ? '#4ade80' : '#64748b', fontWeight: 600, fontSize: '0.75rem' }}>{v > 0 ? '+' + formatNumber(v) : '—'}</span>
-                                  </div>
-                                ))}
+                            <td colSpan={6} style={{ padding: '0 0.75rem 0.75rem 2.5rem', background: 'rgba(15,23,42,0.4)' }}>
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.4rem', paddingTop: '0.6rem' }}>
+                                {(() => {
+                                  const dayTotal = trackDay.reduce((sum, t) => sum + Math.max(t.v, 0), 0);
+                                  return trackDay.map(({ k, v }) => (
+                                    <div key={k} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.3rem 0.5rem', borderRadius: '6px', background: 'rgba(30,41,59,0.5)' }}>
+                                      <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{k}</span>
+                                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                        <span style={{ color: v > 0 ? '#4ade80' : '#64748b', fontWeight: 600, fontSize: '0.75rem' }}>{v > 0 ? '+' + formatNumber(v) : '—'}</span>
+                                        {v > 0 && dayTotal > 0 && (
+                                          <span style={{ color: '#64748b', fontSize: '0.7rem', background: 'rgba(100,116,139,0.15)', borderRadius: '4px', padding: '0 0.3rem' }}>
+                                            {(v / dayTotal * 100).toFixed(1)}%
+                                          </span>
+                                        )}
+                                      </span>
+                                    </div>
+                                  ));
+                                })()}
                               </div>
                             </td>
                           </tr>
