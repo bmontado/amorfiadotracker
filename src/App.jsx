@@ -1499,16 +1499,26 @@ const AmorFiadoDashboard = () => {
             })()}
           </div>
 
-          {/* Metodología */}
-          <div style={{ background: 'linear-gradient(135deg, rgba(251,146,60,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(251,146,60,0.2)' }}>
-            <h2 style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Metodología</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: '#94a3b8' }}>
-              <p style={{ margin: 0 }}><strong style={{ color: '#cbd5e1' }}>Decay D20→D21:</strong> Variación porcentual entre el día 20 (completo) y el día 21 (completo). Calculado a partir de los totales de 28 días de Spotify for Artists.</p>
-              <p style={{ margin: 0 }}><strong style={{ color: '#4ade80' }}>Outperformer:</strong> Track con Z-score {'>'} 1.5 vs. el promedio de tracks nuevos del álbum en D20.</p>
-              <p style={{ margin: 0 }}><strong style={{ color: '#f87171' }}>Underperformer:</strong> Track con Z-score {'<'} -1.5 vs. el promedio.</p>
-              <p style={{ margin: 0 }}><strong style={{ color: '#fbbf24' }}>Album Bump:</strong> Single pre-lanzamiento que recibió un spike significativo por efecto del álbum.</p>
-            </div>
-          </div>
+          {/* Metodología — colapsada */}
+          {(() => {
+            const [open, setOpen] = React.useState(false);
+            return (
+              <div style={{ borderRadius: '8px', border: '1px solid rgba(51,65,85,0.35)', overflow: 'hidden' }}>
+                <button onClick={() => setOpen(o => !o)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 1rem', background: 'rgba(15,23,42,0.3)', border: 'none', cursor: 'pointer', color: '#475569', fontSize: '0.75rem', fontWeight: 500 }}>
+                  <span>Metodología</span>
+                  <span style={{ fontSize: '0.65rem', transition: 'transform 0.2s', display: 'inline-block', transform: open ? 'rotate(180deg)' : 'none' }}>▼</span>
+                </button>
+                {open && (
+                  <div style={{ padding: '0.85rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.78rem', color: '#64748b', background: 'rgba(15,23,42,0.2)', borderTop: '1px solid rgba(51,65,85,0.25)' }}>
+                    <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Decay D20→D21:</strong> Variación porcentual entre el día 20 y el día 21 completos.</p>
+                    <p style={{ margin: 0 }}><strong style={{ color: '#4ade80' }}>Outperformer:</strong> Z-score {'>'} 1.5 vs. promedio de tracks nuevos en D20.</p>
+                    <p style={{ margin: 0 }}><strong style={{ color: '#f87171' }}>Underperformer:</strong> Z-score {'<'} -1.5 vs. promedio.</p>
+                    <p style={{ margin: 0 }}><strong style={{ color: '#fbbf24' }}>Album Bump:</strong> Single pre-álbum con spike por efecto del lanzamiento.</p>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </div>
       )}
 
@@ -2034,17 +2044,27 @@ const AmorFiadoDashboard = () => {
               })()}
             </div>
 
-            {/* Methodology */}
-            <div style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.08), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(167,139,250,0.2)' }}>
-              <h2 style={{ color: '#a78bfa', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem' }}>Metodología Social Impact</h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: '#94a3b8' }}>
-                <p style={{ margin: 0 }}><strong style={{ color: '#e879f9' }}>Instagram:</strong> @zeballos17 — 8 reels de la campaña (Feb 2 – Mar 21). Views, likes scrapeados desde perfil público.</p>
-                <p style={{ margin: 0 }}><strong style={{ color: '#22d3ee' }}>TikTok:</strong> @zeballos1717 — 15 videos (Ene 28 – Mar 22). Views, likes, saves y comments scrapeados. TikTok muestra engagement significativamente mayor (eng. rate ~12% vs ~5% en IG).</p>
-                <p style={{ margin: 0 }}><strong style={{ color: '#cbd5e1' }}>Engagement Rate:</strong> Likes / Views × 100.</p>
-                <p style={{ margin: 0 }}><strong style={{ color: '#cbd5e1' }}>Stream Delta D+1:</strong> Diferencia en streams totales entre el día del post y el día siguiente (correlación, no causalidad).</p>
-                <p style={{ margin: 0 }}><strong style={{ color: '#cbd5e1' }}>Atribución por Track:</strong> Basada en el track mencionado, usado como audio, o taggeado (#amorfiado). Posts genéricos del álbum se atribuyen a "AMOR FIADO".</p>
-              </div>
-            </div>
+            {/* Methodology — colapsada */}
+            {(() => {
+              const [open, setOpen] = React.useState(false);
+              return (
+                <div style={{ borderRadius: '8px', border: '1px solid rgba(51,65,85,0.35)', overflow: 'hidden' }}>
+                  <button onClick={() => setOpen(o => !o)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 1rem', background: 'rgba(15,23,42,0.3)', border: 'none', cursor: 'pointer', color: '#475569', fontSize: '0.75rem', fontWeight: 500 }}>
+                    <span>Metodología Social Impact</span>
+                    <span style={{ fontSize: '0.65rem', transition: 'transform 0.2s', display: 'inline-block', transform: open ? 'rotate(180deg)' : 'none' }}>▼</span>
+                  </button>
+                  {open && (
+                    <div style={{ padding: '0.85rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.78rem', color: '#64748b', background: 'rgba(15,23,42,0.2)', borderTop: '1px solid rgba(51,65,85,0.25)' }}>
+                      <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Instagram:</strong> @zeballos17 — 8 reels (Feb 2 – Mar 21). Views y likes desde perfil público.</p>
+                      <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>TikTok:</strong> @zeballos1717 — 15 videos (Ene 28 – Mar 22). Eng. rate ~12% vs ~5% en IG.</p>
+                      <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Engagement Rate:</strong> Likes / Views × 100.</p>
+                      <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Stream Delta D+1:</strong> Diferencia en streams entre el día del post y el siguiente (correlación, no causalidad).</p>
+                      <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Atribución:</strong> Por track mencionado, audio usado o taggeado (#amorfiado).</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         );
       })()}
