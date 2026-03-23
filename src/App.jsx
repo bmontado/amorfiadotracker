@@ -25,6 +25,8 @@ const AmorFiadoDashboard = () => {
   const [socialView, setSocialView] = useState('list'); // 'list' | 'chart'
   const [decayView, setDecayView] = useState('chart'); // 'chart' | 'table'
   const [histGrouping, setHistGrouping] = useState('day'); // 'day' | 'month'
+  const [hoveredDecayTrack, setHoveredDecayTrack] = useState(null);
+  const [decayTooltipPos, setDecayTooltipPos] = useState({ x: 0, y: 0 });
   const toggleDay = (date) => setExpandedDays(prev => { const s = new Set(prev); s.has(date) ? s.delete(date) : s.add(date); return s; });
 
   // Album metadata
@@ -948,8 +950,6 @@ const AmorFiadoDashboard = () => {
                 .filter(t => t.decayD20toD21 !== 'N/A')
                 .sort((a, b) => parseFloat(b.decayD20toD21) - parseFloat(a.decayD20toD21));
               const max = Math.max(...sorted.map(t => Math.abs(parseFloat(t.decayD20toD21))));
-              const [hoveredTrack, setHoveredTrack] = React.useState(null);
-              const [tooltipPos, setTooltipPos] = React.useState({ x: 0, y: 0 });
               return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', position: 'relative' }}>
                   {sorted.map(t => {
@@ -960,13 +960,13 @@ const AmorFiadoDashboard = () => {
                     return (
                       <div key={t.name}
                         style={{ display: 'grid', gridTemplateColumns: '140px 1fr 60px', gap: '0.75rem', alignItems: 'center', cursor: 'default' }}
-                        onMouseEnter={e => { setHoveredTrack(t); setTooltipPos({ x: e.clientX, y: e.clientY }); }}
-                        onMouseMove={e => setTooltipPos({ x: e.clientX, y: e.clientY })}
-                        onMouseLeave={() => setHoveredTrack(null)}
+                        onMouseEnter={e => { setHoveredDecayTrack(t); setDecayTooltipPos({ x: e.clientX, y: e.clientY }); }}
+                        onMouseMove={e => setDecayTooltipPos({ x: e.clientX, y: e.clientY })}
+                        onMouseLeave={() => setHoveredDecayTrack(null)}
                       >
                         <span style={{ color: '#e2e8f0', fontSize: '0.78rem', fontWeight: 500, textAlign: 'right', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.name}</span>
                         <div style={{ background: 'rgba(15,23,42,0.6)', borderRadius: '4px', height: '20px', position: 'relative', overflow: 'hidden' }}>
-                          <div style={{ position: 'absolute', left: isPos ? '50%' : `calc(50% - ${pct / 2}%)`, width: `${pct / 2}%`, height: '100%', background: color, opacity: hoveredTrack?.name === t.name ? 1 : 0.85, borderRadius: isPos ? '0 3px 3px 0' : '3px 0 0 3px', transition: 'opacity 0.15s' }} />
+                          <div style={{ position: 'absolute', left: isPos ? '50%' : `calc(50% - ${pct / 2}%)`, width: `${pct / 2}%`, height: '100%', background: color, opacity: hoveredDecayTrack?.name === t.name ? 1 : 0.85, borderRadius: isPos ? '0 3px 3px 0' : '3px 0 0 3px', transition: 'opacity 0.15s' }} />
                           <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: '1px', background: 'rgba(148,163,184,0.25)' }} />
                         </div>
                         <span style={{ color, fontWeight: 700, fontSize: '0.8rem', textAlign: 'right' }}>{isPos ? '+' : ''}{val.toFixed(1)}%</span>
@@ -974,25 +974,25 @@ const AmorFiadoDashboard = () => {
                     );
                   })}
                   {/* Tooltip flotante */}
-                  {hoveredTrack && (() => {
-                    const val = parseFloat(hoveredTrack.decayD20toD21);
+                  {hoveredDecayTrack && (() => {
+                    const val = parseFloat(hoveredDecayTrack.decayD20toD21);
                     const color = val >= 0 ? '#4ade80' : val < -40 ? '#f87171' : val < -20 ? '#fb923c' : '#fbbf24';
-                    const rank = sorted.findIndex(t => t.name === hoveredTrack.name) + 1;
+                    const rank = sorted.findIndex(t => t.name === hoveredDecayTrack.name) + 1;
                     return (
-                      <div style={{ position: 'fixed', left: tooltipPos.x + 14, top: tooltipPos.y - 10, zIndex: 9999, background: '#0f172a', border: `1px solid ${color}44`, borderRadius: '10px', padding: '0.65rem 0.9rem', fontSize: '0.75rem', pointerEvents: 'none', minWidth: '200px', boxShadow: `0 4px 20px ${color}22` }}>
-                        <p style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 0.4rem' }}>{hoveredTrack.name}</p>
+                      <div style={{ position: 'fixed', left: decayTooltipPos.x + 14, top: decayTooltipPos.y - 10, zIndex: 9999, background: '#0f172a', border: `1px solid ${color}44`, borderRadius: '10px', padding: '0.65rem 0.9rem', fontSize: '0.75rem', pointerEvents: 'none', minWidth: '200px', boxShadow: `0 4px 20px ${color}22` }}>
+                        <p style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 0.4rem' }}>{hoveredDecayTrack.name}</p>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.2rem 0.75rem' }}>
                           <span style={{ color: '#64748b' }}>D20 (Día 1)</span>
-                          <span style={{ color: '#f97316', fontWeight: 600 }}>{formatNumber(hoveredTrack.day20)}</span>
+                          <span style={{ color: '#f97316', fontWeight: 600 }}>{formatNumber(hoveredDecayTrack.day20)}</span>
                           <span style={{ color: '#64748b' }}>D21 (Día 2)</span>
-                          <span style={{ color: '#fbbf24', fontWeight: 600 }}>{formatNumber(hoveredTrack.day21)}</span>
+                          <span style={{ color: '#fbbf24', fontWeight: 600 }}>{formatNumber(hoveredDecayTrack.day21)}</span>
                           <span style={{ color: '#64748b' }}>Δ streams</span>
-                          <span style={{ color, fontWeight: 600 }}>{hoveredTrack.day21 - hoveredTrack.day20 > 0 ? '+' : ''}{formatNumber(hoveredTrack.day21 - hoveredTrack.day20)}</span>
+                          <span style={{ color, fontWeight: 600 }}>{hoveredDecayTrack.day21 - hoveredDecayTrack.day20 > 0 ? '+' : ''}{formatNumber(hoveredDecayTrack.day21 - hoveredDecayTrack.day20)}</span>
                           <span style={{ color: '#64748b' }}>Decay</span>
                           <span style={{ color, fontWeight: 700 }}>{val >= 0 ? '+' : ''}{val.toFixed(2)}%</span>
                           <span style={{ color: '#64748b' }}>Ranking</span>
                           <span style={{ color: '#94a3b8' }}>{rank}° de {sorted.length}</span>
-                          {hoveredTrack.anomaly && <><span style={{ color: '#64748b' }}>Estado</span><span style={{ color: hoveredTrack.anomalyColor === 'green' ? '#4ade80' : hoveredTrack.anomalyColor === 'red' ? '#f87171' : '#fbbf24', fontWeight: 600 }}>{hoveredTrack.anomaly}</span></>}
+                          {hoveredDecayTrack.anomaly && <><span style={{ color: '#64748b' }}>Estado</span><span style={{ color: hoveredDecayTrack.anomalyColor === 'green' ? '#4ade80' : hoveredDecayTrack.anomalyColor === 'red' ? '#f87171' : '#fbbf24', fontWeight: 600 }}>{hoveredDecayTrack.anomaly}</span></>}
                         </div>
                       </div>
                     );
