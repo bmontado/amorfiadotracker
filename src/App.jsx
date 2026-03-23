@@ -2814,9 +2814,6 @@ const AmorFiadoDashboard = () => {
                   </div>
                 );
               })}
-              <p style={{ color: '#475569', fontSize: '0.72rem', margin: '0.75rem 0 0' }}>
-                Los super listeners muestran <strong style={{ color: '#f97316' }}>{segs.super?.pct ?? '—'}%</strong> de conversión — {(segs.super?.pct ?? 0) > (segs.monthly?.pct ?? 0) ? `${((segs.super?.pct ?? 0) / (segs.monthly?.pct || 1)).toFixed(1)}×` : '—'} más que el promedio MAL.
-              </p>
             </div>
 
             {/* ── Interpretación · Señales de Audiencia ──────────────────────── */}
