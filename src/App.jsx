@@ -24,6 +24,17 @@ const AmorFiadoDashboard = () => {
   const artist = 'ZEBALLOS';
   const releaseDate = '19 de Marzo, 2026 — 21:00 (UTC-3)';
 
+  // Last data update timestamps — updated automatically by the scrapers each run
+  const lastUpdated = {
+    spotify: '2026-03-22T15:00:00-03:00',
+    social:  '2026-03-22T15:00:00-03:00',
+  };
+  const formatLastUpdated = (isoStr) => {
+    const d = new Date(isoStr);
+    return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      + ' ' + d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
+  };
+
   // Growth history — each entry is a snapshot captured every 8h by the scheduled task
   // The scheduled task appends new entries here automatically
   const growthHistory = [
@@ -354,7 +365,7 @@ const AmorFiadoDashboard = () => {
           <div style={{ textAlign: 'right' }}>
             <p style={{ color: '#94a3b8', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.15em' }}>All-time Streams · LIVE</p>
             <p style={{ fontSize: '2.5rem', fontWeight: 800, color: '#f97316', margin: 0 }}>{formatNumber(albumLiveTotal)}</p>
-            <p style={{ color: '#64748b', fontSize: '0.75rem' }}>12 tracks — scrapeado 22/03 desde S4A</p>
+            <p style={{ color: '#64748b', fontSize: '0.75rem' }}>12 tracks · S4A: <span style={{ color: '#f97316' }}>{formatLastUpdated(lastUpdated.spotify)}</span></p>
           </div>
         </div>
       </div>
@@ -1060,7 +1071,9 @@ const AmorFiadoDashboard = () => {
 
       {/* Footer */}
       <div style={{ marginTop: '3rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(51,65,85,0.5)', textAlign: 'center' }}>
-        <p style={{ color: '#475569', fontSize: '0.75rem', margin: 0 }}>AMOR FIADO — ZEBALLOS | Datos: Spotify for Artists + Instagram + TikTok | Actualizado: 22 de Marzo, 2026</p>
+        <p style={{ color: '#475569', fontSize: '0.75rem', margin: 0 }}>
+          AMOR FIADO — ZEBALLOS &nbsp;·&nbsp; Spotify: <span style={{ color: '#f97316' }}>{formatLastUpdated(lastUpdated.spotify)}</span> &nbsp;·&nbsp; Social: <span style={{ color: '#a78bfa' }}>{formatLastUpdated(lastUpdated.social)}</span>
+        </p>
       </div>
     </div>
   );
