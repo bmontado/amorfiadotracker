@@ -1446,38 +1446,36 @@ const AmorFiadoDashboard = () => {
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
             {(() => {
               const postAlbum = dailyLog.filter(e => e.date >= '2026-03-20');
-              // Datos: una entrada por transición de día (D20→D21, D21→D22, …)
-              const decayCurveData = postAlbum.slice(1).map((curr, i) => {
-                const prev = postAlbum[i];
-                const point = { label: `${prev.label}→${curr.label}` };
+              // Decay vs peak: (streams_día - streams_D20) / streams_D20 × 100
+              // D20 = primer día completo del álbum = referencia 0%
+              const peakEntry = postAlbum[0];
+              const decayCurveData = postAlbum.map((curr) => {
+                const point = { label: curr.label };
                 metrics.trackAnalysis.forEach(t => {
-                  const prevVal = prev.tracks[t.name] ?? 0;
+                  const peakVal = peakEntry?.tracks[t.name] ?? 0;
                   const currVal = curr.tracks[t.name] ?? 0;
-                  point[t.name] = prevVal > 0 ? parseFloat(((currVal - prevVal) / prevVal * 100).toFixed(1)) : null;
+                  point[t.name] = peakVal > 0 ? parseFloat(((currVal - peakVal) / peakVal * 100).toFixed(1)) : null;
                 });
                 return point;
               });
               const trackColors = ['#4ade80','#38bdf8','#a78bfa','#fb7185','#67e8f9','#d946ef','#fdba74','#86efac','#c4b5fd','#94a3b8','#fbbf24','#f97316'];
               const trackList = metrics.trackAnalysis.map((t, i) => ({ name: t.name, color: trackColors[i % trackColors.length] }));
-              // Valor de referencia: promedio de todos los tracks en el primer salto
-              const firstPoint = decayCurveData[0];
-              const refLine = firstPoint
-                ? parseFloat((trackList.reduce((s, t) => s + (firstPoint[t.name] ?? 0), 0) / trackList.length).toFixed(1))
-                : null;
-              const lastTransition = decayCurveData[decayCurveData.length - 1];
-              const lastRange = lastTransition ? `${lastTransition.label.split('→')[0]} → ${lastTransition.label.split('→')[1]}` : '';
+              // Línea de referencia: decay esperado en D21 según curva CEA+ATBLM (~-46%)
+              const refLine = -46;
+              const lastPoint = decayCurveData[decayCurveData.length - 1];
+              const lastRange = lastPoint?.label ?? '';
               return (
                 <>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.25rem' }}>
                     <h2 style={{ color: '#f97316', fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Curva de Decay por Track</h2>
                     {decayCurveData.length > 0 && (
                       <span style={{ fontSize: '0.7rem', color: '#475569', background: 'rgba(15,23,42,0.5)', padding: '0.2rem 0.6rem', borderRadius: '6px', border: '1px solid rgba(51,65,85,0.4)' }}>
-                        {decayCurveData.length} transición{decayCurveData.length !== 1 ? 'es' : ''} · último: {lastRange}
+                        {decayCurveData.length} día{decayCurveData.length !== 1 ? 's' : ''} · último: {lastRange}
                       </span>
                     )}
                   </div>
                   <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>
-                    % de variación de streams entre días consecutivos por track. Una curva que sube hacia 0 indica que el decay se está frenando.
+                    % de caída acumulada desde el peak (D20 = 0%). Cada punto muestra cuánto bajaron los streams respecto al primer día completo — un rebote eleva la curva pero nunca puede ser positivo salvo que supere el peak original.
                   </p>
                   {decayCurveData.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '2rem 0', color: '#475569', fontSize: '0.85rem' }}>Faltan al menos 2 días de datos para trazar la curva.</div>
@@ -1508,13 +1506,11 @@ const AmorFiadoDashboard = () => {
                             ]}
                             itemSorter={(item) => -(item.value ?? -999)}
                           />
-                          {/* Línea cero */}
-                          <ReferenceLine y={0} stroke="rgba(148,163,184,0.3)" strokeWidth={1} label={{ value: '0%', fill: '#475569', fontSize: 9, position: 'insideLeft' }} />
-                          {/* Promedio del primer salto como referencia */}
-                          {refLine !== null && (
-                            <ReferenceLine y={refLine} stroke="rgba(249,115,22,0.25)" strokeDasharray="5 3"
-                              label={{ value: `prom. álbum D20→D21 (${refLine > 0 ? '+' : ''}${refLine}%)`, fill: '#f97316', fontSize: 9, position: 'insideRight' }} />
-                          )}
+                          {/* Peak = 0% */}
+                          <ReferenceLine y={0} stroke="rgba(249,115,22,0.5)" strokeWidth={1.5} label={{ value: 'Peak D20 (0%)', fill: '#f97316', fontSize: 9, position: 'insideLeft' }} />
+                          {/* Referencia: decay esperado en D21 según curva CEA+ATBLM */}
+                          <ReferenceLine y={refLine} stroke="rgba(148,163,184,0.25)" strokeDasharray="5 3"
+                            label={{ value: `ref. D21 (${refLine}%)`, fill: '#64748b', fontSize: 9, position: 'insideRight' }} />
                           <Legend wrapperStyle={{ fontSize: '0.68rem', paddingTop: '0.5rem' }} />
                           {trackList.map(t => (
                             <Line
@@ -1532,22 +1528,23 @@ const AmorFiadoDashboard = () => {
                         </LineChart>
                       </ResponsiveContainer>
                       </div>
-                      {/* Tabla resumen: última transición por track */}
-                      {decayCurveData.length >= 1 && (() => {
+                      {/* Tabla resumen: decay acumulado actual por track */}
+                      {decayCurveData.length >= 2 && (() => {
                         const latest = decayCurveData[decayCurveData.length - 1];
                         const rows = trackList
                           .map(t => ({ ...t, val: latest[t.name] }))
                           .filter(t => t.val != null)
-                          .sort((a, b) => b.val - a.val);
+                          .sort((a, b) => b.val - a.val); // menos decay primero
                         return (
                           <div style={{ marginTop: '1rem', display: 'flex', flexWrap: 'wrap', gap: '0.35rem', justifyContent: 'center' }}>
                             {rows.map(t => {
-                              const c = t.val >= 0 ? '#4ade80' : t.val > -30 ? '#fbbf24' : t.val > -50 ? '#fb923c' : '#f87171';
+                              // verde = retuvo bien (< -30%), amarillo = normal (-30% a -60%), naranja = fuerte (-60% a -80%), rojo = muy caído
+                              const c = t.val > -30 ? '#4ade80' : t.val > -60 ? '#fbbf24' : t.val > -80 ? '#fb923c' : '#f87171';
                               return (
                                 <div key={t.name} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(15,23,42,0.5)', padding: '0.2rem 0.55rem', borderRadius: '9999px', border: `1px solid ${c}33` }}>
                                   <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: t.color }} />
                                   <span style={{ color: '#94a3b8', fontSize: '0.66rem' }}>{t.name.split(' ')[0]}</span>
-                                  <span style={{ color: c, fontSize: '0.7rem', fontWeight: 700 }}>{t.val > 0 ? '+' : ''}{t.val.toFixed(1)}%</span>
+                                  <span style={{ color: c, fontSize: '0.7rem', fontWeight: 700 }}>{t.val.toFixed(1)}%</span>
                                 </div>
                               );
                             })}
