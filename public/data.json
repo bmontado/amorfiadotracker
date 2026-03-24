@@ -1,648 +1,1444 @@
 {
-    "lastUpdated": {
-          "spotify": "2026-03-24T17:29:42-03:00",
-          "social": "2026-03-22T15:00:00-03:00"
+  "lastUpdated": {
+    "spotify": "2026-03-24T17:29:42-03:00",
+    "social": "2026-03-22T15:00:00-03:00"
+  },
+  "albumLiveTotal": 795837,
+  "liveTotals": {
+    "CUANDO ESCRIBÍA ASIMETRÍA": 285356,
+    "ATBLM": 215877,
+    "UN GUSTO": 45750,
+    "CALL ME": 34082,
+    "MAN OF WORD": 33650,
+    "OJOS TRISTES": 30407,
+    "HIELO": 28625,
+    "CHANGES": 28529,
+    "ALQUILER": 27476,
+    "YA NO": 23799,
+    "HAZLO CALLAO": 21713,
+    "TOP TIER": 20573
+  },
+  "dailyLog": [
+    {
+      "date": "2026-03-19",
+      "label": "D19",
+      "note": "~1 h post-lanzamiento (20:00 UTC-3)",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 5814,
+        "ATBLM": 8513,
+        "UN GUSTO": 806,
+        "CALL ME": 1032,
+        "MAN OF WORD": 1293,
+        "OJOS TRISTES": 649,
+        "HIELO": 753,
+        "ALQUILER": 879,
+        "CHANGES": 676,
+        "YA NO": 472,
+        "HAZLO CALLAO": 486,
+        "TOP TIER": 383
+      }
     },
-    "albumLiveTotal": 795837,
-    "liveTotals": {
-          "CUANDO ESCRIBÍA ASIMETRÍA": 285356,
-          "ATBLM": 215877,
-          "UN GUSTO": 45750,
-          "CALL ME": 34082,
-          "MAN OF WORD": 33650,
-          "OJOS TRISTES": 30407,
-          "HIELO": 28625,
-          "CHANGES": 28529,
-          "ALQUILER": 27476,
-          "YA NO": 23799,
-          "HAZLO CALLAO": 21713,
-          "TOP TIER": 20573
+    {
+      "date": "2026-03-20",
+      "label": "D20",
+      "note": "Primer día completo",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 10875,
+        "ATBLM": 14710,
+        "UN GUSTO": 16320,
+        "CALL ME": 11305,
+        "MAN OF WORD": 10998,
+        "OJOS TRISTES": 10905,
+        "HIELO": 9626,
+        "ALQUILER": 9166,
+        "CHANGES": 9170,
+        "YA NO": 8069,
+        "HAZLO CALLAO": 7584,
+        "TOP TIER": 7061
+      }
     },
-    "dailyLog": [
-          {
-                  "date": "2026-03-19",
-                  "label": "D19",
-                  "note": "~1 h post-lanzamiento (20:00 UTC-3)",
-                  "tracks": {
-                            "CUANDO ESCRIBÍA ASIMETRÍA": 5814,
-                            "ATBLM": 8513,
-                            "UN GUSTO": 806,
-                            "CALL ME": 1032,
-                            "MAN OF WORD": 1293,
-                            "OJOS TRISTES": 649,
-                            "HIELO": 753,
-                            "ALQUILER": 879,
-                            "CHANGES": 676,
-                            "YA NO": 472,
-                            "HAZLO CALLAO": 486,
-                            "TOP TIER": 383
-                  }
-          },
-          {
-                  "date": "2026-03-20",
-                  "label": "D20",
-                  "note": "Primer día completo",
-                  "tracks": {
-                            "CUANDO ESCRIBÍA ASIMETRÍA": 10875,
-                            "ATBLM": 14710,
-                            "UN GUSTO": 16320,
-                            "CALL ME": 11305,
-                            "MAN OF WORD": 10998,
-                            "OJOS TRISTES": 10905,
-                            "HIELO": 9626,
-                            "ALQUILER": 9166,
-                            "CHANGES": 9170,
-                            "YA NO": 8069,
-                            "HAZLO CALLAO": 7584,
-                            "TOP TIER": 7061
-                  }
-          },
-          {
-                  "date": "2026-03-21",
-                  "label": "D21",
-                  "note": "Segundo día completo",
-                  "tracks": {
-                            "CUANDO ESCRIBÍA ASIMETRÍA": 7079,
-                            "ATBLM": 9742,
-                            "UN GUSTO": 8254,
-                            "CALL ME": 6294,
-                            "MAN OF WORD": 5968,
-                            "OJOS TRISTES": 5708,
-                            "HIELO": 5334,
-                            "ALQUILER": 4822,
-                            "CHANGES": 5213,
-                            "YA NO": 4388,
-                            "HAZLO CALLAO": 4084,
-                            "TOP TIER": 3864
-                  }
-          },
-          {
-                  "date": "2026-03-22",
-                  "label": "D22",
-                  "note": "Tercer día completo",
-                  "tracks": {
-                            "CUANDO ESCRIBÍA ASIMETRÍA": 5464,
-                            "ATBLM": 7568,
-                            "UN GUSTO": 6120,
-                            "CALL ME": 4926,
-                            "MAN OF WORD": 4487,
-                            "OJOS TRISTES": 4220,
-                            "HIELO": 4022,
-                            "ALQUILER": 3493,
-                            "CHANGES": 4534,
-                            "YA NO": 3470,
-                            "HAZLO CALLAO": 2966,
-                            "TOP TIER": 2879
-                  }
-          },
-          {
-                  "date": "2026-03-23",
-                  "label": "D23",
-                  "note": "Streams diarios",
-                  "tracks": {
-                            "CUANDO ESCRIBÍA ASIMETRÍA": 7009,
-                            "ATBLM": 9125,
-                            "UN GUSTO": 8370,
-                            "CALL ME": 6136,
-                            "MAN OF WORD": 6133,
-                            "OJOS TRISTES": 5271,
-                            "HIELO": 5194,
-                            "CHANGES": 5236,
-                            "ALQUILER": 5553,
-                            "YA NO": 4314,
-                            "HAZLO CALLAO": 3777,
-                            "TOP TIER": 3717
-                  }
-          }
-    ],
-    "releaseEngagements": {
-          "6EPWuQUeAaRp61S8qG0fri": {
-                  "name": "AMOR FIADO",
-                  "type": "album",
-                  "scrapedAt": "2026-03-24T11:19:58.273701-03:00",
-                  "dayNum": 6,
-                  "releaseDate": "Mar 19, 2026",
-                  "segments": {
-                            "monthly": {
-                                        "total": 414288,
-                                        "listeners": 14512,
-                                        "pct": 3.5
-                            },
-                            "super": {
-                                        "total": 33357,
-                                        "listeners": 9382,
-                                        "pct": 28.1
-                            },
-                            "moderate": {
-                                        "total": 131037,
-                                        "listeners": 4419,
-                                        "pct": 3.4
-                            },
-                            "light": {
-                                        "total": 249894,
-                                        "listeners": 1539,
-                                        "pct": 0.6
-                            }
-                  },
-                  "streamedThisRelease": {
-                            "monthly": [
-                                        {"date": "2026-03-19", "y": 1603},
-                                        {"date": "2026-03-20", "y": 9712},
-                                        {"date": "2026-03-21", "y": 12462},
-                                        {"date": "2026-03-22", "y": 14512}
-                            ],
-                            "super": [
-                                        {"date": "2026-03-19", "y": 1194},
-                                        {"date": "2026-03-20", "y": 6590},
-                                        {"date": "2026-03-21", "y": 8239},
-                                        {"date": "2026-03-22", "y": 9382}
-                            ],
-                            "moderate": [
-                                        {"date": "2026-03-19", "y": 348},
-                                        {"date": "2026-03-20", "y": 2498},
-                                        {"date": "2026-03-21", "y": 3573},
-                                        {"date": "2026-03-22", "y": 4419}
-                            ],
-                            "light": [
-                                        {"date": "2026-03-19", "y": 61},
-                                        {"date": "2026-03-20", "y": 785},
-                                        {"date": "2026-03-21", "y": 1170},
-                                        {"date": "2026-03-22", "y": 1539}
-                            ]
-                  },
-                  "history": [
-                            {
-                                        "date": "2026-03-23",
-                                        "dayNum": 4,
-                                        "segments": {
-                                                      "monthly": {"total": 414288, "listeners": 17836, "pct": 4.3},
-                                                      "super": {"total": 33357, "listeners": 10094, "pct": 30.3},
-                                                      "moderate": {"total": 131037, "listeners": 5875, "pct": 4.5},
-                                                      "light": {"total": 249894, "listeners": 2722, "pct": 1.1}
-                                        }
-                            },
-                            {
-                                        "date": "2026-03-24",
-                                        "dayNum": 6,
-                                        "segments": {
-                                                      "monthly": {"total": 414288, "listeners": 14512, "pct": 3.5},
-                                                      "super": {"total": 33357, "listeners": 9382, "pct": 28.1},
-                                                      "moderate": {"total": 131037, "listeners": 4419, "pct": 3.4},
-                                                      "light": {"total": 249894, "listeners": 1539, "pct": 0.6}
-                                        }
-                            }
-                  ],
-                  "campaigns": []
-          },
-          "7GqXSd7cxRcsfQV6S2cHUM": {
-                  "name": "ATBLM",
-                  "type": "single",
-                  "scrapedAt": "2026-03-24T11:19:58.273701-03:00",
-                  "dayNum": 27,
-                  "releaseDate": "Feb 26, 2026",
-                  "segments": {
-                            "monthly": {"total": 414288, "listeners": 24821, "pct": 6.0},
-                            "super": {"total": 33357, "listeners": 11914, "pct": 35.7},
-                            "moderate": {"total": 131037, "listeners": 11289, "pct": 8.6},
-                            "light": {"total": 249894, "listeners": 6033, "pct": 2.4}
-                  },
-                  "streamedThisRelease": {
-                            "monthly": [
-                                        {"date": "2026-02-26", "y": 690},
-                                        {"date": "2026-02-27", "y": 5942},
-                                        {"date": "2026-02-28", "y": 7902},
-                                        {"date": "2026-03-01", "y": 9336},
-                                        {"date": "2026-03-02", "y": 10852},
-                                        {"date": "2026-03-03", "y": 12278},
-                                        {"date": "2026-03-04", "y": 13341},
-                                        {"date": "2026-03-05", "y": 14085},
-                                        {"date": "2026-03-06", "y": 14821},
-                                        {"date": "2026-03-07", "y": 15563},
-                                        {"date": "2026-03-08", "y": 16229},
-                                        {"date": "2026-03-09", "y": 17042},
-                                        {"date": "2026-03-10", "y": 17784},
-                                        {"date": "2026-03-11", "y": 18484},
-                                        {"date": "2026-03-12", "y": 19187},
-                                        {"date": "2026-03-13", "y": 19980},
-                                        {"date": "2026-03-14", "y": 20561},
-                                        {"date": "2026-03-15", "y": 21088},
-                                        {"date": "2026-03-16", "y": 21776},
-                                        {"date": "2026-03-17", "y": 22409},
-                                        {"date": "2026-03-18", "y": 23153},
-                                        {"date": "2026-03-19", "y": 23890},
-                                        {"date": "2026-03-20", "y": 24292},
-                                        {"date": "2026-03-21", "y": 24598},
-                                        {"date": "2026-03-22", "y": 24821}
-                            ],
-                            "super": [
-                                        {"date": "2026-02-26", "y": 453},
-                                        {"date": "2026-02-27", "y": 3143},
-                                        {"date": "2026-02-28", "y": 4037},
-                                        {"date": "2026-03-01", "y": 4691},
-                                        {"date": "2026-03-02", "y": 5391},
-                                        {"date": "2026-03-03", "y": 6061},
-                                        {"date": "2026-03-04", "y": 6562},
-                                        {"date": "2026-03-05", "y": 6914},
-                                        {"date": "2026-03-06", "y": 7275},
-                                        {"date": "2026-03-07", "y": 7628},
-                                        {"date": "2026-03-08", "y": 7905},
-                                        {"date": "2026-03-09", "y": 8289},
-                                        {"date": "2026-03-10", "y": 8622},
-                                        {"date": "2026-03-11", "y": 8918},
-                                        {"date": "2026-03-12", "y": 9257},
-                                        {"date": "2026-03-13", "y": 9586},
-                                        {"date": "2026-03-14", "y": 9859},
-                                        {"date": "2026-03-15", "y": 10061},
-                                        {"date": "2026-03-16", "y": 10348},
-                                        {"date": "2026-03-17", "y": 10654},
-                                        {"date": "2026-03-18", "y": 10988},
-                                        {"date": "2026-03-19", "y": 11363},
-                                        {"date": "2026-03-20", "y": 11596},
-                                        {"date": "2026-03-21", "y": 11773},
-                                        {"date": "2026-03-22", "y": 11914}
-                            ],
-                            "moderate": [
-                                        {"date": "2026-02-26", "y": 163},
-                                        {"date": "2026-02-27", "y": 1869},
-                                        {"date": "2026-02-28", "y": 2636},
-                                        {"date": "2026-03-01", "y": 3227},
-                                        {"date": "2026-03-02", "y": 3913},
-                                        {"date": "2026-03-03", "y": 4563},
-                                        {"date": "2026-03-04", "y": 5096},
-                                        {"date": "2026-03-05", "y": 5490},
-                                        {"date": "2026-03-06", "y": 5833},
-                                        {"date": "2026-03-07", "y": 6180},
-                                        {"date": "2026-03-08", "y": 6538},
-                                        {"date": "2026-03-09", "y": 6951},
-                                        {"date": "2026-03-10", "y": 7362},
-                                        {"date": "2026-03-11", "y": 7752},
-                                        {"date": "2026-03-12", "y": 8120},
-                                        {"date": "2026-03-13", "y": 8537},
-                                        {"date": "2026-03-14", "y": 8846},
-                                        {"date": "2026-03-15", "y": 9140},
-                                        {"date": "2026-03-16", "y": 9533},
-                                        {"date": "2026-03-17", "y": 9911},
-                                        {"date": "2026-03-18", "y": 10349},
-                                        {"date": "2026-03-19", "y": 10730},
-                                        {"date": "2026-03-20", "y": 10989},
-                                        {"date": "2026-03-21", "y": 11171},
-                                        {"date": "2026-03-22", "y": 11289}
-                            ],
-                            "light": [
-                                        {"date": "2026-02-26", "y": 74},
-                                        {"date": "2026-02-27", "y": 958},
-                                        {"date": "2026-02-28", "y": 1449},
-                                        {"date": "2026-03-01", "y": 1798},
-                                        {"date": "2026-03-02", "y": 2139},
-                                        {"date": "2026-03-03", "y": 2482},
-                                        {"date": "2026-03-04", "y": 2734},
-                                        {"date": "2026-03-05", "y": 2937},
-                                        {"date": "2026-03-06", "y": 3163},
-                                        {"date": "2026-03-07", "y": 3376},
-                                        {"date": "2026-03-08", "y": 3564},
-                                        {"date": "2026-03-09", "y": 3760},
-                                        {"date": "2026-03-10", "y": 3964},
-                                        {"date": "2026-03-11", "y": 4150},
-                                        {"date": "2026-03-12", "y": 4368},
-                                        {"date": "2026-03-13", "y": 4602},
-                                        {"date": "2026-03-14", "y": 4800},
-                                        {"date": "2026-03-15", "y": 4974},
-                                        {"date": "2026-03-16", "y": 5167},
-                                        {"date": "2026-03-17", "y": 5361},
-                                        {"date": "2026-03-18", "y": 5570},
-                                        {"date": "2026-03-19", "y": 5740},
-                                        {"date": "2026-03-20", "y": 5871},
-                                        {"date": "2026-03-21", "y": 5962},
-                                        {"date": "2026-03-22", "y": 6033}
-                            ]
-                  },
-                  "history": [
-                            {
-                                        "date": "2026-03-24",
-                                        "dayNum": 27,
-                                        "segments": {
-                                                      "monthly": {"total": 414288, "listeners": 24821, "pct": 6.0},
-                                                      "super": {"total": 33357, "listeners": 11914, "pct": 35.7},
-                                                      "moderate": {"total": 131037, "listeners": 11289, "pct": 8.6},
-                                                      "light": {"total": 249894, "listeners": 6033, "pct": 2.4}
-                                        }
-                            }
-                  ],
-                  "campaigns": []
-          },
-          "4QCM6aNuH8D1eBm1qp07Jg": {
-                  "name": "CUANDO ESCRIBÍA ASIMETRÍA",
-                  "type": "single",
-                  "scrapedAt": "2026-03-23T12:06:43-03:00",
-                  "dayNum": 28,
-                  "releaseDate": "Feb 5, 2026",
-                  "noLongerUpdating": true,
-                  "segments": {
-                            "monthly": {"total": 404806, "listeners": 23738, "pct": 5.9},
-                            "super": {"total": 29112, "listeners": 11622, "pct": 39.9},
-                            "moderate": {"total": 127186, "listeners": 10714, "pct": 8.4},
-                            "light": {"total": 248508, "listeners": 5350, "pct": 2.2}
-                  },
-                  "streamedThisRelease": {
-                            "monthly": [
-                                        {"date": "2026-02-05", "y": 878},
-                                        {"date": "2026-02-06", "y": 6781},
-                                        {"date": "2026-02-07", "y": 8722},
-                                        {"date": "2026-02-08", "y": 9877},
-                                        {"date": "2026-02-09", "y": 11216},
-                                        {"date": "2026-02-10", "y": 12554},
-                                        {"date": "2026-02-11", "y": 13938},
-                                        {"date": "2026-02-12", "y": 14772},
-                                        {"date": "2026-02-13", "y": 15555},
-                                        {"date": "2026-02-14", "y": 16120},
-                                        {"date": "2026-02-15", "y": 16484},
-                                        {"date": "2026-02-16", "y": 16933},
-                                        {"date": "2026-02-17", "y": 17350},
-                                        {"date": "2026-02-18", "y": 17777},
-                                        {"date": "2026-02-19", "y": 18205},
-                                        {"date": "2026-02-20", "y": 18760},
-                                        {"date": "2026-02-21", "y": 19177},
-                                        {"date": "2026-02-22", "y": 19595},
-                                        {"date": "2026-02-23", "y": 20103},
-                                        {"date": "2026-02-24", "y": 20589},
-                                        {"date": "2026-02-25", "y": 21131},
-                                        {"date": "2026-02-26", "y": 21803},
-                                        {"date": "2026-02-27", "y": 22255},
-                                        {"date": "2026-02-28", "y": 22546},
-                                        {"date": "2026-03-01", "y": 22787},
-                                        {"date": "2026-03-02", "y": 23093},
-                                        {"date": "2026-03-03", "y": 23402},
-                                        {"date": "2026-03-04", "y": 23738}
-                            ],
-                            "super": [
-                                        {"date": "2026-02-05", "y": 518},
-                                        {"date": "2026-02-06", "y": 3424},
-                                        {"date": "2026-02-07", "y": 4268},
-                                        {"date": "2026-02-08", "y": 4753},
-                                        {"date": "2026-02-09", "y": 5341},
-                                        {"date": "2026-02-10", "y": 5953},
-                                        {"date": "2026-02-11", "y": 6523},
-                                        {"date": "2026-02-12", "y": 6935},
-                                        {"date": "2026-02-13", "y": 7349},
-                                        {"date": "2026-02-14", "y": 7630},
-                                        {"date": "2026-02-15", "y": 7834},
-                                        {"date": "2026-02-16", "y": 8047},
-                                        {"date": "2026-02-17", "y": 8284},
-                                        {"date": "2026-02-18", "y": 8503},
-                                        {"date": "2026-02-19", "y": 8710},
-                                        {"date": "2026-02-20", "y": 8969},
-                                        {"date": "2026-02-21", "y": 9165},
-                                        {"date": "2026-02-22", "y": 9329},
-                                        {"date": "2026-02-23", "y": 9593},
-                                        {"date": "2026-02-24", "y": 9831},
-                                        {"date": "2026-02-25", "y": 10072},
-                                        {"date": "2026-02-26", "y": 10346},
-                                        {"date": "2026-02-27", "y": 10611},
-                                        {"date": "2026-02-28", "y": 10808},
-                                        {"date": "2026-03-01", "y": 10968},
-                                        {"date": "2026-03-02", "y": 11157},
-                                        {"date": "2026-03-03", "y": 11393},
-                                        {"date": "2026-03-04", "y": 11622}
-                            ],
-                            "moderate": [
-                                        {"date": "2026-02-05", "y": 228},
-                                        {"date": "2026-02-06", "y": 2223},
-                                        {"date": "2026-02-07", "y": 3067},
-                                        {"date": "2026-02-08", "y": 3575},
-                                        {"date": "2026-02-09", "y": 4206},
-                                        {"date": "2026-02-10", "y": 4831},
-                                        {"date": "2026-02-11", "y": 5479},
-                                        {"date": "2026-02-12", "y": 5909},
-                                        {"date": "2026-02-13", "y": 6284},
-                                        {"date": "2026-02-14", "y": 6574},
-                                        {"date": "2026-02-15", "y": 6761},
-                                        {"date": "2026-02-16", "y": 6973},
-                                        {"date": "2026-02-17", "y": 7197},
-                                        {"date": "2026-02-18", "y": 7436},
-                                        {"date": "2026-02-19", "y": 7660},
-                                        {"date": "2026-02-20", "y": 7921},
-                                        {"date": "2026-02-21", "y": 8116},
-                                        {"date": "2026-02-22", "y": 8338},
-                                        {"date": "2026-02-23", "y": 8591},
-                                        {"date": "2026-02-24", "y": 8874},
-                                        {"date": "2026-02-25", "y": 9186},
-                                        {"date": "2026-02-26", "y": 9557},
-                                        {"date": "2026-02-27", "y": 9777},
-                                        {"date": "2026-02-28", "y": 9971},
-                                        {"date": "2026-03-01", "y": 10134},
-                                        {"date": "2026-03-02", "y": 10333},
-                                        {"date": "2026-03-03", "y": 10520},
-                                        {"date": "2026-03-04", "y": 10714}
-                            ],
-                            "light": [
-                                        {"date": "2026-02-05", "y": 132},
-                                        {"date": "2026-02-06", "y": 1190},
-                                        {"date": "2026-02-07", "y": 1625},
-                                        {"date": "2026-02-08", "y": 1929},
-                                        {"date": "2026-02-09", "y": 2265},
-                                        {"date": "2026-02-10", "y": 2572},
-                                        {"date": "2026-02-11", "y": 2956},
-                                        {"date": "2026-02-12", "y": 3170},
-                                        {"date": "2026-02-13", "y": 3360},
-                                        {"date": "2026-02-14", "y": 3506},
-                                        {"date": "2026-02-15", "y": 3614},
-                                        {"date": "2026-02-16", "y": 3717},
-                                        {"date": "2026-02-17", "y": 3835},
-                                        {"date": "2026-02-18", "y": 3914},
-                                        {"date": "2026-02-19", "y": 4043},
-                                        {"date": "2026-02-20", "y": 4184},
-                                        {"date": "2026-02-21", "y": 4298},
-                                        {"date": "2026-02-22", "y": 4397},
-                                        {"date": "2026-02-23", "y": 4539},
-                                        {"date": "2026-02-24", "y": 4649},
-                                        {"date": "2026-02-25", "y": 4806},
-                                        {"date": "2026-02-26", "y": 4972},
-                                        {"date": "2026-02-27", "y": 5076},
-                                        {"date": "2026-02-28", "y": 5125},
-                                        {"date": "2026-03-01", "y": 5176},
-                                        {"date": "2026-03-02", "y": 5236},
-                                        {"date": "2026-03-03", "y": 5288},
-                                        {"date": "2026-03-04", "y": 5350}
-                            ]
-                  },
-                  "history": [],
-                  "campaigns": []
-          }
+    {
+      "date": "2026-03-21",
+      "label": "D21",
+      "note": "Segundo día completo",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 7079,
+        "ATBLM": 9742,
+        "UN GUSTO": 8254,
+        "CALL ME": 6294,
+        "MAN OF WORD": 5968,
+        "OJOS TRISTES": 5708,
+        "HIELO": 5334,
+        "ALQUILER": 4822,
+        "CHANGES": 5213,
+        "YA NO": 4388,
+        "HAZLO CALLAO": 4084,
+        "TOP TIER": 3864
+      }
     },
-    "liveHistory": [
-          {
-                  "date": "2026-03-22",
-                  "label": "D+3",
-                  "recordedAt": "2026-03-22T15:00:00-03:00",
-                  "albumTotal": 678677,
-                  "tracks": {
-                            "CUANDO ESCRIBÍA ASIMETRÍA": 273884,
-                            "ATBLM": 200669,
-                            "UN GUSTO": 31749,
-                            "CALL ME": 23750,
-                            "MAN OF WORD": 22919,
-                            "OJOS TRISTES": 21652,
-                            "HIELO": 19885,
-                            "CHANGES": 19758,
-                            "ALQUILER": 18508,
-                            "YA NO": 16522,
-                            "HAZLO CALLAO": 15226,
-                            "TOP TIER": 14298
-                  }
-          },
-          {
-                  "date": "2026-03-23",
-                  "label": "D+4",
-                  "recordedAt": "2026-03-23T12:06:43-03:00",
-                  "albumTotal": 704025,
-                  "tracks": {
-                            "CUANDO ESCRIBÍA ASIMETRÍA": 276622,
-                            "ATBLM": 204181,
-                            "UN GUSTO": 34953,
-                            "CALL ME": 26075,
-                            "MAN OF WORD": 25068,
-                            "OJOS TRISTES": 23695,
-                            "HIELO": 21708,
-                            "CHANGES": 21535,
-                            "ALQUILER": 20058,
-                            "YA NO": 18126,
-                            "HAZLO CALLAO": 16594,
-                            "TOP TIER": 15674
-                  }
-          },
-          {
-                  "date": "2026-03-24",
-                  "label": "D+5",
-                  "recordedAt": "2026-03-24T17:29:42-03:00",
-                  "albumTotal": 795837,
-                  "tracks": {
-                            "CUANDO ESCRIBÍA ASIMETRÍA": 285356,
-                            "ATBLM": 215877,
-                            "UN GUSTO": 45750,
-                            "CALL ME": 34082,
-                            "MAN OF WORD": 33650,
-                            "OJOS TRISTES": 30407,
-                            "HIELO": 28625,
-                            "CHANGES": 28529,
-                            "ALQUILER": 27476,
-                            "YA NO": 23799,
-                            "HAZLO CALLAO": 21713,
-                            "TOP TIER": 20573
-                  }
-          }
-    ],
-    "trackMetricsMeta": {
-          "periodLabel": "Feb 24 – Mar 23, 2026",
-          "scrapedAt": "2026-03-24T17:29:42-03:00"
+    {
+      "date": "2026-03-22",
+      "label": "D22",
+      "note": "Tercer día completo",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 5464,
+        "ATBLM": 7568,
+        "UN GUSTO": 6120,
+        "CALL ME": 4926,
+        "MAN OF WORD": 4487,
+        "OJOS TRISTES": 4220,
+        "HIELO": 4022,
+        "ALQUILER": 3493,
+        "CHANGES": 4534,
+        "YA NO": 3470,
+        "HAZLO CALLAO": 2966,
+        "TOP TIER": 2879
+      }
     },
-    "trackMetrics": {
-          "CUANDO ESCRIBÍA ASIMETRÍA": {
-                  "streams28d": 143656,
-                  "listeners": 47296,
-                  "streamsPerListener": 3.037,
-                  "playlistAdds": 3390,
-                  "saves": 9783,
-                  "prevPeriod": 142541,
-                  "change": 0.8
-          },
-          "ATBLM": {
-                  "streams28d": 209483,
-                  "listeners": 69978,
-                  "streamsPerListener": 2.994,
-                  "playlistAdds": 8458,
-                  "saves": 17998,
-                  "prevPeriod": 192790,
-                  "change": 8.7
-          },
-          "UN GUSTO": {
-                  "streams28d": 39870,
-                  "listeners": 20127,
-                  "streamsPerListener": 1.981,
-                  "playlistAdds": 2236,
-                  "saves": 8771,
-                  "prevPeriod": 25380,
-                  "change": 57.1
-          },
-          "CALL ME": {
-                  "streams28d": 29693,
-                  "listeners": 11372,
-                  "streamsPerListener": 2.611,
-                  "playlistAdds": 1699,
-                  "saves": 7891,
-                  "prevPeriod": 18631,
-                  "change": 59.4
-          },
-          "MAN OF WORD": {
-                  "streams28d": 28879,
-                  "listeners": 12725,
-                  "streamsPerListener": 2.269,
-                  "playlistAdds": 1502,
-                  "saves": 7882,
-                  "prevPeriod": 18259,
-                  "change": 58.2
-          },
-          "OJOS TRISTES": {
-                  "streams28d": 26753,
-                  "listeners": 12113,
-                  "streamsPerListener": 2.209,
-                  "playlistAdds": 1589,
-                  "saves": 7859,
-                  "prevPeriod": 17262,
-                  "change": 55.0
-          },
-          "HIELO": {
-                  "streams28d": 24929,
-                  "listeners": 9985,
-                  "streamsPerListener": 2.497,
-                  "playlistAdds": 1478,
-                  "saves": 7690,
-                  "prevPeriod": 15713,
-                  "change": 58.7
-          },
-          "CHANGES": {
-                  "streams28d": 24829,
-                  "listeners": 10852,
-                  "streamsPerListener": 2.288,
-                  "playlistAdds": 1147,
-                  "saves": 7657,
-                  "prevPeriod": 15059,
-                  "change": 64.9
-          },
-          "ALQUILER": {
-                  "streams28d": 23913,
-                  "listeners": 11605,
-                  "streamsPerListener": 2.06,
-                  "playlistAdds": 913,
-                  "saves": 7393,
-                  "prevPeriod": 14867,
-                  "change": 60.8
-          },
-          "YA NO": {
-                  "streams28d": 20713,
-                  "listeners": 8628,
-                  "streamsPerListener": 2.401,
-                  "playlistAdds": 1041,
-                  "saves": 7543,
-                  "prevPeriod": 12929,
-                  "change": 60.2
-          },
-          "HAZLO CALLAO": {
-                  "streams28d": 18897,
-                  "listeners": 9251,
-                  "streamsPerListener": 2.043,
-                  "playlistAdds": 864,
-                  "saves": 7335,
-                  "prevPeriod": 12154,
-                  "change": 55.5
-          },
-          "TOP TIER": {
-                  "streams28d": 17904,
-                  "listeners": 7953,
-                  "streamsPerListener": 2.251,
-                  "playlistAdds": 955,
-                  "saves": 7426,
-                  "prevPeriod": 11308,
-                  "change": 58.3
-          }
+    {
+      "date": "2026-03-23",
+      "label": "D23",
+      "note": "Streams diarios",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 7009,
+        "ATBLM": 9125,
+        "UN GUSTO": 8370,
+        "CALL ME": 6136,
+        "MAN OF WORD": 6133,
+        "OJOS TRISTES": 5271,
+        "HIELO": 5194,
+        "CHANGES": 5236,
+        "ALQUILER": 5553,
+        "YA NO": 4314,
+        "HAZLO CALLAO": 3777,
+        "TOP TIER": 3717
+      }
     }
+  ],
+  "releaseEngagements": {
+    "6EPWuQUeAaRp61S8qG0fri": {
+      "name": "AMOR FIADO",
+      "type": "album",
+      "scrapedAt": "2026-03-24T17:21:41.908-03:00",
+      "dayNum": 6,
+      "releaseDate": "Mar 19, 2026",
+      "segments": {
+        "monthly": {
+          "total": 415041,
+          "listeners": 16962,
+          "pct": 4.1
+        },
+        "super": {
+          "total": 33825,
+          "listeners": 10697,
+          "pct": 31.6
+        },
+        "moderate": {
+          "total": 131139,
+          "listeners": 5476,
+          "pct": 4.2
+        },
+        "light": {
+          "total": 250077,
+          "listeners": 1979,
+          "pct": 0.8
+        }
+      },
+      "streamedThisRelease": {
+        "monthly": [
+          {
+            "date": "2026-03-19",
+            "y": 1603
+          },
+          {
+            "date": "2026-03-20",
+            "y": 9712
+          },
+          {
+            "date": "2026-03-21",
+            "y": 12462
+          },
+          {
+            "date": "2026-03-22",
+            "y": 14512
+          },
+          {
+            "date": "2026-03-23",
+            "y": 16962
+          }
+        ],
+        "super": [
+          {
+            "date": "2026-03-19",
+            "y": 1194
+          },
+          {
+            "date": "2026-03-20",
+            "y": 6590
+          },
+          {
+            "date": "2026-03-21",
+            "y": 8239
+          },
+          {
+            "date": "2026-03-22",
+            "y": 9382
+          },
+          {
+            "date": "2026-03-23",
+            "y": 10697
+          }
+        ],
+        "moderate": [
+          {
+            "date": "2026-03-19",
+            "y": 348
+          },
+          {
+            "date": "2026-03-20",
+            "y": 2498
+          },
+          {
+            "date": "2026-03-21",
+            "y": 3573
+          },
+          {
+            "date": "2026-03-22",
+            "y": 4419
+          },
+          {
+            "date": "2026-03-23",
+            "y": 5476
+          }
+        ],
+        "light": [
+          {
+            "date": "2026-03-19",
+            "y": 61
+          },
+          {
+            "date": "2026-03-20",
+            "y": 785
+          },
+          {
+            "date": "2026-03-21",
+            "y": 1170
+          },
+          {
+            "date": "2026-03-22",
+            "y": 1539
+          },
+          {
+            "date": "2026-03-23",
+            "y": 1979
+          }
+        ]
+      },
+      "history": [
+        {
+          "date": "2026-03-23",
+          "dayNum": 4,
+          "segments": {
+            "monthly": {
+              "total": 414288,
+              "listeners": 17836,
+              "pct": 4.3
+            },
+            "super": {
+              "total": 33357,
+              "listeners": 10094,
+              "pct": 30.3
+            },
+            "moderate": {
+              "total": 131037,
+              "listeners": 5875,
+              "pct": 4.5
+            },
+            "light": {
+              "total": 249894,
+              "listeners": 2722,
+              "pct": 1.1
+            }
+          }
+        },
+        {
+          "date": "2026-03-24",
+          "dayNum": 6,
+          "segments": {
+            "monthly": {
+              "total": 415041,
+              "listeners": 16962,
+              "pct": 4.1
+            },
+            "super": {
+              "total": 33825,
+              "listeners": 10697,
+              "pct": 31.6
+            },
+            "moderate": {
+              "total": 131139,
+              "listeners": 5476,
+              "pct": 4.2
+            },
+            "light": {
+              "total": 250077,
+              "listeners": 1979,
+              "pct": 0.8
+            }
+          }
+        }
+      ],
+      "campaigns": []
+    },
+    "7GqXSd7cxRcsfQV6S2cHUM": {
+      "name": "ATBLM",
+      "type": "single",
+      "scrapedAt": "2026-03-24T17:21:41.908-03:00",
+      "dayNum": 27,
+      "releaseDate": "Feb 26, 2026",
+      "segments": {
+        "monthly": {
+          "total": 415041,
+          "listeners": 25090,
+          "pct": 6.0
+        },
+        "super": {
+          "total": 33825,
+          "listeners": 12081,
+          "pct": 35.7
+        },
+        "moderate": {
+          "total": 131139,
+          "listeners": 11419,
+          "pct": 8.7
+        },
+        "light": {
+          "total": 250077,
+          "listeners": 6119,
+          "pct": 2.4
+        }
+      },
+      "streamedThisRelease": {
+        "monthly": [
+          {
+            "date": "2026-02-26",
+            "y": 690
+          },
+          {
+            "date": "2026-02-27",
+            "y": 5942
+          },
+          {
+            "date": "2026-02-28",
+            "y": 7902
+          },
+          {
+            "date": "2026-03-01",
+            "y": 9336
+          },
+          {
+            "date": "2026-03-02",
+            "y": 10852
+          },
+          {
+            "date": "2026-03-03",
+            "y": 12278
+          },
+          {
+            "date": "2026-03-04",
+            "y": 13341
+          },
+          {
+            "date": "2026-03-05",
+            "y": 14085
+          },
+          {
+            "date": "2026-03-06",
+            "y": 14821
+          },
+          {
+            "date": "2026-03-07",
+            "y": 15563
+          },
+          {
+            "date": "2026-03-08",
+            "y": 16229
+          },
+          {
+            "date": "2026-03-09",
+            "y": 17042
+          },
+          {
+            "date": "2026-03-10",
+            "y": 17784
+          },
+          {
+            "date": "2026-03-11",
+            "y": 18484
+          },
+          {
+            "date": "2026-03-12",
+            "y": 19187
+          },
+          {
+            "date": "2026-03-13",
+            "y": 19980
+          },
+          {
+            "date": "2026-03-14",
+            "y": 20561
+          },
+          {
+            "date": "2026-03-15",
+            "y": 21088
+          },
+          {
+            "date": "2026-03-16",
+            "y": 21776
+          },
+          {
+            "date": "2026-03-17",
+            "y": 22409
+          },
+          {
+            "date": "2026-03-18",
+            "y": 23153
+          },
+          {
+            "date": "2026-03-19",
+            "y": 23890
+          },
+          {
+            "date": "2026-03-20",
+            "y": 24292
+          },
+          {
+            "date": "2026-03-21",
+            "y": 24598
+          },
+          {
+            "date": "2026-03-22",
+            "y": 24821
+          },
+          {
+            "date": "2026-03-23",
+            "y": 25090
+          }
+        ],
+        "super": [
+          {
+            "date": "2026-02-26",
+            "y": 453
+          },
+          {
+            "date": "2026-02-27",
+            "y": 3143
+          },
+          {
+            "date": "2026-02-28",
+            "y": 4037
+          },
+          {
+            "date": "2026-03-01",
+            "y": 4691
+          },
+          {
+            "date": "2026-03-02",
+            "y": 5391
+          },
+          {
+            "date": "2026-03-03",
+            "y": 6061
+          },
+          {
+            "date": "2026-03-04",
+            "y": 6562
+          },
+          {
+            "date": "2026-03-05",
+            "y": 6914
+          },
+          {
+            "date": "2026-03-06",
+            "y": 7275
+          },
+          {
+            "date": "2026-03-07",
+            "y": 7628
+          },
+          {
+            "date": "2026-03-08",
+            "y": 7905
+          },
+          {
+            "date": "2026-03-09",
+            "y": 8289
+          },
+          {
+            "date": "2026-03-10",
+            "y": 8622
+          },
+          {
+            "date": "2026-03-11",
+            "y": 8918
+          },
+          {
+            "date": "2026-03-12",
+            "y": 9257
+          },
+          {
+            "date": "2026-03-13",
+            "y": 9586
+          },
+          {
+            "date": "2026-03-14",
+            "y": 9859
+          },
+          {
+            "date": "2026-03-15",
+            "y": 10061
+          },
+          {
+            "date": "2026-03-16",
+            "y": 10348
+          },
+          {
+            "date": "2026-03-17",
+            "y": 10654
+          },
+          {
+            "date": "2026-03-18",
+            "y": 10988
+          },
+          {
+            "date": "2026-03-19",
+            "y": 11363
+          },
+          {
+            "date": "2026-03-20",
+            "y": 11596
+          },
+          {
+            "date": "2026-03-21",
+            "y": 11773
+          },
+          {
+            "date": "2026-03-22",
+            "y": 11914
+          },
+          {
+            "date": "2026-03-23",
+            "y": 12081
+          }
+        ],
+        "moderate": [
+          {
+            "date": "2026-02-26",
+            "y": 163
+          },
+          {
+            "date": "2026-02-27",
+            "y": 1869
+          },
+          {
+            "date": "2026-02-28",
+            "y": 2636
+          },
+          {
+            "date": "2026-03-01",
+            "y": 3227
+          },
+          {
+            "date": "2026-03-02",
+            "y": 3913
+          },
+          {
+            "date": "2026-03-03",
+            "y": 4563
+          },
+          {
+            "date": "2026-03-04",
+            "y": 5096
+          },
+          {
+            "date": "2026-03-05",
+            "y": 5490
+          },
+          {
+            "date": "2026-03-06",
+            "y": 5833
+          },
+          {
+            "date": "2026-03-07",
+            "y": 6180
+          },
+          {
+            "date": "2026-03-08",
+            "y": 6538
+          },
+          {
+            "date": "2026-03-09",
+            "y": 6951
+          },
+          {
+            "date": "2026-03-10",
+            "y": 7362
+          },
+          {
+            "date": "2026-03-11",
+            "y": 7752
+          },
+          {
+            "date": "2026-03-12",
+            "y": 8120
+          },
+          {
+            "date": "2026-03-13",
+            "y": 8537
+          },
+          {
+            "date": "2026-03-14",
+            "y": 8846
+          },
+          {
+            "date": "2026-03-15",
+            "y": 9140
+          },
+          {
+            "date": "2026-03-16",
+            "y": 9533
+          },
+          {
+            "date": "2026-03-17",
+            "y": 9911
+          },
+          {
+            "date": "2026-03-18",
+            "y": 10349
+          },
+          {
+            "date": "2026-03-19",
+            "y": 10730
+          },
+          {
+            "date": "2026-03-20",
+            "y": 10989
+          },
+          {
+            "date": "2026-03-21",
+            "y": 11171
+          },
+          {
+            "date": "2026-03-22",
+            "y": 11289
+          },
+          {
+            "date": "2026-03-23",
+            "y": 11419
+          }
+        ],
+        "light": [
+          {
+            "date": "2026-02-26",
+            "y": 74
+          },
+          {
+            "date": "2026-02-27",
+            "y": 958
+          },
+          {
+            "date": "2026-02-28",
+            "y": 1449
+          },
+          {
+            "date": "2026-03-01",
+            "y": 1798
+          },
+          {
+            "date": "2026-03-02",
+            "y": 2139
+          },
+          {
+            "date": "2026-03-03",
+            "y": 2482
+          },
+          {
+            "date": "2026-03-04",
+            "y": 2734
+          },
+          {
+            "date": "2026-03-05",
+            "y": 2937
+          },
+          {
+            "date": "2026-03-06",
+            "y": 3163
+          },
+          {
+            "date": "2026-03-07",
+            "y": 3376
+          },
+          {
+            "date": "2026-03-08",
+            "y": 3564
+          },
+          {
+            "date": "2026-03-09",
+            "y": 3760
+          },
+          {
+            "date": "2026-03-10",
+            "y": 3964
+          },
+          {
+            "date": "2026-03-11",
+            "y": 4150
+          },
+          {
+            "date": "2026-03-12",
+            "y": 4368
+          },
+          {
+            "date": "2026-03-13",
+            "y": 4602
+          },
+          {
+            "date": "2026-03-14",
+            "y": 4800
+          },
+          {
+            "date": "2026-03-15",
+            "y": 4974
+          },
+          {
+            "date": "2026-03-16",
+            "y": 5167
+          },
+          {
+            "date": "2026-03-17",
+            "y": 5361
+          },
+          {
+            "date": "2026-03-18",
+            "y": 5570
+          },
+          {
+            "date": "2026-03-19",
+            "y": 5740
+          },
+          {
+            "date": "2026-03-20",
+            "y": 5871
+          },
+          {
+            "date": "2026-03-21",
+            "y": 5962
+          },
+          {
+            "date": "2026-03-22",
+            "y": 6033
+          },
+          {
+            "date": "2026-03-23",
+            "y": 6119
+          }
+        ]
+      },
+      "history": [
+        {
+          "date": "2026-03-24",
+          "dayNum": 27,
+          "segments": {
+            "monthly": {
+              "total": 415041,
+              "listeners": 25090,
+              "pct": 6.0
+            },
+            "super": {
+              "total": 33825,
+              "listeners": 12081,
+              "pct": 35.7
+            },
+            "moderate": {
+              "total": 131139,
+              "listeners": 11419,
+              "pct": 8.7
+            },
+            "light": {
+              "total": 250077,
+              "listeners": 6119,
+              "pct": 2.4
+            }
+          }
+        }
+      ],
+      "campaigns": []
+    },
+    "4QCM6aNuH8D1eBm1qp07Jg": {
+      "name": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "single",
+      "scrapedAt": "2026-03-23T12:06:43-03:00",
+      "dayNum": 28,
+      "releaseDate": "Feb 5, 2026",
+      "noLongerUpdating": true,
+      "segments": {
+        "monthly": {
+          "total": 404806,
+          "listeners": 23738,
+          "pct": 5.9
+        },
+        "super": {
+          "total": 29112,
+          "listeners": 11622,
+          "pct": 39.9
+        },
+        "moderate": {
+          "total": 127186,
+          "listeners": 10714,
+          "pct": 8.4
+        },
+        "light": {
+          "total": 248508,
+          "listeners": 5350,
+          "pct": 2.2
+        }
+      },
+      "streamedThisRelease": {
+        "monthly": [
+          {
+            "date": "2026-02-05",
+            "y": 878
+          },
+          {
+            "date": "2026-02-06",
+            "y": 6781
+          },
+          {
+            "date": "2026-02-07",
+            "y": 8722
+          },
+          {
+            "date": "2026-02-08",
+            "y": 9877
+          },
+          {
+            "date": "2026-02-09",
+            "y": 11216
+          },
+          {
+            "date": "2026-02-10",
+            "y": 12554
+          },
+          {
+            "date": "2026-02-11",
+            "y": 13938
+          },
+          {
+            "date": "2026-02-12",
+            "y": 14772
+          },
+          {
+            "date": "2026-02-13",
+            "y": 15555
+          },
+          {
+            "date": "2026-02-14",
+            "y": 16120
+          },
+          {
+            "date": "2026-02-15",
+            "y": 16484
+          },
+          {
+            "date": "2026-02-16",
+            "y": 16933
+          },
+          {
+            "date": "2026-02-17",
+            "y": 17350
+          },
+          {
+            "date": "2026-02-18",
+            "y": 17777
+          },
+          {
+            "date": "2026-02-19",
+            "y": 18205
+          },
+          {
+            "date": "2026-02-20",
+            "y": 18760
+          },
+          {
+            "date": "2026-02-21",
+            "y": 19177
+          },
+          {
+            "date": "2026-02-22",
+            "y": 19595
+          },
+          {
+            "date": "2026-02-23",
+            "y": 20103
+          },
+          {
+            "date": "2026-02-24",
+            "y": 20589
+          },
+          {
+            "date": "2026-02-25",
+            "y": 21131
+          },
+          {
+            "date": "2026-02-26",
+            "y": 21803
+          },
+          {
+            "date": "2026-02-27",
+            "y": 22255
+          },
+          {
+            "date": "2026-02-28",
+            "y": 22546
+          },
+          {
+            "date": "2026-03-01",
+            "y": 22787
+          },
+          {
+            "date": "2026-03-02",
+            "y": 23093
+          },
+          {
+            "date": "2026-03-03",
+            "y": 23402
+          },
+          {
+            "date": "2026-03-04",
+            "y": 23738
+          }
+        ],
+        "super": [
+          {
+            "date": "2026-02-05",
+            "y": 518
+          },
+          {
+            "date": "2026-02-06",
+            "y": 3424
+          },
+          {
+            "date": "2026-02-07",
+            "y": 4268
+          },
+          {
+            "date": "2026-02-08",
+            "y": 4753
+          },
+          {
+            "date": "2026-02-09",
+            "y": 5341
+          },
+          {
+            "date": "2026-02-10",
+            "y": 5953
+          },
+          {
+            "date": "2026-02-11",
+            "y": 6523
+          },
+          {
+            "date": "2026-02-12",
+            "y": 6935
+          },
+          {
+            "date": "2026-02-13",
+            "y": 7349
+          },
+          {
+            "date": "2026-02-14",
+            "y": 7630
+          },
+          {
+            "date": "2026-02-15",
+            "y": 7834
+          },
+          {
+            "date": "2026-02-16",
+            "y": 8047
+          },
+          {
+            "date": "2026-02-17",
+            "y": 8284
+          },
+          {
+            "date": "2026-02-18",
+            "y": 8503
+          },
+          {
+            "date": "2026-02-19",
+            "y": 8710
+          },
+          {
+            "date": "2026-02-20",
+            "y": 8969
+          },
+          {
+            "date": "2026-02-21",
+            "y": 9165
+          },
+          {
+            "date": "2026-02-22",
+            "y": 9329
+          },
+          {
+            "date": "2026-02-23",
+            "y": 9593
+          },
+          {
+            "date": "2026-02-24",
+            "y": 9831
+          },
+          {
+            "date": "2026-02-25",
+            "y": 10072
+          },
+          {
+            "date": "2026-02-26",
+            "y": 10346
+          },
+          {
+            "date": "2026-02-27",
+            "y": 10611
+          },
+          {
+            "date": "2026-02-28",
+            "y": 10808
+          },
+          {
+            "date": "2026-03-01",
+            "y": 10968
+          },
+          {
+            "date": "2026-03-02",
+            "y": 11157
+          },
+          {
+            "date": "2026-03-03",
+            "y": 11393
+          },
+          {
+            "date": "2026-03-04",
+            "y": 11622
+          }
+        ],
+        "moderate": [
+          {
+            "date": "2026-02-05",
+            "y": 228
+          },
+          {
+            "date": "2026-02-06",
+            "y": 2223
+          },
+          {
+            "date": "2026-02-07",
+            "y": 3067
+          },
+          {
+            "date": "2026-02-08",
+            "y": 3575
+          },
+          {
+            "date": "2026-02-09",
+            "y": 4206
+          },
+          {
+            "date": "2026-02-10",
+            "y": 4831
+          },
+          {
+            "date": "2026-02-11",
+            "y": 5479
+          },
+          {
+            "date": "2026-02-12",
+            "y": 5909
+          },
+          {
+            "date": "2026-02-13",
+            "y": 6284
+          },
+          {
+            "date": "2026-02-14",
+            "y": 6574
+          },
+          {
+            "date": "2026-02-15",
+            "y": 6761
+          },
+          {
+            "date": "2026-02-16",
+            "y": 6973
+          },
+          {
+            "date": "2026-02-17",
+            "y": 7197
+          },
+          {
+            "date": "2026-02-18",
+            "y": 7436
+          },
+          {
+            "date": "2026-02-19",
+            "y": 7660
+          },
+          {
+            "date": "2026-02-20",
+            "y": 7921
+          },
+          {
+            "date": "2026-02-21",
+            "y": 8116
+          },
+          {
+            "date": "2026-02-22",
+            "y": 8338
+          },
+          {
+            "date": "2026-02-23",
+            "y": 8591
+          },
+          {
+            "date": "2026-02-24",
+            "y": 8874
+          },
+          {
+            "date": "2026-02-25",
+            "y": 9186
+          },
+          {
+            "date": "2026-02-26",
+            "y": 9557
+          },
+          {
+            "date": "2026-02-27",
+            "y": 9777
+          },
+          {
+            "date": "2026-02-28",
+            "y": 9971
+          },
+          {
+            "date": "2026-03-01",
+            "y": 10134
+          },
+          {
+            "date": "2026-03-02",
+            "y": 10333
+          },
+          {
+            "date": "2026-03-03",
+            "y": 10520
+          },
+          {
+            "date": "2026-03-04",
+            "y": 10714
+          }
+        ],
+        "light": [
+          {
+            "date": "2026-02-05",
+            "y": 132
+          },
+          {
+            "date": "2026-02-06",
+            "y": 1190
+          },
+          {
+            "date": "2026-02-07",
+            "y": 1625
+          },
+          {
+            "date": "2026-02-08",
+            "y": 1929
+          },
+          {
+            "date": "2026-02-09",
+            "y": 2265
+          },
+          {
+            "date": "2026-02-10",
+            "y": 2572
+          },
+          {
+            "date": "2026-02-11",
+            "y": 2956
+          },
+          {
+            "date": "2026-02-12",
+            "y": 3170
+          },
+          {
+            "date": "2026-02-13",
+            "y": 3360
+          },
+          {
+            "date": "2026-02-14",
+            "y": 3506
+          },
+          {
+            "date": "2026-02-15",
+            "y": 3614
+          },
+          {
+            "date": "2026-02-16",
+            "y": 3717
+          },
+          {
+            "date": "2026-02-17",
+            "y": 3835
+          },
+          {
+            "date": "2026-02-18",
+            "y": 3914
+          },
+          {
+            "date": "2026-02-19",
+            "y": 4043
+          },
+          {
+            "date": "2026-02-20",
+            "y": 4184
+          },
+          {
+            "date": "2026-02-21",
+            "y": 4298
+          },
+          {
+            "date": "2026-02-22",
+            "y": 4397
+          },
+          {
+            "date": "2026-02-23",
+            "y": 4539
+          },
+          {
+            "date": "2026-02-24",
+            "y": 4649
+          },
+          {
+            "date": "2026-02-25",
+            "y": 4806
+          },
+          {
+            "date": "2026-02-26",
+            "y": 4972
+          },
+          {
+            "date": "2026-02-27",
+            "y": 5076
+          },
+          {
+            "date": "2026-02-28",
+            "y": 5125
+          },
+          {
+            "date": "2026-03-01",
+            "y": 5176
+          },
+          {
+            "date": "2026-03-02",
+            "y": 5236
+          },
+          {
+            "date": "2026-03-03",
+            "y": 5288
+          },
+          {
+            "date": "2026-03-04",
+            "y": 5350
+          }
+        ]
+      },
+      "history": [],
+      "campaigns": []
+    }
+  },
+  "liveHistory": [
+    {
+      "date": "2026-03-22",
+      "label": "D+3",
+      "recordedAt": "2026-03-22T15:00:00-03:00",
+      "albumTotal": 678677,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 273884,
+        "ATBLM": 200669,
+        "UN GUSTO": 31749,
+        "CALL ME": 23750,
+        "MAN OF WORD": 22919,
+        "OJOS TRISTES": 21652,
+        "HIELO": 19885,
+        "CHANGES": 19758,
+        "ALQUILER": 18508,
+        "YA NO": 16522,
+        "HAZLO CALLAO": 15226,
+        "TOP TIER": 14298
+      }
+    },
+    {
+      "date": "2026-03-23",
+      "label": "D+4",
+      "recordedAt": "2026-03-23T12:06:43-03:00",
+      "albumTotal": 704025,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 276622,
+        "ATBLM": 204181,
+        "UN GUSTO": 34953,
+        "CALL ME": 26075,
+        "MAN OF WORD": 25068,
+        "OJOS TRISTES": 23695,
+        "HIELO": 21708,
+        "CHANGES": 21535,
+        "ALQUILER": 20058,
+        "YA NO": 18126,
+        "HAZLO CALLAO": 16594,
+        "TOP TIER": 15674
+      }
+    },
+    {
+      "date": "2026-03-24",
+      "label": "D+5",
+      "recordedAt": "2026-03-24T17:29:42-03:00",
+      "albumTotal": 795837,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 285356,
+        "ATBLM": 215877,
+        "UN GUSTO": 45750,
+        "CALL ME": 34082,
+        "MAN OF WORD": 33650,
+        "OJOS TRISTES": 30407,
+        "HIELO": 28625,
+        "CHANGES": 28529,
+        "ALQUILER": 27476,
+        "YA NO": 23799,
+        "HAZLO CALLAO": 21713,
+        "TOP TIER": 20573
+      }
+    }
+  ],
+  "trackMetricsMeta": {
+    "periodLabel": "Feb 24 – Mar 23, 2026",
+    "scrapedAt": "2026-03-24T17:29:42-03:00"
+  },
+  "trackMetrics": {
+    "CUANDO ESCRIBÍA ASIMETRÍA": {
+      "streams28d": 143656,
+      "listeners": 47296,
+      "streamsPerListener": 3.037,
+      "playlistAdds": 3390,
+      "saves": 9783,
+      "prevPeriod": 142541,
+      "change": 0.8
+    },
+    "ATBLM": {
+      "streams28d": 209483,
+      "listeners": 69978,
+      "streamsPerListener": 2.994,
+      "playlistAdds": 8458,
+      "saves": 17998,
+      "prevPeriod": 192790,
+      "change": 8.7
+    },
+    "UN GUSTO": {
+      "streams28d": 39870,
+      "listeners": 20127,
+      "streamsPerListener": 1.981,
+      "playlistAdds": 2236,
+      "saves": 8771,
+      "prevPeriod": 25380,
+      "change": 57.1
+    },
+    "CALL ME": {
+      "streams28d": 29693,
+      "listeners": 11372,
+      "streamsPerListener": 2.611,
+      "playlistAdds": 1699,
+      "saves": 7891,
+      "prevPeriod": 18631,
+      "change": 59.4
+    },
+    "MAN OF WORD": {
+      "streams28d": 28879,
+      "listeners": 12725,
+      "streamsPerListener": 2.269,
+      "playlistAdds": 1502,
+      "saves": 7882,
+      "prevPeriod": 18259,
+      "change": 58.2
+    },
+    "OJOS TRISTES": {
+      "streams28d": 26753,
+      "listeners": 12113,
+      "streamsPerListener": 2.209,
+      "playlistAdds": 1589,
+      "saves": 7859,
+      "prevPeriod": 17262,
+      "change": 55.0
+    },
+    "HIELO": {
+      "streams28d": 24929,
+      "listeners": 9985,
+      "streamsPerListener": 2.497,
+      "playlistAdds": 1478,
+      "saves": 7690,
+      "prevPeriod": 15713,
+      "change": 58.7
+    },
+    "CHANGES": {
+      "streams28d": 24829,
+      "listeners": 10852,
+      "streamsPerListener": 2.288,
+      "playlistAdds": 1147,
+      "saves": 7657,
+      "prevPeriod": 15059,
+      "change": 64.9
+    },
+    "ALQUILER": {
+      "streams28d": 23913,
+      "listeners": 11605,
+      "streamsPerListener": 2.06,
+      "playlistAdds": 913,
+      "saves": 7393,
+      "prevPeriod": 14867,
+      "change": 60.8
+    },
+    "YA NO": {
+      "streams28d": 20713,
+      "listeners": 8628,
+      "streamsPerListener": 2.401,
+      "playlistAdds": 1041,
+      "saves": 7543,
+      "prevPeriod": 12929,
+      "change": 60.2
+    },
+    "HAZLO CALLAO": {
+      "streams28d": 18897,
+      "listeners": 9251,
+      "streamsPerListener": 2.043,
+      "playlistAdds": 864,
+      "saves": 7335,
+      "prevPeriod": 12154,
+      "change": 55.5
+    },
+    "TOP TIER": {
+      "streams28d": 17904,
+      "listeners": 7953,
+      "streamsPerListener": 2.251,
+      "playlistAdds": 955,
+      "saves": 7426,
+      "prevPeriod": 11308,
+      "change": 58.3
+    }
+  }
 }
