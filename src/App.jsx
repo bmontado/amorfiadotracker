@@ -143,12 +143,16 @@ const AmorFiadoDashboard = () => {
   const [showReportModal, setShowReportModal] = useState(false);
 
   // Polling: carga data.json al montar y cada 5 minutos.
-  // La scheduled task solo necesita actualizar data.json y hacer push —
-  // el siguiente ciclo del polling lo refleja automáticamente en todos los componentes.
+  // En prod fetchea public/data.json directo desde GitHub raw (siempre fresco,
+  // sin depender de que docs/ esté reconstruido). En dev usa el servidor Vite local.
+  const DATA_BASE_URL = import.meta.env.PROD
+    ? 'https://raw.githubusercontent.com/bmontado/amorfiadotracker/main/public/data.json'
+    : '/data.json';
+
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch(`/data.json?t=${Date.now()}`);
+        const res = await fetch(`${DATA_BASE_URL}?t=${Date.now()}`);
         if (res.ok) {
           const json = await res.json();
           setLiveData(json);
