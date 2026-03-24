@@ -100,29 +100,29 @@
     "6EPWuQUeAaRp61S8qG0fri": {
       "name": "AMOR FIADO",
       "type": "album",
-      "scrapedAt": "2026-03-24T11:19:58.273701-03:00",
+      "scrapedAt": "2026-03-24T17:21:41.908-03:00",
       "dayNum": 6,
       "releaseDate": "Mar 19, 2026",
       "segments": {
         "monthly": {
-          "total": 414288,
-          "listeners": 14512,
-          "pct": 3.5
+          "total": 415041,
+          "listeners": 16962,
+          "pct": 4.1
         },
         "super": {
-          "total": 33357,
-          "listeners": 9382,
-          "pct": 28.1
+          "total": 33825,
+          "listeners": 10697,
+          "pct": 31.6
         },
         "moderate": {
-          "total": 131037,
-          "listeners": 4419,
-          "pct": 3.4
+          "total": 131139,
+          "listeners": 5476,
+          "pct": 4.2
         },
         "light": {
-          "total": 249894,
-          "listeners": 1539,
-          "pct": 0.6
+          "total": 250077,
+          "listeners": 1979,
+          "pct": 0.8
         }
       },
       "streamedThisRelease": {
@@ -142,6 +142,10 @@
           {
             "date": "2026-03-22",
             "y": 14512
+          },
+          {
+            "date": "2026-03-23",
+            "y": 16962
           }
         ],
         "super": [
@@ -160,6 +164,10 @@
           {
             "date": "2026-03-22",
             "y": 9382
+          },
+          {
+            "date": "2026-03-23",
+            "y": 10697
           }
         ],
         "moderate": [
@@ -178,6 +186,10 @@
           {
             "date": "2026-03-22",
             "y": 4419
+          },
+          {
+            "date": "2026-03-23",
+            "y": 5476
           }
         ],
         "light": [
@@ -196,6 +208,10 @@
           {
             "date": "2026-03-22",
             "y": 1539
+          },
+          {
+            "date": "2026-03-23",
+            "y": 1979
           }
         ]
       },
@@ -251,6 +267,32 @@
               "pct": 0.6
             }
           }
+        },
+        {
+          "date": "2026-03-24",
+          "dayNum": 6,
+          "segments": {
+            "monthly": {
+              "total": 415041,
+              "listeners": 16962,
+              "pct": 4.1
+            },
+            "super": {
+              "total": 33825,
+              "listeners": 10697,
+              "pct": 31.6
+            },
+            "moderate": {
+              "total": 131139,
+              "listeners": 5476,
+              "pct": 4.2
+            },
+            "light": {
+              "total": 250077,
+              "listeners": 1979,
+              "pct": 0.8
+            }
+          }
         }
       ],
       "campaigns": []
@@ -258,28 +300,28 @@
     "7GqXSd7cxRcsfQV6S2cHUM": {
       "name": "ATBLM",
       "type": "single",
-      "scrapedAt": "2026-03-24T11:19:58.273701-03:00",
+      "scrapedAt": "2026-03-24T17:21:41.908-03:00",
       "dayNum": 27,
       "releaseDate": "Feb 26, 2026",
       "segments": {
         "monthly": {
-          "total": 414288,
-          "listeners": 24821,
+          "total": 415041,
+          "listeners": 25090,
           "pct": 6.0
         },
         "super": {
-          "total": 33357,
-          "listeners": 11914,
+          "total": 33825,
+          "listeners": 12081,
           "pct": 35.7
         },
         "moderate": {
-          "total": 131037,
-          "listeners": 11289,
-          "pct": 8.6
+          "total": 131139,
+          "listeners": 11419,
+          "pct": 8.7
         },
         "light": {
-          "total": 249894,
-          "listeners": 6033,
+          "total": 250077,
+          "listeners": 6119,
           "pct": 2.4
         }
       },
@@ -384,6 +426,10 @@
           {
             "date": "2026-03-22",
             "y": 24821
+          },
+          {
+            "date": "2026-03-23",
+            "y": 25090
           }
         ],
         "super": [
@@ -486,6 +532,10 @@
           {
             "date": "2026-03-22",
             "y": 11914
+          },
+          {
+            "date": "2026-03-23",
+            "y": 12081
           }
         ],
         "moderate": [
@@ -588,6 +638,10 @@
           {
             "date": "2026-03-22",
             "y": 11289
+          },
+          {
+            "date": "2026-03-23",
+            "y": 11419
           }
         ],
         "light": [
@@ -690,6 +744,10 @@
           {
             "date": "2026-03-22",
             "y": 6033
+          },
+          {
+            "date": "2026-03-23",
+            "y": 6119
           }
         ]
       },
@@ -716,6 +774,32 @@
             "light": {
               "total": 249894,
               "listeners": 6033,
+              "pct": 2.4
+            }
+          }
+        },
+        {
+          "date": "2026-03-24",
+          "dayNum": 27,
+          "segments": {
+            "monthly": {
+              "total": 415041,
+              "listeners": 25090,
+              "pct": 6.0
+            },
+            "super": {
+              "total": 33825,
+              "listeners": 12081,
+              "pct": 35.7
+            },
+            "moderate": {
+              "total": 131139,
+              "listeners": 11419,
+              "pct": 8.7
+            },
+            "light": {
+              "total": 250077,
+              "listeners": 6119,
               "pct": 2.4
             }
           }
