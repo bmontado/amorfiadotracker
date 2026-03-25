@@ -2671,6 +2671,120 @@ const AmorFiadoDashboard = () => {
               })()}
             </div>
 
+            {/* ── Kioscos vs Canal Oficial ── */}
+            {(() => {
+              const kiosko  = socialPosts.filter(p => p.account === '@zeballosrap' || p.type === 'kiosko');
+              const oficial = socialPosts.filter(p => p.account !== '@zeballosrap' && p.type !== 'kiosko');
+              if (kiosko.length === 0) return null;
+
+              const stats = (posts) => {
+                const totalViews = posts.reduce((s, p) => s + p.views, 0);
+                const totalLikes = posts.reduce((s, p) => s + p.likes, 0);
+                const totalSaves = posts.reduce((s, p) => s + p.saves, 0);
+                const withViews  = posts.filter(p => p.views > 0);
+                const avgViews   = withViews.length ? Math.round(totalViews / withViews.length) : 0;
+                const engRate    = totalViews > 0 ? (totalLikes / totalViews * 100).toFixed(1) : '0';
+                const saveRate   = totalViews > 0 ? (totalSaves / totalViews * 100).toFixed(2) : '0';
+                const best       = [...posts].sort((a, b) => b.views - a.views)[0];
+                // Track más mencionado
+                const trackCount = {};
+                posts.forEach(p => { if (p.track) trackCount[p.track] = (trackCount[p.track] || 0) + 1; });
+                const topTrack = Object.entries(trackCount).sort((a, b) => b[1] - a[1])[0];
+                return { count: posts.length, totalViews, avgViews, engRate, saveRate, best, topTrack };
+              };
+
+              const k = stats(kiosko);
+              const o = stats(oficial);
+              const avgViewsWinner = k.avgViews > o.avgViews ? 'kiosko' : 'oficial';
+              const engWinner      = parseFloat(k.engRate) > parseFloat(o.engRate) ? 'kiosko' : 'oficial';
+              const saveWinner     = parseFloat(k.saveRate) > parseFloat(o.saveRate) ? 'kiosko' : 'oficial';
+
+              const col = (winner, side) => winner === side ? '#4ade80' : '#64748b';
+
+              return (
+                <div style={{ marginTop: '1.5rem', background: 'linear-gradient(135deg, rgba(34,211,238,0.06), rgba(30,41,59,0.55))', borderRadius: '12px', padding: '1.25rem 1.5rem', border: '1px solid rgba(34,211,238,0.18)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.1rem' }}>
+                    <h3 style={{ color: '#22d3ee', fontSize: '1rem', fontWeight: 700, margin: 0 }}>Kioscos vs Canal Oficial</h3>
+                    <span style={{ color: '#475569', fontSize: '0.72rem' }}>@zeballosrap · {k.count} posts vs {o.count} posts del canal principal</span>
+                  </div>
+
+                  {/* Tabla comparativa */}
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid rgba(51,65,85,0.6)' }}>
+                          <th style={{ textAlign: 'left',  padding: '0.5rem 0.75rem', color: '#475569', fontWeight: 600, fontSize: '0.72rem' }}>Métrica</th>
+                          <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#fb923c', fontWeight: 700, fontSize: '0.75rem' }}>Kioscos · @zeballosrap</th>
+                          <th style={{ textAlign: 'right', padding: '0.5rem 0.75rem', color: '#a78bfa', fontWeight: 700, fontSize: '0.75rem' }}>Canal Oficial</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          { label: 'Posts',           k: k.count,                o: o.count,                format: v => v,                         win: k.count > o.count ? 'kiosko' : 'oficial' },
+                          { label: 'Views totales',   k: k.totalViews,           o: o.totalViews,           format: formatNumber,                   win: k.totalViews > o.totalViews ? 'kiosko' : 'oficial' },
+                          { label: 'Views / post',    k: k.avgViews,             o: o.avgViews,             format: formatNumber,                   win: avgViewsWinner },
+                          { label: 'Engagement rate', k: k.engRate + '%',        o: o.engRate + '%',        format: v => v,                         win: engWinner },
+                          { label: 'Save rate (TK)',  k: k.saveRate + '%',       o: o.saveRate + '%',       format: v => v,                         win: saveWinner },
+                          { label: 'Track ppal',      k: k.topTrack?.[0] ?? '—', o: o.topTrack?.[0] ?? '—', format: v => v,                        win: null },
+                        ].map((row, i) => (
+                          <tr key={i} style={{ borderBottom: '1px solid rgba(51,65,85,0.25)', background: i % 2 === 0 ? 'rgba(15,23,42,0.2)' : 'transparent' }}>
+                            <td style={{ padding: '0.55rem 0.75rem', color: '#94a3b8', fontSize: '0.78rem' }}>{row.label}</td>
+                            <td style={{ padding: '0.55rem 0.75rem', textAlign: 'right', fontWeight: 600, color: row.win ? col(row.win, 'kiosko') : '#94a3b8', fontSize: '0.82rem' }}>
+                              {row.win === 'kiosko' && <span style={{ marginRight: '0.3rem', fontSize: '0.65rem' }}>▲</span>}
+                              {row.format(row.k)}
+                            </td>
+                            <td style={{ padding: '0.55rem 0.75rem', textAlign: 'right', fontWeight: 600, color: row.win ? col(row.win, 'oficial') : '#94a3b8', fontSize: '0.82rem' }}>
+                              {row.win === 'oficial' && <span style={{ marginRight: '0.3rem', fontSize: '0.65rem' }}>▲</span>}
+                              {row.format(row.o)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mejor post de cada canal */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '1rem' }}>
+                    {[{ label: 'Mejor post Kiosco', data: k.best, color: '#fb923c' }, { label: 'Mejor post Oficial', data: o.best, color: '#a78bfa' }].map(({ label, data, color }) => data ? (
+                      <div key={label} style={{ background: 'rgba(15,23,42,0.45)', borderRadius: '8px', padding: '0.75rem 0.9rem', border: `1px solid ${color}25` }}>
+                        <p style={{ color, fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 0.35rem' }}>{label}</p>
+                        <p style={{ color: '#e2e8f0', fontSize: '0.8rem', fontWeight: 600, margin: '0 0 0.25rem', lineHeight: 1.3 }}>{data.caption?.length > 55 ? data.caption.slice(0, 53) + '…' : data.caption}</p>
+                        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                          <span style={{ color: '#38bdf8', fontSize: '0.75rem' }}>{formatNumber(data.views)} views</span>
+                          <span style={{ color: '#e879f9', fontSize: '0.75rem' }}>{(data.likes / data.views * 100).toFixed(1)}% eng</span>
+                          {data.saves > 0 && <span style={{ color: '#a78bfa', fontSize: '0.75rem' }}>{formatNumber(data.saves)} saves</span>}
+                          <span style={{ color: '#64748b', fontSize: '0.72rem' }}>{data.date}</span>
+                        </div>
+                      </div>
+                    ) : null)}
+                  </div>
+
+                  {/* Insight automático */}
+                  {(() => {
+                    const lines = [];
+                    if (avgViewsWinner === 'kiosko')
+                      lines.push(`Los Kioscos promedian ${formatNumber(k.avgViews)} views/post vs ${formatNumber(o.avgViews)} del canal oficial — el contenido orgánico tiene mayor alcance promedio.`);
+                    else
+                      lines.push(`El canal oficial promedia ${formatNumber(o.avgViews)} views/post vs ${formatNumber(k.avgViews)} de los Kioscos. El alcance de las cuentas principales es mayor.`);
+                    if (parseFloat(k.engRate) > parseFloat(o.engRate))
+                      lines.push(`Engagement rate ${k.engRate}% (Kioscos) vs ${o.engRate}% (oficial) — la audiencia interactúa más con el contenido de @zeballosrap.`);
+                    if (parseFloat(k.saveRate) > parseFloat(o.saveRate))
+                      lines.push(`Save rate ${k.saveRate}% vs ${o.saveRate}% — los videos de Kioscos generan más intención de playlist que el canal oficial.`);
+                    return lines.length > 0 ? (
+                      <div style={{ marginTop: '0.85rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        {lines.map((l, i) => (
+                          <div key={i} style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+                            <span style={{ color: '#22d3ee', fontSize: '0.75rem', flexShrink: 0, paddingTop: '3px' }}>◆</span>
+                            <p style={{ color: '#94a3b8', fontSize: '0.8rem', margin: 0, lineHeight: 1.5 }}>{l}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null;
+                  })()}
+                </div>
+              );
+            })()}
+
             {/* Methodology — colapsada */}
             <div style={{ borderRadius: '8px', border: '1px solid rgba(51,65,85,0.35)', overflow: 'hidden' }}>
               <button onClick={() => setSocialMethodOpen(o => !o)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 1rem', background: 'rgba(15,23,42,0.3)', border: 'none', cursor: 'pointer', color: '#475569', fontSize: '0.75rem', fontWeight: 500 }}>
@@ -2679,8 +2793,8 @@ const AmorFiadoDashboard = () => {
               </button>
               {socialMethodOpen && (
                 <div style={{ padding: '0.85rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.78rem', color: '#64748b', background: 'rgba(15,23,42,0.2)', borderTop: '1px solid rgba(51,65,85,0.25)' }}>
-                  <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Instagram:</strong> @zeballos17 — 8 reels (Feb 2 – Mar 21). Views y likes desde perfil público.</p>
-                  <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>TikTok:</strong> @zeballos1717 — 15 videos (Ene 28 – Mar 22). Eng. rate ~12% vs ~5% en IG.</p>
+                  <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Instagram:</strong> @zeballos17 (oficial) + @asimetria17 (contenido). Views y likes desde perfil público.</p>
+                  <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>TikTok:</strong> @zeballos1717 (oficial) + @zeballosrap (kiosco). Eng. rate ~12% vs ~5% en IG.</p>
                   <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Engagement Rate:</strong> Likes / Views × 100.</p>
                   <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Δ Streams:</strong> Streams del track mencionado en el post ese día vs. el día anterior (correlación, no causalidad).</p>
                   <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Atribución:</strong> Por track mencionado, audio usado o taggeado (#amorfiado).</p>
