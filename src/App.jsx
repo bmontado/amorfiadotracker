@@ -201,38 +201,9 @@ const AmorFiadoDashboard = () => {
   const trackMetricsMeta = liveData.trackMetricsMeta ?? DEFAULT_LIVE_DATA.trackMetricsMeta;
   const campaignContext  = liveData.campaignContext  ?? null;
 
-  // Social posts related to Amor Fiado campaign — scraped from @zeballos17 (IG) and @zeballos1717 (TikTok)
-  // Each post has a unique URL used for dedup by the scheduled scraper
-  const socialPosts = [
-    // === Instagram (@zeballos17) ===
-    { date: '2026-02-02', url: '/reel/DURexnHjuy4/', caption: 'CEA teaser con Juan Minujín — Estreno jueves 5/2', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'teaser', views: 406000, likes: 17000, saves: 0, platform: 'instagram' },
-    { date: '2026-02-06', url: '/reel/DUa9-8bjgmB/', caption: 'CUANDO ESCRIBÍA ASIMETRÍA — Ya disponible', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'release', views: 133000, likes: 6497, saves: 0, platform: 'instagram' },
-    { date: '2026-02-12', url: '/reel/DUrNhIvDmv2/', caption: 'AMOR FIADO promo (audio: CEA)', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'promo', views: 108000, likes: 5609, saves: 0, platform: 'instagram' },
-    { date: '2026-02-28', url: '/reel/DVUSGuKjviG/', caption: 'ATBLM — Segundo adelanto de Amor Fiado', track: 'ATBLM', type: 'release', views: 166000, likes: 9381, saves: 0, platform: 'instagram' },
-    { date: '2026-03-10', url: '/reel/DVuLW64Dssw/', caption: 'Nueve días para AMOR FIADO (audio: CEA)', track: 'AMOR FIADO', type: 'promo', views: 116000, likes: 6556, saves: 0, platform: 'instagram' },
-    { date: '2026-03-19', url: '/reel/DWEezrPjpH9/', caption: 'Gracias Buenos Aires, estrenamos AMOR FIADO', track: 'AMOR FIADO', type: 'launch', views: 89000, likes: 4902, saves: 0, platform: 'instagram' },
-    { date: '2026-03-20', url: '/reel/DWFzDpbjpuS/', caption: 'AMOR FIADO YA DISPONIBLE en todas las plataformas', track: 'AMOR FIADO', type: 'launch', views: 95100, likes: 5679, saves: 0, platform: 'instagram' },
-    { date: '2026-03-21', url: '/reel/DWJqPCdjqMF/', caption: 'UN GUSTO ft @mesita — Videoclip', track: 'UN GUSTO', type: 'release', views: 118000, likes: 7703, saves: 0, platform: 'instagram' },
-    // === TikTok (@zeballos1717) ===
-    { date: '2026-01-28', url: '/video/7600558176781520149', caption: '05.02 @asimetria17 — Teaser fecha CEA', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'teaser', views: 11800, likes: 948, saves: 40, platform: 'tiktok' },
-    { date: '2026-01-30', url: '/video/7601302776626384149', caption: 'Se viene @asimetria17', track: 'AMOR FIADO', type: 'teaser', views: 59800, likes: 8118, saves: 251, platform: 'tiktok' },
-    { date: '2026-02-04', url: '/video/7603157705921957141', caption: 'Es mañana mi gente @asimetria17 — CEA eve', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'teaser', views: 29400, likes: 4589, saves: 115, platform: 'tiktok' },
-    { date: '2026-02-06', url: '/video/7603879276328373525', caption: 'Sigo haciendo temas de lo que me gusta — CEA lyrics', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'release', views: 43900, likes: 5915, saves: 267, platform: 'tiktok' },
-    { date: '2026-02-12', url: '/video/7606141408382160149', caption: 'Pero afuera nada invita a ir #amorfiado — CEA promo', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'promo', views: 77200, likes: 11000, saves: 713, platform: 'tiktok' },
-    { date: '2026-02-19', url: '/video/7608593812587416852', caption: 'ATBLM snippet — viral', track: 'ATBLM', type: 'teaser', views: 183900, likes: 25800, saves: 2782, platform: 'tiktok' },
-    { date: '2026-02-21', url: '/video/7609155471529856276', caption: 'ATBLM snippet 2', track: 'ATBLM', type: 'teaser', views: 134500, likes: 23100, saves: 1422, platform: 'tiktok' },
-    { date: '2026-02-21', url: '/video/7609510867570576661', caption: 'ATBLM snippet — pool vibes', track: 'ATBLM', type: 'teaser', views: 63700, likes: 10700, saves: 508, platform: 'tiktok' },
-    { date: '2026-02-25', url: '/video/7610835979628203284', caption: 'ATBLM 26/02 Es mañana dalee', track: 'ATBLM', type: 'teaser', views: 43200, likes: 7366, saves: 209, platform: 'tiktok' },
-    { date: '2026-02-26', url: '/video/7611317540157017364', caption: 'ATBLM YA DISPONIBLE @asimetria17', track: 'ATBLM', type: 'release', views: 37600, likes: 5552, saves: 297, platform: 'tiktok' },
-    { date: '2026-02-28', url: '/video/7612070065856433428', caption: 'Segundo adelanto de AMOR FIADO — ATBLM video', track: 'ATBLM', type: 'release', views: 101700, likes: 15300, saves: 1059, platform: 'tiktok' },
-    { date: '2026-03-10', url: '/video/7615777036631657749', caption: 'MENOS DE 9 DÍAS PARA AMOR FIADO @asimetria17', track: 'AMOR FIADO', type: 'promo', views: 16400, likes: 2665, saves: 123, platform: 'tiktok' },
-    { date: '2026-03-14', url: '/video/7617125475596455189', caption: '5 días para AMOR FIADO', track: 'AMOR FIADO', type: 'promo', views: 24300, likes: 3670, saves: 73, platform: 'tiktok' },
-    { date: '2026-03-21', url: '/video/7619728786610785556', caption: 'UN GUSTO ft @Mesa Tra', track: 'UN GUSTO', type: 'release', views: 18600, likes: 2445, saves: 120, platform: 'tiktok' },
-    { date: '2026-03-22', url: '/video/7620071012536749333', caption: 'Ya escucharon ojos tristes ft @Rei?', track: 'OJOS TRISTES', type: 'promo', views: 9128, likes: 1013, saves: 24, platform: 'tiktok' },
-    { date: '2026-03-23', url: '/video/7620486613327531285', caption: 'UN GUSTO MAMI', track: 'UN GUSTO', type: 'promo', views: 18800, likes: 3808, saves: 150, platform: 'tiktok' },
-    { date: '2026-03-25', url: '/video/7620959928739548437', caption: 'A ti te gusta el estrés, a mi quitartelo', track: 'UN GUSTO', type: 'promo', views: 8537, likes: 2115, saves: 88, platform: 'tiktok' },
-    { date: '2026-03-25', url: '/video/7621199321404411157', caption: 'La prensa es mala bb a mi me avala el corte #amorfiado', track: 'AMOR FIADO', type: 'promo', views: 4865, likes: 1001, saves: 24, platform: 'tiktok' },
-  ];
+  // Social posts — live desde liveData.socialPosts (actualizado por amor-fiado-social-scraper)
+  // Incluye: @zeballos17 (IG), @asimetria17 (IG), @zeballos1717 (TK), @zeballosrap/kiosco (TK)
+  const socialPosts = liveData.socialPosts?.length > 0 ? liveData.socialPosts : [];
 
   // Derived from dailyLog — no editar manualmente
   const mar21Verified = dailyLog.find(d => d.date === '2026-03-21')?.tracks ?? {};
@@ -2206,8 +2177,8 @@ const AmorFiadoDashboard = () => {
         }));
 
         // Type & platform colors
-        const typeColors = { teaser: '#a78bfa', release: '#4ade80', promo: '#38bdf8', launch: '#f97316' };
-        const typeLabels = { teaser: 'Teaser', release: 'Lanzamiento', promo: 'Promo', launch: 'Lanzamiento Álbum' };
+        const typeColors = { teaser: '#a78bfa', release: '#4ade80', promo: '#38bdf8', launch: '#f97316', kiosko: '#fb923c' };
+        const typeLabels = { teaser: 'Teaser', release: 'Lanzamiento', promo: 'Promo', launch: 'Lanzamiento Álbum', kiosko: 'Kiosco' };
         const platColors = { instagram: '#e879f9', tiktok: '#22d3ee' };
 
         return (
@@ -2555,7 +2526,7 @@ const AmorFiadoDashboard = () => {
                 });
                 const typeArr = Object.values(byTypePlat).map(v => ({ ...v, avgViews: Math.round(v.views / v.posts), engRate: (v.likes / v.views * 100).toFixed(1) })).sort((a, b) => b.avgViews - a.avgViews);
                 const bestFormat = typeArr[0];
-                const typeLabelsLocal = { teaser: 'Teaser', release: 'Lanzamiento', promo: 'Promo', launch: 'Álbum launch' };
+                const typeLabelsLocal = { teaser: 'Teaser', release: 'Lanzamiento', promo: 'Promo', launch: 'Álbum launch', kiosko: 'Kiosco' };
                 const platLabel = { instagram: 'Instagram', tiktok: 'TikTok' };
                 // Platform averages
                 const igAvgViews = Math.round(igViews / igPosts.length);
