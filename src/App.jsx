@@ -123,6 +123,22 @@ const DEFAULT_LIVE_DATA = {
     'HAZLO CALLAO':  { streams28d: 12154,  listeners: 6927,  streamsPerListener: 1.755, playlistAdds: 864,  saves: 6742,  prevPeriod: null, change: null },
     'TOP TIER':      { streams28d: 11308,  listeners: 6043,  streamsPerListener: 1.871, playlistAdds: 955,  saves: 6819,  prevPeriod: null, change: null },
   },
+  // Fallback posts — se sobreescriben con liveData.socialPosts al primer poll exitoso
+  socialPosts: [
+    { date: '2026-02-02', url: 'https://www.instagram.com/reel/DURexnHjuy4/', caption: 'CEA teaser con Juan Minujín', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'teaser', views: 406000, likes: 17000, saves: 0, platform: 'instagram', account: '@zeballos17' },
+    { date: '2026-02-06', url: 'https://www.instagram.com/reel/DUa9-8bjgmB/', caption: 'CUANDO ESCRIBÍA ASIMETRÍA — Ya disponible', track: 'CUANDO ESCRIBÍA ASIMETRÍA', type: 'release', views: 133000, likes: 6508, saves: 0, platform: 'instagram', account: '@zeballos17' },
+    { date: '2026-02-28', url: 'https://www.instagram.com/reel/DVUSGuKjviG/', caption: 'ATBLM — Segundo adelanto de Amor Fiado', track: 'ATBLM', type: 'release', views: 169000, likes: 9381, saves: 0, platform: 'instagram', account: '@zeballos17' },
+    { date: '2026-03-10', url: 'https://www.instagram.com/reel/DVuLW64Dssw/', caption: 'Nueve días para AMOR FIADO', track: 'AMOR FIADO', type: 'promo', views: 118000, likes: 6556, saves: 0, platform: 'instagram', account: '@zeballos17' },
+    { date: '2026-03-19', url: 'https://www.instagram.com/reel/DWEezrPjpH9/', caption: 'Gracias Buenos Aires, estrenamos AMOR FIADO', track: 'AMOR FIADO', type: 'launch', views: 92300, likes: 4902, saves: 0, platform: 'instagram', account: '@zeballos17' },
+    { date: '2026-03-20', url: 'https://www.instagram.com/reel/DWFzDpbjpuS/', caption: 'AMOR FIADO YA DISPONIBLE', track: 'AMOR FIADO', type: 'launch', views: 98900, likes: 5679, saves: 0, platform: 'instagram', account: '@zeballos17' },
+    { date: '2026-03-21', url: 'https://www.instagram.com/reel/DWJqPCdjqMF/', caption: 'UN GUSTO ft @mesita — Videoclip', track: 'UN GUSTO', type: 'release', views: 137000, likes: 7703, saves: 0, platform: 'instagram', account: '@zeballos17' },
+    { date: '2026-02-19', url: 'https://www.tiktok.com/@zeballos1717/video/7608593812587416852', caption: 'ATBLM snippet — viral', track: 'ATBLM', type: 'teaser', views: 183900, likes: 25800, saves: 2782, platform: 'tiktok', account: '@zeballos1717' },
+    { date: '2026-02-26', url: 'https://www.tiktok.com/@zeballos1717/video/7611317540157017364', caption: 'ATBLM YA DISPONIBLE @asimetria17', track: 'ATBLM', type: 'release', views: 37600, likes: 5552, saves: 297, platform: 'tiktok', account: '@zeballos1717' },
+    { date: '2026-02-28', url: 'https://www.tiktok.com/@zeballos1717/video/7612070065856433428', caption: 'Segundo adelanto de AMOR FIADO — ATBLM video', track: 'ATBLM', type: 'release', views: 101700, likes: 15300, saves: 1059, platform: 'tiktok', account: '@zeballos1717' },
+    { date: '2026-03-19', url: 'https://www.tiktok.com/@zeballos1717/video/7619360399018220821', caption: 'AMOR FIADO ya disponible', track: 'AMOR FIADO', type: 'launch', views: 57000, likes: 7800, saves: 420, platform: 'tiktok', account: '@zeballos1717' },
+    { date: '2026-03-21', url: 'https://www.tiktok.com/@zeballos1717/video/7619728786610785556', caption: 'UN GUSTO ft @Mesa Tra', track: 'UN GUSTO', type: 'release', views: 18600, likes: 2445, saves: 120, platform: 'tiktok', account: '@zeballos1717' },
+    { date: '2026-03-23', url: 'https://www.tiktok.com/@zeballos1717/video/7620486613327531285', caption: 'UN GUSTO MAMI', track: 'UN GUSTO', type: 'promo', views: 18800, likes: 3808, saves: 150, platform: 'tiktok', account: '@zeballos1717' },
+  ],
 };
 
 const AmorFiadoDashboard = () => {
@@ -203,7 +219,10 @@ const AmorFiadoDashboard = () => {
 
   // Social posts — live desde liveData.socialPosts (actualizado por amor-fiado-social-scraper)
   // Incluye: @zeballos17 (IG), @asimetria17 (IG), @zeballos1717 (TK), @zeballosrap/kiosco (TK)
-  const socialPosts = liveData.socialPosts?.length > 0 ? liveData.socialPosts : [];
+  // Fallback a DEFAULT_LIVE_DATA.socialPosts si data.json aún no tiene el campo (CDN cache lag)
+  const socialPosts = liveData.socialPosts?.length > 0
+    ? liveData.socialPosts
+    : DEFAULT_LIVE_DATA.socialPosts;
 
   // Derived from dailyLog — no editar manualmente
   const mar21Verified = dailyLog.find(d => d.date === '2026-03-21')?.tracks ?? {};
