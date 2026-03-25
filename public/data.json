@@ -1479,5 +1479,186 @@
       "prevPeriod": 17904,
       "change": 18.5
     }
+  },
+  "campaignContext": {
+    "source": "DPR MKT follow-up + Estrategia Álbum 2026",
+    "updatedAt": "2026-03-24",
+    "currentPhase": {
+      "phase": 2,
+      "name": "Awareness + Conversión",
+      "period": "Marzo 2026",
+      "status": "active"
+    },
+    "nextPhase": {
+      "phase": 3,
+      "name": "Expansión + Mantenimiento",
+      "period": "Abril 2026",
+      "keyMilestones": [
+        "Estreno vlog completo",
+        "Anuncio oficial Amor Fiado Tour (URU / ARG / ESP / MEX)"
+      ]
+    },
+    "focusTrack": "MAN OF WORD",
+    "featContext": [
+      "REI",
+      "DUKI"
+    ],
+    "accionesPendientes": [
+      {
+        "id": 1,
+        "accion": "Influencers explainers",
+        "status": "pendiente"
+      },
+      {
+        "id": 2,
+        "accion": "Contenido Spotify con Juan Minujín",
+        "status": "pendiente"
+      },
+      {
+        "id": 3,
+        "accion": "Streaming con Coker",
+        "status": "pendiente"
+      },
+      {
+        "id": 4,
+        "accion": "Entrevista Tapados de Laburo",
+        "status": "pendiente"
+      },
+      {
+        "id": 6,
+        "accion": "Marquee + Showcase Amor Fiado",
+        "status": "pendiente"
+      },
+      {
+        "id": 7,
+        "accion": "OOH + circuito digital",
+        "status": "pendiente"
+      }
+    ],
+    "mediaWishList": {
+      "argLatam": [
+        "Hispa",
+        "Archivo 909",
+        "Rolling Stone ARG",
+        "Billboard ARG",
+        "Urbana Play FM",
+        "Antezana 247",
+        "Spotify ARG",
+        "La Curva de la Moda",
+        "Le Bananas",
+        "Hype Beast LATAM"
+      ],
+      "spain": [
+        "GQ Spain",
+        "Highxtar",
+        "Fleek Mag",
+        "Grindin Radio",
+        "Binary Spain",
+        "Tag Mag",
+        "Letra Rap",
+        "Neo2 Magazine",
+        "Grimey TV",
+        "Urban Roosters"
+      ]
+    },
+    "streamingWishList": [
+      "Marcos Giles",
+      "Fran Gomez",
+      "El Mortedor",
+      "Goncho",
+      "La Cobra",
+      "Spreen",
+      "Music Radar Clan"
+    ],
+    "amplificadores": {
+      "feats": [
+        "Mesita",
+        "La Sole",
+        "NOG",
+        "REI",
+        "DUKI"
+      ],
+      "influencers": [
+        "Juan Minujín",
+        "Christian Rich",
+        "Delfina Pignatello",
+        "Pauli Echeverria",
+        "Sofi Sica",
+        "Kristel Latecki",
+        "Belén Fourment",
+        "Humphrey Inzillo",
+        "Manuel Buscalia"
+      ]
+    },
+    "brandPartnerships": [
+      "Adidas",
+      "Red Bull",
+      "Jack Daniels",
+      "Converse",
+      "Carhartt Spain",
+      "Vicio",
+      "Pull & Bear"
+    ],
+    "spainTour2026": [
+      {
+        "city": "Bilbao",
+        "venue": "Santana Blue",
+        "date": "2026-11-07"
+      },
+      {
+        "city": "Madrid",
+        "venue": "Uni",
+        "date": "2026-11-12"
+      },
+      {
+        "city": "Barcelona",
+        "venue": "Wolf",
+        "date": "2026-11-13"
+      },
+      {
+        "city": "Sevilla",
+        "venue": "La2",
+        "date": "2026-11-14"
+      },
+      {
+        "city": "Valencia",
+        "venue": "Jerusalem",
+        "date": "2026-11-19"
+      }
+    ],
+    "keyTimelineEvents": [
+      {
+        "date": "2026-02-26",
+        "event": "Estreno ATBLM"
+      },
+      {
+        "date": "2026-03-02",
+        "event": "Anuncio escuchas"
+      },
+      {
+        "date": "2026-03-05",
+        "event": "Countdown Spotify"
+      },
+      {
+        "date": "2026-03-16",
+        "event": "Pop-up INBOX"
+      },
+      {
+        "date": "2026-03-18",
+        "event": "Escucha CABA"
+      },
+      {
+        "date": "2026-03-19",
+        "event": "Escucha + lanzamiento MVD"
+      },
+      {
+        "date": "2026-03-22",
+        "event": "Teaser vlog"
+      },
+      {
+        "date": "2026-03-24",
+        "event": "Primer episodio vlog"
+      }
+    ]
   }
 }

@@ -199,6 +199,7 @@ const AmorFiadoDashboard = () => {
   // 28-day period metrics per track — pulled from data.json (updated by amor-fiado-scraper)
   const trackMetrics     = liveData.trackMetrics     ?? DEFAULT_LIVE_DATA.trackMetrics;
   const trackMetricsMeta = liveData.trackMetricsMeta ?? DEFAULT_LIVE_DATA.trackMetricsMeta;
+  const campaignContext  = liveData.campaignContext  ?? null;
 
   // Social posts related to Amor Fiado campaign — scraped from @zeballos17 (IG) and @zeballos1717 (TikTok)
   // Each post has a unique URL used for dedup by the scheduled scraper
@@ -717,7 +718,72 @@ const AmorFiadoDashboard = () => {
             );
           })()}
 
-          {/* ── 5. Alcance Social por Track ── */}
+          {/* ── 5. Acciones de Campaña (contexto estratégico de los PDFs) ── */}
+          {campaignContext && (
+            <div style={{ background: 'linear-gradient(135deg, rgba(251,191,36,0.07), rgba(30,41,59,0.6))', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(251,191,36,0.2)', marginBottom: '1.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                <h2 style={{ color: '#fbbf24', fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>Acciones de Campaña</h2>
+                <span style={{ background: 'rgba(251,191,36,0.12)', color: '#fbbf24', fontSize: '0.65rem', fontWeight: 700, padding: '0.15rem 0.55rem', borderRadius: '9999px', letterSpacing: '0.08em' }}>
+                  FASE {campaignContext.currentPhase.phase} · {campaignContext.currentPhase.period.toUpperCase()}
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0.85rem' }}>
+                {/* Acciones pendientes */}
+                <div style={{ background: 'rgba(15,23,42,0.5)', borderRadius: '10px', padding: '1rem', border: '1px solid rgba(251,191,36,0.15)' }}>
+                  <p style={{ color: '#94a3b8', fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 0.75rem' }}>Pendientes DPR</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {campaignContext.accionesPendientes.map(a => (
+                      <div key={a.id} style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
+                        <span style={{ color: '#fbbf24', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0, paddingTop: '2px' }}>{a.id}.</span>
+                        <span style={{ color: '#cbd5e1', fontSize: '0.82rem', lineHeight: 1.4 }}>{a.accion}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Siguiente fase */}
+                <div style={{ background: 'rgba(15,23,42,0.5)', borderRadius: '10px', padding: '1rem', border: '1px solid rgba(74,222,128,0.15)' }}>
+                  <p style={{ color: '#94a3b8', fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 0.75rem' }}>
+                    → Fase {campaignContext.nextPhase.phase}: {campaignContext.nextPhase.period}
+                  </p>
+                  <p style={{ color: '#4ade80', fontSize: '0.85rem', fontWeight: 600, margin: '0 0 0.5rem' }}>{campaignContext.nextPhase.name}</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    {campaignContext.nextPhase.keyMilestones.map((m, i) => (
+                      <div key={i} style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+                        <span style={{ color: '#4ade80', fontSize: '0.75rem', flexShrink: 0, paddingTop: '2px' }}>◆</span>
+                        <span style={{ color: '#cbd5e1', fontSize: '0.82rem', lineHeight: 1.4 }}>{m}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {campaignContext.spainTour2026?.length > 0 && (
+                    <div style={{ marginTop: '0.85rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(51,65,85,0.5)' }}>
+                      <p style={{ color: '#94a3b8', fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 0.5rem' }}>Tour España Nov 2026</p>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                        {campaignContext.spainTour2026.map(t => (
+                          <span key={t.city} style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.25)', color: '#86efac', fontSize: '0.72rem', padding: '0.2rem 0.55rem', borderRadius: '6px' }}>
+                            {t.city} · {new Date(t.date).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Media wish list + Streaming */}
+                <div style={{ background: 'rgba(15,23,42,0.5)', borderRadius: '10px', padding: '1rem', border: '1px solid rgba(167,139,250,0.15)' }}>
+                  <p style={{ color: '#94a3b8', fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 0.6rem' }}>Media Wish List</p>
+                  <p style={{ color: '#a78bfa', fontSize: '0.72rem', fontWeight: 600, margin: '0 0 0.35rem' }}>ARG / LATAM</p>
+                  <p style={{ color: '#94a3b8', fontSize: '0.78rem', lineHeight: 1.5, margin: '0 0 0.75rem' }}>{campaignContext.mediaWishList.argLatam.join(' · ')}</p>
+                  <p style={{ color: '#a78bfa', fontSize: '0.72rem', fontWeight: 600, margin: '0 0 0.35rem' }}>España</p>
+                  <p style={{ color: '#94a3b8', fontSize: '0.78rem', lineHeight: 1.5, margin: '0 0 0.75rem' }}>{campaignContext.mediaWishList.spain.join(' · ')}</p>
+                  <p style={{ color: '#94a3b8', fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0.5rem 0 0.35rem', paddingTop: '0.5rem', borderTop: '1px solid rgba(51,65,85,0.5)' }}>Streaming Wish List</p>
+                  <p style={{ color: '#94a3b8', fontSize: '0.78rem', lineHeight: 1.5, margin: 0 }}>{campaignContext.streamingWishList.join(' · ')}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── 6. Alcance Social por Track ── */}
           <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)' }}>
             <h2 style={{ color: '#a78bfa', fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.4rem' }}>Alcance Social por Track</h2>
             <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem' }}>Posts de la campaña atribuidos por track — IG + TikTok combinados</p>
@@ -1209,11 +1275,14 @@ const AmorFiadoDashboard = () => {
               const last = dailyHistory[dailyHistory.length - 1];
               const overallAvg = last ? Math.round(last.albumTotal / dailyHistory.length) : 0;
               const decay21vs20 = d20Streams > 0 ? ((d21Streams / d20Streams - 1) * 100).toFixed(1) : null;
+              const marqueeAction = campaignContext?.accionesPendientes?.find(a => a.accion.toLowerCase().includes('marquee'));
+              const streamers = campaignContext?.streamingWishList?.slice(0, 4).join(', ');
               const insights = [
                 launchMultiplier ? { dot: '#38bdf8', text: `Antes del álbum, el catálogo promedió ${formatNumber(preAvgDaily)} streams/día (CEA + ATBLM). El lanzamiento multiplicó ese volumen por ${launchMultiplier}x en el primer día completo (D20: ${formatNumber(d20Streams)}).` } : null,
                 decay21vs20 ? { dot: parseFloat(decay21vs20) > -60 ? '#fbbf24' : '#f87171', text: `D20 → D21: el álbum pasó de ${formatNumber(d20Streams)} a ${formatNumber(d21Streams)} streams diarios (${parseFloat(decay21vs20) >= 0 ? '+' : ''}${decay21vs20}%). ${parseFloat(decay21vs20) > -50 ? 'Retención saludable para el segundo día.' : 'Caída pronunciada — patrón normal en lanzamientos nuevos.'}` } : null,
                 spikes.length > 0 ? { dot: '#4ade80', text: `Spike${spikes.length > 1 ? 's' : ''} detectado${spikes.length > 1 ? 's' : ''} (>1.5× el día anterior): ${spikes.slice(0, 3).map(s => `${s.label} (×${s.ratio}, +${formatNumber(s.streams)})`).join(' · ')}. Pueden indicar playlist adds, notas de prensa o impacto viral.` } : { dot: '#64748b', text: 'No se detectaron spikes de crecimiento aún — se necesitan más días de datos para detectar anomalías post-lanzamiento.' },
                 { dot: '#a78bfa', text: `El álbum acumula ${formatNumber(last?.albumTotal || 0)} streams en ${dailyHistory.length} días de datos. Promedio diario general: ${formatNumber(overallAvg)} streams/día. A medida que se agreguen días post-lanzamiento, se podrá trazar la curva de deceleración real.` },
+                marqueeAction ? { dot: '#fbbf24', text: `Acción pendiente: "${marqueeAction.accion}" — el Marquee/Showcase de Spotify puede generar un spike medible en los próximos snapshots.${streamers ? ` Además, activar streamers del wish list (${streamers}…) es otra palanca de volumen inmediato.` : ''}` } : null,
               ].filter(Boolean);
               return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
