@@ -1,22 +1,22 @@
 {
   "lastUpdated": {
-    "spotify": "2026-03-24T17:29:42-03:00",
+    "spotify": "2026-03-25T16:30:00-03:00",
     "social": "2026-03-22T15:00:00-03:00"
   },
-  "albumLiveTotal": 795837,
+  "albumLiveTotal": 853521,
   "liveTotals": {
-    "CUANDO ESCRIBÍA ASIMETRÍA": 285356,
-    "ATBLM": 215877,
-    "UN GUSTO": 45750,
-    "CALL ME": 34082,
-    "MAN OF WORD": 33650,
-    "OJOS TRISTES": 30407,
-    "HIELO": 28625,
-    "CHANGES": 28529,
-    "ALQUILER": 27476,
-    "YA NO": 23799,
-    "HAZLO CALLAO": 21713,
-    "TOP TIER": 20573
+    "CUANDO ESCRIBÍA ASIMETRÍA": 290837,
+    "ATBLM": 223698,
+    "MAN OF WORD": 39376,
+    "CALL ME": 39063,
+    "ALQUILER": 32480,
+    "HIELO": 32619,
+    "UN GUSTO": 53084,
+    "CHANGES": 33066,
+    "OJOS TRISTES": 34162,
+    "HAZLO CALLAO": 24972,
+    "YA NO": 26969,
+    "TOP TIER": 23195
   },
   "dailyLog": [
     {
@@ -112,6 +112,25 @@
         "YA NO": 4314,
         "HAZLO CALLAO": 3777,
         "TOP TIER": 3717
+      }
+    },
+    {
+      "date": "2026-03-24",
+      "label": "D24",
+      "note": "Streams diarios",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 6160,
+        "ATBLM": 8461,
+        "MAN OF WORD": 6141,
+        "CALL ME": 5678,
+        "ALQUILER": 5627,
+        "UN GUSTO": 7786,
+        "CHANGES": 5029,
+        "OJOS TRISTES": 4719,
+        "HAZLO CALLAO": 3799,
+        "YA NO": 3887,
+        "HIELO": 4818,
+        "TOP TIER": 3315
       }
     }
   ],
@@ -300,7 +319,7 @@
         "monthly": {
           "total": 415041,
           "listeners": 25090,
-          "pct": 6.0
+          "pct": 6
         },
         "super": {
           "total": 33825,
@@ -752,7 +771,7 @@
             "monthly": {
               "total": 415041,
               "listeners": 25090,
-              "pct": 6.0
+              "pct": 6
             },
             "super": {
               "total": 33825,
@@ -1325,120 +1344,140 @@
         "HAZLO CALLAO": 21713,
         "TOP TIER": 20573
       }
+    },
+    {
+      "date": "2026-03-25",
+      "label": "D+6",
+      "recordedAt": "2026-03-25T16:30:00-03:00",
+      "albumTotal": 853521,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 290837,
+        "ATBLM": 223698,
+        "MAN OF WORD": 39376,
+        "CALL ME": 39063,
+        "ALQUILER": 32480,
+        "HIELO": 32619,
+        "UN GUSTO": 53084,
+        "CHANGES": 33066,
+        "OJOS TRISTES": 34162,
+        "HAZLO CALLAO": 24972,
+        "YA NO": 26969,
+        "TOP TIER": 23195
+      }
     }
   ],
   "trackMetricsMeta": {
-    "periodLabel": "Feb 24 – Mar 23, 2026",
-    "scrapedAt": "2026-03-24T17:29:42-03:00"
+    "periodLabel": "Feb 25 – Mar 24, 2026",
+    "scrapedAt": "2026-03-25T16:30:00-03:00"
   },
   "trackMetrics": {
     "CUANDO ESCRIBÍA ASIMETRÍA": {
-      "streams28d": 143656,
-      "listeners": 47296,
-      "streamsPerListener": 3.037,
-      "playlistAdds": 3390,
-      "saves": 9783,
-      "prevPeriod": 142541,
-      "change": 0.8
+      "streams28d": 144173,
+      "listeners": 47225,
+      "streamsPerListener": 3.053,
+      "playlistAdds": 3440,
+      "saves": 9959,
+      "prevPeriod": 143656,
+      "change": 0.4
     },
     "ATBLM": {
-      "streams28d": 209483,
-      "listeners": 69978,
-      "streamsPerListener": 2.994,
-      "playlistAdds": 8458,
-      "saves": 17998,
-      "prevPeriod": 192790,
-      "change": 8.7
-    },
-    "UN GUSTO": {
-      "streams28d": 39870,
-      "listeners": 20127,
-      "streamsPerListener": 1.981,
-      "playlistAdds": 2236,
-      "saves": 8771,
-      "prevPeriod": 25380,
-      "change": 57.1
-    },
-    "CALL ME": {
-      "streams28d": 29693,
-      "listeners": 11372,
-      "streamsPerListener": 2.611,
-      "playlistAdds": 1699,
-      "saves": 7891,
-      "prevPeriod": 18631,
-      "change": 59.4
+      "streams28d": 217944,
+      "listeners": 71662,
+      "streamsPerListener": 3.041,
+      "playlistAdds": 8680,
+      "saves": 18426,
+      "prevPeriod": 209483,
+      "change": 4
     },
     "MAN OF WORD": {
-      "streams28d": 28879,
-      "listeners": 12725,
-      "streamsPerListener": 2.269,
-      "playlistAdds": 1502,
-      "saves": 7882,
-      "prevPeriod": 18259,
-      "change": 58.2
+      "streams28d": 35020,
+      "listeners": 15016,
+      "streamsPerListener": 2.332,
+      "playlistAdds": 1656,
+      "saves": 8202,
+      "prevPeriod": 28879,
+      "change": 21.3
     },
-    "OJOS TRISTES": {
-      "streams28d": 26753,
-      "listeners": 12113,
-      "streamsPerListener": 2.209,
-      "playlistAdds": 1589,
-      "saves": 7859,
-      "prevPeriod": 17262,
-      "change": 55.0
-    },
-    "HIELO": {
-      "streams28d": 24929,
-      "listeners": 9985,
-      "streamsPerListener": 2.497,
-      "playlistAdds": 1478,
-      "saves": 7690,
-      "prevPeriod": 15713,
-      "change": 58.7
-    },
-    "CHANGES": {
-      "streams28d": 24829,
-      "listeners": 10852,
-      "streamsPerListener": 2.288,
-      "playlistAdds": 1147,
-      "saves": 7657,
-      "prevPeriod": 15059,
-      "change": 64.9
+    "CALL ME": {
+      "streams28d": 35371,
+      "listeners": 12606,
+      "streamsPerListener": 2.806,
+      "playlistAdds": 1852,
+      "saves": 8204,
+      "prevPeriod": 29693,
+      "change": 19.1
     },
     "ALQUILER": {
-      "streams28d": 23913,
-      "listeners": 11605,
+      "streams28d": 29540,
+      "listeners": 14339,
       "streamsPerListener": 2.06,
-      "playlistAdds": 913,
-      "saves": 7393,
-      "prevPeriod": 14867,
-      "change": 60.8
+      "playlistAdds": 1261,
+      "saves": 7675,
+      "prevPeriod": 23913,
+      "change": 23.5
     },
-    "YA NO": {
-      "streams28d": 20713,
-      "listeners": 8628,
-      "streamsPerListener": 2.401,
-      "playlistAdds": 1041,
-      "saves": 7543,
-      "prevPeriod": 12929,
-      "change": 60.2
+    "HIELO": {
+      "streams28d": 29747,
+      "listeners": 11167,
+      "streamsPerListener": 2.664,
+      "playlistAdds": 1602,
+      "saves": 7976,
+      "prevPeriod": 24929,
+      "change": 19.3
+    },
+    "UN GUSTO": {
+      "streams28d": 47656,
+      "listeners": 22394,
+      "streamsPerListener": 2.128,
+      "playlistAdds": 2481,
+      "saves": 9267,
+      "prevPeriod": 39870,
+      "change": 19.5
+    },
+    "CHANGES": {
+      "streams28d": 29858,
+      "listeners": 12427,
+      "streamsPerListener": 2.403,
+      "playlistAdds": 1571,
+      "saves": 7952,
+      "prevPeriod": 24829,
+      "change": 20.3
+    },
+    "OJOS TRISTES": {
+      "streams28d": 31472,
+      "listeners": 13390,
+      "streamsPerListener": 2.35,
+      "playlistAdds": 1721,
+      "saves": 8161,
+      "prevPeriod": 26753,
+      "change": 17.6
     },
     "HAZLO CALLAO": {
-      "streams28d": 18897,
-      "listeners": 9251,
-      "streamsPerListener": 2.043,
-      "playlistAdds": 864,
-      "saves": 7335,
-      "prevPeriod": 12154,
-      "change": 55.5
+      "streams28d": 22696,
+      "listeners": 10734,
+      "streamsPerListener": 2.114,
+      "playlistAdds": 1201,
+      "saves": 7587,
+      "prevPeriod": 18897,
+      "change": 20.1
+    },
+    "YA NO": {
+      "streams28d": 24600,
+      "listeners": 9542,
+      "streamsPerListener": 2.578,
+      "playlistAdds": 1446,
+      "saves": 7812,
+      "prevPeriod": 20713,
+      "change": 18.8
     },
     "TOP TIER": {
-      "streams28d": 17904,
-      "listeners": 7953,
-      "streamsPerListener": 2.251,
-      "playlistAdds": 955,
-      "saves": 7426,
-      "prevPeriod": 11308,
-      "change": 58.3
+      "streams28d": 21219,
+      "listeners": 8816,
+      "streamsPerListener": 2.407,
+      "playlistAdds": 1300,
+      "saves": 7682,
+      "prevPeriod": 17904,
+      "change": 18.5
     }
   }
 }
