@@ -228,6 +228,9 @@ const AmorFiadoDashboard = () => {
     { date: '2026-03-14', url: '/video/7617125475596455189', caption: '5 días para AMOR FIADO', track: 'AMOR FIADO', type: 'promo', views: 24300, likes: 3670, saves: 73, platform: 'tiktok' },
     { date: '2026-03-21', url: '/video/7619728786610785556', caption: 'UN GUSTO ft @Mesa Tra', track: 'UN GUSTO', type: 'release', views: 18600, likes: 2445, saves: 120, platform: 'tiktok' },
     { date: '2026-03-22', url: '/video/7620071012536749333', caption: 'Ya escucharon ojos tristes ft @Rei?', track: 'OJOS TRISTES', type: 'promo', views: 9128, likes: 1013, saves: 24, platform: 'tiktok' },
+    { date: '2026-03-23', url: '/video/7620486613327531285', caption: 'UN GUSTO MAMI', track: 'UN GUSTO', type: 'promo', views: 18800, likes: 3808, saves: 150, platform: 'tiktok' },
+    { date: '2026-03-25', url: '/video/7620959928739548437', caption: 'A ti te gusta el estrés, a mi quitartelo', track: 'UN GUSTO', type: 'promo', views: 8537, likes: 2115, saves: 88, platform: 'tiktok' },
+    { date: '2026-03-25', url: '/video/7621199321404411157', caption: 'La prensa es mala bb a mi me avala el corte #amorfiado', track: 'AMOR FIADO', type: 'promo', views: 4865, likes: 1001, saves: 24, platform: 'tiktok' },
   ];
 
   // Derived from dailyLog — no editar manualmente
