@@ -216,6 +216,7 @@ const AmorFiadoDashboard = () => {
   const trackMetrics     = liveData.trackMetrics     ?? DEFAULT_LIVE_DATA.trackMetrics;
   const trackMetricsMeta = liveData.trackMetricsMeta ?? DEFAULT_LIVE_DATA.trackMetricsMeta;
   const campaignContext  = liveData.campaignContext  ?? null;
+  const algoData         = liveData.algoData         ?? null;
 
   // Social posts — live desde liveData.socialPosts (actualizado por amor-fiado-social-scraper)
   // Incluye: @zeballos17 (IG), @asimetria17 (IG), @zeballos1717 (TK), @zeballosrap/kiosco (TK)
@@ -497,6 +498,7 @@ const AmorFiadoDashboard = () => {
     { id: 'decay', label: 'Decay Intel (DM)' },
     { id: 'social', label: 'Social Impact' },
     { id: 'engagement', label: 'Release Engagement' },
+    { id: 'algo', label: '🤖 Algo Push' },
   ];
 
   return (
@@ -3216,6 +3218,143 @@ const AmorFiadoDashboard = () => {
             <div style={{ background: 'rgba(15,23,42,0.3)', border: '1px solid rgba(51,65,85,0.3)', borderRadius: '8px', padding: '0.85rem 1rem', fontSize: '0.75rem', color: '#475569' }}>
               <strong style={{ color: '#64748b' }}>Fuente:</strong> Spotify for Artists — Release Engagement, segmentos Monthly/Super/Moderate/Light. Scraper automático cada 24h (02:00 UTC-3). Definiciones S4A: Super = top ~8% fanbase, Moderate = oyentes regulares, Light = oyentes ocasionales.
             </div>
+          </div>
+        );
+      })()}
+
+      {/* ── 🤖 Algo Push ──────────────────────────────────────────────────── */}
+      {activeTab === 'algo' && (() => {
+        // Empty state — datos pendientes del scraper
+        if (!algoData) {
+          return (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '360px', gap: '1rem' }}>
+              <div style={{ fontSize: '3rem' }}>🤖</div>
+              <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '1.1rem', margin: 0 }}>Sin datos algorítmicos aún</p>
+              <p style={{ color: '#64748b', fontSize: '0.85rem', maxWidth: '360px', textAlign: 'center', margin: 0, lineHeight: 1.6 }}>
+                Los datos van a aparecer después del próximo run del scraper de Spotify for Artists.
+                El scraper detecta streams de Algo Playlists y Radio automáticamente.
+              </p>
+              <div style={{ padding: '0.5rem 1rem', borderRadius: '8px', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.25)', color: '#fb923c', fontSize: '0.8rem' }}>
+                Siguiente run: 20:00 ARG (programado diario)
+              </div>
+            </div>
+          );
+        }
+
+        const byTrack    = algoData.byTrack    ?? [];
+        const history    = algoData.history    ?? [];
+        const algoTrend  = algoData.algoTrend  ?? null;
+        const trendColor = algoTrend === null ? '#94a3b8' : algoTrend >= 0 ? '#4ade80' : '#f87171';
+        const trendSign  = algoTrend !== null && algoTrend > 0 ? '+' : '';
+        const sorted     = [...byTrack].sort((a, b) => b.algoPercent - a.algoPercent);
+        const topTrack   = sorted[0] ?? null;
+
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+            {/* ── KPI cards ── */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+              {[
+                { label: '% algorítmico álbum', value: `${algoData.albumAlgoPercent?.toFixed(1) ?? '—'}%`, sub: algoData.period ?? '', color: '#a78bfa' },
+                { label: 'Streams algo totales', value: formatNumber(algoData.albumAlgoStreams ?? 0), sub: 'algo playlists + radio', color: '#38bdf8' },
+                { label: 'Track más pusheado', value: topTrack ? topTrack.track : '—', sub: topTrack ? `${topTrack.algoPercent.toFixed(1)}% algo` : '', color: '#4ade80' },
+                { label: 'Tendencia (vs período ant.)', value: algoTrend !== null ? `${trendSign}${algoTrend.toFixed(1)} pp` : '—', sub: 'puntos porcentuales', color: trendColor },
+              ].map(({ label, value, sub, color }) => (
+                <div key={label} style={{ background: 'rgba(15,23,42,0.6)', border: `1px solid ${color}33`, borderRadius: '12px', padding: '1.1rem 1.2rem' }}>
+                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: '0 0 0.35rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</p>
+                  <p style={{ color, fontSize: '1.55rem', fontWeight: 800, margin: '0 0 0.2rem', lineHeight: 1 }}>{value}</p>
+                  <p style={{ color: '#475569', fontSize: '0.7rem', margin: 0 }}>{sub}</p>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+
+              {/* ── Bar chart: % algo por track ── */}
+              <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
+                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: '0 0 1rem' }}>% Algorítmico por Track</p>
+                <ResponsiveContainer width="100%" height={sorted.length * 36 + 20}>
+                  <BarChart data={sorted} layout="vertical" margin={{ left: 8, right: 40, top: 4, bottom: 4 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.06)" horizontal={false} />
+                    <XAxis type="number" domain={[0, 100]} tickFormatter={v => `${v}%`} stroke="#475569" tick={{ fontSize: 10, fill: '#64748b' }} />
+                    <YAxis type="category" dataKey="track" width={145} tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                    <Tooltip
+                      formatter={(v, name, props) => [`${v.toFixed(1)}%`, 'Algo %']}
+                      contentStyle={{ background: '#0f172a', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '8px', fontSize: '0.78rem' }}
+                      labelStyle={{ color: '#f1f5f9' }}
+                    />
+                    <Bar dataKey="algoPercent" radius={[0, 4, 4, 0]}>
+                      {sorted.map((entry, i) => (
+                        <Cell key={i} fill={`hsl(${265 - i * 8}, 70%, ${65 - i * 2}%)`} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* ── Line chart: evolución % algo álbum ── */}
+              <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
+                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: '0 0 1rem' }}>Evolución % Algorítmico del Álbum</p>
+                {history.length < 2 ? (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px', flexDirection: 'column', gap: '0.5rem' }}>
+                    <span style={{ fontSize: '1.5rem' }}>📈</span>
+                    <p style={{ color: '#475569', fontSize: '0.8rem', margin: 0 }}>Aparece con ≥ 2 días de datos</p>
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={220}>
+                    <LineChart data={history} margin={{ top: 8, right: 20, left: 0, bottom: 4 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.06)" />
+                      <XAxis dataKey="date" stroke="#475569" tick={{ fontSize: 10, fill: '#64748b' }}
+                        tickFormatter={v => new Date(v + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} />
+                      <YAxis stroke="#475569" tickFormatter={v => `${v}%`} tick={{ fontSize: 10, fill: '#64748b' }} domain={['auto', 'auto']} />
+                      <Tooltip
+                        formatter={v => [`${v.toFixed(1)}%`, '% Algo']}
+                        contentStyle={{ background: '#0f172a', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '8px', fontSize: '0.78rem' }}
+                        labelFormatter={v => new Date(v + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })}
+                      />
+                      <Line type="monotone" dataKey="algoPercent" stroke="#a78bfa" strokeWidth={2.5} dot={{ fill: '#a78bfa', r: 4 }} activeDot={{ r: 6 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </div>
+
+            {/* ── Tabla detalle ── */}
+            <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
+              <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: '0 0 1rem' }}>Detalle por Track — {algoData.period ?? ''}</p>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid rgba(51,65,85,0.6)' }}>
+                      {['Track', 'Streams totales', 'Streams algo', '% Algo', 'Algo Playlists', 'Radio'].map(h => (
+                        <th key={h} style={{ textAlign: h === 'Track' ? 'left' : 'right', padding: '0.5rem 0.75rem', color: '#64748b', fontWeight: 600, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sorted.map((t, i) => (
+                      <tr key={t.track} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', background: i % 2 === 0 ? 'transparent' : 'rgba(51,65,85,0.1)' }}>
+                        <td style={{ padding: '0.55rem 0.75rem', color: '#e2e8f0', fontWeight: 600 }}>{t.track}</td>
+                        <td style={{ padding: '0.55rem 0.75rem', color: '#94a3b8', textAlign: 'right' }}>{formatNumber(t.totalStreams ?? 0)}</td>
+                        <td style={{ padding: '0.55rem 0.75rem', color: '#a78bfa', textAlign: 'right', fontWeight: 600 }}>{formatNumber(t.algoStreams ?? 0)}</td>
+                        <td style={{ padding: '0.55rem 0.75rem', textAlign: 'right' }}>
+                          <span style={{ color: '#fff', fontWeight: 700, background: `hsl(${265 - i * 8}, 60%, 45%)`, padding: '0.15rem 0.5rem', borderRadius: '9999px', fontSize: '0.75rem' }}>{t.algoPercent?.toFixed(1)}%</span>
+                        </td>
+                        <td style={{ padding: '0.55rem 0.75rem', color: '#38bdf8', textAlign: 'right' }}>{formatNumber(t.playlistStreams ?? 0)}</td>
+                        <td style={{ padding: '0.55rem 0.75rem', color: '#fb923c', textAlign: 'right' }}>{formatNumber(t.radioStreams ?? 0)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* ── Nota metodológica ── */}
+            <p style={{ color: '#334155', fontSize: '0.72rem', margin: 0, textAlign: 'center' }}>
+              "Algorítmico" = streams desde Algo Playlists (Discover Weekly, Radio, Daily Mix, etc.) según Spotify for Artists.
+              Datos actualizados por scraper automático · Período: {algoData.period ?? 'pendiente'}.
+            </p>
+
           </div>
         );
       })()}
