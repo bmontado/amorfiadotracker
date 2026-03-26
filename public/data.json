@@ -136,20 +136,20 @@
     {
       "date": "2026-03-25",
       "label": "D25",
-      "note": "Streams diarios (estimado desde snapshots D+5→D+6)",
+      "note": "Streams diarios (estimado desde snapshots D+6→D+7)",
       "tracks": {
-        "CUANDO ESCRIBÍA ASIMETRÍA": 5481,
-        "ATBLM": 7821,
-        "MAN OF WORD": 5726,
-        "CALL ME": 4981,
-        "ALQUILER": 5004,
-        "HIELO": 3994,
-        "UN GUSTO": 7334,
-        "CHANGES": 4537,
-        "OJOS TRISTES": 3755,
-        "HAZLO CALLAO": 3259,
-        "YA NO": 3170,
-        "TOP TIER": 2622
+        "ATBLM": 10696,
+        "CUANDO ESCRIBÍA ASIMETRÍA": 7750,
+        "MAN OF WORD": 6546,
+        "CALL ME": 6494,
+        "ALQUILER": 5400,
+        "HIELO": 5423,
+        "UN GUSTO": 8826,
+        "CHANGES": 5497,
+        "OJOS TRISTES": 5679,
+        "HAZLO CALLAO": 4151,
+        "YA NO": 4483,
+        "TOP TIER": 3856
       }
     }
   ],
