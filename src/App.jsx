@@ -2379,11 +2379,11 @@ const AmorFiadoDashboard = () => {
                 const toX = date => Math.round((new Date(date + 'T12:00:00').getTime() - origin) / msPerDay);
                 const igDots = correlation.filter(p => p.platform === 'instagram').map(p => ({
                   x: toX(p.date), y: p.views,
-                  caption: p.caption, date: p.date, likes: p.likes, track: p.track, saves: p.saves, platform: 'instagram',
+                  caption: p.caption, date: p.date, likes: p.likes, track: p.track, saves: p.saves, platform: 'instagram', account: p.account,
                 }));
                 const tkDots = correlation.filter(p => p.platform === 'tiktok').map(p => ({
                   x: toX(p.date), y: p.views,
-                  caption: p.caption, date: p.date, likes: p.likes, track: p.track, saves: p.saves, platform: 'tiktok',
+                  caption: p.caption, date: p.date, likes: p.likes, track: p.track, saves: p.saves, platform: 'tiktok', account: p.account,
                 }));
 
                 // Instagram logo dot (rounded square + camera outline)
