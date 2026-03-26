@@ -2436,7 +2436,10 @@ const AmorFiadoDashboard = () => {
                   return (
                     <div style={{ background: '#0f172a', border: `1px solid ${platColor}55`, borderRadius: '10px', padding: '0.75rem 1rem', fontSize: '0.75rem', maxWidth: '240px', boxShadow: `0 4px 20px ${platColor}22` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                        <span style={{ color: platColor, fontWeight: 700, fontSize: '0.7rem' }}>{platLabel}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          <span style={{ color: platColor, fontWeight: 700, fontSize: '0.7rem' }}>{platLabel}</span>
+                          {d.account && <span style={{ color: '#475569', fontSize: '0.68rem' }}>{d.account}</span>}
+                        </div>
                         <span style={{ color: '#64748b', fontSize: '0.7rem' }}>{new Date(d.date + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                       </div>
                       <p style={{ color: '#e2e8f0', margin: '0 0 0.35rem', fontSize: '0.78rem', lineHeight: 1.3 }}>{d.caption}</p>
@@ -2501,6 +2504,11 @@ const AmorFiadoDashboard = () => {
                           <span style={{ padding: '0.1rem 0.4rem', borderRadius: '9999px', fontSize: '0.6rem', fontWeight: 600, background: `${platColor}22`, color: platColor, border: `1px solid ${platColor}44` }}>
                             {p.platform === 'instagram' ? 'IG' : 'TK'}
                           </span>
+                          {p.account && (
+                            <span style={{ padding: '0.1rem 0.4rem', borderRadius: '9999px', fontSize: '0.6rem', fontWeight: 500, background: 'rgba(71,85,105,0.2)', color: '#94a3b8', border: '1px solid rgba(71,85,105,0.35)' }}>
+                              {p.account}
+                            </span>
+                          )}
                           <span style={{ padding: '0.1rem 0.4rem', borderRadius: '9999px', fontSize: '0.6rem', fontWeight: 600, background: `${typeColors[p.type]}22`, color: typeColors[p.type], border: `1px solid ${typeColors[p.type]}44` }}>
                             {typeLabels[p.type]}
                           </span>
