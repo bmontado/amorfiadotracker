@@ -216,7 +216,44 @@ const AmorFiadoDashboard = () => {
   const trackMetrics     = liveData.trackMetrics     ?? DEFAULT_LIVE_DATA.trackMetrics;
   const trackMetricsMeta = liveData.trackMetricsMeta ?? DEFAULT_LIVE_DATA.trackMetricsMeta;
   const campaignContext  = liveData.campaignContext  ?? null;
-  const algoData         = liveData.algoData         ?? null;
+  const algoData = (() => {
+    const algD = liveData.algorithmicData ?? null;
+    const algH = liveData.algorithmicHistory ?? [];
+    if (!algD && algH.length === 0) return liveData.algoData ?? null;
+    if (!algD) return liveData.algoData ?? null;
+    const lastHist = algH.length > 0 ? algH[algH.length - 1] : null;
+    const latestDate = lastHist?.date ?? Object.keys(Object.values(algD)[0] ?? {})[0] ?? null;
+    if (!latestDate) return liveData.algoData ?? null;
+    const tm = liveData.trackMetrics ?? {};
+    const firstTrackEntries = Object.values(algD)[0] ?? {};
+    const periodDays = Object.values(firstTrackEntries)[0]?.periodDays ?? 28;
+    const byTrack = Object.entries(algD)
+      .map(([track, dateMap]) => {
+        const entry = dateMap[latestDate] ?? null;
+        if (!entry) return null;
+        return {
+          track,
+          algoPercent: entry.pct ?? 0,
+          algoStreams: entry.streams ?? 0,
+          totalStreams: tm[track]?.streams28d ?? 0,
+          playlistStreams: entry.breakdown?.algorithmicPlaylists ?? 0,
+          radioStreams: entry.breakdown?.radio ?? 0,
+        };
+      })
+      .filter(Boolean);
+    const history = algH.map(h => ({ date: h.date, algoPercent: h.albumAlgorithmicPct ?? 0 }));
+    const algoTrend = history.length >= 2
+      ? history[history.length - 1].algoPercent - history[history.length - 2].algoPercent
+      : null;
+    return {
+      byTrack,
+      history,
+      algoTrend,
+      albumAlgoPercent: lastHist?.albumAlgorithmicPct ?? null,
+      albumAlgoStreams: lastHist?.albumAlgorithmicTotal ?? 0,
+      period: `${periodDays} días`,
+    };
+  })();
 
   // Social posts — live desde liveData.socialPosts (actualizado por amor-fiado-social-scraper)
   // Incluye: @zeballos17 (IG), @asimetria17 (IG), @zeballos1717 (TK), @zeballosrap/kiosco (TK)
