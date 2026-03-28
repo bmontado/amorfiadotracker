@@ -195,16 +195,16 @@ const AmorFiadoDashboard = () => {
   };
 
   // ── Derivados de liveData (se actualizan automáticamente con cada poll) ──
-  const lastUpdated        = liveData.lastUpdated;
+  const lastUpdated        = (typeof liveData.lastUpdated === 'object' && liveData.lastUpdated !== null) ? liveData.lastUpdated : { spotify: String(liveData.lastUpdated ?? ''), social: '' };
   const albumLiveTotal     = liveData.albumLiveTotal;
   const liveTotals         = liveData.liveTotals;
-  const dailyLog           = liveData.dailyLog;
-  const liveHistory        = liveData.liveHistory;
+  const dailyLog           = (liveData.dailyLog ?? []).filter(e => e.tracks != null);
+  const liveHistory        = (liveData.liveHistory ?? []).filter(e => e.tracks != null);
   const releaseEngagements = liveData.releaseEngagements ?? DEFAULT_LIVE_DATA.releaseEngagements;
   const releaseEngagement  = releaseEngagements[selectedReleaseId] ?? Object.values(releaseEngagements)[0];
 
   // growthHistory: memoizado para que reaccione al poll
-  const growthHistory = useMemo(() => liveHistory.filter(s => s.tracks != null).map(s => ({
+  const growthHistory = useMemo(() => liveHistory.map(s => ({
     timestamp: s.label + ' · ' + new Date(s.recordedAt).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }),
     albumTotal: s.albumTotal,
     ...Object.fromEntries(
@@ -326,7 +326,7 @@ const AmorFiadoDashboard = () => {
       fullStreams[short] = { ...data.streams };
     });
     // Overlay all dailyLog entries (covers D19, D20, D21, D22, …)
-    dailyLog.filter(entry => entry.tracks != null).forEach(entry => {
+    dailyLog.forEach(entry => {
       Object.entries(entry.tracks).forEach(([name, val]) => {
         const short = nameMap[name] || name;
         if (!fullStreams[short]) fullStreams[short] = {};
@@ -361,7 +361,7 @@ const AmorFiadoDashboard = () => {
     const fullStreamData = {};
     Object.entries(streamData).forEach(([name, data]) => {
       const dailyOverlay = {};
-      dailyLog.filter(e => e.tracks != null).forEach(entry => {
+      dailyLog.forEach(entry => {
         if (entry.tracks[name] != null) dailyOverlay[entry.date] = entry.tracks[name];
       });
       fullStreamData[name] = { ...data, streams: { ...data.streams, ...dailyOverlay } };
