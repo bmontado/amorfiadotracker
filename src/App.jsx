@@ -326,7 +326,7 @@ const AmorFiadoDashboard = () => {
       fullStreams[short] = { ...data.streams };
     });
     // Overlay all dailyLog entries (covers D19, D20, D21, D22, …)
-    dailyLog.forEach(entry => {
+    dailyLog.filter(entry => entry.tracks != null).forEach(entry => {
       Object.entries(entry.tracks).forEach(([name, val]) => {
         const short = nameMap[name] || name;
         if (!fullStreams[short]) fullStreams[short] = {};
@@ -361,7 +361,7 @@ const AmorFiadoDashboard = () => {
     const fullStreamData = {};
     Object.entries(streamData).forEach(([name, data]) => {
       const dailyOverlay = {};
-      dailyLog.forEach(entry => {
+      dailyLog.filter(e => e.tracks != null).forEach(entry => {
         if (entry.tracks[name] != null) dailyOverlay[entry.date] = entry.tracks[name];
       });
       fullStreamData[name] = { ...data, streams: { ...data.streams, ...dailyOverlay } };
