@@ -1,1 +1,3020 @@
-{"lastUpdated":{"spotify":"2026-03-27T17:00:00-03:00","social":"2026-03-25T12:00:00-03:00","algorithmic":"2026-03-27T20:00:00Z"},"albumLiveTotal":1003224,"liveTotals":{"CUANDO ESCRIBÍA ASIMETRÍA":306630,"MAN OF WORD":52981,"ATBLM":245713,"CALL ME":52624,"ALQUILER":41174,"HIELO":43649,"UN GUSTO":72606,"CHANGES":45345,"OJOS TRISTES":44373,"HAZLO CALLAO":32033,"YA NO":35475,"TOP TIER":30621},"dailyLog":[{"date":"2026-03-19","label":"D19","note":"~1 h post-lanzamiento (20:00 UTC-3)","tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":5814,"ATBLM":8513,"UN GUSTO":806,"CALL ME":1032,"MAN OF WORD":1293,"OJOS TRISTES":649,"HIELO":753,"ALQUILER":879,"CHANGES":676,"YA NO":472,"HAZLO CALLAO":486,"TOP TIER":383}},{"date":"2026-03-20","label":"D20","note":"Primer día completo","tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":10875,"ATBLM":14710,"UN GUSTO":16320,"CALL ME":11305,"MAN OF WORD":10998,"OJOS TRISTES":10905,"HIELO":9626,"ALQUILER":9166,"CHANGES":9170,"YA NO":8069,"HAZLO CALLAO":7584,"TOP TIER":7061}},{"date":"2026-03-21","label":"D21","note":"Segundo día completo","tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":7079,"ATBLM":9742,"UN GUSTO":8254,"CALL ME":6294,"MAN OF WORD":5968,"OJOS TRISTES":5708,"HIELO":5334,"ALQUILER":4822,"CHANGES":5213,"YA NO":4388,"HAZLO CALLAO":4084,"TOP TIER":3864}},{"date":"2026-03-22","label":"D22","note":"Tercer día completo","tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":5464,"ATBLM":7568,"UN GUSTO":6120,"CALL ME":4926,"MAN OF WORD":4487,"OJOS TRISTES":4220,"HIELO":4022,"ALQUILER":3493,"CHANGES":4534,"YA NO":3470,"HAZLO CALLAO":2966,"TOP TIER":2879}},{"date":"2026-03-23","label":"D23","note":"Streams diarios","tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":7009,"ATBLM":9125,"UN GUSTO":8370,"CALL ME":6136,"MAN OF WORD":6133,"OJOS TRISTES":5271,"HIELO":5194,"CHANGES":5236,"ALQUILER":5553,"YA NO":4314,"HAZLO CALLAO":3777,"TOP TIER":3717}},{"date":"2026-03-24","label":"D24","note":"Streams diarios","tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":6160,"ATBLM":8461,"MAN OF WORD":6141,"CALL ME":5678,"ALQUILER":5627,"UN GUSTO":7786,"CHANGES":5029,"OJOS TRISTES":4719,"HAZLO CALLAO":3799,"YA NO":3887,"HIELO":4818,"TOP TIER":3315}},{"date":"2026-03-25","label":"D25","note":"Streams diarios (estimado desde snapshots D+6→D+7)","tracks":{"ATBLM":10696,"CUANDO ESCRIBÍA ASIMETRÍA":7750,"MAN OF WORD":6546,"CALL ME":6494,"ALQUILER":5400,"HIELO":5423,"UN GUSTO":8826,"CHANGES":5497,"OJOS TRISTES":5679,"HAZLO CALLAO":4151,"YA NO":4483,"TOP TIER":3856}},{"date":"2026-03-26","label":"D26","note":"Streams diarios","tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":6802,"MAN OF WORD":5579,"ATBLM":8899,"CALL ME":5870,"ALQUILER":3579,"HIELO":4525,"UN GUSTO":8580,"CHANGES":5417,"OJOS TRISTES":4364,"HAZLO CALLAO":3056,"YA NO":3597,"TOP TIER":3134}},{"date":"2026-03-27","label":"D27","note":"Streams D+8 (delta live-D+7 para 3 tracks confirmados; S4A no disponible para los demás)","tracks":{"ATBLM":11319,"CUANDO ESCRIBÍA ASIMETRÍA":8043,"MAN OF WORD":7059,"CALL ME":null,"ALQUILER":null,"HIELO":null,"UN GUSTO":null,"CHANGES":null,"OJOS TRISTES":null,"HAZLO CALLAO":null,"YA NO":null,"TOP TIER":null}}],"releaseEngagements":{"6EPWuQUeAaRp61S8qG0fri":{"name":"AMOR FIADO","type":"album","scrapedAt":"2026-03-24T17:21:41.908-03:00","dayNum":6,"releaseDate":"Mar 19, 2026","segments":{"monthly":{"total":415041,"listeners":16962,"pct":4.1},"super":{"total":33825,"listeners":10697,"pct":31.6},"moderate":{"total":131139,"listeners":5476,"pct":4.2},"light":{"total":250077,"listeners":1979,"pct":0.8}},"streamedThisRelease":{"monthly":[{"date":"2026-03-19","y":1603},{"date":"2026-03-20","y":9712},{"date":"2026-03-21","y":12462},{"date":"2026-03-22","y":14512},{"date":"2026-03-23","y":16962}],"super":[{"date":"2026-03-19","y":1194},{"date":"2026-03-20","y":6590},{"date":"2026-03-21","y":8239},{"date":"2026-03-22","y":9382},{"date":"2026-03-23","y":10697}],"moderate":[{"date":"2026-03-19","y":348},{"date":"2026-03-20","y":2498},{"date":"2026-03-21","y":3573},{"date":"2026-03-22","y":4419},{"date":"2026-03-23","y":5476}],"light":[{"date":"2026-03-19","y":61},{"date":"2026-03-20","y":785},{"date":"2026-03-21","y":1170},{"date":"2026-03-22","y":1539},{"date":"2026-03-23","y":1979}]},"history":[{"date":"2026-03-23","dayNum":4,"segments":{"monthly":{"total":414288,"listeners":17836,"pct":4.3},"super":{"total":33357,"listeners":10094,"pct":30.3},"moderate":{"total":131037,"listeners":5875,"pct":4.5},"light":{"total":249894,"listeners":2722,"pct":1.1}}},{"date":"2026-03-24","dayNum":6,"segments":{"monthly":{"total":415041,"listeners":16962,"pct":4.1},"super":{"total":33825,"listeners":10697,"pct":31.6},"moderate":{"total":131139,"listeners":5476,"pct":4.2},"light":{"total":250077,"listeners":1979,"pct":0.8}}}],"campaigns":[]},"7GqXSd7cxRcsfQV6S2cHUM":{"name":"ATBLM","type":"single","scrapedAt":"2026-03-24T17:21:41.908-03:00","dayNum":27,"releaseDate":"Feb 26, 2026","segments":{"monthly":{"total":415041,"listeners":25090,"pct":6},"super":{"total":33825,"listeners":12081,"pct":35.7},"moderate":{"total":131139,"listeners":11419,"pct":8.7},"light":{"total":250077,"listeners":6119,"pct":2.4}},"streamedThisRelease":{"monthly":[{"date":"2026-02-26","y":690},{"date":"2026-02-27","y":5942},{"date":"2026-02-28","y":7902},{"date":"2026-03-01","y":9336},{"date":"2026-03-02","y":10852},{"date":"2026-03-03","y":12278},{"date":"2026-03-04","y":13341},{"date":"2026-03-05","y":14085},{"date":"2026-03-06","y":14821},{"date":"2026-03-07","y":15563},{"date":"2026-03-08","y":16229},{"date":"2026-03-09","y":17042},{"date":"2026-03-10","y":17784},{"date":"2026-03-11","y":18484},{"date":"2026-03-12","y":19187},{"date":"2026-03-13","y":19980},{"date":"2026-03-14","y":20561},{"date":"2026-03-15","y":21088},{"date":"2026-03-16","y":21776},{"date":"2026-03-17","y":22409},{"date":"2026-03-18","y":23153},{"date":"2026-03-19","y":23890},{"date":"2026-03-20","y":24292},{"date":"2026-03-21","y":24598},{"date":"2026-03-22","y":24821},{"date":"2026-03-23","y":25090}],"super":[{"date":"2026-02-26","y":453},{"date":"2026-02-27","y":3143},{"date":"2026-02-28","y":4037},{"date":"2026-03-01","y":4691},{"date":"2026-03-02","y":5391},{"date":"2026-03-03","y":6061},{"date":"2026-03-04","y":6562},{"date":"2026-03-05","y":6914},{"date":"2026-03-06","y":7275},{"date":"2026-03-07","y":7628},{"date":"2026-03-08","y":7905},{"date":"2026-03-09","y":8289},{"date":"2026-03-10","y":8622},{"date":"2026-03-11","y":8918},{"date":"2026-03-12","y":9257},{"date":"2026-03-13","y":9586},{"date":"2026-03-14","y":9859},{"date":"2026-03-15","y":10061},{"date":"2026-03-16","y":10348},{"date":"2026-03-17","y":10654},{"date":"2026-03-18","y":10988},{"date":"2026-03-19","y":11363},{"date":"2026-03-20","y":11596},{"date":"2026-03-21","y":11773},{"date":"2026-03-22","y":11914},{"date":"2026-03-23","y":12081}],"moderate":[{"date":"2026-02-26","y":163},{"date":"2026-02-27","y":1869},{"date":"2026-02-28","y":2636},{"date":"2026-03-01","y":3227},{"date":"2026-03-02","y":3913},{"date":"2026-03-03","y":4563},{"date":"2026-03-04","y":5096},{"date":"2026-03-05","y":5490},{"date":"2026-03-06","y":5833},{"date":"2026-03-07","y":6180},{"date":"2026-03-08","y":6538},{"date":"2026-03-09","y":6951},{"date":"2026-03-10","y":7362},{"date":"2026-03-11","y":7752},{"date":"2026-03-12","y":8120},{"date":"2026-03-13","y":8537},{"date":"2026-03-14","y":8846},{"date":"2026-03-15","y":9140},{"date":"2026-03-16","y":9533},{"date":"2026-03-17","y":9911},{"date":"2026-03-18","y":10349},{"date":"2026-03-19","y":10730},{"date":"2026-03-20","y":10989},{"date":"2026-03-21","y":11171},{"date":"2026-03-22","y":11289},{"date":"2026-03-23","y":11419}],"light":[{"date":"2026-02-26","y":74},{"date":"2026-02-27","y":958},{"date":"2026-02-28","y":1449},{"date":"2026-03-01","y":1798},{"date":"2026-03-02","y":2139},{"date":"2026-03-03","y":2482},{"date":"2026-03-04","y":2734},{"date":"2026-03-05","y":2937},{"date":"2026-03-06","y":3163},{"date":"2026-03-07","y":3376},{"date":"2026-03-08","y":3564},{"date":"2026-03-09","y":3760},{"date":"2026-03-10","y":3964},{"date":"2026-03-11","y":4150},{"date":"2026-03-12","y":4368},{"date":"2026-03-13","y":4602},{"date":"2026-03-14","y":4800},{"date":"2026-03-15","y":4974},{"date":"2026-03-16","y":5167},{"date":"2026-03-17","y":5361},{"date":"2026-03-18","y":5570},{"date":"2026-03-19","y":5740},{"date":"2026-03-20","y":5871},{"date":"2026-03-21","y":5962},{"date":"2026-03-22","y":6033},{"date":"2026-03-23","y":6119}]},"history":[{"date":"2026-03-24","dayNum":27,"segments":{"monthly":{"total":415041,"listeners":25090,"pct":6},"super":{"total":33825,"listeners":12081,"pct":35.7},"moderate":{"total":131139,"listeners":11419,"pct":8.7},"light":{"total":250077,"listeners":6119,"pct":2.4}}}],"campaigns":[]},"4QCM6aNuH8D1eBm1qp07Jg":{"name":"CUANDO ESCRIBÍA ASIMETRÍA","type":"single","scrapedAt":"2026-03-23T12:06:43-03:00","dayNum":28,"releaseDate":"Feb 5, 2026","noLongerUpdating":true,"segments":{"monthly":{"total":404806,"listeners":23738,"pct":5.9},"super":{"total":29112,"listeners":11622,"pct":39.9},"moderate":{"total":127186,"listeners":10714,"pct":8.4},"light":{"total":248508,"listeners":5350,"pct":2.2}},"streamedThisRelease":{"monthly":[{"date":"2026-02-05","y":878},{"date":"2026-02-06","y":6781},{"date":"2026-02-07","y":8722},{"date":"2026-02-08","y":9877},{"date":"2026-02-09","y":11216},{"date":"2026-02-10","y":12554},{"date":"2026-02-11","y":13938},{"date":"2026-02-12","y":14772},{"date":"2026-02-13","y":15555},{"date":"2026-02-14","y":16120},{"date":"2026-02-15","y":16484},{"date":"2026-02-16","y":16933},{"date":"2026-02-17","y":17350},{"date":"2026-02-18","y":17777},{"date":"2026-02-19","y":18205},{"date":"2026-02-20","y":18760},{"date":"2026-02-21","y":19177},{"date":"2026-02-22","y":19595},{"date":"2026-02-23","y":20103},{"date":"2026-02-24","y":20589},{"date":"2026-02-25","y":21131},{"date":"2026-02-26","y":21803},{"date":"2026-02-27","y":22255},{"date":"2026-02-28","y":22546},{"date":"2026-03-01","y":22787},{"date":"2026-03-02","y":23093},{"date":"2026-03-03","y":23402},{"date":"2026-03-04","y":23738}],"super":[{"date":"2026-02-05","y":518},{"date":"2026-02-06","y":3424},{"date":"2026-02-07","y":4268},{"date":"2026-02-08","y":4753},{"date":"2026-02-09","y":5341},{"date":"2026-02-10","y":5953},{"date":"2026-02-11","y":6523},{"date":"2026-02-12","y":6935},{"date":"2026-02-13","y":7349},{"date":"2026-02-14","y":7630},{"date":"2026-02-15","y":7834},{"date":"2026-02-16","y":8047},{"date":"2026-02-17","y":8284},{"date":"2026-02-18","y":8503},{"date":"2026-02-19","y":8710},{"date":"2026-02-20","y":8969},{"date":"2026-02-21","y":9165},{"date":"2026-02-22","y":9329},{"date":"2026-02-23","y":9593},{"date":"2026-02-24","y":9831},{"date":"2026-02-25","y":10072},{"date":"2026-02-26","y":10346},{"date":"2026-02-27","y":10611},{"date":"2026-02-28","y":10808},{"date":"2026-03-01","y":10968},{"date":"2026-03-02","y":11157},{"date":"2026-03-03","y":11393},{"date":"2026-03-04","y":11622}],"moderate":[{"date":"2026-02-05","y":228},{"date":"2026-02-06","y":2223},{"date":"2026-02-07","y":3067},{"date":"2026-02-08","y":3575},{"date":"2026-02-09","y":4206},{"date":"2026-02-10","y":4831},{"date":"2026-02-11","y":5479},{"date":"2026-02-12","y":5909},{"date":"2026-02-13","y":6284},{"date":"2026-02-14","y":6574},{"date":"2026-02-15","y":6761},{"date":"2026-02-16","y":6973},{"date":"2026-02-17","y":7197},{"date":"2026-02-18","y":7436},{"date":"2026-02-19","y":7660},{"date":"2026-02-20","y":7921},{"date":"2026-02-21","y":8116},{"date":"2026-02-22","y":8338},{"date":"2026-02-23","y":8591},{"date":"2026-02-24","y":8874},{"date":"2026-02-25","y":9186},{"date":"2026-02-26","y":9557},{"date":"2026-02-27","y":9777},{"date":"2026-02-28","y":9971},{"date":"2026-03-01","y":10134},{"date":"2026-03-02","y":10333},{"date":"2026-03-03","y":10520},{"date":"2026-03-04","y":10714}],"light":[{"date":"2026-02-05","y":132},{"date":"2026-02-06","y":1190},{"date":"2026-02-07","y":1625},{"date":"2026-02-08","y":1929},{"date":"2026-02-09","y":2265},{"date":"2026-02-10","y":2572},{"date":"2026-02-11","y":2956},{"date":"2026-02-12","y":3170},{"date":"2026-02-13","y":3360},{"date":"2026-02-14","y":3506},{"date":"2026-02-15","y":3614},{"date":"2026-02-16","y":3717},{"date":"2026-02-17","y":3835},{"date":"2026-02-18","y":3914},{"date":"2026-02-19","y":4043},{"date":"2026-02-20","y":4184},{"date":"2026-02-21","y":4298},{"date":"2026-02-22","y":4397},{"date":"2026-02-23","y":4539},{"date":"2026-02-24","y":4649},{"date":"2026-02-25","y":4806},{"date":"2026-02-26","y":4972},{"date":"2026-02-27","y":5076},{"date":"2026-02-28","y":5125},{"date":"2026-03-01","y":5176},{"date":"2026-03-02","y":5236},{"date":"2026-03-03","y":5288},{"date":"2026-03-04","y":5350}]},"history":[],"campaigns":[]}},"liveHistory":[{"date":"2026-03-22","label":"D+3","recordedAt":"2026-03-22T15:00:00-03:00","albumTotal":678677,"tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":273884,"ATBLM":200669,"UN GUSTO":31749,"CALL ME":23750,"MAN OF WORD":22919,"OJOS TRISTES":21652,"HIELO":19885,"CHANGES":19758,"ALQUILER":18508,"YA NO":16522,"HAZLO CALLAO":15226,"TOP TIER":14298}},{"date":"2026-03-23","label":"D+4","recordedAt":"2026-03-23T12:06:43-03:00","albumTotal":704025,"tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":276622,"ATBLM":204181,"UN GUSTO":34953,"CALL ME":26075,"MAN OF WORD":25068,"OJOS TRISTES":23695,"HIELO":21708,"CHANGES":21535,"ALQUILER":20058,"YA NO":18126,"HAZLO CALLAO":16594,"TOP TIER":15674}},{"date":"2026-03-24","label":"D+5","recordedAt":"2026-03-24T17:29:42-03:00","albumTotal":795837,"tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":285356,"ATBLM":215877,"UN GUSTO":45750,"CALL ME":34082,"MAN OF WORD":33650,"OJOS TRISTES":30407,"HIELO":28625,"CHANGES":28529,"ALQUILER":27476,"YA NO":23799,"HAZLO CALLAO":21713,"TOP TIER":20573}},{"date":"2026-03-25","label":"D+6","recordedAt":"2026-03-25T16:30:00-03:00","albumTotal":853521,"tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":290837,"ATBLM":223698,"MAN OF WORD":39376,"CALL ME":39063,"ALQUILER":32480,"HIELO":32619,"UN GUSTO":53084,"CHANGES":33066,"OJOS TRISTES":34162,"HAZLO CALLAO":24972,"YA NO":26969,"TOP TIER":23195}},{"date":"2026-03-26","label":"D+7","recordedAt":"2026-03-26T16:00:00-03:00","albumTotal":928322,"tracks":{"ATBLM":234394,"CUANDO ESCRIBÍA ASIMETRÍA":298587,"MAN OF WORD":45922,"CALL ME":45557,"ALQUILER":37880,"HIELO":38042,"UN GUSTO":61910,"CHANGES":38563,"OJOS TRISTES":39841,"HAZLO CALLAO":29123,"YA NO":31452,"TOP TIER":27051}},{"date":"2026-03-27","label":"D+8","recordedAt":"2026-03-27T17:00:00-03:00","albumTotal":1003224,"tracks":{"CUANDO ESCRIBÍA ASIMETRÍA":306630,"MAN OF WORD":52981,"ATBLM":245713,"CALL ME":52624,"ALQUILER":41174,"HIELO":43649,"UN GUSTO":72606,"CHANGES":45345,"OJOS TRISTES":44373,"HAZLO CALLAO":32033,"YA NO":35475,"TOP TIER":30621},"note":"Todos los tracks live (12/12)"}],"trackMetricsMeta":{"periodLabel":"Feb 27 – Mar 26, 2026","scrapedAt":"2026-03-27T12:00:00-03:00"},"trackMetrics":{"CUANDO ESCRIBÍA ASIMETRÍA":{"songId":"3LodenBjwz6GZbD8ZQVLRC","streams28d":146886,"listeners":47352,"streamsPerListener":3.102,"playlistAdds":3541,"saves":10268,"prevPeriod":145627,"change":0.9,"algorithmicStreams":37065,"algorithmicPrev":45529,"algorithmicChange":-18.6},"MAN OF WORD":{"songId":"5nfkcy3ZVaDo3VInn1OBCu","streams28d":47890,"listeners":19719,"streamsPerListener":2.429,"playlistAdds":1945,"saves":8882,"prevPeriod":42311,"change":13.2,"algorithmicStreams":5880,"algorithmicPrev":null,"algorithmicChange":null},"ATBLM":{"songId":"4dUDowRcJAjsZw9xV9esjh","streams28d":236112,"listeners":75245,"streamsPerListener":3.138,"playlistAdds":8732,"saves":18678,"prevPeriod":228164,"change":3.5,"algorithmicStreams":67651,"algorithmicPrev":3,"algorithmicChange":2254933.3},"CALL ME":{"songId":"1PazN55q85De58h0NXP8ZO","streams28d":47830,"listeners":15641,"streamsPerListener":3.058,"playlistAdds":2195,"saves":8852,"prevPeriod":41960,"change":14.0,"algorithmicStreams":2153,"algorithmicPrev":null,"algorithmicChange":null},"ALQUILER":{"songId":"3sKcIP464G9eNWC6BLQbJn","streams28d":37987,"listeners":17196,"streamsPerListener":2.209,"playlistAdds":1439,"saves":8203,"prevPeriod":34408,"change":10.4,"algorithmicStreams":4780,"algorithmicPrev":null,"algorithmicChange":null},"HIELO":{"songId":"2CuCRfK2mLPFZXDalEZtmw","streams28d":39431,"listeners":13552,"streamsPerListener":2.91,"playlistAdds":1866,"saves":8560,"prevPeriod":34906,"change":13.0,"algorithmicStreams":1913,"algorithmicPrev":null,"algorithmicChange":null},"UN GUSTO":{"songId":"74XvuYXS9VjhlnEn9Ctf7y","streams28d":65718,"listeners":27911,"streamsPerListener":2.355,"playlistAdds":3139,"saves":10480,"prevPeriod":57138,"change":15.0,"algorithmicStreams":15821,"algorithmicPrev":null,"algorithmicChange":null},"CHANGES":{"songId":"5nZTTvDpDsF5TqdqSlHq6m","streams28d":41109,"listeners":16082,"streamsPerListener":2.556,"playlistAdds":1850,"saves":8588,"prevPeriod":35692,"change":15.2,"algorithmicStreams":5285,"algorithmicPrev":null,"algorithmicChange":null},"OJOS TRISTES":{"songId":"2dO9tmd62ILh8uwew2IgXF","streams28d":40723,"listeners":15894,"streamsPerListener":2.562,"playlistAdds":1991,"saves":8762,"prevPeriod":36359,"change":12.0,"algorithmicStreams":3910,"algorithmicPrev":null,"algorithmicChange":null},"HAZLO CALLAO":{"songId":"1gchScLxTPJQ6LSmmJsKVP","streams28d":29675,"listeners":12939,"streamsPerListener":2.293,"playlistAdds":1394,"saves":8105,"prevPeriod":26619,"change":11.5,"algorithmicStreams":2828,"algorithmicPrev":null,"algorithmicChange":null},"YA NO":{"songId":"6j8Srcc8XwIQyRbHabWqDM","streams28d":32387,"listeners":11271,"streamsPerListener":2.873,"playlistAdds":1669,"saves":8349,"prevPeriod":28790,"change":12.5,"algorithmicStreams":712,"algorithmicPrev":null,"algorithmicChange":null},"TOP TIER":{"songId":"7JThT6NTMxA8gB2ZBYjEDu","streams28d":27927,"listeners":10410,"streamsPerListener":2.683,"playlistAdds":1506,"saves":8213,"prevPeriod":24793,"change":12.6,"algorithmicStreams":817,"algorithmicPrev":null,"algorithmicChange":null}},"campaignContext":{"source":"DPR MKT follow-up + Estrategia Álbum 2026","updatedAt":"2026-03-24","currentPhase":{"phase":2,"name":"Awareness + Conversión","period":"Marzo 2026","status":"active"},"nextPhase":{"phase":3,"name":"Expansión + Mantenimiento","period":"Abril 2026","keyMilestones":["Estreno vlog completo","Anuncio oficial Amor Fiado Tour (URU / ARG / ESP / MEX)"]},"focusTrack":"MAN OF WORD","featContext":["REI","DUKI"],"accionesPendientes":[{"id":1,"accion":"Influencers explainers","status":"pendiente"},{"id":2,"accion":"Contenido Spotify con Juan Minujín","status":"pendiente"},{"id":3,"accion":"Streaming con Coker","status":"pendiente"},{"id":4,"accion":"Entrevista Tapados de Laburo","status":"pendiente"},{"id":6,"accion":"Marquee + Showcase Amor Fiado","status":"pendiente"},{"id":7,"accion":"OOH + circuito digital","status":"pendiente"}],"mediaWishList":{"argLatam":["Hispa","Archivo 909","Rolling Stone ARG","Billboard ARG","Urbana Play FM","Antezana 247","Spotify ARG","La Curva de la Moda","Le Bananas","Hype Beast LATAM"],"spain":["GQ Spain","Highxtar","Fleek Mag","Grindin Radio","Binary Spain","Tag Mag","Letra Rap","Neo2 Magazine","Grimey TV","Urban Roosters"]},"streamingWishList":["Marcos Giles","Fran Gomez","El Mortedor","Goncho","La Cobra","Spreen","Music Radar Clan"],"amplificadores":{"feats":["Mesita","La Sole","NOG","REI","DUKI"],"influencers":["Juan Minujín","Christian Rich","Delfina Pignatello","Pauli Echeverria","Sofi Sica","Kristel Latecki","Belén Fourment","Humphrey Inzillo","Manuel Buscalia"]},"brandPartnerships":["Adidas","Red Bull","Jack Daniels","Converse","Carhartt Spain","Vicio","Pull & Bear"],"spainTour2026":[{"city":"Bilbao","venue":"Santana Blue","date":"2026-11-07"},{"city":"Madrid","venue":"Uni","date":"2026-11-12"},{"city":"Barcelona","venue":"Wolf","date":"2026-11-13"},{"city":"Sevilla","venue":"La2","date":"2026-11-14"},{"city":"Valencia","venue":"Jerusalem","date":"2026-11-19"}],"keyTimelineEvents":[{"date":"2026-02-26","event":"Estreno ATBLM"},{"date":"2026-03-02","event":"Anuncio escuchas"},{"date":"2026-03-05","event":"Countdown Spotify"},{"date":"2026-03-16","event":"Pop-up INBOX"},{"date":"2026-03-18","event":"Escucha CABA"},{"date":"2026-03-19","event":"Escucha + lanzamiento MVD"},{"date":"2026-03-22","event":"Teaser vlog"},{"date":"2026-03-24","event":"Primer episodio vlog"}]},"socialPosts":[{"date":"2026-02-02","url":"https://www.instagram.com/reel/DURexnHjuy4/","caption":"CEA teaser con Juan Minujín","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"teaser","views":406000,"likes":17000,"saves":0,"platform":"instagram","account":"@zeballos17"},{"date":"2026-02-06","url":"https://www.instagram.com/reel/DUa9-8bjgmB/","caption":"CUANDO ESCRIBÍA ASIMETRÍA — Ya disponible","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"release","views":133000,"likes":6508,"saves":0,"platform":"instagram","account":"@zeballos17"},{"date":"2026-02-12","url":"https://www.instagram.com/reel/DUrNhIvDmv2/","caption":"AMOR FIADO promo (audio: CEA)","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"promo","views":108000,"likes":5624,"saves":0,"platform":"instagram","account":"@zeballos17"},{"date":"2026-02-28","url":"https://www.instagram.com/reel/DVUSGuKjviG/","caption":"ATBLM — Segundo adelanto","track":"ATBLM","type":"release","views":169000,"likes":9620,"saves":0,"platform":"instagram","account":"@zeballos17"},{"date":"2026-03-10","url":"https://www.instagram.com/reel/DVuLW64Dssw/","caption":"Nueve días para AMOR FIADO","track":"AMOR FIADO","type":"promo","views":118000,"likes":6661,"saves":0,"platform":"instagram","account":"@zeballos17"},{"date":"2026-03-19","url":"https://www.instagram.com/reel/DWEezrPjpH9/","caption":"Gracias Buenos Aires, estrenamos AMOR FIADO","track":"AMOR FIADO","type":"launch","views":92400,"likes":5009,"saves":0,"platform":"instagram","account":"@zeballos17"},{"date":"2026-03-20","url":"https://www.instagram.com/reel/DWFzDpbjpuS/","caption":"AMOR FIADO YA DISPONIBLE","track":"AMOR FIADO","type":"launch","views":99000,"likes":5873,"saves":0,"platform":"instagram","account":"@zeballos17"},{"date":"2026-03-21","url":"https://www.instagram.com/reel/DWJqPCdjqMF/","caption":"UN GUSTO ft @mesita — Videoclip","track":"UN GUSTO","type":"release","views":138000,"likes":8800,"saves":0,"platform":"instagram","account":"@zeballos17"},{"date":"2026-02-02","url":"https://www.instagram.com/reel/DURe_gpEmSQ/","caption":"CUANDO ESCRIBÍA ASIMETRÍA — Estreno este jueves 5/2","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"teaser","views":30700,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-05","url":"https://www.instagram.com/reel/DUZNWhfkqxz/","caption":"CUANDO ESCRIBÍA ASIMETRÍA — YA DISPONIBLE 🐎","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"release","views":46900,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-07","url":"https://www.instagram.com/reel/DUdVDHpkclS/","caption":"CUANDO ESCRIBÍA ASIMETRÍA — Un lanzamiento de @zeballos17 con @juanminujin","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"release","views":16100,"likes":672,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-12","url":"https://www.instagram.com/reel/DUqkUy7EY5T/","caption":"Capítulo inédito de Jackass por @zeballos17","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"promo","views":21500,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-18","url":"https://www.instagram.com/reel/DU55K4pkaY4/","caption":"ATBLM","track":"ATBLM","type":"teaser","views":22800,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-20","url":"https://www.instagram.com/reel/DU_rZprErde/","caption":"Podemos volver vos y yo pero nunca nosotros 🐎","track":"ATBLM","type":"teaser","views":51500,"likes":3642,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-26","url":"https://www.instagram.com/reel/DVPTu0tklX6/","caption":"ATBLM — YA DISPONIBLE","track":"ATBLM","type":"release","views":24700,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-28","url":"https://www.instagram.com/reel/DVMaOkPEo85/","caption":"ATBLM","track":"ATBLM","type":"release","views":47000,"likes":3799,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-03-05","url":"https://www.instagram.com/reel/DVhCSd2kgwC/","caption":"06 DE MARZO, UN DÍA IMPORTANTE 🐎 ESTÉN PILLOS","track":"AMOR FIADO","type":"promo","views":25500,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-03-09","url":"https://www.instagram.com/reel/DVqbN4OAG2W/","caption":"Nos vemos el 18 y 19 para la pre escucha de AMOR FIADO 🇦🇷🇺🇾","track":"AMOR FIADO","type":"promo","views":55900,"likes":4686,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-03-12","url":"https://www.instagram.com/reel/DVzI-UxEh_G/","caption":"Quienes esperan con ansias AMOR FIADO? 19/03 🐎","track":"AMOR FIADO","type":"promo","views":24600,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-03-21","url":"https://www.instagram.com/reel/DWKDUUvAp1H/","caption":"UN GUSTO en Vorterix 🐎 @zeballos17 ft @mesita","track":"UN GUSTO","type":"release","views":16200,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-01-28","url":"https://www.tiktok.com/@zeballos1717/video/7600558176781520149","caption":"05.02 @asimetria17","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"teaser","views":12300,"likes":950,"saves":40,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-01-30","url":"https://www.tiktok.com/@zeballos1717/video/7601302776626384149","caption":"Se viene @asimetria17","track":"AMOR FIADO","type":"teaser","views":60300,"likes":8121,"saves":251,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-02-04","url":"https://www.tiktok.com/@zeballos1717/video/7603157705921957141","caption":"Es mañana mi gente @asimetria17","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"teaser","views":29800,"likes":4600,"saves":115,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-02-06","url":"https://www.tiktok.com/@zeballos1717/video/7603879276328373525","caption":"Sigo haciendo temas de lo que me gusta","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"release","views":44500,"likes":5922,"saves":267,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-02-12","url":"https://www.tiktok.com/@zeballos1717/video/7606141408382160149","caption":"Pero afuera nada invita a ir #amorfiado","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"promo","views":79200,"likes":11100,"saves":716,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-02-19","url":"https://www.tiktok.com/@zeballos1717/video/7608593812587416852","caption":"ATBLM snippet viral","track":"ATBLM","type":"teaser","views":185500,"likes":25800,"saves":2782,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-02-21","url":"https://www.tiktok.com/@zeballos1717/video/7609155471529856276","caption":"ATBLM snippet 2","track":"ATBLM","type":"teaser","views":136700,"likes":23200,"saves":1424,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-02-21","url":"https://www.tiktok.com/@zeballos1717/video/7609510867570576661","caption":"ATBLM snippet pool vibes","track":"ATBLM","type":"teaser","views":66000,"likes":10800,"saves":509,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-02-25","url":"https://www.tiktok.com/@zeballos1717/video/7610835979628203284","caption":"ATBLM 26/02 Es mañana dalee","track":"ATBLM","type":"teaser","views":44500,"likes":7374,"saves":209,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-02-26","url":"https://www.tiktok.com/@zeballos1717/video/7611317540157017364","caption":"ATBLM YA DISPONIBLE @asimetria17","track":"ATBLM","type":"release","views":39400,"likes":5563,"saves":297,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-02-28","url":"https://www.tiktok.com/@zeballos1717/video/7612070065856433428","caption":"Segundo adelanto AMOR FIADO — ATBLM video","track":"ATBLM","type":"release","views":107500,"likes":15400,"saves":1059,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-03-10","url":"https://www.tiktok.com/@zeballos1717/video/7615777036631657749","caption":"MENOS DE 9 DÍAS PARA AMOR FIADO","track":"AMOR FIADO","type":"promo","views":18600,"likes":2694,"saves":123,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-03-14","url":"https://www.tiktok.com/@zeballos1717/video/7617125475596455189","caption":"5 días para AMOR FIADO","track":"AMOR FIADO","type":"promo","views":29900,"likes":3713,"saves":73,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-03-21","url":"https://www.tiktok.com/@zeballos1717/video/7619728786610785556","caption":"UN GUSTO ft @Mesa Tra","track":"UN GUSTO","type":"release","views":26600,"likes":2595,"saves":120,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-03-22","url":"https://www.tiktok.com/@zeballos1717/video/7620071012536749333","caption":"Ya escucharon ojos tristes ft @Rei?","track":"OJOS TRISTES","type":"promo","views":15700,"likes":1197,"saves":24,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-03-23","url":"https://www.tiktok.com/@zeballos1717/video/7620486613327531285","caption":"UN GUSTO MAMI","track":"UN GUSTO","type":"release","views":18900,"likes":3824,"saves":150,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-03-24","url":"https://www.tiktok.com/@zeballos1717/video/7620959928739548437","caption":"A ti te gusta el estrés, a mi quitartelo","track":"AMOR FIADO","type":"promo","views":8793,"likes":2158,"saves":91,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-03-25","url":"https://www.tiktok.com/@zeballos1717/video/7621199321404411157","caption":"La prensa es mala bb a mi me avala el corte","track":"AMOR FIADO","type":"promo","views":5530,"likes":1110,"saves":30,"platform":"tiktok","account":"@zeballos1717"},{"date":"2026-01-06","url":"https://www.tiktok.com/@zeballosrap/video/7592380954136661278","caption":"Ya vendrán tiempos mejores amor, tiempos mas bellos ❤️‍🩹","track":"AMOR FIADO","type":"kiosko","views":476100,"likes":64500,"saves":5183,"platform":"tiktok","account":"@zeballosrap"},{"date":"2026-02-09","url":"https://www.tiktok.com/@zeballosrap/video/7604991681926155550","caption":"Vayan a escuchar 'Cuando escribia Asimetria' ❤️❤️❤️","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"kiosko","views":31700,"likes":3904,"saves":64,"platform":"tiktok","account":"@zeballosrap"},{"date":"2026-02-24","url":"https://www.tiktok.com/@zeballosrap/video/7610426346094808350","caption":"En unas horas están todos gritando ATBLM ⛓️‍💥","track":"ATBLM","type":"kiosko","views":27100,"likes":3611,"saves":222,"platform":"tiktok","account":"@zeballosrap"},{"date":"2026-03-04","url":"https://www.tiktok.com/@zeballosrap/video/7613464564218203422","caption":"ATBLMATBLMATBLMATBLM qué les pareciooooo⛓️‍💥","track":"ATBLM","type":"kiosko","views":10000,"likes":1639,"saves":95,"platform":"tiktok","account":"@zeballosrap"},{"date":"2026-03-05","url":"https://www.tiktok.com/@zeballosrap/video/7613775286248738079","caption":"ATBLM hasta que suena el despertador ❤️‍🩹","track":"ATBLM","type":"kiosko","views":1327,"likes":71,"saves":5,"platform":"tiktok","account":"@zeballosrap"},{"date":"2026-03-07","url":"https://www.tiktok.com/@zeballosrap/video/7614522981687020831","caption":"Qué ganas de dormirme en un abrazo ⛓️‍💥❤️‍🩹","track":"AMOR FIADO","type":"kiosko","views":7794,"likes":1285,"saves":88,"platform":"tiktok","account":"@zeballosrap"},{"date":"2026-03-15","url":"https://www.tiktok.com/@zeballosrap/video/7617609896061570334","caption":"Quien viene a la escuchaaaaaa ⛓️‍💥","track":"AMOR FIADO","type":"kiosko","views":1129,"likes":138,"saves":13,"platform":"tiktok","account":"@zeballosrap"},{"date":"2026-03-20","url":"https://www.tiktok.com/@zeballosrap/video/7619154242586086687","caption":"Llamame cuando quieras⛓️‍💥","track":"AMOR FIADO","type":"kiosko","views":1490,"likes":217,"saves":14,"platform":"tiktok","account":"@zeballosrap"},{"date":"2026-03-20","url":"https://www.tiktok.com/@zeballosrap/video/7619168179104877854","caption":"Desayuno ice⛓️‍💥💔","track":"AMOR FIADO","type":"kiosko","views":2802,"likes":473,"saves":20,"platform":"tiktok","account":"@zeballosrap"},{"date":"2026-03-20","url":"https://www.tiktok.com/@zeballosrap/video/7619404515783085342","caption":"ALASDOSYVEINTIDOS LOSDOSDESVESTIDOS ⛓️‍💥","track":"AMOR FIADO","type":"kiosko","views":2372,"likes":322,"saves":27,"platform":"tiktok","account":"@zeballosrap"},{"date":"2026-03-21","url":"https://www.tiktok.com/@zeballosrap/video/7619748147912314142","caption":"En chanclas o en Cortez 🫵","track":"AMOR FIADO","type":"kiosko","views":2078,"likes":296,"saves":21,"platform":"tiktok","account":"@zeballosrap"},{"date":"2026-03-23","url":"https://www.instagram.com/asimetria17/reel/DWKDUUvAp1H/","caption":"UN GUSTO en Vorterix 🐎 @zeballos17 ft @mesita","track":"UN GUSTO","type":"promo","views":0,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-03-16","url":"https://www.instagram.com/asimetria17/reel/DVzI-UxEh_G/","caption":"Quienes esperan con ansias AMOR FIADO? 19/03 🐎","track":"AMOR FIADO","type":"promo","views":0,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-03-05","url":"https://www.instagram.com/asimetria17/reel/DVhCSd2kgwC/","caption":"06 DE MARZO, UN DÍA IMPORTANTE 🐎 ESTÉN PILLOS","track":"ATBLM","type":"promo","views":0,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-26","url":"https://www.instagram.com/asimetria17/reel/DVPTu0tklX6/","caption":"ATBLM | Prod. @pmpsounds @leavetheclubmusic @christianrich | YA DISPONIBLE 🇺🇾🇪🇸🇮🇹🇺🇸","track":"ATBLM","type":"release","views":0,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-18","url":"https://www.instagram.com/asimetria17/reel/DU55K4pkaY4/","caption":"ATBLM (teaser con CUANDO ESCRIBÍA ASIMETRÍA)","track":"ATBLM","type":"teaser","views":0,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-14","url":"https://www.instagram.com/asimetria17/reel/DUqkUy7EY5T/","caption":"Capítulo inédito de Jackass por @zeballos17","track":"AMOR FIADO","type":"promo","views":0,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-05","url":"https://www.instagram.com/asimetria17/reel/DUZNWhfkqxz/","caption":"CUANDO ESCRIBÍA ASIMETRÍA | Prod. @christianrich y @fossezm | Dirigido por @josefog.will | Protagonizado por @zeballos17 y @juanminujin","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"release","views":0,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-02-02","url":"https://www.instagram.com/asimetria17/reel/DURe_gpEmSQ/","caption":"CUANDO ESCRIBÍA ASIMETRÍA | Estreno este jueves 5/2 en el canal de YouTube @zeballos17","track":"CUANDO ESCRIBÍA ASIMETRÍA","type":"teaser","views":0,"likes":0,"saves":0,"platform":"instagram","account":"@asimetria17"},{"date":"2026-03-24","url":"https://www.tiktok.com/@zeballosrap/video/7620821513733754143","caption":"Después de un 'nosotros' siempre hay un 'pero' ❤️‍🩹⛓️‍💥 #amorfiado","track":"AMOR FIADO","type":"kiosko","views":357,"likes":0,"saves":0,"platform":"tiktok","account":"@zeballosrap"}],"albumMetrics28d":{"streams":793675,"listeners":118541,"streamsPerListener":6.695,"playlistAdds":32015,"saves":123348,"prevPeriod":154790,"change":412.7,"algorithmicStreams":148815,"algorithmicPrev":45532,"algorithmicChange":226.8},"albumMetrics7d":{"streams":522402,"prevPeriod":88074,"change":493.1,"daily":{"2026-03-20":125789,"2026-03-21":70750,"2026-03-22":54149,"2026-03-23":69835,"2026-03-24":65420,"2026-03-25":73057,"2026-03-26":63402}},"algorithmicData":{"ATBLM":{"2026-03-26":{"streams":52549,"pct":23.03,"periodDays":28,"breakdown":{"algorithmicPlaylists":52549,"radio":0,"other":0}},"2026-03-27":{"streams":13822,"pct":20.11,"periodDays":7,"periodRange":"2026-03-20/2026-03-26","note":"7-day window Mar 20-26 (ALL_PROGRAMMED_SOURCES)","breakdown":{"algorithmicPlaylists":13822,"radio":0,"other":0},"daily":{"2026-03-20":2909,"2026-03-21":2399,"2026-03-22":1619,"2026-03-23":1528,"2026-03-24":1614,"2026-03-25":2313,"2026-03-26":1440}}},"UN GUSTO":{"2026-03-26":{"streams":7580,"pct":13.27,"periodDays":28,"breakdown":{"algorithmicPlaylists":7580,"radio":0,"other":0}},"2026-03-27":null},"CUANDO ESCRIBÍA ASIMETRÍA":{"2026-03-26":null,"2026-03-27":null},"MAN OF WORD":{"2026-03-26":null,"2026-03-27":null},"CALL ME":{"2026-03-26":null,"2026-03-27":null},"ALQUILER":{"2026-03-26":null,"2026-03-27":null},"HIELO":{"2026-03-26":null,"2026-03-27":null},"CHANGES":{"2026-03-26":null,"2026-03-27":null},"OJOS TRISTES":{"2026-03-26":null,"2026-03-27":null},"HAZLO CALLAO":{"2026-03-26":null,"2026-03-27":null},"YA NO":{"2026-03-26":null,"2026-03-27":null},"TOP TIER":{"2026-03-26":null,"2026-03-27":null}},"algorithmicHistory":[{"date":"2026-03-26","label":"D+7","recordedAt":"2026-03-26T20:15:00Z","partial":true,"note":"Solo 2/12 tracks con data algorítmica (S4A no cargó el resto)","albumAlgorithmicTotal":60129,"albumAlgorithmicPct":6.48,"tracks":{"ATBLM":{"streams":52549,"pct":23.03},"CUANDO ESCRIBÍA ASIMETRÍA":null,"MAN OF WORD":null,"CALL ME":null,"ALQUILER":null,"HIELO":null,"UN GUSTO":{"streams":7580,"pct":13.27},"CHANGES":null,"OJOS TRISTES":null,"HAZLO CALLAO":null,"YA NO":null,"TOP TIER":null}},{"date":"2026-03-27","label":"D+8","recordedAt":"2026-03-27T20:00:00Z","partial":true,"note":"Solo ATBLM con data algorítmica 7d (S4A no disponible para el resto hoy)","albumAlgorithmicTotal":13822,"albumAlgorithmicPct":5.18,"tracks":{"ATBLM":{"streams":13822,"pct":20.11,"periodDays":7},"CUANDO ESCRIBÍA ASIMETRÍA":null,"MAN OF WORD":null,"CALL ME":null,"ALQUILER":null,"HIELO":null,"UN GUSTO":null,"CHANGES":null,"OJOS TRISTES":null,"HAZLO CALLAO":null,"YA NO":null,"TOP TIER":null}}],"streamData":{"ATBLM":{"2026-03-26":8899,"2026-03-20":14710,"2026-03-21":9742,"2026-03-22":7568,"2026-03-23":9125,"2026-03-24":8461,"2026-03-25":10220,"2026-03-27":11319},"CUANDO ESCRIBÍA ASIMETRÍA":{"2026-03-26":6802,"2026-03-20":10875,"2026-03-21":7079,"2026-03-22":5464,"2026-03-23":7009,"2026-03-24":6160,"2026-03-25":7040,"2026-03-27":8043},"MAN OF WORD":{"2026-03-26":5579,"2026-03-20":10998,"2026-03-21":5968,"2026-03-22":4487,"2026-03-23":6133,"2026-03-24":6141,"2026-03-25":7291,"2026-03-27":7059},"CALL ME":{"2026-03-26":6494},"ALQUILER":{"2026-03-26":5400},"HIELO":{"2026-03-26":5423},"UN GUSTO":{"2026-03-26":8826},"CHANGES":{"2026-03-26":5497},"OJOS TRISTES":{"2026-03-26":5679},"HAZLO CALLAO":{"2026-03-26":4151},"YA NO":{"2026-03-26":4483},"TOP TIER":{"2026-03-26":3856}}}
+{
+  "lastUpdated": "2026-03-28T17:38:35Z",
+  "albumLiveTotal": 1009130,
+  "liveTotals": {
+    "CUANDO ESCRIBÍA ASIMETRÍA": 306959,
+    "MAN OF WORD": 53237,
+    "ATBLM": 246210,
+    "CALL ME": 53296,
+    "ALQUILER": 41540,
+    "HIELO": 44148,
+    "UN GUSTO": 73656,
+    "CHANGES": 45914,
+    "OJOS TRISTES": 44835,
+    "HAZLO CALLAO": 32347,
+    "YA NO": 36014,
+    "TOP TIER": 30974
+  },
+  "dailyLog": [
+    {
+      "date": "2026-03-19",
+      "label": "D19",
+      "note": "~1 h post-lanzamiento (20:00 UTC-3)",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 5814,
+        "ATBLM": 8513,
+        "UN GUSTO": 806,
+        "CALL ME": 1032,
+        "MAN OF WORD": 1293,
+        "OJOS TRISTES": 649,
+        "HIELO": 753,
+        "ALQUILER": 879,
+        "CHANGES": 676,
+        "YA NO": 472,
+        "HAZLO CALLAO": 486,
+        "TOP TIER": 383
+      }
+    },
+    {
+      "date": "2026-03-20",
+      "label": "D20",
+      "note": "Primer día completo",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 10875,
+        "ATBLM": 14710,
+        "UN GUSTO": 16320,
+        "CALL ME": 11305,
+        "MAN OF WORD": 10998,
+        "OJOS TRISTES": 10905,
+        "HIELO": 9626,
+        "ALQUILER": 9166,
+        "CHANGES": 9170,
+        "YA NO": 8069,
+        "HAZLO CALLAO": 7584,
+        "TOP TIER": 7061
+      }
+    },
+    {
+      "date": "2026-03-21",
+      "label": "D21",
+      "note": "Segundo día completo",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 7079,
+        "ATBLM": 9742,
+        "UN GUSTO": 8254,
+        "CALL ME": 6294,
+        "MAN OF WORD": 5968,
+        "OJOS TRISTES": 5708,
+        "HIELO": 5334,
+        "ALQUILER": 4822,
+        "CHANGES": 5213,
+        "YA NO": 4388,
+        "HAZLO CALLAO": 4084,
+        "TOP TIER": 3864
+      }
+    },
+    {
+      "date": "2026-03-22",
+      "label": "D22",
+      "note": "Tercer día completo",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 5464,
+        "ATBLM": 7568,
+        "UN GUSTO": 6120,
+        "CALL ME": 4926,
+        "MAN OF WORD": 4487,
+        "OJOS TRISTES": 4220,
+        "HIELO": 4022,
+        "ALQUILER": 3493,
+        "CHANGES": 4534,
+        "YA NO": 3470,
+        "HAZLO CALLAO": 2966,
+        "TOP TIER": 2879
+      }
+    },
+    {
+      "date": "2026-03-23",
+      "label": "D23",
+      "note": "Streams diarios",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 7009,
+        "ATBLM": 9125,
+        "UN GUSTO": 8370,
+        "CALL ME": 6136,
+        "MAN OF WORD": 6133,
+        "OJOS TRISTES": 5271,
+        "HIELO": 5194,
+        "CHANGES": 5236,
+        "ALQUILER": 5553,
+        "YA NO": 4314,
+        "HAZLO CALLAO": 3777,
+        "TOP TIER": 3717
+      }
+    },
+    {
+      "date": "2026-03-24",
+      "label": "D24",
+      "note": "Streams diarios",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 6160,
+        "ATBLM": 8461,
+        "MAN OF WORD": 6141,
+        "CALL ME": 5678,
+        "ALQUILER": 5627,
+        "UN GUSTO": 7786,
+        "CHANGES": 5029,
+        "OJOS TRISTES": 4719,
+        "HAZLO CALLAO": 3799,
+        "YA NO": 3887,
+        "HIELO": 4818,
+        "TOP TIER": 3315
+      }
+    },
+    {
+      "date": "2026-03-25",
+      "label": "D+6",
+      "totalStreams": 73057,
+      "perTrack": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 7040,
+        "MAN OF WORD": 7291,
+        "ATBLM": 10220,
+        "CALL ME": 6589,
+        "ALQUILER": 4868,
+        "HIELO": 5159,
+        "UN GUSTO": 9482,
+        "CHANGES": 5834,
+        "OJOS TRISTES": 4887,
+        "HAZLO CALLAO": 3923,
+        "YA NO": 4190,
+        "TOP TIER": 3574
+      },
+      "source": "S4A API song-stats-view/v1 stats timeseries",
+      "corrected": true,
+      "correctedAt": "2026-03-28T17:38:35Z"
+    },
+    {
+      "date": "2026-03-26",
+      "label": "D+7",
+      "totalStreams": 63402,
+      "perTrack": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 6802,
+        "MAN OF WORD": 5579,
+        "ATBLM": 8899,
+        "CALL ME": 5870,
+        "ALQUILER": 3579,
+        "HIELO": 4525,
+        "UN GUSTO": 8580,
+        "CHANGES": 5417,
+        "OJOS TRISTES": 4364,
+        "HAZLO CALLAO": 3056,
+        "YA NO": 3597,
+        "TOP TIER": 3134
+      },
+      "source": "S4A API song-stats-view/v1 stats timeseries",
+      "corrected": true,
+      "correctedAt": "2026-03-28T17:38:35Z"
+    },
+    {
+      "date": "2026-03-27",
+      "label": "D+8",
+      "totalStreams": 60670,
+      "perTrack": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 6234,
+        "MAN OF WORD": 5347,
+        "ATBLM": 9147,
+        "CALL ME": 5466,
+        "ALQUILER": 3553,
+        "HIELO": 4717,
+        "UN GUSTO": 7940,
+        "CHANGES": 4805,
+        "OJOS TRISTES": 4115,
+        "HAZLO CALLAO": 2672,
+        "YA NO": 3627,
+        "TOP TIER": 3047
+      },
+      "source": "S4A API song-stats-view/v1 stats timeseries",
+      "corrected": true,
+      "correctedAt": "2026-03-28T17:38:35Z"
+    },
+    {
+      "date": "2026-03-28",
+      "label": "D+9",
+      "totalStreams": 5906,
+      "note": "partial day delta (liveTotal difference), per-track daily not yet available",
+      "source": "S4A API song-stats-view/v2 info (live total delta)"
+    }
+  ],
+  "releaseEngagements": {
+    "6EPWuQUeAaRp61S8qG0fri": {
+      "name": "AMOR FIADO",
+      "type": "album",
+      "scrapedAt": "2026-03-24T17:21:41.908-03:00",
+      "dayNum": 6,
+      "releaseDate": "Mar 19, 2026",
+      "segments": {
+        "monthly": {
+          "total": 415041,
+          "listeners": 16962,
+          "pct": 4.1
+        },
+        "super": {
+          "total": 33825,
+          "listeners": 10697,
+          "pct": 31.6
+        },
+        "moderate": {
+          "total": 131139,
+          "listeners": 5476,
+          "pct": 4.2
+        },
+        "light": {
+          "total": 250077,
+          "listeners": 1979,
+          "pct": 0.8
+        }
+      },
+      "streamedThisRelease": {
+        "monthly": [
+          {
+            "date": "2026-03-19",
+            "y": 1603
+          },
+          {
+            "date": "2026-03-20",
+            "y": 9712
+          },
+          {
+            "date": "2026-03-21",
+            "y": 12462
+          },
+          {
+            "date": "2026-03-22",
+            "y": 14512
+          },
+          {
+            "date": "2026-03-23",
+            "y": 16962
+          }
+        ],
+        "super": [
+          {
+            "date": "2026-03-19",
+            "y": 1194
+          },
+          {
+            "date": "2026-03-20",
+            "y": 6590
+          },
+          {
+            "date": "2026-03-21",
+            "y": 8239
+          },
+          {
+            "date": "2026-03-22",
+            "y": 9382
+          },
+          {
+            "date": "2026-03-23",
+            "y": 10697
+          }
+        ],
+        "moderate": [
+          {
+            "date": "2026-03-19",
+            "y": 348
+          },
+          {
+            "date": "2026-03-20",
+            "y": 2498
+          },
+          {
+            "date": "2026-03-21",
+            "y": 3573
+          },
+          {
+            "date": "2026-03-22",
+            "y": 4419
+          },
+          {
+            "date": "2026-03-23",
+            "y": 5476
+          }
+        ],
+        "light": [
+          {
+            "date": "2026-03-19",
+            "y": 61
+          },
+          {
+            "date": "2026-03-20",
+            "y": 785
+          },
+          {
+            "date": "2026-03-21",
+            "y": 1170
+          },
+          {
+            "date": "2026-03-22",
+            "y": 1539
+          },
+          {
+            "date": "2026-03-23",
+            "y": 1979
+          }
+        ]
+      },
+      "history": [
+        {
+          "date": "2026-03-23",
+          "dayNum": 4,
+          "segments": {
+            "monthly": {
+              "total": 414288,
+              "listeners": 17836,
+              "pct": 4.3
+            },
+            "super": {
+              "total": 33357,
+              "listeners": 10094,
+              "pct": 30.3
+            },
+            "moderate": {
+              "total": 131037,
+              "listeners": 5875,
+              "pct": 4.5
+            },
+            "light": {
+              "total": 249894,
+              "listeners": 2722,
+              "pct": 1.1
+            }
+          }
+        },
+        {
+          "date": "2026-03-24",
+          "dayNum": 6,
+          "segments": {
+            "monthly": {
+              "total": 415041,
+              "listeners": 16962,
+              "pct": 4.1
+            },
+            "super": {
+              "total": 33825,
+              "listeners": 10697,
+              "pct": 31.6
+            },
+            "moderate": {
+              "total": 131139,
+              "listeners": 5476,
+              "pct": 4.2
+            },
+            "light": {
+              "total": 250077,
+              "listeners": 1979,
+              "pct": 0.8
+            }
+          }
+        }
+      ],
+      "campaigns": []
+    },
+    "7GqXSd7cxRcsfQV6S2cHUM": {
+      "name": "ATBLM",
+      "type": "single",
+      "scrapedAt": "2026-03-24T17:21:41.908-03:00",
+      "dayNum": 27,
+      "releaseDate": "Feb 26, 2026",
+      "segments": {
+        "monthly": {
+          "total": 415041,
+          "listeners": 25090,
+          "pct": 6
+        },
+        "super": {
+          "total": 33825,
+          "listeners": 12081,
+          "pct": 35.7
+        },
+        "moderate": {
+          "total": 131139,
+          "listeners": 11419,
+          "pct": 8.7
+        },
+        "light": {
+          "total": 250077,
+          "listeners": 6119,
+          "pct": 2.4
+        }
+      },
+      "streamedThisRelease": {
+        "monthly": [
+          {
+            "date": "2026-02-26",
+            "y": 690
+          },
+          {
+            "date": "2026-02-27",
+            "y": 5942
+          },
+          {
+            "date": "2026-02-28",
+            "y": 7902
+          },
+          {
+            "date": "2026-03-01",
+            "y": 9336
+          },
+          {
+            "date": "2026-03-02",
+            "y": 10852
+          },
+          {
+            "date": "2026-03-03",
+            "y": 12278
+          },
+          {
+            "date": "2026-03-04",
+            "y": 13341
+          },
+          {
+            "date": "2026-03-05",
+            "y": 14085
+          },
+          {
+            "date": "2026-03-06",
+            "y": 14821
+          },
+          {
+            "date": "2026-03-07",
+            "y": 15563
+          },
+          {
+            "date": "2026-03-08",
+            "y": 16229
+          },
+          {
+            "date": "2026-03-09",
+            "y": 17042
+          },
+          {
+            "date": "2026-03-10",
+            "y": 17784
+          },
+          {
+            "date": "2026-03-11",
+            "y": 18484
+          },
+          {
+            "date": "2026-03-12",
+            "y": 19187
+          },
+          {
+            "date": "2026-03-13",
+            "y": 19980
+          },
+          {
+            "date": "2026-03-14",
+            "y": 20561
+          },
+          {
+            "date": "2026-03-15",
+            "y": 21088
+          },
+          {
+            "date": "2026-03-16",
+            "y": 21776
+          },
+          {
+            "date": "2026-03-17",
+            "y": 22409
+          },
+          {
+            "date": "2026-03-18",
+            "y": 23153
+          },
+          {
+            "date": "2026-03-19",
+            "y": 23890
+          },
+          {
+            "date": "2026-03-20",
+            "y": 24292
+          },
+          {
+            "date": "2026-03-21",
+            "y": 24598
+          },
+          {
+            "date": "2026-03-22",
+            "y": 24821
+          },
+          {
+            "date": "2026-03-23",
+            "y": 25090
+          }
+        ],
+        "super": [
+          {
+            "date": "2026-02-26",
+            "y": 453
+          },
+          {
+            "date": "2026-02-27",
+            "y": 3143
+          },
+          {
+            "date": "2026-02-28",
+            "y": 4037
+          },
+          {
+            "date": "2026-03-01",
+            "y": 4691
+          },
+          {
+            "date": "2026-03-02",
+            "y": 5391
+          },
+          {
+            "date": "2026-03-03",
+            "y": 6061
+          },
+          {
+            "date": "2026-03-04",
+            "y": 6562
+          },
+          {
+            "date": "2026-03-05",
+            "y": 6914
+          },
+          {
+            "date": "2026-03-06",
+            "y": 7275
+          },
+          {
+            "date": "2026-03-07",
+            "y": 7628
+          },
+          {
+            "date": "2026-03-08",
+            "y": 7905
+          },
+          {
+            "date": "2026-03-09",
+            "y": 8289
+          },
+          {
+            "date": "2026-03-10",
+            "y": 8622
+          },
+          {
+            "date": "2026-03-11",
+            "y": 8918
+          },
+          {
+            "date": "2026-03-12",
+            "y": 9257
+          },
+          {
+            "date": "2026-03-13",
+            "y": 9586
+          },
+          {
+            "date": "2026-03-14",
+            "y": 9859
+          },
+          {
+            "date": "2026-03-15",
+            "y": 10061
+          },
+          {
+            "date": "2026-03-16",
+            "y": 10348
+          },
+          {
+            "date": "2026-03-17",
+            "y": 10654
+          },
+          {
+            "date": "2026-03-18",
+            "y": 10988
+          },
+          {
+            "date": "2026-03-19",
+            "y": 11363
+          },
+          {
+            "date": "2026-03-20",
+            "y": 11596
+          },
+          {
+            "date": "2026-03-21",
+            "y": 11773
+          },
+          {
+            "date": "2026-03-22",
+            "y": 11914
+          },
+          {
+            "date": "2026-03-23",
+            "y": 12081
+          }
+        ],
+        "moderate": [
+          {
+            "date": "2026-02-26",
+            "y": 163
+          },
+          {
+            "date": "2026-02-27",
+            "y": 1869
+          },
+          {
+            "date": "2026-02-28",
+            "y": 2636
+          },
+          {
+            "date": "2026-03-01",
+            "y": 3227
+          },
+          {
+            "date": "2026-03-02",
+            "y": 3913
+          },
+          {
+            "date": "2026-03-03",
+            "y": 4563
+          },
+          {
+            "date": "2026-03-04",
+            "y": 5096
+          },
+          {
+            "date": "2026-03-05",
+            "y": 5490
+          },
+          {
+            "date": "2026-03-06",
+            "y": 5833
+          },
+          {
+            "date": "2026-03-07",
+            "y": 6180
+          },
+          {
+            "date": "2026-03-08",
+            "y": 6538
+          },
+          {
+            "date": "2026-03-09",
+            "y": 6951
+          },
+          {
+            "date": "2026-03-10",
+            "y": 7362
+          },
+          {
+            "date": "2026-03-11",
+            "y": 7752
+          },
+          {
+            "date": "2026-03-12",
+            "y": 8120
+          },
+          {
+            "date": "2026-03-13",
+            "y": 8537
+          },
+          {
+            "date": "2026-03-14",
+            "y": 8846
+          },
+          {
+            "date": "2026-03-15",
+            "y": 9140
+          },
+          {
+            "date": "2026-03-16",
+            "y": 9533
+          },
+          {
+            "date": "2026-03-17",
+            "y": 9911
+          },
+          {
+            "date": "2026-03-18",
+            "y": 10349
+          },
+          {
+            "date": "2026-03-19",
+            "y": 10730
+          },
+          {
+            "date": "2026-03-20",
+            "y": 10989
+          },
+          {
+            "date": "2026-03-21",
+            "y": 11171
+          },
+          {
+            "date": "2026-03-22",
+            "y": 11289
+          },
+          {
+            "date": "2026-03-23",
+            "y": 11419
+          }
+        ],
+        "light": [
+          {
+            "date": "2026-02-26",
+            "y": 74
+          },
+          {
+            "date": "2026-02-27",
+            "y": 958
+          },
+          {
+            "date": "2026-02-28",
+            "y": 1449
+          },
+          {
+            "date": "2026-03-01",
+            "y": 1798
+          },
+          {
+            "date": "2026-03-02",
+            "y": 2139
+          },
+          {
+            "date": "2026-03-03",
+            "y": 2482
+          },
+          {
+            "date": "2026-03-04",
+            "y": 2734
+          },
+          {
+            "date": "2026-03-05",
+            "y": 2937
+          },
+          {
+            "date": "2026-03-06",
+            "y": 3163
+          },
+          {
+            "date": "2026-03-07",
+            "y": 3376
+          },
+          {
+            "date": "2026-03-08",
+            "y": 3564
+          },
+          {
+            "date": "2026-03-09",
+            "y": 3760
+          },
+          {
+            "date": "2026-03-10",
+            "y": 3964
+          },
+          {
+            "date": "2026-03-11",
+            "y": 4150
+          },
+          {
+            "date": "2026-03-12",
+            "y": 4368
+          },
+          {
+            "date": "2026-03-13",
+            "y": 4602
+          },
+          {
+            "date": "2026-03-14",
+            "y": 4800
+          },
+          {
+            "date": "2026-03-15",
+            "y": 4974
+          },
+          {
+            "date": "2026-03-16",
+            "y": 5167
+          },
+          {
+            "date": "2026-03-17",
+            "y": 5361
+          },
+          {
+            "date": "2026-03-18",
+            "y": 5570
+          },
+          {
+            "date": "2026-03-19",
+            "y": 5740
+          },
+          {
+            "date": "2026-03-20",
+            "y": 5871
+          },
+          {
+            "date": "2026-03-21",
+            "y": 5962
+          },
+          {
+            "date": "2026-03-22",
+            "y": 6033
+          },
+          {
+            "date": "2026-03-23",
+            "y": 6119
+          }
+        ]
+      },
+      "history": [
+        {
+          "date": "2026-03-24",
+          "dayNum": 27,
+          "segments": {
+            "monthly": {
+              "total": 415041,
+              "listeners": 25090,
+              "pct": 6
+            },
+            "super": {
+              "total": 33825,
+              "listeners": 12081,
+              "pct": 35.7
+            },
+            "moderate": {
+              "total": 131139,
+              "listeners": 11419,
+              "pct": 8.7
+            },
+            "light": {
+              "total": 250077,
+              "listeners": 6119,
+              "pct": 2.4
+            }
+          }
+        }
+      ],
+      "campaigns": []
+    },
+    "4QCM6aNuH8D1eBm1qp07Jg": {
+      "name": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "single",
+      "scrapedAt": "2026-03-23T12:06:43-03:00",
+      "dayNum": 28,
+      "releaseDate": "Feb 5, 2026",
+      "noLongerUpdating": true,
+      "segments": {
+        "monthly": {
+          "total": 404806,
+          "listeners": 23738,
+          "pct": 5.9
+        },
+        "super": {
+          "total": 29112,
+          "listeners": 11622,
+          "pct": 39.9
+        },
+        "moderate": {
+          "total": 127186,
+          "listeners": 10714,
+          "pct": 8.4
+        },
+        "light": {
+          "total": 248508,
+          "listeners": 5350,
+          "pct": 2.2
+        }
+      },
+      "streamedThisRelease": {
+        "monthly": [
+          {
+            "date": "2026-02-05",
+            "y": 878
+          },
+          {
+            "date": "2026-02-06",
+            "y": 6781
+          },
+          {
+            "date": "2026-02-07",
+            "y": 8722
+          },
+          {
+            "date": "2026-02-08",
+            "y": 9877
+          },
+          {
+            "date": "2026-02-09",
+            "y": 11216
+          },
+          {
+            "date": "2026-02-10",
+            "y": 12554
+          },
+          {
+            "date": "2026-02-11",
+            "y": 13938
+          },
+          {
+            "date": "2026-02-12",
+            "y": 14772
+          },
+          {
+            "date": "2026-02-13",
+            "y": 15555
+          },
+          {
+            "date": "2026-02-14",
+            "y": 16120
+          },
+          {
+            "date": "2026-02-15",
+            "y": 16484
+          },
+          {
+            "date": "2026-02-16",
+            "y": 16933
+          },
+          {
+            "date": "2026-02-17",
+            "y": 17350
+          },
+          {
+            "date": "2026-02-18",
+            "y": 17777
+          },
+          {
+            "date": "2026-02-19",
+            "y": 18205
+          },
+          {
+            "date": "2026-02-20",
+            "y": 18760
+          },
+          {
+            "date": "2026-02-21",
+            "y": 19177
+          },
+          {
+            "date": "2026-02-22",
+            "y": 19595
+          },
+          {
+            "date": "2026-02-23",
+            "y": 20103
+          },
+          {
+            "date": "2026-02-24",
+            "y": 20589
+          },
+          {
+            "date": "2026-02-25",
+            "y": 21131
+          },
+          {
+            "date": "2026-02-26",
+            "y": 21803
+          },
+          {
+            "date": "2026-02-27",
+            "y": 22255
+          },
+          {
+            "date": "2026-02-28",
+            "y": 22546
+          },
+          {
+            "date": "2026-03-01",
+            "y": 22787
+          },
+          {
+            "date": "2026-03-02",
+            "y": 23093
+          },
+          {
+            "date": "2026-03-03",
+            "y": 23402
+          },
+          {
+            "date": "2026-03-04",
+            "y": 23738
+          }
+        ],
+        "super": [
+          {
+            "date": "2026-02-05",
+            "y": 518
+          },
+          {
+            "date": "2026-02-06",
+            "y": 3424
+          },
+          {
+            "date": "2026-02-07",
+            "y": 4268
+          },
+          {
+            "date": "2026-02-08",
+            "y": 4753
+          },
+          {
+            "date": "2026-02-09",
+            "y": 5341
+          },
+          {
+            "date": "2026-02-10",
+            "y": 5953
+          },
+          {
+            "date": "2026-02-11",
+            "y": 6523
+          },
+          {
+            "date": "2026-02-12",
+            "y": 6935
+          },
+          {
+            "date": "2026-02-13",
+            "y": 7349
+          },
+          {
+            "date": "2026-02-14",
+            "y": 7630
+          },
+          {
+            "date": "2026-02-15",
+            "y": 7834
+          },
+          {
+            "date": "2026-02-16",
+            "y": 8047
+          },
+          {
+            "date": "2026-02-17",
+            "y": 8284
+          },
+          {
+            "date": "2026-02-18",
+            "y": 8503
+          },
+          {
+            "date": "2026-02-19",
+            "y": 8710
+          },
+          {
+            "date": "2026-02-20",
+            "y": 8969
+          },
+          {
+            "date": "2026-02-21",
+            "y": 9165
+          },
+          {
+            "date": "2026-02-22",
+            "y": 9329
+          },
+          {
+            "date": "2026-02-23",
+            "y": 9593
+          },
+          {
+            "date": "2026-02-24",
+            "y": 9831
+          },
+          {
+            "date": "2026-02-25",
+            "y": 10072
+          },
+          {
+            "date": "2026-02-26",
+            "y": 10346
+          },
+          {
+            "date": "2026-02-27",
+            "y": 10611
+          },
+          {
+            "date": "2026-02-28",
+            "y": 10808
+          },
+          {
+            "date": "2026-03-01",
+            "y": 10968
+          },
+          {
+            "date": "2026-03-02",
+            "y": 11157
+          },
+          {
+            "date": "2026-03-03",
+            "y": 11393
+          },
+          {
+            "date": "2026-03-04",
+            "y": 11622
+          }
+        ],
+        "moderate": [
+          {
+            "date": "2026-02-05",
+            "y": 228
+          },
+          {
+            "date": "2026-02-06",
+            "y": 2223
+          },
+          {
+            "date": "2026-02-07",
+            "y": 3067
+          },
+          {
+            "date": "2026-02-08",
+            "y": 3575
+          },
+          {
+            "date": "2026-02-09",
+            "y": 4206
+          },
+          {
+            "date": "2026-02-10",
+            "y": 4831
+          },
+          {
+            "date": "2026-02-11",
+            "y": 5479
+          },
+          {
+            "date": "2026-02-12",
+            "y": 5909
+          },
+          {
+            "date": "2026-02-13",
+            "y": 6284
+          },
+          {
+            "date": "2026-02-14",
+            "y": 6574
+          },
+          {
+            "date": "2026-02-15",
+            "y": 6761
+          },
+          {
+            "date": "2026-02-16",
+            "y": 6973
+          },
+          {
+            "date": "2026-02-17",
+            "y": 7197
+          },
+          {
+            "date": "2026-02-18",
+            "y": 7436
+          },
+          {
+            "date": "2026-02-19",
+            "y": 7660
+          },
+          {
+            "date": "2026-02-20",
+            "y": 7921
+          },
+          {
+            "date": "2026-02-21",
+            "y": 8116
+          },
+          {
+            "date": "2026-02-22",
+            "y": 8338
+          },
+          {
+            "date": "2026-02-23",
+            "y": 8591
+          },
+          {
+            "date": "2026-02-24",
+            "y": 8874
+          },
+          {
+            "date": "2026-02-25",
+            "y": 9186
+          },
+          {
+            "date": "2026-02-26",
+            "y": 9557
+          },
+          {
+            "date": "2026-02-27",
+            "y": 9777
+          },
+          {
+            "date": "2026-02-28",
+            "y": 9971
+          },
+          {
+            "date": "2026-03-01",
+            "y": 10134
+          },
+          {
+            "date": "2026-03-02",
+            "y": 10333
+          },
+          {
+            "date": "2026-03-03",
+            "y": 10520
+          },
+          {
+            "date": "2026-03-04",
+            "y": 10714
+          }
+        ],
+        "light": [
+          {
+            "date": "2026-02-05",
+            "y": 132
+          },
+          {
+            "date": "2026-02-06",
+            "y": 1190
+          },
+          {
+            "date": "2026-02-07",
+            "y": 1625
+          },
+          {
+            "date": "2026-02-08",
+            "y": 1929
+          },
+          {
+            "date": "2026-02-09",
+            "y": 2265
+          },
+          {
+            "date": "2026-02-10",
+            "y": 2572
+          },
+          {
+            "date": "2026-02-11",
+            "y": 2956
+          },
+          {
+            "date": "2026-02-12",
+            "y": 3170
+          },
+          {
+            "date": "2026-02-13",
+            "y": 3360
+          },
+          {
+            "date": "2026-02-14",
+            "y": 3506
+          },
+          {
+            "date": "2026-02-15",
+            "y": 3614
+          },
+          {
+            "date": "2026-02-16",
+            "y": 3717
+          },
+          {
+            "date": "2026-02-17",
+            "y": 3835
+          },
+          {
+            "date": "2026-02-18",
+            "y": 3914
+          },
+          {
+            "date": "2026-02-19",
+            "y": 4043
+          },
+          {
+            "date": "2026-02-20",
+            "y": 4184
+          },
+          {
+            "date": "2026-02-21",
+            "y": 4298
+          },
+          {
+            "date": "2026-02-22",
+            "y": 4397
+          },
+          {
+            "date": "2026-02-23",
+            "y": 4539
+          },
+          {
+            "date": "2026-02-24",
+            "y": 4649
+          },
+          {
+            "date": "2026-02-25",
+            "y": 4806
+          },
+          {
+            "date": "2026-02-26",
+            "y": 4972
+          },
+          {
+            "date": "2026-02-27",
+            "y": 5076
+          },
+          {
+            "date": "2026-02-28",
+            "y": 5125
+          },
+          {
+            "date": "2026-03-01",
+            "y": 5176
+          },
+          {
+            "date": "2026-03-02",
+            "y": 5236
+          },
+          {
+            "date": "2026-03-03",
+            "y": 5288
+          },
+          {
+            "date": "2026-03-04",
+            "y": 5350
+          }
+        ]
+      },
+      "history": [],
+      "campaigns": []
+    }
+  },
+  "liveHistory": [
+    {
+      "date": "2026-03-22",
+      "label": "D+3",
+      "recordedAt": "2026-03-22T15:00:00-03:00",
+      "albumTotal": 678677,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 273884,
+        "ATBLM": 200669,
+        "UN GUSTO": 31749,
+        "CALL ME": 23750,
+        "MAN OF WORD": 22919,
+        "OJOS TRISTES": 21652,
+        "HIELO": 19885,
+        "CHANGES": 19758,
+        "ALQUILER": 18508,
+        "YA NO": 16522,
+        "HAZLO CALLAO": 15226,
+        "TOP TIER": 14298
+      }
+    },
+    {
+      "date": "2026-03-23",
+      "label": "D+4",
+      "recordedAt": "2026-03-23T12:06:43-03:00",
+      "albumTotal": 704025,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 276622,
+        "ATBLM": 204181,
+        "UN GUSTO": 34953,
+        "CALL ME": 26075,
+        "MAN OF WORD": 25068,
+        "OJOS TRISTES": 23695,
+        "HIELO": 21708,
+        "CHANGES": 21535,
+        "ALQUILER": 20058,
+        "YA NO": 18126,
+        "HAZLO CALLAO": 16594,
+        "TOP TIER": 15674
+      }
+    },
+    {
+      "date": "2026-03-24",
+      "label": "D+5",
+      "recordedAt": "2026-03-24T17:29:42-03:00",
+      "albumTotal": 795837,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 285356,
+        "ATBLM": 215877,
+        "UN GUSTO": 45750,
+        "CALL ME": 34082,
+        "MAN OF WORD": 33650,
+        "OJOS TRISTES": 30407,
+        "HIELO": 28625,
+        "CHANGES": 28529,
+        "ALQUILER": 27476,
+        "YA NO": 23799,
+        "HAZLO CALLAO": 21713,
+        "TOP TIER": 20573
+      }
+    },
+    {
+      "date": "2026-03-25",
+      "label": "D+6",
+      "dailyTotal": 73057,
+      "corrected": true,
+      "source": "S4A API timeseries"
+    },
+    {
+      "date": "2026-03-26",
+      "label": "D+7",
+      "dailyTotal": 63402,
+      "corrected": true,
+      "source": "S4A API timeseries"
+    },
+    {
+      "date": "2026-03-27",
+      "label": "D+8",
+      "dailyTotal": 60670,
+      "corrected": true,
+      "source": "S4A API timeseries"
+    },
+    {
+      "date": "2026-03-28",
+      "label": "D+9",
+      "albumLiveTotal": 1009130,
+      "dailyDelta": 5906,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 306959,
+        "MAN OF WORD": 53237,
+        "ATBLM": 246210,
+        "CALL ME": 53296,
+        "ALQUILER": 41540,
+        "HIELO": 44148,
+        "UN GUSTO": 73656,
+        "CHANGES": 45914,
+        "OJOS TRISTES": 44835,
+        "HAZLO CALLAO": 32347,
+        "YA NO": 36014,
+        "TOP TIER": 30974
+      },
+      "source": "S4A API song-stats-view/v2 info"
+    }
+  ],
+  "trackMetricsMeta": {
+    "periodLabel": "Feb 27 – Mar 26, 2026",
+    "scrapedAt": "2026-03-27T12:00:00-03:00"
+  },
+  "trackMetrics": {
+    "CUANDO ESCRIBÍA ASIMETRÍA": {
+      "songId": "3LodenBjwz6GZbD8ZQVLRC",
+      "streams28d": 146886,
+      "listeners": 47352,
+      "streamsPerListener": 3.102,
+      "playlistAdds": 3541,
+      "saves": 10268,
+      "prevPeriod": 145627,
+      "change": 0.9,
+      "algorithmicStreams": 37065,
+      "algorithmicPrev": 45529,
+      "algorithmicChange": -18.6
+    },
+    "MAN OF WORD": {
+      "songId": "5nfkcy3ZVaDo3VInn1OBCu",
+      "streams28d": 47890,
+      "listeners": 19719,
+      "streamsPerListener": 2.429,
+      "playlistAdds": 1945,
+      "saves": 8882,
+      "prevPeriod": 42311,
+      "change": 13.2,
+      "algorithmicStreams": 5880,
+      "algorithmicPrev": null,
+      "algorithmicChange": null
+    },
+    "ATBLM": {
+      "songId": "4dUDowRcJAjsZw9xV9esjh",
+      "streams28d": 236112,
+      "listeners": 75245,
+      "streamsPerListener": 3.138,
+      "playlistAdds": 8732,
+      "saves": 18678,
+      "prevPeriod": 228164,
+      "change": 3.5,
+      "algorithmicStreams": 67651,
+      "algorithmicPrev": 3,
+      "algorithmicChange": 2254933.3
+    },
+    "CALL ME": {
+      "songId": "1PazN55q85De58h0NXP8ZO",
+      "streams28d": 47830,
+      "listeners": 15641,
+      "streamsPerListener": 3.058,
+      "playlistAdds": 2195,
+      "saves": 8852,
+      "prevPeriod": 41960,
+      "change": 14.0,
+      "algorithmicStreams": 2153,
+      "algorithmicPrev": null,
+      "algorithmicChange": null
+    },
+    "ALQUILER": {
+      "songId": "3sKcIP464G9eNWC6BLQbJn",
+      "streams28d": 37987,
+      "listeners": 17196,
+      "streamsPerListener": 2.209,
+      "playlistAdds": 1439,
+      "saves": 8203,
+      "prevPeriod": 34408,
+      "change": 10.4,
+      "algorithmicStreams": 4780,
+      "algorithmicPrev": null,
+      "algorithmicChange": null
+    },
+    "HIELO": {
+      "songId": "2CuCRfK2mLPFZXDalEZtmw",
+      "streams28d": 39431,
+      "listeners": 13552,
+      "streamsPerListener": 2.91,
+      "playlistAdds": 1866,
+      "saves": 8560,
+      "prevPeriod": 34906,
+      "change": 13.0,
+      "algorithmicStreams": 1913,
+      "algorithmicPrev": null,
+      "algorithmicChange": null
+    },
+    "UN GUSTO": {
+      "songId": "74XvuYXS9VjhlnEn9Ctf7y",
+      "streams28d": 65718,
+      "listeners": 27911,
+      "streamsPerListener": 2.355,
+      "playlistAdds": 3139,
+      "saves": 10480,
+      "prevPeriod": 57138,
+      "change": 15.0,
+      "algorithmicStreams": 15821,
+      "algorithmicPrev": null,
+      "algorithmicChange": null
+    },
+    "CHANGES": {
+      "songId": "5nZTTvDpDsF5TqdqSlHq6m",
+      "streams28d": 41109,
+      "listeners": 16082,
+      "streamsPerListener": 2.556,
+      "playlistAdds": 1850,
+      "saves": 8588,
+      "prevPeriod": 35692,
+      "change": 15.2,
+      "algorithmicStreams": 5285,
+      "algorithmicPrev": null,
+      "algorithmicChange": null
+    },
+    "OJOS TRISTES": {
+      "songId": "2dO9tmd62ILh8uwew2IgXF",
+      "streams28d": 40723,
+      "listeners": 15894,
+      "streamsPerListener": 2.562,
+      "playlistAdds": 1991,
+      "saves": 8762,
+      "prevPeriod": 36359,
+      "change": 12.0,
+      "algorithmicStreams": 3910,
+      "algorithmicPrev": null,
+      "algorithmicChange": null
+    },
+    "HAZLO CALLAO": {
+      "songId": "1gchScLxTPJQ6LSmmJsKVP",
+      "streams28d": 29675,
+      "listeners": 12939,
+      "streamsPerListener": 2.293,
+      "playlistAdds": 1394,
+      "saves": 8105,
+      "prevPeriod": 26619,
+      "change": 11.5,
+      "algorithmicStreams": 2828,
+      "algorithmicPrev": null,
+      "algorithmicChange": null
+    },
+    "YA NO": {
+      "songId": "6j8Srcc8XwIQyRbHabWqDM",
+      "streams28d": 32387,
+      "listeners": 11271,
+      "streamsPerListener": 2.873,
+      "playlistAdds": 1669,
+      "saves": 8349,
+      "prevPeriod": 28790,
+      "change": 12.5,
+      "algorithmicStreams": 712,
+      "algorithmicPrev": null,
+      "algorithmicChange": null
+    },
+    "TOP TIER": {
+      "songId": "7JThT6NTMxA8gB2ZBYjEDu",
+      "streams28d": 27927,
+      "listeners": 10410,
+      "streamsPerListener": 2.683,
+      "playlistAdds": 1506,
+      "saves": 8213,
+      "prevPeriod": 24793,
+      "change": 12.6,
+      "algorithmicStreams": 817,
+      "algorithmicPrev": null,
+      "algorithmicChange": null
+    }
+  },
+  "campaignContext": {
+    "source": "DPR MKT follow-up + Estrategia Álbum 2026",
+    "updatedAt": "2026-03-24",
+    "currentPhase": {
+      "phase": 2,
+      "name": "Awareness + Conversión",
+      "period": "Marzo 2026",
+      "status": "active"
+    },
+    "nextPhase": {
+      "phase": 3,
+      "name": "Expansión + Mantenimiento",
+      "period": "Abril 2026",
+      "keyMilestones": [
+        "Estreno vlog completo",
+        "Anuncio oficial Amor Fiado Tour (URU / ARG / ESP / MEX)"
+      ]
+    },
+    "focusTrack": "MAN OF WORD",
+    "featContext": [
+      "REI",
+      "DUKI"
+    ],
+    "accionesPendientes": [
+      {
+        "id": 1,
+        "accion": "Influencers explainers",
+        "status": "pendiente"
+      },
+      {
+        "id": 2,
+        "accion": "Contenido Spotify con Juan Minujín",
+        "status": "pendiente"
+      },
+      {
+        "id": 3,
+        "accion": "Streaming con Coker",
+        "status": "pendiente"
+      },
+      {
+        "id": 4,
+        "accion": "Entrevista Tapados de Laburo",
+        "status": "pendiente"
+      },
+      {
+        "id": 6,
+        "accion": "Marquee + Showcase Amor Fiado",
+        "status": "pendiente"
+      },
+      {
+        "id": 7,
+        "accion": "OOH + circuito digital",
+        "status": "pendiente"
+      }
+    ],
+    "mediaWishList": {
+      "argLatam": [
+        "Hispa",
+        "Archivo 909",
+        "Rolling Stone ARG",
+        "Billboard ARG",
+        "Urbana Play FM",
+        "Antezana 247",
+        "Spotify ARG",
+        "La Curva de la Moda",
+        "Le Bananas",
+        "Hype Beast LATAM"
+      ],
+      "spain": [
+        "GQ Spain",
+        "Highxtar",
+        "Fleek Mag",
+        "Grindin Radio",
+        "Binary Spain",
+        "Tag Mag",
+        "Letra Rap",
+        "Neo2 Magazine",
+        "Grimey TV",
+        "Urban Roosters"
+      ]
+    },
+    "streamingWishList": [
+      "Marcos Giles",
+      "Fran Gomez",
+      "El Mortedor",
+      "Goncho",
+      "La Cobra",
+      "Spreen",
+      "Music Radar Clan"
+    ],
+    "amplificadores": {
+      "feats": [
+        "Mesita",
+        "La Sole",
+        "NOG",
+        "REI",
+        "DUKI"
+      ],
+      "influencers": [
+        "Juan Minujín",
+        "Christian Rich",
+        "Delfina Pignatello",
+        "Pauli Echeverria",
+        "Sofi Sica",
+        "Kristel Latecki",
+        "Belén Fourment",
+        "Humphrey Inzillo",
+        "Manuel Buscalia"
+      ]
+    },
+    "brandPartnerships": [
+      "Adidas",
+      "Red Bull",
+      "Jack Daniels",
+      "Converse",
+      "Carhartt Spain",
+      "Vicio",
+      "Pull & Bear"
+    ],
+    "spainTour2026": [
+      {
+        "city": "Bilbao",
+        "venue": "Santana Blue",
+        "date": "2026-11-07"
+      },
+      {
+        "city": "Madrid",
+        "venue": "Uni",
+        "date": "2026-11-12"
+      },
+      {
+        "city": "Barcelona",
+        "venue": "Wolf",
+        "date": "2026-11-13"
+      },
+      {
+        "city": "Sevilla",
+        "venue": "La2",
+        "date": "2026-11-14"
+      },
+      {
+        "city": "Valencia",
+        "venue": "Jerusalem",
+        "date": "2026-11-19"
+      }
+    ],
+    "keyTimelineEvents": [
+      {
+        "date": "2026-02-26",
+        "event": "Estreno ATBLM"
+      },
+      {
+        "date": "2026-03-02",
+        "event": "Anuncio escuchas"
+      },
+      {
+        "date": "2026-03-05",
+        "event": "Countdown Spotify"
+      },
+      {
+        "date": "2026-03-16",
+        "event": "Pop-up INBOX"
+      },
+      {
+        "date": "2026-03-18",
+        "event": "Escucha CABA"
+      },
+      {
+        "date": "2026-03-19",
+        "event": "Escucha + lanzamiento MVD"
+      },
+      {
+        "date": "2026-03-22",
+        "event": "Teaser vlog"
+      },
+      {
+        "date": "2026-03-24",
+        "event": "Primer episodio vlog"
+      }
+    ]
+  },
+  "socialPosts": [
+    {
+      "date": "2026-02-02",
+      "url": "https://www.instagram.com/reel/DURexnHjuy4/",
+      "caption": "CEA teaser con Juan Minujín",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "teaser",
+      "views": 406000,
+      "likes": 17000,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-02-06",
+      "url": "https://www.instagram.com/reel/DUa9-8bjgmB/",
+      "caption": "CUANDO ESCRIBÍA ASIMETRÍA — Ya disponible",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "release",
+      "views": 133000,
+      "likes": 6508,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-02-12",
+      "url": "https://www.instagram.com/reel/DUrNhIvDmv2/",
+      "caption": "AMOR FIADO promo (audio: CEA)",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "promo",
+      "views": 108000,
+      "likes": 5624,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-02-28",
+      "url": "https://www.instagram.com/reel/DVUSGuKjviG/",
+      "caption": "ATBLM — Segundo adelanto",
+      "track": "ATBLM",
+      "type": "release",
+      "views": 169000,
+      "likes": 9620,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-03-10",
+      "url": "https://www.instagram.com/reel/DVuLW64Dssw/",
+      "caption": "Nueve días para AMOR FIADO",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 118000,
+      "likes": 6661,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-03-19",
+      "url": "https://www.instagram.com/reel/DWEezrPjpH9/",
+      "caption": "Gracias Buenos Aires, estrenamos AMOR FIADO",
+      "track": "AMOR FIADO",
+      "type": "launch",
+      "views": 92400,
+      "likes": 5009,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-03-20",
+      "url": "https://www.instagram.com/reel/DWFzDpbjpuS/",
+      "caption": "AMOR FIADO YA DISPONIBLE",
+      "track": "AMOR FIADO",
+      "type": "launch",
+      "views": 99000,
+      "likes": 5873,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-03-21",
+      "url": "https://www.instagram.com/reel/DWJqPCdjqMF/",
+      "caption": "UN GUSTO ft @mesita — Videoclip",
+      "track": "UN GUSTO",
+      "type": "release",
+      "views": 138000,
+      "likes": 8800,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-02-02",
+      "url": "https://www.instagram.com/reel/DURe_gpEmSQ/",
+      "caption": "CUANDO ESCRIBÍA ASIMETRÍA — Estreno este jueves 5/2",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "teaser",
+      "views": 30700,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-05",
+      "url": "https://www.instagram.com/reel/DUZNWhfkqxz/",
+      "caption": "CUANDO ESCRIBÍA ASIMETRÍA — YA DISPONIBLE 🐎",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "release",
+      "views": 46900,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-07",
+      "url": "https://www.instagram.com/reel/DUdVDHpkclS/",
+      "caption": "CUANDO ESCRIBÍA ASIMETRÍA — Un lanzamiento de @zeballos17 con @juanminujin",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "release",
+      "views": 16100,
+      "likes": 672,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-12",
+      "url": "https://www.instagram.com/reel/DUqkUy7EY5T/",
+      "caption": "Capítulo inédito de Jackass por @zeballos17",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "promo",
+      "views": 21500,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-18",
+      "url": "https://www.instagram.com/reel/DU55K4pkaY4/",
+      "caption": "ATBLM",
+      "track": "ATBLM",
+      "type": "teaser",
+      "views": 22800,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-20",
+      "url": "https://www.instagram.com/reel/DU_rZprErde/",
+      "caption": "Podemos volver vos y yo pero nunca nosotros 🐎",
+      "track": "ATBLM",
+      "type": "teaser",
+      "views": 51500,
+      "likes": 3642,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-26",
+      "url": "https://www.instagram.com/reel/DVPTu0tklX6/",
+      "caption": "ATBLM — YA DISPONIBLE",
+      "track": "ATBLM",
+      "type": "release",
+      "views": 24700,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-28",
+      "url": "https://www.instagram.com/reel/DVMaOkPEo85/",
+      "caption": "ATBLM",
+      "track": "ATBLM",
+      "type": "release",
+      "views": 47000,
+      "likes": 3799,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-03-05",
+      "url": "https://www.instagram.com/reel/DVhCSd2kgwC/",
+      "caption": "06 DE MARZO, UN DÍA IMPORTANTE 🐎 ESTÉN PILLOS",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 25500,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-03-09",
+      "url": "https://www.instagram.com/reel/DVqbN4OAG2W/",
+      "caption": "Nos vemos el 18 y 19 para la pre escucha de AMOR FIADO 🇦🇷🇺🇾",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 55900,
+      "likes": 4686,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-03-12",
+      "url": "https://www.instagram.com/reel/DVzI-UxEh_G/",
+      "caption": "Quienes esperan con ansias AMOR FIADO? 19/03 🐎",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 24600,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-03-21",
+      "url": "https://www.instagram.com/reel/DWKDUUvAp1H/",
+      "caption": "UN GUSTO en Vorterix 🐎 @zeballos17 ft @mesita",
+      "track": "UN GUSTO",
+      "type": "release",
+      "views": 16200,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-01-28",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7600558176781520149",
+      "caption": "05.02 @asimetria17",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "teaser",
+      "views": 12300,
+      "likes": 950,
+      "saves": 40,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-01-30",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7601302776626384149",
+      "caption": "Se viene @asimetria17",
+      "track": "AMOR FIADO",
+      "type": "teaser",
+      "views": 60300,
+      "likes": 8121,
+      "saves": 251,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-02-04",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7603157705921957141",
+      "caption": "Es mañana mi gente @asimetria17",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "teaser",
+      "views": 29800,
+      "likes": 4600,
+      "saves": 115,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-02-06",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7603879276328373525",
+      "caption": "Sigo haciendo temas de lo que me gusta",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "release",
+      "views": 44500,
+      "likes": 5922,
+      "saves": 267,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-02-12",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7606141408382160149",
+      "caption": "Pero afuera nada invita a ir #amorfiado",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "promo",
+      "views": 79200,
+      "likes": 11100,
+      "saves": 716,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-02-19",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7608593812587416852",
+      "caption": "ATBLM snippet viral",
+      "track": "ATBLM",
+      "type": "teaser",
+      "views": 185500,
+      "likes": 25800,
+      "saves": 2782,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-02-21",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7609155471529856276",
+      "caption": "ATBLM snippet 2",
+      "track": "ATBLM",
+      "type": "teaser",
+      "views": 136700,
+      "likes": 23200,
+      "saves": 1424,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-02-21",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7609510867570576661",
+      "caption": "ATBLM snippet pool vibes",
+      "track": "ATBLM",
+      "type": "teaser",
+      "views": 66000,
+      "likes": 10800,
+      "saves": 509,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-02-25",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7610835979628203284",
+      "caption": "ATBLM 26/02 Es mañana dalee",
+      "track": "ATBLM",
+      "type": "teaser",
+      "views": 44500,
+      "likes": 7374,
+      "saves": 209,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-02-26",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7611317540157017364",
+      "caption": "ATBLM YA DISPONIBLE @asimetria17",
+      "track": "ATBLM",
+      "type": "release",
+      "views": 39400,
+      "likes": 5563,
+      "saves": 297,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-02-28",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7612070065856433428",
+      "caption": "Segundo adelanto AMOR FIADO — ATBLM video",
+      "track": "ATBLM",
+      "type": "release",
+      "views": 107500,
+      "likes": 15400,
+      "saves": 1059,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-03-10",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7615777036631657749",
+      "caption": "MENOS DE 9 DÍAS PARA AMOR FIADO",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 18600,
+      "likes": 2694,
+      "saves": 123,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-03-14",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7617125475596455189",
+      "caption": "5 días para AMOR FIADO",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 29900,
+      "likes": 3713,
+      "saves": 73,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-03-21",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7619728786610785556",
+      "caption": "UN GUSTO ft @Mesa Tra",
+      "track": "UN GUSTO",
+      "type": "release",
+      "views": 26600,
+      "likes": 2595,
+      "saves": 120,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-03-22",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7620071012536749333",
+      "caption": "Ya escucharon ojos tristes ft @Rei?",
+      "track": "OJOS TRISTES",
+      "type": "promo",
+      "views": 15700,
+      "likes": 1197,
+      "saves": 24,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-03-23",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7620486613327531285",
+      "caption": "UN GUSTO MAMI",
+      "track": "UN GUSTO",
+      "type": "release",
+      "views": 18900,
+      "likes": 3824,
+      "saves": 150,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-03-24",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7620959928739548437",
+      "caption": "A ti te gusta el estrés, a mi quitartelo",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 8793,
+      "likes": 2158,
+      "saves": 91,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-03-25",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7621199321404411157",
+      "caption": "La prensa es mala bb a mi me avala el corte",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 5530,
+      "likes": 1110,
+      "saves": 30,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-01-06",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7592380954136661278",
+      "caption": "Ya vendrán tiempos mejores amor, tiempos mas bellos ❤️‍🩹",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 476100,
+      "likes": 64500,
+      "saves": 5183,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-02-09",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7604991681926155550",
+      "caption": "Vayan a escuchar 'Cuando escribia Asimetria' ❤️❤️❤️",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "kiosko",
+      "views": 31700,
+      "likes": 3904,
+      "saves": 64,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-02-24",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7610426346094808350",
+      "caption": "En unas horas están todos gritando ATBLM ⛓️‍💥",
+      "track": "ATBLM",
+      "type": "kiosko",
+      "views": 27100,
+      "likes": 3611,
+      "saves": 222,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-04",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7613464564218203422",
+      "caption": "ATBLMATBLMATBLMATBLM qué les pareciooooo⛓️‍💥",
+      "track": "ATBLM",
+      "type": "kiosko",
+      "views": 10000,
+      "likes": 1639,
+      "saves": 95,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-05",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7613775286248738079",
+      "caption": "ATBLM hasta que suena el despertador ❤️‍🩹",
+      "track": "ATBLM",
+      "type": "kiosko",
+      "views": 1327,
+      "likes": 71,
+      "saves": 5,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-07",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7614522981687020831",
+      "caption": "Qué ganas de dormirme en un abrazo ⛓️‍💥❤️‍🩹",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 7794,
+      "likes": 1285,
+      "saves": 88,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-15",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7617609896061570334",
+      "caption": "Quien viene a la escuchaaaaaa ⛓️‍💥",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 1129,
+      "likes": 138,
+      "saves": 13,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-20",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7619154242586086687",
+      "caption": "Llamame cuando quieras⛓️‍💥",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 1490,
+      "likes": 217,
+      "saves": 14,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-20",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7619168179104877854",
+      "caption": "Desayuno ice⛓️‍💥💔",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 2802,
+      "likes": 473,
+      "saves": 20,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-20",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7619404515783085342",
+      "caption": "ALASDOSYVEINTIDOS LOSDOSDESVESTIDOS ⛓️‍💥",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 2372,
+      "likes": 322,
+      "saves": 27,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-21",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7619748147912314142",
+      "caption": "En chanclas o en Cortez 🫵",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 2078,
+      "likes": 296,
+      "saves": 21,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-23",
+      "url": "https://www.instagram.com/asimetria17/reel/DWKDUUvAp1H/",
+      "caption": "UN GUSTO en Vorterix 🐎 @zeballos17 ft @mesita",
+      "track": "UN GUSTO",
+      "type": "promo",
+      "views": 0,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-03-16",
+      "url": "https://www.instagram.com/asimetria17/reel/DVzI-UxEh_G/",
+      "caption": "Quienes esperan con ansias AMOR FIADO? 19/03 🐎",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 0,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-03-05",
+      "url": "https://www.instagram.com/asimetria17/reel/DVhCSd2kgwC/",
+      "caption": "06 DE MARZO, UN DÍA IMPORTANTE 🐎 ESTÉN PILLOS",
+      "track": "ATBLM",
+      "type": "promo",
+      "views": 0,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-26",
+      "url": "https://www.instagram.com/asimetria17/reel/DVPTu0tklX6/",
+      "caption": "ATBLM | Prod. @pmpsounds @leavetheclubmusic @christianrich | YA DISPONIBLE 🇺🇾🇪🇸🇮🇹🇺🇸",
+      "track": "ATBLM",
+      "type": "release",
+      "views": 0,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-18",
+      "url": "https://www.instagram.com/asimetria17/reel/DU55K4pkaY4/",
+      "caption": "ATBLM (teaser con CUANDO ESCRIBÍA ASIMETRÍA)",
+      "track": "ATBLM",
+      "type": "teaser",
+      "views": 0,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-14",
+      "url": "https://www.instagram.com/asimetria17/reel/DUqkUy7EY5T/",
+      "caption": "Capítulo inédito de Jackass por @zeballos17",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 0,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-05",
+      "url": "https://www.instagram.com/asimetria17/reel/DUZNWhfkqxz/",
+      "caption": "CUANDO ESCRIBÍA ASIMETRÍA | Prod. @christianrich y @fossezm | Dirigido por @josefog.will | Protagonizado por @zeballos17 y @juanminujin",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "release",
+      "views": 0,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-02-02",
+      "url": "https://www.instagram.com/asimetria17/reel/DURe_gpEmSQ/",
+      "caption": "CUANDO ESCRIBÍA ASIMETRÍA | Estreno este jueves 5/2 en el canal de YouTube @zeballos17",
+      "track": "CUANDO ESCRIBÍA ASIMETRÍA",
+      "type": "teaser",
+      "views": 0,
+      "likes": 0,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-03-24",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7620821513733754143",
+      "caption": "Después de un 'nosotros' siempre hay un 'pero' ❤️‍🩹⛓️‍💥 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 357,
+      "likes": 0,
+      "saves": 0,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    }
+  ],
+  "albumMetrics28d": {
+    "streams": 793675,
+    "listeners": 118541,
+    "streamsPerListener": 6.695,
+    "playlistAdds": 32015,
+    "saves": 123348,
+    "prevPeriod": 154790,
+    "change": 412.7,
+    "algorithmicStreams": 148815,
+    "algorithmicPrev": 45532,
+    "algorithmicChange": 226.8
+  },
+  "albumMetrics7d": {
+    "streams": 522402,
+    "prevPeriod": 88074,
+    "change": 493.1,
+    "daily": {
+      "2026-03-20": 125789,
+      "2026-03-21": 70750,
+      "2026-03-22": 54149,
+      "2026-03-23": 69835,
+      "2026-03-24": 65420,
+      "2026-03-25": 73057,
+      "2026-03-26": 63402
+    }
+  },
+  "algorithmicData": {
+    "CUANDO ESCRIBÍA ASIMETRÍA": {
+      "2026-03-28": {
+        "streams": 35881,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 35881
+        },
+        "daily7d": {
+          "2026-03-21": 1102,
+          "2026-03-22": 801,
+          "2026-03-23": 831,
+          "2026-03-24": 681,
+          "2026-03-25": 985,
+          "2026-03-26": 1073,
+          "2026-03-27": 1162
+        },
+        "daily7dTotal": 6635
+      },
+      "2026-03-26": null,
+      "2026-03-27": null
+    },
+    "MAN OF WORD": {
+      "2026-03-28": {
+        "streams": 7077,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 7077
+        },
+        "daily7d": {
+          "2026-03-21": 311,
+          "2026-03-22": 307,
+          "2026-03-23": 654,
+          "2026-03-24": 1231,
+          "2026-03-25": 2250,
+          "2026-03-26": 1049,
+          "2026-03-27": 1197
+        },
+        "daily7dTotal": 6999
+      },
+      "2026-03-26": null,
+      "2026-03-27": null
+    },
+    "ATBLM": {
+      "2026-03-28": {
+        "streams": 64178,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 64178
+        },
+        "daily7d": {
+          "2026-03-21": 2399,
+          "2026-03-22": 1619,
+          "2026-03-23": 1528,
+          "2026-03-24": 1614,
+          "2026-03-25": 2313,
+          "2026-03-26": 1440,
+          "2026-03-27": 2212
+        },
+        "daily7dTotal": 13125
+      },
+      "2026-03-26": {
+        "streams": 52549,
+        "pct": 23.03,
+        "periodDays": 28,
+        "breakdown": {
+          "algorithmicPlaylists": 52549,
+          "radio": 0,
+          "other": 0
+        }
+      },
+      "2026-03-27": {
+        "streams": 13822,
+        "pct": 20.11,
+        "periodDays": 7,
+        "periodRange": "2026-03-20/2026-03-26",
+        "note": "7-day window Mar 20-26 (ALL_PROGRAMMED_SOURCES)",
+        "breakdown": {
+          "algorithmicPlaylists": 13822,
+          "radio": 0,
+          "other": 0
+        },
+        "daily": {
+          "2026-03-20": 2909,
+          "2026-03-21": 2399,
+          "2026-03-22": 1619,
+          "2026-03-23": 1528,
+          "2026-03-24": 1614,
+          "2026-03-25": 2313,
+          "2026-03-26": 1440
+        }
+      }
+    },
+    "CALL ME": {
+      "2026-03-28": {
+        "streams": 2657,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 2657
+        },
+        "daily7d": {
+          "2026-03-21": 69,
+          "2026-03-22": 204,
+          "2026-03-23": 151,
+          "2026-03-24": 240,
+          "2026-03-25": 804,
+          "2026-03-26": 654,
+          "2026-03-27": 504
+        },
+        "daily7dTotal": 2626
+      },
+      "2026-03-26": null,
+      "2026-03-27": null
+    },
+    "ALQUILER": {
+      "2026-03-28": {
+        "streams": 5211,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 5211
+        },
+        "daily7d": {
+          "2026-03-21": 211,
+          "2026-03-22": 312,
+          "2026-03-23": 1337,
+          "2026-03-24": 1719,
+          "2026-03-25": 751,
+          "2026-03-26": 426,
+          "2026-03-27": 431
+        },
+        "daily7dTotal": 5187
+      },
+      "2026-03-26": null,
+      "2026-03-27": null
+    },
+    "HIELO": {
+      "2026-03-28": {
+        "streams": 2912,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 2912
+        },
+        "daily7d": {
+          "2026-03-21": 64,
+          "2026-03-22": 207,
+          "2026-03-23": 170,
+          "2026-03-24": 406,
+          "2026-03-25": 568,
+          "2026-03-26": 477,
+          "2026-03-27": 999
+        },
+        "daily7dTotal": 2891
+      },
+      "2026-03-26": null,
+      "2026-03-27": null
+    },
+    "UN GUSTO": {
+      "2026-03-28": {
+        "streams": 17255,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 17255
+        },
+        "daily7d": {
+          "2026-03-21": 1913,
+          "2026-03-22": 1039,
+          "2026-03-23": 1629,
+          "2026-03-24": 1456,
+          "2026-03-25": 2419,
+          "2026-03-26": 1481,
+          "2026-03-27": 1434
+        },
+        "daily7dTotal": 11371
+      },
+      "2026-03-26": {
+        "streams": 7580,
+        "pct": 13.27,
+        "periodDays": 28,
+        "breakdown": {
+          "algorithmicPlaylists": 7580,
+          "radio": 0,
+          "other": 0
+        }
+      },
+      "2026-03-27": null
+    },
+    "CHANGES": {
+      "2026-03-28": {
+        "streams": 6472,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 6472
+        },
+        "daily7d": {
+          "2026-03-21": 327,
+          "2026-03-22": 750,
+          "2026-03-23": 528,
+          "2026-03-24": 834,
+          "2026-03-25": 1979,
+          "2026-03-26": 1063,
+          "2026-03-27": 919
+        },
+        "daily7dTotal": 6400
+      },
+      "2026-03-26": null,
+      "2026-03-27": null
+    },
+    "OJOS TRISTES": {
+      "2026-03-28": {
+        "streams": 4401,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 4401
+        },
+        "daily7d": {
+          "2026-03-21": 461,
+          "2026-03-22": 364,
+          "2026-03-23": 332,
+          "2026-03-24": 362,
+          "2026-03-25": 425,
+          "2026-03-26": 526,
+          "2026-03-27": 491
+        },
+        "daily7dTotal": 2961
+      },
+      "2026-03-26": null,
+      "2026-03-27": null
+    },
+    "HAZLO CALLAO": {
+      "2026-03-28": {
+        "streams": 3078,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 3078
+        },
+        "daily7d": {
+          "2026-03-21": 284,
+          "2026-03-22": 270,
+          "2026-03-23": 311,
+          "2026-03-24": 761,
+          "2026-03-25": 643,
+          "2026-03-26": 355,
+          "2026-03-27": 250
+        },
+        "daily7dTotal": 2874
+      },
+      "2026-03-26": null,
+      "2026-03-27": null
+    },
+    "YA NO": {
+      "2026-03-28": {
+        "streams": 1136,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 1136
+        },
+        "daily7d": {
+          "2026-03-21": 58,
+          "2026-03-22": 152,
+          "2026-03-23": 98,
+          "2026-03-24": 119,
+          "2026-03-25": 158,
+          "2026-03-26": 91,
+          "2026-03-27": 424
+        },
+        "daily7dTotal": 1100
+      },
+      "2026-03-26": null,
+      "2026-03-27": null
+    },
+    "TOP TIER": {
+      "2026-03-28": {
+        "streams": 1105,
+        "periodDays": 28,
+        "periodRange": "2026-02-28/2026-03-27",
+        "breakdown": {
+          "algorithmicPlaylists": 1105
+        },
+        "daily7d": {
+          "2026-03-21": 40,
+          "2026-03-22": 92,
+          "2026-03-23": 156,
+          "2026-03-24": 100,
+          "2026-03-25": 223,
+          "2026-03-26": 173,
+          "2026-03-27": 258
+        },
+        "daily7dTotal": 1042
+      },
+      "2026-03-26": null,
+      "2026-03-27": null
+    }
+  },
+  "algorithmicHistory": [
+    {
+      "date": "2026-03-26",
+      "label": "D+7",
+      "recordedAt": "2026-03-26T20:15:00Z",
+      "partial": true,
+      "note": "Solo 2/12 tracks con data algorítmica (S4A no cargó el resto)",
+      "albumAlgorithmicTotal": 60129,
+      "albumAlgorithmicPct": 6.48,
+      "tracks": {
+        "ATBLM": {
+          "streams": 52549,
+          "pct": 23.03
+        },
+        "CUANDO ESCRIBÍA ASIMETRÍA": null,
+        "MAN OF WORD": null,
+        "CALL ME": null,
+        "ALQUILER": null,
+        "HIELO": null,
+        "UN GUSTO": {
+          "streams": 7580,
+          "pct": 13.27
+        },
+        "CHANGES": null,
+        "OJOS TRISTES": null,
+        "HAZLO CALLAO": null,
+        "YA NO": null,
+        "TOP TIER": null
+      }
+    },
+    {
+      "date": "2026-03-27",
+      "label": "D+8",
+      "recordedAt": "2026-03-27T20:00:00Z",
+      "partial": true,
+      "note": "Solo ATBLM con data algorítmica 7d (S4A no disponible para el resto hoy)",
+      "albumAlgorithmicTotal": 13822,
+      "albumAlgorithmicPct": 5.18,
+      "tracks": {
+        "ATBLM": {
+          "streams": 13822,
+          "pct": 20.11,
+          "periodDays": 7
+        },
+        "CUANDO ESCRIBÍA ASIMETRÍA": null,
+        "MAN OF WORD": null,
+        "CALL ME": null,
+        "ALQUILER": null,
+        "HIELO": null,
+        "UN GUSTO": null,
+        "CHANGES": null,
+        "OJOS TRISTES": null,
+        "HAZLO CALLAO": null,
+        "YA NO": null,
+        "TOP TIER": null
+      }
+    },
+    {
+      "date": "2026-03-28",
+      "label": "D+9",
+      "recordedAt": "2026-03-28T17:38:35Z",
+      "partial": false,
+      "note": "All 12 tracks captured via sos-aggregates + sos-timelines API",
+      "albumAlgorithmicTotal28d": 151363,
+      "albumAlgorithmicPct28d": 15.0,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": {
+          "streams28d": 35881,
+          "streams7d": 6635,
+          "pct28d": 11.69
+        },
+        "MAN OF WORD": {
+          "streams28d": 7077,
+          "streams7d": 6999,
+          "pct28d": 13.29
+        },
+        "ATBLM": {
+          "streams28d": 64178,
+          "streams7d": 13125,
+          "pct28d": 26.07
+        },
+        "CALL ME": {
+          "streams28d": 2657,
+          "streams7d": 2626,
+          "pct28d": 4.99
+        },
+        "ALQUILER": {
+          "streams28d": 5211,
+          "streams7d": 5187,
+          "pct28d": 12.54
+        },
+        "HIELO": {
+          "streams28d": 2912,
+          "streams7d": 2891,
+          "pct28d": 6.6
+        },
+        "UN GUSTO": {
+          "streams28d": 17255,
+          "streams7d": 11371,
+          "pct28d": 23.43
+        },
+        "CHANGES": {
+          "streams28d": 6472,
+          "streams7d": 6400,
+          "pct28d": 14.1
+        },
+        "OJOS TRISTES": {
+          "streams28d": 4401,
+          "streams7d": 2961,
+          "pct28d": 9.82
+        },
+        "HAZLO CALLAO": {
+          "streams28d": 3078,
+          "streams7d": 2874,
+          "pct28d": 9.52
+        },
+        "YA NO": {
+          "streams28d": 1136,
+          "streams7d": 1100,
+          "pct28d": 3.15
+        },
+        "TOP TIER": {
+          "streams28d": 1105,
+          "streams7d": 1042,
+          "pct28d": 3.57
+        }
+      }
+    }
+  ],
+  "streamData": {
+    "ATBLM": {
+      "2026-03-26": 8899,
+      "2026-03-20": 14710,
+      "2026-03-21": 9742,
+      "2026-03-22": 7568,
+      "2026-03-23": 9125,
+      "2026-03-24": 8461,
+      "2026-03-25": 10220,
+      "2026-03-27": 11319
+    },
+    "CUANDO ESCRIBÍA ASIMETRÍA": {
+      "2026-03-26": 6802,
+      "2026-03-20": 10875,
+      "2026-03-21": 7079,
+      "2026-03-22": 5464,
+      "2026-03-23": 7009,
+      "2026-03-24": 6160,
+      "2026-03-25": 7040,
+      "2026-03-27": 8043
+    },
+    "MAN OF WORD": {
+      "2026-03-26": 5579,
+      "2026-03-20": 10998,
+      "2026-03-21": 5968,
+      "2026-03-22": 4487,
+      "2026-03-23": 6133,
+      "2026-03-24": 6141,
+      "2026-03-25": 7291,
+      "2026-03-27": 7059
+    },
+    "CALL ME": {
+      "2026-03-26": 6494
+    },
+    "ALQUILER": {
+      "2026-03-26": 5400
+    },
+    "HIELO": {
+      "2026-03-26": 5423
+    },
+    "UN GUSTO": {
+      "2026-03-26": 8826
+    },
+    "CHANGES": {
+      "2026-03-26": 5497
+    },
+    "OJOS TRISTES": {
+      "2026-03-26": 5679
+    },
+    "HAZLO CALLAO": {
+      "2026-03-26": 4151
+    },
+    "YA NO": {
+      "2026-03-26": 4483
+    },
+    "TOP TIER": {
+      "2026-03-26": 3856
+    }
+  }
+}
