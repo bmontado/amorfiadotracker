@@ -132,6 +132,44 @@
         "HIELO": 4818,
         "TOP TIER": 3315
       }
+    },
+    {
+      "date": "2026-03-25",
+      "label": "D25",
+      "note": "Streams diarios (estimado desde snapshots D+6→D+7)",
+      "tracks": {
+        "ATBLM": 10696,
+        "CUANDO ESCRIBÍA ASIMETRÍA": 7750,
+        "MAN OF WORD": 6546,
+        "CALL ME": 6494,
+        "ALQUILER": 5400,
+        "HIELO": 5423,
+        "UN GUSTO": 8826,
+        "CHANGES": 5497,
+        "OJOS TRISTES": 5679,
+        "HAZLO CALLAO": 4151,
+        "YA NO": 4483,
+        "TOP TIER": 3856
+      }
+    },
+    {
+      "date": "2026-03-26",
+      "label": "D26",
+      "note": "Streams diarios",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 6802,
+        "MAN OF WORD": 5579,
+        "ATBLM": 8899,
+        "CALL ME": 5870,
+        "ALQUILER": 3579,
+        "HIELO": 4525,
+        "UN GUSTO": 8580,
+        "CHANGES": 5417,
+        "OJOS TRISTES": 4364,
+        "HAZLO CALLAO": 3056,
+        "YA NO": 3597,
+        "TOP TIER": 3134
+      }
     }
   ],
   "releaseEngagements": {
@@ -1346,6 +1384,67 @@
       }
     },
     {
+      "date": "2026-03-25",
+      "label": "D+6",
+      "recordedAt": "2026-03-25T16:30:00-03:00",
+      "albumTotal": 853521,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 290837,
+        "ATBLM": 223698,
+        "MAN OF WORD": 39376,
+        "CALL ME": 39063,
+        "ALQUILER": 32480,
+        "HIELO": 32619,
+        "UN GUSTO": 53084,
+        "CHANGES": 33066,
+        "OJOS TRISTES": 34162,
+        "HAZLO CALLAO": 24972,
+        "YA NO": 26969,
+        "TOP TIER": 23195
+      }
+    },
+    {
+      "date": "2026-03-26",
+      "label": "D+7",
+      "recordedAt": "2026-03-26T16:00:00-03:00",
+      "albumTotal": 928322,
+      "tracks": {
+        "ATBLM": 234394,
+        "CUANDO ESCRIBÍA ASIMETRÍA": 298587,
+        "MAN OF WORD": 45922,
+        "CALL ME": 45557,
+        "ALQUILER": 37880,
+        "HIELO": 38042,
+        "UN GUSTO": 61910,
+        "CHANGES": 38563,
+        "OJOS TRISTES": 39841,
+        "HAZLO CALLAO": 29123,
+        "YA NO": 31452,
+        "TOP TIER": 27051
+      }
+    },
+    {
+      "date": "2026-03-27",
+      "label": "D+8",
+      "recordedAt": "2026-03-27T17:00:00-03:00",
+      "albumTotal": 1003224,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 306630,
+        "MAN OF WORD": 52981,
+        "ATBLM": 245713,
+        "CALL ME": 52624,
+        "ALQUILER": 41174,
+        "HIELO": 43649,
+        "UN GUSTO": 72606,
+        "CHANGES": 45345,
+        "OJOS TRISTES": 44373,
+        "HAZLO CALLAO": 32033,
+        "YA NO": 35475,
+        "TOP TIER": 30621
+      },
+      "note": "Todos los tracks live (12/12)"
+    },
+    {
       "date": "2026-03-28",
       "label": "D+9",
       "albumLiveTotal": 1009130,
@@ -1364,7 +1463,8 @@
         "YA NO": 36014,
         "TOP TIER": 30974
       },
-      "source": "S4A API song-stats-view/v2 info"
+      "source": "S4A API song-stats-view/v2 info",
+      "albumTotal": 1009130
     }
   ],
   "trackMetricsMeta": {
