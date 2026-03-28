@@ -204,7 +204,7 @@ const AmorFiadoDashboard = () => {
   const releaseEngagement  = releaseEngagements[selectedReleaseId] ?? Object.values(releaseEngagements)[0];
 
   // growthHistory: memoizado para que reaccione al poll
-  const growthHistory = useMemo(() => liveHistory.map(s => ({
+  const growthHistory = useMemo(() => liveHistory.filter(s => s.tracks != null).map(s => ({
     timestamp: s.label + ' · ' + new Date(s.recordedAt).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }),
     albumTotal: s.albumTotal,
     ...Object.fromEntries(

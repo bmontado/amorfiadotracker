@@ -1419,27 +1419,6 @@
       }
     },
     {
-      "date": "2026-03-25",
-      "label": "D+6",
-      "dailyTotal": 73057,
-      "corrected": true,
-      "source": "S4A API timeseries"
-    },
-    {
-      "date": "2026-03-26",
-      "label": "D+7",
-      "dailyTotal": 63402,
-      "corrected": true,
-      "source": "S4A API timeseries"
-    },
-    {
-      "date": "2026-03-27",
-      "label": "D+8",
-      "dailyTotal": 60670,
-      "corrected": true,
-      "source": "S4A API timeseries"
-    },
-    {
       "date": "2026-03-28",
       "label": "D+9",
       "albumLiveTotal": 1009130,
