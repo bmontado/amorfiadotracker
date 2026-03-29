@@ -157,6 +157,7 @@ const AmorFiadoDashboard = () => {
   const [dataFreshAt, setDataFreshAt] = useState(null);
   const [selectedReleaseId, setSelectedReleaseId] = useState('6EPWuQUeAaRp61S8qG0fri');
   const [showReportModal, setShowReportModal] = useState(false);
+  const [algoBarHoverIdx, setAlgoBarHoverIdx] = useState(null);
 
   // Polling: carga data.json al montar y cada 5 minutos.
   // En prod fetchea public/data.json directo desde GitHub raw (siempre fresco,
@@ -3450,16 +3451,25 @@ const AmorFiadoDashboard = () => {
               <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
                 <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: '0 0 1rem' }}>% Algorítmico por Track (28d)</p>
                 <ResponsiveContainer width="100%" height={sorted.length * 36 + 20}>
-                  <BarChart data={sorted} layout="vertical" margin={{ left: 8, right: 40, top: 4, bottom: 4 }}>
+                  <BarChart data={sorted} layout="vertical" margin={{ left: 8, right: 40, top: 4, bottom: 4 }}
+                    onMouseLeave={() => setAlgoBarHoverIdx(null)}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.06)" horizontal={false} />
                     <XAxis type="number" domain={[0, Math.ceil(Math.max(...sorted.map(s => s.algoPercent), 30) / 5) * 5]} tickFormatter={v => `${v}%`} stroke="#475569" tick={{ fontSize: 10, fill: '#64748b' }} />
-                    <YAxis type="category" dataKey="track" width={145} tick={{ fontSize: 10, fill: '#94a3b8' }} />
+                    <YAxis type="category" dataKey="track" width={145}
+                      tick={({ x, y, payload, index }) => (
+                        <text x={x} y={y} textAnchor="end" dominantBaseline="middle" fontSize={10}
+                          fill={algoBarHoverIdx === index ? '#f1f5f9' : '#94a3b8'}>
+                          {payload.value}
+                        </text>
+                      )} />
                     <Tooltip
                       formatter={(v, name, props) => [`${v.toFixed(1)}% · ${formatNumber(props.payload.algoStreams)} streams`, 'Algo']}
                       contentStyle={{ background: '#0f172a', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '8px', fontSize: '0.78rem' }}
                       labelStyle={{ color: '#f1f5f9' }}
                     />
-                    <Bar dataKey="algoPercent" radius={[0, 6, 6, 0]}>
+                    <Bar dataKey="algoPercent" radius={[0, 6, 6, 0]}
+                      onMouseEnter={(_, index) => setAlgoBarHoverIdx(index)}
+                      onMouseLeave={() => setAlgoBarHoverIdx(null)}>
                       {sorted.map((entry, i) => (
                         <Cell key={i} fill={trackColors[entry.track] ?? `hsl(${265 - i * 8}, 70%, ${65 - i * 2}%)`} />
                       ))}
@@ -3510,7 +3520,7 @@ const AmorFiadoDashboard = () => {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid rgba(51,65,85,0.6)' }}>
-                      {['Track', 'Total 28d', 'Algo 28d', '% Algo', 'Algo 7d', 'Playlists', 'Radio'].map(h => (
+                      {['Track', 'Total 28d', 'Algo 28d', '% Algo', 'Algo 7d'].map(h => (
                         <th key={h} style={{ textAlign: h === 'Track' ? 'left' : 'right', padding: '0.5rem 0.65rem', color: '#64748b', fontWeight: 600, fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</th>
                       ))}
                     </tr>
@@ -3526,12 +3536,8 @@ const AmorFiadoDashboard = () => {
                         </td>
                         <td style={{ padding: '0.55rem 0.65rem', color: '#94a3b8', textAlign: 'right' }}>{formatNumber(t.totalStreams)}</td>
                         <td style={{ padding: '0.55rem 0.65rem', color: '#a78bfa', textAlign: 'right', fontWeight: 600 }}>{formatNumber(t.algoStreams)}</td>
-                        <td style={{ padding: '0.55rem 0.65rem', textAlign: 'right' }}>
-                          <span style={{ color: '#fff', fontWeight: 700, background: trackColors[t.track] ?? `hsl(${265 - i * 8}, 60%, 45%)`, padding: '0.15rem 0.5rem', borderRadius: '9999px', fontSize: '0.72rem', opacity: 0.9 }}>{t.algoPercent.toFixed(1)}%</span>
-                        </td>
+                        <td style={{ padding: '0.55rem 0.65rem', color: '#e2e8f0', textAlign: 'right', fontWeight: 600 }}>{t.algoPercent.toFixed(1)}%</td>
                         <td style={{ padding: '0.55rem 0.65rem', color: '#38bdf8', textAlign: 'right' }}>{formatNumber(t.streams7d)}</td>
-                        <td style={{ padding: '0.55rem 0.65rem', color: '#22d3ee', textAlign: 'right' }}>{formatNumber(t.playlistStreams)}</td>
-                        <td style={{ padding: '0.55rem 0.65rem', color: '#fb923c', textAlign: 'right' }}>{formatNumber(t.radioStreams)}</td>
                       </tr>
                     ))}
                     {/* Totals row */}
@@ -3539,12 +3545,8 @@ const AmorFiadoDashboard = () => {
                       <td style={{ padding: '0.6rem 0.65rem', color: '#e2e8f0', fontWeight: 700 }}>TOTAL ÁLBUM</td>
                       <td style={{ padding: '0.6rem 0.65rem', color: '#e2e8f0', textAlign: 'right', fontWeight: 700 }}>{formatNumber(byTrack.reduce((s, t) => s + t.totalStreams, 0))}</td>
                       <td style={{ padding: '0.6rem 0.65rem', color: '#a78bfa', textAlign: 'right', fontWeight: 700 }}>{formatNumber(totalAlgo28d)}</td>
-                      <td style={{ padding: '0.6rem 0.65rem', textAlign: 'right' }}>
-                        <span style={{ color: '#fff', fontWeight: 700, background: '#a78bfa', padding: '0.15rem 0.5rem', borderRadius: '9999px', fontSize: '0.72rem' }}>{algoData.albumAlgoPercent?.toFixed(1) ?? '—'}%</span>
-                      </td>
+                      <td style={{ padding: '0.6rem 0.65rem', color: '#e2e8f0', textAlign: 'right', fontWeight: 700 }}>{algoData.albumAlgoPercent?.toFixed(1) ?? '—'}%</td>
                       <td style={{ padding: '0.6rem 0.65rem', color: '#38bdf8', textAlign: 'right', fontWeight: 700 }}>{formatNumber(total7d)}</td>
-                      <td style={{ padding: '0.6rem 0.65rem', color: '#22d3ee', textAlign: 'right', fontWeight: 700 }}>{formatNumber(byTrack.reduce((s, t) => s + t.playlistStreams, 0))}</td>
-                      <td style={{ padding: '0.6rem 0.65rem', color: '#fb923c', textAlign: 'right', fontWeight: 700 }}>{formatNumber(byTrack.reduce((s, t) => s + t.radioStreams, 0))}</td>
                     </tr>
                   </tbody>
                 </table>
