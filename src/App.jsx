@@ -3466,6 +3466,7 @@ const AmorFiadoDashboard = () => {
                       formatter={(v, name, props) => [`${v.toFixed(1)}% · ${formatNumber(props.payload.algoStreams)} streams`, 'Algo']}
                       contentStyle={{ background: '#0f172a', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '8px', fontSize: '0.78rem' }}
                       labelStyle={{ color: '#f1f5f9' }}
+                      itemStyle={{ color: '#f1f5f9' }}
                     />
                     <Bar dataKey="algoPercent" radius={[0, 6, 6, 0]}
                       onMouseEnter={(_, index) => setAlgoBarHoverIdx(index)}
