@@ -1,9 +1,9 @@
 {
   "lastUpdated": {
-    "spotify": "2026-03-28T17:38:35Z",
+    "spotify": "2026-03-29T00:35:05Z",
     "social": "2026-03-25T12:00:00-03:00"
   },
-  "albumLiveTotal": 1009130,
+  "albumLiveTotal": 1009135,
   "liveTotals": {
     "CUANDO ESCRIBÍA ASIMETRÍA": 306959,
     "MAN OF WORD": 53237,
@@ -11,9 +11,9 @@
     "CALL ME": 53296,
     "ALQUILER": 41540,
     "HIELO": 44148,
-    "UN GUSTO": 73656,
+    "UN GUSTO": 73658,
     "CHANGES": 45914,
-    "OJOS TRISTES": 44835,
+    "OJOS TRISTES": 44838,
     "HAZLO CALLAO": 32347,
     "YA NO": 36014,
     "TOP TIER": 30974
@@ -169,6 +169,25 @@
         "HAZLO CALLAO": 3056,
         "YA NO": 3597,
         "TOP TIER": 3134
+      }
+    },
+    {
+      "date": "2026-03-27",
+      "label": "D27",
+      "note": "Día 9 post-lanzamiento",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 6234,
+        "MAN OF WORD": 5347,
+        "ATBLM": 9147,
+        "CALL ME": 5466,
+        "ALQUILER": 3553,
+        "HIELO": 4717,
+        "UN GUSTO": 7940,
+        "CHANGES": 4805,
+        "OJOS TRISTES": 4115,
+        "HAZLO CALLAO": 2672,
+        "YA NO": 3627,
+        "TOP TIER": 3047
       }
     }
   ],
@@ -1446,9 +1465,7 @@
     },
     {
       "date": "2026-03-28",
-      "label": "D+9",
-      "albumLiveTotal": 1009130,
-      "dailyDelta": 5906,
+      "albumTotal": 1009135,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 306959,
         "MAN OF WORD": 53237,
@@ -1456,15 +1473,13 @@
         "CALL ME": 53296,
         "ALQUILER": 41540,
         "HIELO": 44148,
-        "UN GUSTO": 73656,
+        "UN GUSTO": 73658,
         "CHANGES": 45914,
-        "OJOS TRISTES": 44835,
+        "OJOS TRISTES": 44838,
         "HAZLO CALLAO": 32347,
         "YA NO": 36014,
         "TOP TIER": 30974
-      },
-      "source": "S4A API song-stats-view/v2 info",
-      "albumTotal": 1009130
+      }
     }
   ],
   "trackMetricsMeta": {
@@ -1474,159 +1489,99 @@
   "trackMetrics": {
     "CUANDO ESCRIBÍA ASIMETRÍA": {
       "songId": "3LodenBjwz6GZbD8ZQVLRC",
-      "streams28d": 146886,
-      "listeners": 47352,
-      "streamsPerListener": 3.102,
-      "playlistAdds": 3541,
-      "saves": 10268,
-      "prevPeriod": 145627,
-      "change": 0.9,
-      "algorithmicStreams": 37065,
-      "algorithmicPrev": 45529,
-      "algorithmicChange": -18.6
+      "streams28d": 146888,
+      "listeners28d": 47093,
+      "saves28d": 10360,
+      "streamsPerListener28d": 3.115,
+      "playlistAdds28d": 3551
     },
     "MAN OF WORD": {
       "songId": "5nfkcy3ZVaDo3VInn1OBCu",
-      "streams28d": 47890,
-      "listeners": 19719,
-      "streamsPerListener": 2.429,
-      "playlistAdds": 1945,
-      "saves": 8882,
-      "prevPeriod": 42311,
-      "change": 13.2,
-      "algorithmicStreams": 5880,
-      "algorithmicPrev": null,
-      "algorithmicChange": null
+      "streams28d": 53237,
+      "listeners28d": 21231,
+      "saves28d": 9097,
+      "streamsPerListener28d": 2.508,
+      "playlistAdds28d": 2047
     },
     "ATBLM": {
       "songId": "4dUDowRcJAjsZw9xV9esjh",
-      "streams28d": 236112,
-      "listeners": 75245,
-      "streamsPerListener": 3.138,
-      "playlistAdds": 8732,
-      "saves": 18678,
-      "prevPeriod": 228164,
-      "change": 3.5,
-      "algorithmicStreams": 67651,
-      "algorithmicPrev": 3,
-      "algorithmicChange": 2254933.3
+      "streams28d": 227540,
+      "listeners28d": 71779,
+      "saves28d": 16645,
+      "streamsPerListener28d": 3.172,
+      "playlistAdds28d": 7284
     },
     "CALL ME": {
       "songId": "1PazN55q85De58h0NXP8ZO",
-      "streams28d": 47830,
-      "listeners": 15641,
-      "streamsPerListener": 3.058,
-      "playlistAdds": 2195,
-      "saves": 8852,
-      "prevPeriod": 41960,
-      "change": 14.0,
-      "algorithmicStreams": 2153,
-      "algorithmicPrev": null,
-      "algorithmicChange": null
+      "streams28d": 53296,
+      "listeners28d": 16662,
+      "saves28d": 9080,
+      "streamsPerListener28d": 3.198,
+      "playlistAdds28d": 2325
     },
     "ALQUILER": {
       "songId": "3sKcIP464G9eNWC6BLQbJn",
-      "streams28d": 37987,
-      "listeners": 17196,
-      "streamsPerListener": 2.209,
-      "playlistAdds": 1439,
-      "saves": 8203,
-      "prevPeriod": 34408,
-      "change": 10.4,
-      "algorithmicStreams": 4780,
-      "algorithmicPrev": null,
-      "algorithmicChange": null
+      "streams28d": 41540,
+      "listeners28d": 18121,
+      "saves28d": 8363,
+      "streamsPerListener28d": 2.292,
+      "playlistAdds28d": 1521
     },
     "HIELO": {
       "songId": "2CuCRfK2mLPFZXDalEZtmw",
-      "streams28d": 39431,
-      "listeners": 13552,
-      "streamsPerListener": 2.91,
-      "playlistAdds": 1866,
-      "saves": 8560,
-      "prevPeriod": 34906,
-      "change": 13.0,
-      "algorithmicStreams": 1913,
-      "algorithmicPrev": null,
-      "algorithmicChange": null
+      "streams28d": 44148,
+      "listeners28d": 14951,
+      "saves28d": 8758,
+      "streamsPerListener28d": 2.953,
+      "playlistAdds28d": 1965
     },
     "UN GUSTO": {
       "songId": "74XvuYXS9VjhlnEn9Ctf7y",
-      "streams28d": 65718,
-      "listeners": 27911,
-      "streamsPerListener": 2.355,
-      "playlistAdds": 3139,
-      "saves": 10480,
-      "prevPeriod": 57138,
-      "change": 15.0,
-      "algorithmicStreams": 15821,
-      "algorithmicPrev": null,
-      "algorithmicChange": null
+      "streams28d": 73658,
+      "listeners28d": 29954,
+      "saves28d": 10910,
+      "streamsPerListener28d": 2.458,
+      "playlistAdds28d": 3387
     },
     "CHANGES": {
       "songId": "5nZTTvDpDsF5TqdqSlHq6m",
-      "streams28d": 41109,
-      "listeners": 16082,
-      "streamsPerListener": 2.556,
-      "playlistAdds": 1850,
-      "saves": 8588,
-      "prevPeriod": 35692,
-      "change": 15.2,
-      "algorithmicStreams": 5285,
-      "algorithmicPrev": null,
-      "algorithmicChange": null
+      "streams28d": 45914,
+      "listeners28d": 17474,
+      "saves28d": 8793,
+      "streamsPerListener28d": 2.627,
+      "playlistAdds28d": 1948
     },
     "OJOS TRISTES": {
       "songId": "2dO9tmd62ILh8uwew2IgXF",
-      "streams28d": 40723,
-      "listeners": 15894,
-      "streamsPerListener": 2.562,
-      "playlistAdds": 1991,
-      "saves": 8762,
-      "prevPeriod": 36359,
-      "change": 12.0,
-      "algorithmicStreams": 3910,
-      "algorithmicPrev": null,
-      "algorithmicChange": null
+      "streams28d": 44838,
+      "listeners28d": 16939,
+      "saves28d": 8986,
+      "streamsPerListener28d": 2.647,
+      "playlistAdds28d": 2110
     },
     "HAZLO CALLAO": {
       "songId": "1gchScLxTPJQ6LSmmJsKVP",
-      "streams28d": 29675,
-      "listeners": 12939,
-      "streamsPerListener": 2.293,
-      "playlistAdds": 1394,
-      "saves": 8105,
-      "prevPeriod": 26619,
-      "change": 11.5,
-      "algorithmicStreams": 2828,
-      "algorithmicPrev": null,
-      "algorithmicChange": null
+      "streams28d": 32347,
+      "listeners28d": 13590,
+      "saves28d": 8274,
+      "streamsPerListener28d": 2.38,
+      "playlistAdds28d": 1462
     },
     "YA NO": {
       "songId": "6j8Srcc8XwIQyRbHabWqDM",
-      "streams28d": 32387,
-      "listeners": 11271,
-      "streamsPerListener": 2.873,
-      "playlistAdds": 1669,
-      "saves": 8349,
-      "prevPeriod": 28790,
-      "change": 12.5,
-      "algorithmicStreams": 712,
-      "algorithmicPrev": null,
-      "algorithmicChange": null
+      "streams28d": 36014,
+      "listeners28d": 12161,
+      "saves28d": 8524,
+      "streamsPerListener28d": 2.961,
+      "playlistAdds28d": 1756
     },
     "TOP TIER": {
       "songId": "7JThT6NTMxA8gB2ZBYjEDu",
-      "streams28d": 27927,
-      "listeners": 10410,
-      "streamsPerListener": 2.683,
-      "playlistAdds": 1506,
-      "saves": 8213,
-      "prevPeriod": 24793,
-      "change": 12.6,
-      "algorithmicStreams": 817,
-      "algorithmicPrev": null,
-      "algorithmicChange": null
+      "streams28d": 30974,
+      "listeners28d": 11078,
+      "saves28d": 8379,
+      "streamsPerListener28d": 2.796,
+      "playlistAdds28d": 1580
     }
   },
   "campaignContext": {
@@ -2902,7 +2857,7 @@
       "partial": false,
       "note": "All 12 tracks captured via sos-aggregates + sos-timelines API",
       "albumAlgorithmicTotal28d": 151363,
-      "albumAlgorithmicPct28d": 15.0,
+      "albumAlgorithmicPct28d": 15,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": {
           "streams28d": 35881,
