@@ -3688,37 +3688,86 @@ const AmorFiadoDashboard = () => {
                   <span style={{ color: '#64748b' }}>Delta hoy: <span style={{ color: '#4ade80', fontWeight: 700 }}>+{adminDayDelta.total.toLocaleString('es-AR')}</span></span>
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.6rem' }}>
-                {TRACKS.map(track => {
-                  const prev = liveData.liveTotals?.[track] ?? 0;
-                  const cur  = parseInt(adminTotals[track], 10) || 0;
-                  const delta = Math.max(0, cur - prev);
-                  return (
-                    <div key={track} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '0.5rem', alignItems: 'center' }}>
-                      <div>
-                        <span style={{ ...labelStyle, marginBottom: '0.2rem' }}>{track}</span>
-                        <input
-                          type="number" min="0"
-                          value={adminTotals[track]}
-                          onChange={e => setAdminTotals(p => ({ ...p, [track]: e.target.value }))}
-                          placeholder={prev ? prev.toLocaleString('es-AR') : '0'}
-                          style={inputStyle}
-                        />
-                      </div>
-                      <div style={{ textAlign: 'right', paddingTop: '1.1rem' }}>
-                        <span style={{ color: '#475569', fontSize: '0.68rem' }}>prev</span>
-                        <p style={{ color: '#64748b', fontSize: '0.78rem', margin: 0 }}>{prev.toLocaleString('es-AR')}</p>
-                      </div>
-                      <div style={{ textAlign: 'right', paddingTop: '1.1rem', minWidth: '52px' }}>
-                        <span style={{ color: '#475569', fontSize: '0.68rem' }}>delta</span>
-                        <p style={{ color: delta > 0 ? '#4ade80' : '#334155', fontSize: '0.78rem', fontWeight: 600, margin: 0 }}>
-                          {delta > 0 ? `+${delta.toLocaleString('es-AR')}` : '—'}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              {/* Historia por track — últimos días de dailyLog */}
+              {(() => {
+                const recentDays = dailyLog.slice(-7); // últimos 7 días disponibles
+                return (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
+                    {TRACKS.map(track => {
+                      const prev  = liveData.liveTotals?.[track] ?? 0;
+                      const cur   = parseInt(adminTotals[track], 10) || 0;
+                      const delta = Math.max(0, cur - prev);
+                      const maxDay = Math.max(...recentDays.map(d => d.tracks?.[track] ?? 0), 1);
+                      return (
+                        <div key={track} style={{ background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '10px', padding: '0.75rem' }}>
+                          {/* Track name + inputs */}
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '0.5rem', alignItems: 'flex-end', marginBottom: '0.6rem' }}>
+                            <div>
+                              <span style={{ ...labelStyle, marginBottom: '0.25rem' }}>{track}</span>
+                              <input
+                                type="number" min="0"
+                                value={adminTotals[track]}
+                                onChange={e => setAdminTotals(p => ({ ...p, [track]: e.target.value }))}
+                                placeholder={prev ? prev.toLocaleString('es-AR') : '0'}
+                                style={{ ...inputStyle, fontSize: '0.9rem', fontWeight: 600 }}
+                              />
+                            </div>
+                            <div style={{ textAlign: 'right', paddingBottom: '0.1rem' }}>
+                              <span style={{ color: '#334155', fontSize: '0.62rem', display: 'block' }}>acum. prev</span>
+                              <span style={{ color: '#475569', fontSize: '0.75rem' }}>{prev.toLocaleString('es-AR')}</span>
+                            </div>
+                            <div style={{ textAlign: 'right', paddingBottom: '0.1rem', minWidth: '56px' }}>
+                              <span style={{ color: '#334155', fontSize: '0.62rem', display: 'block' }}>hoy</span>
+                              <span style={{ color: delta > 0 ? '#4ade80' : '#334155', fontSize: '0.8rem', fontWeight: 700 }}>
+                                {delta > 0 ? `+${delta.toLocaleString('es-AR')}` : '—'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Mini historial de días anteriores */}
+                          {recentDays.length > 0 && (
+                            <div style={{ display: 'flex', gap: '3px', alignItems: 'flex-end', height: '36px' }}>
+                              {recentDays.map(day => {
+                                const val  = day.tracks?.[track] ?? 0;
+                                const barH = val > 0 ? Math.max(4, Math.round((val / maxDay) * 30)) : 2;
+                                const isToday = day.date === adminDate;
+                                return (
+                                  <div key={day.date} title={`${day.label}: ${val.toLocaleString('es-AR')}`}
+                                    style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', cursor: 'default' }}>
+                                    <span style={{ color: '#1e293b', fontSize: '0.48rem', whiteSpace: 'nowrap' }}>
+                                      {val > 0 ? (val >= 1000 ? `${(val/1000).toFixed(1)}K` : val) : ''}
+                                    </span>
+                                    <div style={{
+                                      width: '100%', height: `${barH}px`, borderRadius: '2px',
+                                      background: isToday ? '#f97316' : val > 0 ? 'rgba(148,163,184,0.35)' : 'rgba(51,65,85,0.2)',
+                                      transition: 'height 0.2s',
+                                    }} />
+                                    <span style={{ color: '#1e293b', fontSize: '0.48rem' }}>{day.label}</span>
+                                  </div>
+                                );
+                              })}
+                              {/* Barra de hoy (nuevo delta) */}
+                              {delta > 0 && (() => {
+                                const barH = Math.max(4, Math.round((delta / maxDay) * 30));
+                                return (
+                                  <div title={`Hoy: +${delta.toLocaleString('es-AR')}`}
+                                    style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                                    <span style={{ color: '#4ade80', fontSize: '0.48rem', whiteSpace: 'nowrap' }}>
+                                      {delta >= 1000 ? `${(delta/1000).toFixed(1)}K` : delta}
+                                    </span>
+                                    <div style={{ width: '100%', height: `${barH}px`, borderRadius: '2px', background: 'rgba(74,222,128,0.5)' }} />
+                                    <span style={{ color: '#4ade80', fontSize: '0.48rem' }}>hoy</span>
+                                  </div>
+                                );
+                              })()}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Algo toggle */}
