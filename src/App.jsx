@@ -159,6 +159,82 @@ const AmorFiadoDashboard = () => {
   const [showReportModal, setShowReportModal] = useState(false);
   const [algoBarHoverIdx, setAlgoBarHoverIdx] = useState(null);
 
+  // ── Admin panel ─────────────────────────────────────────────────────────────
+  const [isAdmin, setIsAdmin] = useState(() => window.location.hash === '#admin');
+  const TRACKS = [
+    'CUANDO ESCRIBÍA ASIMETRÍA', 'MAN OF WORD', 'ATBLM', 'CALL ME',
+    'ALQUILER', 'HIELO', 'UN GUSTO', 'CHANGES',
+    'OJOS TRISTES', 'HAZLO CALLAO', 'YA NO', 'TOP TIER',
+  ];
+  const todayStr = () => new Date().toISOString().split('T')[0];
+  const initTotals = () => {
+    const t = {}; TRACKS.forEach(tr => { t[tr] = ''; }); return t;
+  };
+  const [adminDate, setAdminDate] = useState(todayStr);
+  const [adminNote, setAdminNote] = useState('');
+  const [adminTotals, setAdminTotals] = useState(initTotals);
+  const [adminAlgoEnabled, setAdminAlgoEnabled] = useState(false);
+  const [adminAlgo, setAdminAlgo] = useState(initTotals);
+  const [adminStatus, setAdminStatus] = useState('idle'); // idle | loading | success | error
+  const [adminMsg, setAdminMsg] = useState('');
+
+  // Detectar cambio de hash
+  React.useEffect(() => {
+    const onHash = () => setIsAdmin(window.location.hash === '#admin');
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
+  // Pre-rellenar totals con valores actuales al abrir admin
+  React.useEffect(() => {
+    if (!isAdmin) return;
+    const cur = liveData.liveTotals ?? {};
+    setAdminTotals(prev => {
+      const next = { ...prev };
+      TRACKS.forEach(t => { if (!next[t] && cur[t]) next[t] = String(cur[t]); });
+      return next;
+    });
+  }, [isAdmin, liveData]);
+
+  const adminDayDelta = React.useMemo(() => {
+    const prev = liveData.liveTotals ?? {};
+    const delta = {}; let total = 0;
+    TRACKS.forEach(t => {
+      const newVal = parseInt(adminTotals[t], 10) || 0;
+      const d = Math.max(0, newVal - (prev[t] ?? 0));
+      delta[t] = d; total += d;
+    });
+    return { delta, total };
+  }, [adminTotals, liveData]);
+
+  const adminAlbumTotal = TRACKS.reduce((s, t) => s + (parseInt(adminTotals[t], 10) || 0), 0);
+
+  const handleAdminSubmit = async () => {
+    if (!adminDate) return;
+    const hasData = TRACKS.some(t => parseInt(adminTotals[t], 10) > 0);
+    if (!hasData) { setAdminMsg('Ingresá al menos un stream.'); setAdminStatus('error'); return; }
+    setAdminStatus('loading'); setAdminMsg('');
+    try {
+      const res = await fetch('/api/update-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: adminDate,
+          note: adminNote,
+          liveTotals: adminTotals,
+          algoEnabled: adminAlgoEnabled,
+          algoStreams: adminAlgoEnabled ? adminAlgo : {},
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error desconocido');
+      setAdminStatus('success');
+      setAdminMsg(`✅ Guardado: álbum ${data.albumTotal?.toLocaleString('es-AR')} (+${data.dayTotal?.toLocaleString('es-AR')} hoy) — Vercel deploy en ~30s`);
+    } catch (e) {
+      setAdminStatus('error'); setAdminMsg(`❌ ${e.message}`);
+    }
+  };
+
   // Polling: carga data.json al montar y cada 5 minutos.
   // En prod fetchea public/data.json directo desde GitHub raw (siempre fresco,
   // sin depender de que docs/ esté reconstruido). En dev usa el servidor Vite local.
@@ -575,6 +651,7 @@ const AmorFiadoDashboard = () => {
     { id: 'social', label: 'Social Impact' },
     { id: 'engagement', label: 'Release Engagement' },
     { id: 'algo', label: '🤖 Algo Push' },
+    ...(isAdmin ? [{ id: 'admin', label: '⚙️ Admin' }] : []),
   ];
 
   return (
@@ -3559,6 +3636,138 @@ const AmorFiadoDashboard = () => {
               "Algorítmico" = streams desde Algorithmic Playlists (Discover Weekly, Daily Mix, Release Radar, etc.) según Spotify for Artists.
               Datos: {algoData.latestDate ? new Date(algoData.latestDate + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'} · Período: 28 días.
             </p>
+
+          </div>
+        );
+      })()}
+
+      {/* ── ⚙️ Admin ────────────────────────────────────────────────────────── */}
+      {activeTab === 'admin' && isAdmin && (() => {
+        const inputStyle = {
+          background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(51,65,85,0.7)',
+          borderRadius: '6px', color: '#f1f5f9', fontSize: '0.85rem',
+          padding: '0.4rem 0.6rem', width: '100%', outline: 'none',
+        };
+        const labelStyle = { color: '#64748b', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.3rem', display: 'block' };
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '900px', margin: '0 auto' }}>
+
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '1.1rem', margin: 0 }}>⚙️ Entrada Manual de Datos</p>
+                <p style={{ color: '#475569', fontSize: '0.78rem', margin: '0.25rem 0 0' }}>
+                  Ingresá los totales acumulados que ves en Spotify for Artists. El delta del día se calcula automáticamente.
+                </p>
+              </div>
+              <div style={{ padding: '0.3rem 0.8rem', borderRadius: '6px', background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#fb923c', fontSize: '0.72rem' }}>
+                🔒 Modo admin
+              </div>
+            </div>
+
+            {/* Fecha + nota */}
+            <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem', display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>
+              <div>
+                <span style={labelStyle}>Fecha</span>
+                <input type="date" value={adminDate} onChange={e => setAdminDate(e.target.value)} style={inputStyle} />
+              </div>
+              <div>
+                <span style={labelStyle}>Nota (opcional)</span>
+                <input type="text" value={adminNote} onChange={e => setAdminNote(e.target.value)}
+                  placeholder="ej: snapshot 20:00 ARG, D+10 completo"
+                  style={inputStyle} />
+              </div>
+            </div>
+
+            {/* Streams por track */}
+            <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>Streams acumulados por track</p>
+                <div style={{ display: 'flex', gap: '1rem', fontSize: '0.78rem' }}>
+                  <span style={{ color: '#64748b' }}>Álbum total: <span style={{ color: '#f97316', fontWeight: 700 }}>{adminAlbumTotal.toLocaleString('es-AR')}</span></span>
+                  <span style={{ color: '#64748b' }}>Delta hoy: <span style={{ color: '#4ade80', fontWeight: 700 }}>+{adminDayDelta.total.toLocaleString('es-AR')}</span></span>
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.6rem' }}>
+                {TRACKS.map(track => {
+                  const prev = liveData.liveTotals?.[track] ?? 0;
+                  const cur  = parseInt(adminTotals[track], 10) || 0;
+                  const delta = Math.max(0, cur - prev);
+                  return (
+                    <div key={track} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '0.5rem', alignItems: 'center' }}>
+                      <div>
+                        <span style={{ ...labelStyle, marginBottom: '0.2rem' }}>{track}</span>
+                        <input
+                          type="number" min="0"
+                          value={adminTotals[track]}
+                          onChange={e => setAdminTotals(p => ({ ...p, [track]: e.target.value }))}
+                          placeholder={prev ? prev.toLocaleString('es-AR') : '0'}
+                          style={inputStyle}
+                        />
+                      </div>
+                      <div style={{ textAlign: 'right', paddingTop: '1.1rem' }}>
+                        <span style={{ color: '#475569', fontSize: '0.68rem' }}>prev</span>
+                        <p style={{ color: '#64748b', fontSize: '0.78rem', margin: 0 }}>{prev.toLocaleString('es-AR')}</p>
+                      </div>
+                      <div style={{ textAlign: 'right', paddingTop: '1.1rem', minWidth: '52px' }}>
+                        <span style={{ color: '#475569', fontSize: '0.68rem' }}>delta</span>
+                        <p style={{ color: delta > 0 ? '#4ade80' : '#334155', fontSize: '0.78rem', fontWeight: 600, margin: 0 }}>
+                          {delta > 0 ? `+${delta.toLocaleString('es-AR')}` : '—'}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Algo toggle */}
+            <div style={{ background: 'rgba(15,23,42,0.5)', border: `1px solid ${adminAlgoEnabled ? 'rgba(167,139,250,0.4)' : 'rgba(51,65,85,0.5)'}`, borderRadius: '14px', padding: '1.2rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: adminAlgoEnabled ? '1rem' : 0 }}>
+                <button
+                  onClick={() => setAdminAlgoEnabled(p => !p)}
+                  style={{ background: adminAlgoEnabled ? 'rgba(167,139,250,0.15)' : 'rgba(51,65,85,0.3)', border: `1px solid ${adminAlgoEnabled ? 'rgba(167,139,250,0.5)' : 'rgba(51,65,85,0.6)'}`, borderRadius: '6px', color: adminAlgoEnabled ? '#a78bfa' : '#64748b', padding: '0.35rem 0.9rem', fontSize: '0.8rem', cursor: 'pointer' }}>
+                  🤖 {adminAlgoEnabled ? 'Ocultar algo streams' : 'Agregar algo streams (opcional)'}
+                </button>
+                {!adminAlgoEnabled && <span style={{ color: '#334155', fontSize: '0.72rem' }}>Solo si tenés el dato de Spotify for Artists</span>}
+              </div>
+              {adminAlgoEnabled && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.6rem' }}>
+                  {TRACKS.map(track => (
+                    <div key={track}>
+                      <span style={labelStyle}>{track}</span>
+                      <input type="number" min="0" value={adminAlgo[track]}
+                        onChange={e => setAdminAlgo(p => ({ ...p, [track]: e.target.value }))}
+                        placeholder="algo streams 28d"
+                        style={inputStyle} />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Submit */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>
+              <button
+                onClick={handleAdminSubmit}
+                disabled={adminStatus === 'loading'}
+                style={{
+                  background: adminStatus === 'loading' ? 'rgba(249,115,22,0.3)' : 'linear-gradient(135deg, #f97316, #ea580c)',
+                  border: 'none', borderRadius: '10px', color: '#fff', fontSize: '0.95rem',
+                  fontWeight: 700, padding: '0.75rem 2.5rem', cursor: adminStatus === 'loading' ? 'not-allowed' : 'pointer',
+                  transition: 'opacity 0.2s',
+                }}>
+                {adminStatus === 'loading' ? '⏳ Guardando...' : '🚀 Guardar y pushear a GitHub'}
+              </button>
+              {adminMsg && (
+                <p style={{ color: adminStatus === 'success' ? '#4ade80' : '#f87171', fontSize: '0.82rem', margin: 0, textAlign: 'center' }}>
+                  {adminMsg}
+                </p>
+              )}
+              <p style={{ color: '#1e293b', fontSize: '0.7rem', margin: 0, textAlign: 'center' }}>
+                El dashboard se actualiza automáticamente ~30s después del push (Vercel redeploy).
+              </p>
+            </div>
 
           </div>
         );
