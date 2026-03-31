@@ -166,53 +166,60 @@ const AmorFiadoDashboard = () => {
     'ALQUILER', 'HIELO', 'UN GUSTO', 'CHANGES',
     'OJOS TRISTES', 'HAZLO CALLAO', 'YA NO', 'TOP TIER',
   ];
-  const todayStr = () => new Date().toISOString().split('T')[0];
-  const initTotals = () => {
-    const t = {}; TRACKS.forEach(tr => { t[tr] = ''; }); return t;
-  };
-  const [adminDate, setAdminDate] = useState(todayStr);
+  const emptyTracks = () => { const t = {}; TRACKS.forEach(tr => { t[tr] = ''; }); return t; };
+  const [adminView, setAdminView] = useState('table');   // 'table' | 'form'
+  const [adminEditDate, setAdminEditDate] = useState(''); // fecha siendo editada
+  const [adminDate, setAdminDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [adminNote, setAdminNote] = useState('');
-  const [adminTotals, setAdminTotals] = useState(initTotals);
+  const [adminDailyTracks, setAdminDailyTracks] = useState(emptyTracks);
   const [adminAlgoEnabled, setAdminAlgoEnabled] = useState(false);
-  const [adminAlgo, setAdminAlgo] = useState(initTotals);
-  const [adminStatus, setAdminStatus] = useState('idle'); // idle | loading | success | error
+  const [adminAlgo, setAdminAlgo] = useState(emptyTracks);
+  const [adminStatus, setAdminStatus] = useState('idle');
   const [adminMsg, setAdminMsg] = useState('');
 
-  // Detectar cambio de hash
   React.useEffect(() => {
     const onHash = () => setIsAdmin(window.location.hash === '#admin');
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
-  // Pre-rellenar totals con valores actuales al abrir admin
-  React.useEffect(() => {
-    if (!isAdmin) return;
-    const cur = liveData.liveTotals ?? {};
-    setAdminTotals(prev => {
-      const next = { ...prev };
-      TRACKS.forEach(t => { if (!next[t] && cur[t]) next[t] = String(cur[t]); });
-      return next;
-    });
-  }, [isAdmin, liveData]);
+  const adminOpenNew = () => {
+    setAdminEditDate('');
+    setAdminDate(new Date().toISOString().split('T')[0]);
+    setAdminNote('');
+    setAdminDailyTracks(emptyTracks());
+    setAdminAlgoEnabled(false);
+    setAdminAlgo(emptyTracks());
+    setAdminStatus('idle'); setAdminMsg('');
+    setAdminView('form');
+  };
 
-  const adminDayDelta = React.useMemo(() => {
-    const prev = liveData.liveTotals ?? {};
-    const delta = {}; let total = 0;
-    TRACKS.forEach(t => {
-      const newVal = parseInt(adminTotals[t], 10) || 0;
-      const d = Math.max(0, newVal - (prev[t] ?? 0));
-      delta[t] = d; total += d;
-    });
-    return { delta, total };
-  }, [adminTotals, liveData]);
+  const adminOpenEdit = (entry) => {
+    setAdminEditDate(entry.date);
+    setAdminDate(entry.date);
+    setAdminNote(entry.note || '');
+    const tracks = { ...emptyTracks() };
+    TRACKS.forEach(t => { tracks[t] = String(entry.tracks?.[t] ?? ''); });
+    setAdminDailyTracks(tracks);
+    // Pre-fill algo if we have it
+    const algoH = liveData.algorithmicHistory?.find(h => h.date === entry.date);
+    if (algoH?.tracks) {
+      const algo = { ...emptyTracks() };
+      TRACKS.forEach(t => { algo[t] = String(algoH.tracks[t]?.streams28d ?? ''); });
+      setAdminAlgo(algo);
+      setAdminAlgoEnabled(true);
+    } else {
+      setAdminAlgo(emptyTracks()); setAdminAlgoEnabled(false);
+    }
+    setAdminStatus('idle'); setAdminMsg('');
+    setAdminView('form');
+  };
 
-  const adminAlbumTotal = TRACKS.reduce((s, t) => s + (parseInt(adminTotals[t], 10) || 0), 0);
+  const adminDayTotal = TRACKS.reduce((s, t) => s + (parseInt(adminDailyTracks[t], 10) || 0), 0);
 
   const handleAdminSubmit = async () => {
     if (!adminDate) return;
-    const hasData = TRACKS.some(t => parseInt(adminTotals[t], 10) > 0);
-    if (!hasData) { setAdminMsg('Ingresá al menos un stream.'); setAdminStatus('error'); return; }
+    if (adminDayTotal === 0) { setAdminMsg('Ingresá al menos un stream.'); setAdminStatus('error'); return; }
     setAdminStatus('loading'); setAdminMsg('');
     try {
       const res = await fetch('/api/update-data', {
@@ -220,8 +227,9 @@ const AmorFiadoDashboard = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           date: adminDate,
+          mode: 'edit',
           note: adminNote,
-          liveTotals: adminTotals,
+          dailyTracks: adminDailyTracks,
           algoEnabled: adminAlgoEnabled,
           algoStreams: adminAlgoEnabled ? adminAlgo : {},
         }),
@@ -229,7 +237,7 @@ const AmorFiadoDashboard = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error desconocido');
       setAdminStatus('success');
-      setAdminMsg(`✅ Guardado: álbum ${data.albumTotal?.toLocaleString('es-AR')} (+${data.dayTotal?.toLocaleString('es-AR')} hoy) — Vercel deploy en ~30s`);
+      setAdminMsg(`✅ Guardado — ${data.dayTotal?.toLocaleString('es-AR')} streams · deploy en ~30s`);
     } catch (e) {
       setAdminStatus('error'); setAdminMsg(`❌ ${e.message}`);
     }
@@ -3642,180 +3650,218 @@ const AmorFiadoDashboard = () => {
       })()}
 
       {/* ── ⚙️ Admin ────────────────────────────────────────────────────────── */}
+      {/* ── ⚙️ Admin ────────────────────────────────────────────────────────── */}
       {activeTab === 'admin' && isAdmin && (() => {
-        const inputStyle = {
-          background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(51,65,85,0.7)',
+        const inp = {
+          background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(51,65,85,0.6)',
           borderRadius: '6px', color: '#f1f5f9', fontSize: '0.85rem',
-          padding: '0.4rem 0.6rem', width: '100%', outline: 'none',
+          padding: '0.4rem 0.6rem', width: '100%', outline: 'none', boxSizing: 'border-box',
         };
-        const labelStyle = { color: '#64748b', fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.3rem', display: 'block' };
+        const lbl = { color: '#64748b', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem', display: 'block' };
+
+        // ── Tabla histórica ──────────────────────────────────────────────────
+        if (adminView === 'table') {
+          // Merge dailyLog + algo history by date
+          const algoByDate = {};
+          (liveData.algorithmicHistory ?? []).forEach(h => {
+            algoByDate[h.date] = h.albumAlgorithmicPct28d ?? h.albumAlgorithmicPct ?? null;
+          });
+          const rows = [...(dailyLog ?? [])].reverse(); // newest first
+
+          return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>⚙️ Historial de Datos</p>
+                  <p style={{ color: '#475569', fontSize: '0.75rem', margin: '0.2rem 0 0' }}>
+                    Streams diarios por track · Clickeá una fila para editar
+                  </p>
+                </div>
+                <button onClick={adminOpenNew} style={{ background: 'linear-gradient(135deg,#f97316,#ea580c)', border: 'none', borderRadius: '8px', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.2rem', cursor: 'pointer' }}>
+                  + Nuevo día
+                </button>
+              </div>
+
+              {rows.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '3rem', color: '#475569' }}>
+                  <p style={{ fontSize: '2rem', margin: '0 0 0.5rem' }}>📭</p>
+                  <p style={{ margin: 0 }}>No hay datos aún. Agregá el primer día.</p>
+                </div>
+              ) : (
+                <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid rgba(51,65,85,0.5)' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', minWidth: '900px' }}>
+                    <thead>
+                      <tr style={{ background: 'rgba(15,23,42,0.8)', borderBottom: '1px solid rgba(51,65,85,0.7)' }}>
+                        {['Día', 'Fecha', 'Total', ...TRACKS.map(t => t.split(' ')[0]), '% Algo', ''].map((h, i) => (
+                          <th key={i} style={{ padding: '0.6rem 0.7rem', color: '#64748b', fontWeight: 600, fontSize: '0.66rem', textTransform: 'uppercase', textAlign: i <= 2 ? 'left' : 'right', whiteSpace: 'nowrap' }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((row, i) => {
+                        const total = Object.values(row.tracks ?? {}).reduce((s, v) => s + v, 0);
+                        const algoPct = algoByDate[row.date];
+                        return (
+                          <tr key={row.date}
+                            onClick={() => adminOpenEdit(row)}
+                            style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', background: i % 2 === 0 ? 'transparent' : 'rgba(15,23,42,0.3)', cursor: 'pointer', transition: 'background 0.15s' }}
+                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(249,115,22,0.07)'}
+                            onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : 'rgba(15,23,42,0.3)'}
+                          >
+                            <td style={{ padding: '0.55rem 0.7rem', color: '#f97316', fontWeight: 700 }}>{row.label}</td>
+                            <td style={{ padding: '0.55rem 0.7rem', color: '#94a3b8' }}>{row.date}</td>
+                            <td style={{ padding: '0.55rem 0.7rem', color: '#e2e8f0', fontWeight: 600 }}>{total.toLocaleString('es-AR')}</td>
+                            {TRACKS.map(t => {
+                              const v = row.tracks?.[t] ?? 0;
+                              return <td key={t} style={{ padding: '0.55rem 0.7rem', color: v > 0 ? '#94a3b8' : '#334155', textAlign: 'right' }}>{v > 0 ? v.toLocaleString('es-AR') : '—'}</td>;
+                            })}
+                            <td style={{ padding: '0.55rem 0.7rem', textAlign: 'right' }}>
+                              {algoPct != null
+                                ? <span style={{ background: 'rgba(167,139,250,0.15)', color: '#a78bfa', borderRadius: '9999px', padding: '0.1rem 0.45rem', fontSize: '0.7rem', fontWeight: 600 }}>{algoPct.toFixed(1)}%</span>
+                                : <span style={{ color: '#334155' }}>—</span>}
+                            </td>
+                            <td style={{ padding: '0.55rem 0.7rem', textAlign: 'right' }}>
+                              <span style={{ color: '#475569', fontSize: '0.7rem' }}>✏️</span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        // ── Formulario de entrada ────────────────────────────────────────────
+        const recentDays = [...(dailyLog ?? [])].slice(-6).filter(d => d.date !== adminDate);
+        const maxForTrack = (track) => Math.max(...recentDays.map(d => d.tracks?.[track] ?? 0), 1);
+
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '900px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '960px', margin: '0 auto' }}>
 
             {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '1.1rem', margin: 0 }}>⚙️ Entrada Manual de Datos</p>
-                <p style={{ color: '#475569', fontSize: '0.78rem', margin: '0.25rem 0 0' }}>
-                  Ingresá los totales acumulados que ves en Spotify for Artists. El delta del día se calcula automáticamente.
+                <button onClick={() => setAdminView('table')} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '0.8rem', cursor: 'pointer', padding: 0, marginBottom: '0.3rem', display: 'block' }}>
+                  ← Volver al historial
+                </button>
+                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>
+                  {adminEditDate ? `✏️ Editando ${adminEditDate}` : '➕ Nuevo día'}
                 </p>
               </div>
-              <div style={{ padding: '0.3rem 0.8rem', borderRadius: '6px', background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#fb923c', fontSize: '0.72rem' }}>
-                🔒 Modo admin
+              <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.75rem' }}>
+                <span style={{ color: '#64748b' }}>Total del día:</span>
+                <span style={{ color: '#f97316', fontWeight: 700 }}>{adminDayTotal.toLocaleString('es-AR')}</span>
               </div>
             </div>
 
-            {/* Fecha + nota */}
-            <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem', display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>
+            {/* Fecha + Nota */}
+            <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', gap: '0.75rem', background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '12px', padding: '1rem' }}>
               <div>
-                <span style={labelStyle}>Fecha</span>
-                <input type="date" value={adminDate} onChange={e => setAdminDate(e.target.value)} style={inputStyle} />
+                <span style={lbl}>Fecha</span>
+                <input type="date" value={adminDate} onChange={e => setAdminDate(e.target.value)} style={inp} />
               </div>
               <div>
-                <span style={labelStyle}>Nota (opcional)</span>
+                <span style={lbl}>Nota (opcional)</span>
                 <input type="text" value={adminNote} onChange={e => setAdminNote(e.target.value)}
-                  placeholder="ej: snapshot 20:00 ARG, D+10 completo"
-                  style={inputStyle} />
+                  placeholder="ej: snapshot 20:00 ARG"
+                  style={inp} />
               </div>
             </div>
 
-            {/* Streams por track */}
-            <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>Streams acumulados por track</p>
-                <div style={{ display: 'flex', gap: '1rem', fontSize: '0.78rem' }}>
-                  <span style={{ color: '#64748b' }}>Álbum total: <span style={{ color: '#f97316', fontWeight: 700 }}>{adminAlbumTotal.toLocaleString('es-AR')}</span></span>
-                  <span style={{ color: '#64748b' }}>Delta hoy: <span style={{ color: '#4ade80', fontWeight: 700 }}>+{adminDayDelta.total.toLocaleString('es-AR')}</span></span>
-                </div>
-              </div>
-              {/* Historia por track — últimos días de dailyLog */}
-              {(() => {
-                const recentDays = dailyLog.slice(-7); // últimos 7 días disponibles
-                return (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
-                    {TRACKS.map(track => {
-                      const prev  = liveData.liveTotals?.[track] ?? 0;
-                      const cur   = parseInt(adminTotals[track], 10) || 0;
-                      const delta = Math.max(0, cur - prev);
-                      const maxDay = Math.max(...recentDays.map(d => d.tracks?.[track] ?? 0), 1);
-                      return (
-                        <div key={track} style={{ background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '10px', padding: '0.75rem' }}>
-                          {/* Track name + inputs */}
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '0.5rem', alignItems: 'flex-end', marginBottom: '0.6rem' }}>
-                            <div>
-                              <span style={{ ...labelStyle, marginBottom: '0.25rem' }}>{track}</span>
-                              <input
-                                type="number" min="0"
-                                value={adminTotals[track]}
-                                onChange={e => setAdminTotals(p => ({ ...p, [track]: e.target.value }))}
-                                placeholder={prev ? prev.toLocaleString('es-AR') : '0'}
-                                style={{ ...inputStyle, fontSize: '0.9rem', fontWeight: 600 }}
-                              />
-                            </div>
-                            <div style={{ textAlign: 'right', paddingBottom: '0.1rem' }}>
-                              <span style={{ color: '#334155', fontSize: '0.62rem', display: 'block' }}>acum. prev</span>
-                              <span style={{ color: '#475569', fontSize: '0.75rem' }}>{prev.toLocaleString('es-AR')}</span>
-                            </div>
-                            <div style={{ textAlign: 'right', paddingBottom: '0.1rem', minWidth: '56px' }}>
-                              <span style={{ color: '#334155', fontSize: '0.62rem', display: 'block' }}>hoy</span>
-                              <span style={{ color: delta > 0 ? '#4ade80' : '#334155', fontSize: '0.8rem', fontWeight: 700 }}>
-                                {delta > 0 ? `+${delta.toLocaleString('es-AR')}` : '—'}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Mini historial de días anteriores */}
-                          {recentDays.length > 0 && (
-                            <div style={{ display: 'flex', gap: '3px', alignItems: 'flex-end', height: '36px' }}>
-                              {recentDays.map(day => {
-                                const val  = day.tracks?.[track] ?? 0;
-                                const barH = val > 0 ? Math.max(4, Math.round((val / maxDay) * 30)) : 2;
-                                const isToday = day.date === adminDate;
-                                return (
-                                  <div key={day.date} title={`${day.label}: ${val.toLocaleString('es-AR')}`}
-                                    style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', cursor: 'default' }}>
-                                    <span style={{ color: '#1e293b', fontSize: '0.48rem', whiteSpace: 'nowrap' }}>
-                                      {val > 0 ? (val >= 1000 ? `${(val/1000).toFixed(1)}K` : val) : ''}
-                                    </span>
-                                    <div style={{
-                                      width: '100%', height: `${barH}px`, borderRadius: '2px',
-                                      background: isToday ? '#f97316' : val > 0 ? 'rgba(148,163,184,0.35)' : 'rgba(51,65,85,0.2)',
-                                      transition: 'height 0.2s',
-                                    }} />
-                                    <span style={{ color: '#1e293b', fontSize: '0.48rem' }}>{day.label}</span>
-                                  </div>
-                                );
-                              })}
-                              {/* Barra de hoy (nuevo delta) */}
-                              {delta > 0 && (() => {
-                                const barH = Math.max(4, Math.round((delta / maxDay) * 30));
-                                return (
-                                  <div title={`Hoy: +${delta.toLocaleString('es-AR')}`}
-                                    style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-                                    <span style={{ color: '#4ade80', fontSize: '0.48rem', whiteSpace: 'nowrap' }}>
-                                      {delta >= 1000 ? `${(delta/1000).toFixed(1)}K` : delta}
-                                    </span>
-                                    <div style={{ width: '100%', height: `${barH}px`, borderRadius: '2px', background: 'rgba(74,222,128,0.5)' }} />
-                                    <span style={{ color: '#4ade80', fontSize: '0.48rem' }}>hoy</span>
-                                  </div>
-                                );
-                              })()}
-                            </div>
-                          )}
+            {/* Tracks grid */}
+            <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '12px', padding: '1rem' }}>
+              <p style={{ color: '#f1f5f9', fontWeight: 600, fontSize: '0.85rem', margin: '0 0 0.85rem' }}>Streams del día por track</p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.65rem' }}>
+                {TRACKS.map(track => {
+                  const val = parseInt(adminDailyTracks[track], 10) || 0;
+                  const maxH = maxForTrack(track);
+                  return (
+                    <div key={track} style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.4)', borderRadius: '8px', padding: '0.65rem 0.75rem' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 130px', gap: '0.5rem', alignItems: 'flex-end', marginBottom: '0.5rem' }}>
+                        <div>
+                          <span style={lbl}>{track}</span>
+                          <input type="number" min="0" value={adminDailyTracks[track]}
+                            onChange={e => setAdminDailyTracks(p => ({ ...p, [track]: e.target.value }))}
+                            placeholder="streams del día"
+                            style={{ ...inp, fontSize: '1rem', fontWeight: 700 }}
+                          />
                         </div>
-                      );
-                    })}
-                  </div>
-                );
-              })()}
+                        {/* Últimos valores */}
+                        <div style={{ paddingBottom: '2px' }}>
+                          <span style={{ ...lbl, marginBottom: '3px' }}>últimos días</span>
+                          <div style={{ display: 'flex', gap: '2px', alignItems: 'flex-end', height: '28px' }}>
+                            {recentDays.map(day => {
+                              const dv = day.tracks?.[track] ?? 0;
+                              const h = dv > 0 ? Math.max(3, Math.round((dv / maxH) * 24)) : 2;
+                              return (
+                                <div key={day.date} title={`${day.label}: ${dv.toLocaleString('es-AR')}`}
+                                  style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', gap: '2px' }}>
+                                  <div style={{ width: '100%', height: `${h}px`, borderRadius: '2px', background: dv > 0 ? 'rgba(148,163,184,0.4)' : 'rgba(51,65,85,0.3)' }} />
+                                  <span style={{ color: '#334155', fontSize: '0.42rem', lineHeight: 1 }}>{day.label}</span>
+                                </div>
+                              );
+                            })}
+                            {/* Barra nuevo valor */}
+                            {val > 0 && (
+                              <div title={`Hoy: ${val.toLocaleString('es-AR')}`}
+                                style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', gap: '2px' }}>
+                                <div style={{ width: '100%', height: `${Math.max(3, Math.round((val / maxH) * 24))}px`, borderRadius: '2px', background: 'rgba(249,115,22,0.6)' }} />
+                                <span style={{ color: '#f97316', fontSize: '0.42rem', lineHeight: 1 }}>hoy</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Algo toggle */}
-            <div style={{ background: 'rgba(15,23,42,0.5)', border: `1px solid ${adminAlgoEnabled ? 'rgba(167,139,250,0.4)' : 'rgba(51,65,85,0.5)'}`, borderRadius: '14px', padding: '1.2rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: adminAlgoEnabled ? '1rem' : 0 }}>
-                <button
-                  onClick={() => setAdminAlgoEnabled(p => !p)}
-                  style={{ background: adminAlgoEnabled ? 'rgba(167,139,250,0.15)' : 'rgba(51,65,85,0.3)', border: `1px solid ${adminAlgoEnabled ? 'rgba(167,139,250,0.5)' : 'rgba(51,65,85,0.6)'}`, borderRadius: '6px', color: adminAlgoEnabled ? '#a78bfa' : '#64748b', padding: '0.35rem 0.9rem', fontSize: '0.8rem', cursor: 'pointer' }}>
-                  🤖 {adminAlgoEnabled ? 'Ocultar algo streams' : 'Agregar algo streams (opcional)'}
+            <div style={{ background: 'rgba(15,23,42,0.5)', border: `1px solid ${adminAlgoEnabled ? 'rgba(167,139,250,0.4)' : 'rgba(51,65,85,0.5)'}`, borderRadius: '12px', padding: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: adminAlgoEnabled ? '0.85rem' : 0 }}>
+                <button onClick={() => setAdminAlgoEnabled(p => !p)}
+                  style={{ background: adminAlgoEnabled ? 'rgba(167,139,250,0.12)' : 'rgba(51,65,85,0.3)', border: `1px solid ${adminAlgoEnabled ? 'rgba(167,139,250,0.5)' : 'rgba(51,65,85,0.6)'}`, borderRadius: '6px', color: adminAlgoEnabled ? '#a78bfa' : '#64748b', padding: '0.35rem 0.9rem', fontSize: '0.8rem', cursor: 'pointer' }}>
+                  🤖 {adminAlgoEnabled ? 'Ocultar streams algorítmicos' : 'Agregar streams algorítmicos (opcional)'}
                 </button>
-                {!adminAlgoEnabled && <span style={{ color: '#334155', fontSize: '0.72rem' }}>Solo si tenés el dato de Spotify for Artists</span>}
               </div>
               {adminAlgoEnabled && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.6rem' }}>
-                  {TRACKS.map(track => (
-                    <div key={track}>
-                      <span style={labelStyle}>{track}</span>
-                      <input type="number" min="0" value={adminAlgo[track]}
-                        onChange={e => setAdminAlgo(p => ({ ...p, [track]: e.target.value }))}
-                        placeholder="algo streams 28d"
-                        style={inputStyle} />
-                    </div>
-                  ))}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+                  {TRACKS.map(track => {
+                    const algoH = (liveData.algorithmicHistory ?? []).filter(h => h.tracks?.[track]?.streams28d);
+                    const lastAlgo = algoH.length > 0 ? algoH[algoH.length - 1] : null;
+                    return (
+                      <div key={track}>
+                        <span style={lbl}>{track}</span>
+                        <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
+                          <input type="number" min="0" value={adminAlgo[track]}
+                            onChange={e => setAdminAlgo(p => ({ ...p, [track]: e.target.value }))}
+                            placeholder={lastAlgo ? lastAlgo.tracks[track].streams28d.toLocaleString('es-AR') : 'streams 28d'}
+                            style={inp}
+                          />
+                          {lastAlgo && <span style={{ color: '#475569', fontSize: '0.68rem', whiteSpace: 'nowrap' }}>prev: {lastAlgo.tracks[track]?.streams28d?.toLocaleString('es-AR')}</span>}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
 
             {/* Submit */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>
-              <button
-                onClick={handleAdminSubmit}
-                disabled={adminStatus === 'loading'}
-                style={{
-                  background: adminStatus === 'loading' ? 'rgba(249,115,22,0.3)' : 'linear-gradient(135deg, #f97316, #ea580c)',
-                  border: 'none', borderRadius: '10px', color: '#fff', fontSize: '0.95rem',
-                  fontWeight: 700, padding: '0.75rem 2.5rem', cursor: adminStatus === 'loading' ? 'not-allowed' : 'pointer',
-                  transition: 'opacity 0.2s',
-                }}>
-                {adminStatus === 'loading' ? '⏳ Guardando...' : '🚀 Guardar y pushear a GitHub'}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', alignItems: 'center' }}>
+              <button onClick={handleAdminSubmit} disabled={adminStatus === 'loading'}
+                style={{ background: adminStatus === 'loading' ? 'rgba(249,115,22,0.3)' : 'linear-gradient(135deg,#f97316,#ea580c)', border: 'none', borderRadius: '10px', color: '#fff', fontSize: '0.95rem', fontWeight: 700, padding: '0.7rem 2.5rem', cursor: adminStatus === 'loading' ? 'not-allowed' : 'pointer' }}>
+                {adminStatus === 'loading' ? '⏳ Guardando...' : '🚀 Guardar y pushear'}
               </button>
               {adminMsg && (
-                <p style={{ color: adminStatus === 'success' ? '#4ade80' : '#f87171', fontSize: '0.82rem', margin: 0, textAlign: 'center' }}>
-                  {adminMsg}
-                </p>
+                <p style={{ color: adminStatus === 'success' ? '#4ade80' : '#f87171', fontSize: '0.82rem', margin: 0 }}>{adminMsg}</p>
               )}
-              <p style={{ color: '#1e293b', fontSize: '0.7rem', margin: 0, textAlign: 'center' }}>
-                El dashboard se actualiza automáticamente ~30s después del push (Vercel redeploy).
-              </p>
             </div>
 
           </div>
