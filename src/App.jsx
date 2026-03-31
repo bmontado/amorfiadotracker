@@ -247,8 +247,24 @@ const AmorFiadoDashboard = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error desconocido');
+
+      const savedDate = adminDate;
       setAdminStatus('success');
-      setAdminMsg(`✅ Guardado — ${data.dayTotal?.toLocaleString('es-AR')} streams · deploy en ~30s`);
+      setAdminMsg(`✅ ${savedDate} guardado — ${data.dayTotal?.toLocaleString('es-AR')} streams`);
+
+      // Refrescar datos desde GitHub (el push ya ocurrió) y avanzar al siguiente día
+      await refreshData();
+      const nextD = new Date(savedDate + 'T12:00:00Z');
+      nextD.setUTCDate(nextD.getUTCDate() + 1);
+      const nextDate = nextD.toISOString().split('T')[0];
+      setAdminDate(nextDate);
+      setAdminEditDate('');
+      setAdminNote('');
+      setAdminDailyTracks(emptyTracks());
+      setAdminAlgoEnabled(false);
+      setAdminAlgo(emptyTracks());
+      // Mantener el mensaje de éxito visible unos segundos, luego limpiar
+      setTimeout(() => { setAdminStatus('idle'); setAdminMsg(''); }, 4000);
     } catch (e) {
       setAdminStatus('error'); setAdminMsg(`❌ ${e.message}`);
     }
@@ -312,8 +328,10 @@ const AmorFiadoDashboard = () => {
 
     if (errors.length === 0) {
       setAdminTrackStatus('success');
-      setAdminTrackMsg(`✅ ${modifiedDates.length} día(s) guardado(s) · deploy en ~30s`);
+      setAdminTrackMsg(`✅ ${modifiedDates.length} día(s) guardado(s)`);
       setAdminTrackEdits({});
+      await refreshData();
+      setTimeout(() => { setAdminTrackStatus('idle'); setAdminTrackMsg(''); }, 4000);
     } else {
       setAdminTrackStatus('error');
       setAdminTrackMsg(`❌ ${errors.join(' | ')}`);
@@ -328,21 +346,22 @@ const AmorFiadoDashboard = () => {
     ? 'https://raw.githubusercontent.com/bmontado/amorfiadotracker/main/public/data.json'
     : '/data.json';
 
+  const refreshData = React.useCallback(async () => {
+    try {
+      const res = await fetch(`${DATA_BASE_URL}?t=${Date.now()}`);
+      if (res.ok) {
+        const json = await res.json();
+        setLiveData(json);
+        setDataFreshAt(Date.now());
+      }
+    } catch { /* red caída o build en curso: mantiene el estado anterior */ }
+  }, [DATA_BASE_URL]);
+
   useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await fetch(`${DATA_BASE_URL}?t=${Date.now()}`);
-        if (res.ok) {
-          const json = await res.json();
-          setLiveData(json);
-          setDataFreshAt(Date.now());
-        }
-      } catch { /* red caída o build en curso: mantiene el estado anterior */ }
-    };
-    load();
-    const id = setInterval(load, 5 * 60 * 1000); // cada 5 min
+    refreshData();
+    const id = setInterval(refreshData, 5 * 60 * 1000); // cada 5 min
     return () => clearInterval(id);
-  }, []);
+  }, [refreshData]);
   const toggleDay = (date) => setExpandedDays(prev => { const s = new Set(prev); s.has(date) ? s.delete(date) : s.add(date); return s; });
 
   // Album metadata
