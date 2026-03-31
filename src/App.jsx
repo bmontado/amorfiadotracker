@@ -3584,7 +3584,8 @@ const AmorFiadoDashboard = () => {
         const stats = computeStats(algoWindow);
         const { byTrack, totalAlgo, totalStreams, albumPct, avgPerDay, days } = stats;
         const sorted = [...byTrack].sort((a, b) => b.algoPercent - a.algoPercent);
-        const topTrack = sorted[0] ?? null;
+        const topTrack = sorted[0] ?? null; // mayor % algo
+        const topTrackByVolume = [...byTrack].sort((a, b) => b.algoStreams - a.algoStreams)[0] ?? null; // mayor streams brutos
 
         const trendColor = trend === null ? '#94a3b8' : trend >= 0 ? '#4ade80' : '#f87171';
         const trendSign  = trend !== null && trend > 0 ? '+' : '';
@@ -3639,12 +3640,13 @@ const AmorFiadoDashboard = () => {
             </div>
 
             {/* ── KPI cards ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.75rem' }}>
               {[
                 { label: 'Streams Algo', value: formatNumber(totalAlgo), sub: `en ${days} días`, color: '#a78bfa' },
                 { label: '% Algorítmico', value: `${albumPct.toFixed(1)}%`, sub: `de ${formatNumber(totalStreams)} totales`, color: '#e879f9' },
                 { label: 'Promedio/Día', value: formatNumber(avgPerDay), sub: trend !== null ? `${trendSign}${trend.toFixed(1)} pp tendencia` : `${days} días de data`, color: '#38bdf8', subColor: trendColor },
-                { label: 'Track Top Algo', value: topTrack ? topTrack.track : '—', sub: topTrack ? `${topTrack.algoPercent.toFixed(1)}% · ${formatNumber(topTrack.algoStreams)}` : '', color: '#4ade80', small: true },
+                { label: 'Más % Algo', value: topTrack ? topTrack.track : '—', sub: topTrack ? `${topTrack.algoPercent.toFixed(1)}% del total` : '', color: '#4ade80', small: true },
+                { label: 'Más Streams Algo', value: topTrackByVolume ? topTrackByVolume.track : '—', sub: topTrackByVolume ? `${formatNumber(topTrackByVolume.algoStreams)} streams` : '', color: '#f97316', small: true },
               ].map(({ label, value, sub, color, subColor, small }) => (
                 <div key={label} style={{ background: 'rgba(15,23,42,0.6)', border: `1px solid ${color}22`, borderRadius: '12px', padding: '0.9rem 1rem' }}>
                   <p style={{ color: '#64748b', fontSize: '0.65rem', margin: '0 0 0.35rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</p>
