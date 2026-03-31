@@ -158,6 +158,7 @@ const AmorFiadoDashboard = () => {
   const [selectedReleaseId, setSelectedReleaseId] = useState('6EPWuQUeAaRp61S8qG0fri');
   const [showReportModal, setShowReportModal] = useState(false);
   const [algoBarHoverIdx, setAlgoBarHoverIdx] = useState(null);
+  const [algoWindow, setAlgoWindow] = useState('7d'); // '7d' | '28d' | 'all'
 
   // ── Admin panel ─────────────────────────────────────────────────────────────
   const [isAdmin, setIsAdmin] = useState(() => window.location.hash === '#admin');
@@ -392,99 +393,79 @@ const AmorFiadoDashboard = () => {
   const trackMetrics     = liveData.trackMetrics     ?? DEFAULT_LIVE_DATA.trackMetrics;
   const trackMetricsMeta = liveData.trackMetricsMeta ?? DEFAULT_LIVE_DATA.trackMetricsMeta;
   const campaignContext  = liveData.campaignContext  ?? null;
-  const algoData = (() => {
-    const algH   = liveData.algorithmicHistory ?? [];
-    const algLog = liveData.algoLog ?? [];
-    const algD   = liveData.algorithmicData ?? null;
+  // ── Algo data: computed 100% from algoLog + dailyLog ──────────────────
+  const algoComputed = React.useMemo(() => {
+    const algLog  = (liveData.algoLog ?? []).slice().sort((a, b) => a.date.localeCompare(b.date));
+    const dLog    = (dailyLog ?? []).slice().sort((a, b) => a.date.localeCompare(b.date));
+    if (algLog.length === 0) return null;
 
-    // Necesitamos al menos algo de data
-    if (algH.length === 0 && algLog.length === 0 && !algD) return liveData.algoData ?? null;
+    // Index dailyLog by date for fast lookup
+    const dailyByDate = {};
+    dLog.forEach(d => { dailyByDate[d.date] = d; });
 
-    const lastHist   = algH.length > 0 ? algH[algH.length - 1] : null;
-    const histTracks = lastHist?.tracks ?? {};
-    const tm         = liveData.trackMetrics ?? {};
+    // All dates sorted
+    const allDates = algLog.map(e => e.date);
+    const latestDate = allDates[allDates.length - 1];
 
-    // latestDate: última fecha con datos algorítmicos
-    const latestDate = lastHist?.date ?? (algLog.length > 0 ? algLog[algLog.length - 1].date : null);
-    if (!latestDate) return liveData.algoData ?? null;
+    // Helper: filter dates by window
+    const filterDates = (dates, win) => {
+      if (win === 'all') return dates;
+      const n = win === '7d' ? 7 : 28;
+      return dates.slice(-n);
+    };
 
-    // byTrack: stats 28d/7d por track —————————————————————————————————————
-    let byTrack;
-    if (Object.keys(histTracks).length > 0) {
-      // Nuevo esquema: algorithmicHistory tiene stats pre-calculados de windows
-      byTrack = TRACKS.map(track => {
-        const ht = histTracks[track];
-        if (!ht) return null;
-        const algoStreams  = ht.streams28d ?? 0;
-        const streams7d    = ht.streams7d  ?? 0;
-        const algoPercent  = ht.pct28d     ?? 0;
-        const totalStreams  = tm[track]?.streams28d ?? 0;
-        return { track, algoPercent, algoStreams, streams7d, totalStreams, playlistStreams: 0, radioStreams: 0, daily7d: null };
-      }).filter(Boolean);
-    } else if (algD) {
-      // Esquema antiguo: algorithmicData tiene valor snapshot, calcular % desde trackMetrics
-      const allDates = [...new Set(Object.values(algD).flatMap(dm => Object.keys(dm)))].sort();
-      const latD = allDates[allDates.length - 1];
-      byTrack = Object.entries(algD).map(([track, dateMap]) => {
-        const entry = dateMap[latD] ?? null;
-        if (!entry) return null;
-        const algoStreams  = entry.streams ?? 0;
-        const totalStreams  = tm[track]?.streams28d ?? 0;
-        const ht           = histTracks[track];
-        const algoPercent  = totalStreams > 0 ? (algoStreams / totalStreams) * 100 : (ht?.pct28d ?? 0);
-        const daily7d      = entry.daily7d ?? null;
-        const streams7d    = ht?.streams7d ?? (daily7d ? Object.values(daily7d).reduce((a, b) => a + b, 0) : 0);
-        return { track, algoPercent, algoStreams, streams7d, totalStreams,
-          playlistStreams: entry.breakdown?.algorithmicPlaylists ?? 0,
-          radioStreams: entry.breakdown?.radio ?? 0, daily7d };
-      }).filter(Boolean);
-    } else {
-      byTrack = [];
+    // Per-track daily data (all days)
+    const trackDaily = {}; // { trackName: { date: algoStreams } }
+    TRACKS.forEach(t => { trackDaily[t] = {}; });
+    algLog.forEach(entry => {
+      TRACKS.forEach(t => { trackDaily[t][entry.date] = entry.tracks?.[t] ?? 0; });
+    });
+
+    // Compute stats for a given window
+    const computeStats = (win) => {
+      const dates = filterDates(allDates, win);
+      const byTrack = TRACKS.map(track => {
+        const algoStreams = dates.reduce((s, d) => s + (trackDaily[track][d] ?? 0), 0);
+        const totalStreams = dates.reduce((s, d) => s + (dailyByDate[d]?.tracks?.[track] ?? 0), 0);
+        const algoPercent = totalStreams > 0 ? (algoStreams / totalStreams) * 100 : 0;
+        return { track, algoStreams, totalStreams, algoPercent };
+      }).filter(t => t.algoStreams > 0 || t.totalStreams > 0);
+
+      const totalAlgo = byTrack.reduce((s, t) => s + t.algoStreams, 0);
+      const totalStreams = byTrack.reduce((s, t) => s + t.totalStreams, 0);
+      const albumPct = totalStreams > 0 ? (totalAlgo / totalStreams) * 100 : 0;
+      const avgPerDay = dates.length > 0 ? Math.round(totalAlgo / dates.length) : 0;
+
+      return { byTrack, totalAlgo, totalStreams, albumPct, avgPerDay, days: dates.length };
+    };
+
+    // Daily evolution: % algo del álbum cada día
+    const dailyEvolution = allDates.map(date => {
+      const algoTotal = TRACKS.reduce((s, t) => s + (trackDaily[t][date] ?? 0), 0);
+      const dayTotal = TRACKS.reduce((s, t) => s + (dailyByDate[date]?.tracks?.[t] ?? 0), 0);
+      const pct = dayTotal > 0 ? (algoTotal / dayTotal) * 100 : 0;
+      return { date, algoTotal, dayTotal, pct };
+    });
+
+    // Trend: compare current 7d avg % vs previous 7d avg %
+    let trend = null;
+    if (allDates.length >= 14) {
+      const recent7 = dailyEvolution.slice(-7);
+      const prev7   = dailyEvolution.slice(-14, -7);
+      const avgRecent = recent7.reduce((s, d) => s + d.pct, 0) / 7;
+      const avgPrev   = prev7.reduce((s, d) => s + d.pct, 0) / 7;
+      trend = avgRecent - avgPrev;
+    } else if (allDates.length >= 4) {
+      const half = Math.floor(dailyEvolution.length / 2);
+      const recent = dailyEvolution.slice(half);
+      const prev   = dailyEvolution.slice(0, half);
+      const avgRecent = recent.reduce((s, d) => s + d.pct, 0) / recent.length;
+      const avgPrev   = prev.reduce((s, d) => s + d.pct, 0) / prev.length;
+      trend = avgRecent - avgPrev;
     }
 
-    // history: evolución del % algorítmico del álbum ————————————————————————
-    const history = algH.map(h => ({
-      date: h.date,
-      label: h.label ?? '',
-      algoPercent:   h.albumAlgorithmicPct28d  ?? h.albumAlgorithmicPct  ?? 0,
-      algoStreams:   h.albumAlgorithmicTotal28d ?? h.albumAlgorithmicTotal ?? 0,
-      algoStreams7d: h.albumAlgorithmicTotal7d  ?? 0,
-      partial: h.partial ?? false,
-    }));
-    const nonPartial = history.filter(h => !h.partial && h.algoPercent > 0);
-    const algoTrend  = nonPartial.length >= 2
-      ? nonPartial[nonPartial.length - 1].algoPercent - nonPartial[nonPartial.length - 2].algoPercent
-      : null;
-
-    const albumPct     = lastHist?.albumAlgorithmicPct28d  ?? lastHist?.albumAlgorithmicPct  ?? null;
-    const albumStreams  = lastHist?.albumAlgorithmicTotal28d ?? lastHist?.albumAlgorithmicTotal ?? 0;
-
-    // dailyAlbum: gráfico diario —————————————————————————————————————————————
-    // Preferir algoLog (diarios reales); fallback a daily7d de byTrack
-    let dailyAlbumArr = [];
-    if (algLog.length > 0) {
-      const dailyAlbum = {};
-      algLog.forEach(entry => {
-        const total = TRACKS.reduce((s, t) => s + (entry.tracks?.[t] ?? 0), 0);
-        if (total > 0) dailyAlbum[entry.date] = total;
-      });
-      dailyAlbumArr = Object.entries(dailyAlbum)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([date, streams]) => ({ date, streams }));
-    } else {
-      const dailyAlbum = {};
-      byTrack.forEach(t => {
-        if (t.daily7d) {
-          Object.entries(t.daily7d).forEach(([d, v]) => { dailyAlbum[d] = (dailyAlbum[d] ?? 0) + v; });
-        }
-      });
-      dailyAlbumArr = Object.entries(dailyAlbum)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([date, streams]) => ({ date, streams }));
-    }
-
-    return { byTrack, history, algoTrend, albumAlgoPercent: albumPct, albumAlgoStreams: albumStreams, dailyAlbum: dailyAlbumArr, period: '28 días', latestDate };
-  })();
+    return { trackDaily, allDates, latestDate, computeStats, dailyEvolution, trend };
+  }, [liveData.algoLog, dailyLog]);
 
   // Social posts — live desde liveData.socialPosts (actualizado por amor-fiado-social-scraper)
   // Incluye: @zeballos17 (IG), @asimetria17 (IG), @zeballos1717 (TK), @zeballosrap/kiosco (TK)
@@ -3494,30 +3475,29 @@ const AmorFiadoDashboard = () => {
       {/* ── 🤖 Algo Push ──────────────────────────────────────────────────── */}
       {activeTab === 'algo' && (() => {
         // Empty state
-        if (!algoData) {
+        if (!algoComputed) {
           return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '360px', gap: '1rem' }}>
               <div style={{ fontSize: '3rem' }}>🤖</div>
               <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '1.1rem', margin: 0 }}>Sin datos algorítmicos aún</p>
               <p style={{ color: '#64748b', fontSize: '0.85rem', maxWidth: '360px', textAlign: 'center', margin: 0, lineHeight: 1.6 }}>
-                Los datos van a aparecer después del próximo run del scraper de Spotify for Artists.
+                Ingresá datos de streams algorítmicos en Admin para ver las métricas acá.
               </p>
             </div>
           );
         }
 
-        const byTrack      = algoData.byTrack ?? [];
-        const history      = algoData.history ?? [];
-        const dailyAlbum   = algoData.dailyAlbum ?? [];
-        const algoTrend    = algoData.algoTrend ?? null;
-        const trendColor   = algoTrend === null ? '#94a3b8' : algoTrend >= 0 ? '#4ade80' : '#f87171';
-        const trendSign    = algoTrend !== null && algoTrend > 0 ? '+' : '';
-        const sorted       = [...byTrack].sort((a, b) => b.algoPercent - a.algoPercent);
-        const topTrack     = sorted[0] ?? null;
-        const total7d      = byTrack.reduce((s, t) => s + (t.streams7d ?? 0), 0);
-        const totalAlgo28d = byTrack.reduce((s, t) => s + t.algoStreams, 0);
+        const { trackDaily, allDates, latestDate, computeStats, dailyEvolution, trend } = algoComputed;
+        const stats = computeStats(algoWindow);
+        const { byTrack, totalAlgo, totalStreams, albumPct, avgPerDay, days } = stats;
+        const sorted = [...byTrack].sort((a, b) => b.algoPercent - a.algoPercent);
+        const topTrack = sorted[0] ?? null;
 
-        // Track colors for daily chart
+        const trendColor = trend === null ? '#94a3b8' : trend >= 0 ? '#4ade80' : '#f87171';
+        const trendSign  = trend !== null && trend > 0 ? '+' : '';
+        const windowLabel = algoWindow === '7d' ? '7 días' : algoWindow === '28d' ? '28 días' : `${allDates.length} días`;
+
+        // Track colors
         const trackColors = {
           'ATBLM': '#a78bfa', 'CUANDO ESCRIBÍA ASIMETRÍA': '#38bdf8', 'UN GUSTO': '#4ade80',
           'MAN OF WORD': '#f97316', 'CHANGES': '#fb923c', 'ALQUILER': '#e879f9',
@@ -3525,92 +3505,68 @@ const AmorFiadoDashboard = () => {
           'HIELO': '#818cf8', 'YA NO': '#94a3b8', 'TOP TIER': '#6ee7b7',
         };
 
-        // Build stacked daily data from algoLog (daily entries per track)
-        const algLogArr = liveData.algoLog ?? [];
-        const dailyStacked = algLogArr
-          .slice() // don't mutate
-          .sort((a, b) => a.date.localeCompare(b.date))
-          .map(entry => {
-            const row = { date: entry.date };
-            let dayTotal = 0;
-            TRACKS.forEach(t => {
-              const val = entry.tracks?.[t] ?? 0;
-              row[t] = val;
-              dayTotal += val;
-            });
-            row.total = dayTotal;
-            return row;
+        // Stacked area data — always show ALL days
+        const dailyStacked = allDates.map(date => {
+          const row = { date };
+          let dayTotal = 0;
+          TRACKS.forEach(t => {
+            const val = trackDaily[t]?.[date] ?? 0;
+            row[t] = val;
+            dayTotal += val;
           });
-        // Top 5 tracks by total algo streams across all days
-        const trackTotals = {};
-        TRACKS.forEach(t => { trackTotals[t] = 0; });
-        algLogArr.forEach(entry => {
-          TRACKS.forEach(t => { trackTotals[t] += (entry.tracks?.[t] ?? 0); });
+          row.total = dayTotal;
+          return row;
         });
-        const top5 = Object.entries(trackTotals)
-          .sort(([, a], [, b]) => b - a)
-          .slice(0, 5)
-          .map(([track]) => ({ track }));
+
+        // Top 5 tracks by total algo streams (across all days)
+        const top5 = [...byTrack].sort((a, b) => b.algoStreams - a.algoStreams).slice(0, 5);
+
+        // Window toggle component
+        const WindowToggle = () => (
+          <div style={{ display: 'flex', gap: '0.25rem', background: 'rgba(15,23,42,0.6)', borderRadius: '8px', padding: '3px' }}>
+            {[{ key: '7d', label: '7d' }, { key: '28d', label: '28d' }, { key: 'all', label: 'Todo' }].map(({ key, label }) => (
+              <button key={key} onClick={() => setAlgoWindow(key)}
+                style={{
+                  padding: '0.3rem 0.7rem', borderRadius: '6px', border: 'none', cursor: 'pointer',
+                  fontSize: '0.72rem', fontWeight: 600, transition: 'all 0.15s',
+                  background: algoWindow === key ? 'rgba(167,139,250,0.25)' : 'transparent',
+                  color: algoWindow === key ? '#a78bfa' : '#64748b',
+                }}>{label}</button>
+            ))}
+          </div>
+        );
 
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
+            {/* ── Header con toggle ── */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>Algo Push · {windowLabel}</p>
+              <WindowToggle />
+            </div>
+
             {/* ── KPI cards ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
               {[
-                {
-                  label: 'Streams Algo (28d)',
-                  value: formatNumber(totalAlgo28d),
-                  sub: `${algoData.albumAlgoPercent?.toFixed(1) ?? '—'}% del álbum`,
-                  color: '#a78bfa',
-                  icon: '🤖',
-                },
-                {
-                  label: 'Streams Algo (7d)',
-                  value: formatNumber(total7d),
-                  sub: `promedio ${formatNumber(Math.round(total7d / 7))}/día`,
-                  color: '#38bdf8',
-                  icon: '📊',
-                },
-              ].map(({ label, value, sub, color, icon }) => (
-                <div key={label} style={{ background: 'rgba(15,23,42,0.6)', border: `1px solid ${color}33`, borderRadius: '12px', padding: '1.1rem 1.2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <span style={{ fontSize: '1.8rem' }}>{icon}</span>
-                  <div>
-                    <p style={{ color: '#64748b', fontSize: '0.72rem', margin: '0 0 0.3rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</p>
-                    <p style={{ color, fontSize: '1.55rem', fontWeight: 800, margin: '0 0 0.15rem', lineHeight: 1 }}>{value}</p>
-                    <p style={{ color: '#475569', fontSize: '0.72rem', margin: 0 }}>{sub}</p>
-                  </div>
+                { label: 'Streams Algo', value: formatNumber(totalAlgo), sub: `en ${days} días`, color: '#a78bfa' },
+                { label: '% Algorítmico', value: `${albumPct.toFixed(1)}%`, sub: `de ${formatNumber(totalStreams)} totales`, color: '#e879f9' },
+                { label: 'Promedio/Día', value: formatNumber(avgPerDay), sub: trend !== null ? `${trendSign}${trend.toFixed(1)} pp tendencia` : `${days} días de data`, color: '#38bdf8', subColor: trendColor },
+                { label: 'Track Top Algo', value: topTrack ? topTrack.track : '—', sub: topTrack ? `${topTrack.algoPercent.toFixed(1)}% · ${formatNumber(topTrack.algoStreams)}` : '', color: '#4ade80', small: true },
+              ].map(({ label, value, sub, color, subColor, small }) => (
+                <div key={label} style={{ background: 'rgba(15,23,42,0.6)', border: `1px solid ${color}22`, borderRadius: '12px', padding: '0.9rem 1rem' }}>
+                  <p style={{ color: '#64748b', fontSize: '0.65rem', margin: '0 0 0.35rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</p>
+                  <p style={{ color, fontSize: small ? '0.85rem' : '1.4rem', fontWeight: 800, margin: '0 0 0.2rem', lineHeight: 1.1 }}>{value}</p>
+                  <p style={{ color: subColor ?? '#475569', fontSize: '0.68rem', margin: 0 }}>{sub}</p>
                 </div>
               ))}
             </div>
 
-            {/* ── Secondary KPI row ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
-              <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(74,222,128,0.2)', borderRadius: '10px', padding: '0.85rem 1rem' }}>
-                <p style={{ color: '#64748b', fontSize: '0.68rem', margin: '0 0 0.25rem', textTransform: 'uppercase' }}>Track más pusheado</p>
-                <p style={{ color: '#4ade80', fontSize: '1.05rem', fontWeight: 700, margin: '0 0 0.1rem' }}>{topTrack ? topTrack.track : '—'}</p>
-                <p style={{ color: '#475569', fontSize: '0.7rem', margin: 0 }}>{topTrack ? `${topTrack.algoPercent.toFixed(1)}% · ${formatNumber(topTrack.algoStreams)} streams` : ''}</p>
-              </div>
-              <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(167,139,250,0.2)', borderRadius: '10px', padding: '0.85rem 1rem' }}>
-                <p style={{ color: '#64748b', fontSize: '0.68rem', margin: '0 0 0.25rem', textTransform: 'uppercase' }}>% Algo Álbum</p>
-                <p style={{ color: '#a78bfa', fontSize: '1.05rem', fontWeight: 700, margin: '0 0 0.1rem' }}>{algoData.albumAlgoPercent?.toFixed(1) ?? '—'}%</p>
-                <p style={{ color: '#475569', fontSize: '0.7rem', margin: 0 }}>
-                  {algoTrend !== null ? <span style={{ color: trendColor }}>{trendSign}{algoTrend.toFixed(1)} pp vs anterior</span> : 'tendencia pendiente'}
-                </p>
-              </div>
-              <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '10px', padding: '0.85rem 1rem' }}>
-                <p style={{ color: '#64748b', fontSize: '0.68rem', margin: '0 0 0.25rem', textTransform: 'uppercase' }}>Fuente principal</p>
-                <p style={{ color: '#38bdf8', fontSize: '1.05rem', fontWeight: 700, margin: '0 0 0.1rem' }}>Algo Playlists</p>
-                <p style={{ color: '#475569', fontSize: '0.7rem', margin: 0 }}>100% playlists · 0% radio</p>
-              </div>
-            </div>
-
-            {/* ── Daily Algo Streams (stacked area) ── */}
+            {/* ── Daily Algo Streams (stacked area — siempre todos los días) ── */}
             {dailyStacked.length > 0 && (
               <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                   <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>Streams Algorítmicos por Día</p>
-                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: 0 }}>Top 5 tracks · desde lanzamiento</p>
+                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: 0 }}>Top 5 tracks · todos los días</p>
                 </div>
                 <ResponsiveContainer width="100%" height={260}>
                   <AreaChart data={dailyStacked} margin={{ top: 8, right: 20, left: 10, bottom: 4 }}>
@@ -3637,7 +3593,6 @@ const AmorFiadoDashboard = () => {
                     ))}
                   </AreaChart>
                 </ResponsiveContainer>
-                {/* Legend */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginTop: '0.5rem', justifyContent: 'center' }}>
                   {top5.map(t => (
                     <div key={t.track} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
@@ -3651,81 +3606,79 @@ const AmorFiadoDashboard = () => {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
 
-              {/* ── Bar chart: % algo por track ── */}
+              {/* ── Bar chart: % algo por track (ventana seleccionada) ── */}
               <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
-                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: '0 0 1rem' }}>% Algorítmico por Track (28d)</p>
-                <ResponsiveContainer width="100%" height={sorted.length * 36 + 20}>
-                  <BarChart data={sorted} layout="vertical" margin={{ left: 8, right: 40, top: 4, bottom: 4 }}
-                    onMouseLeave={() => setAlgoBarHoverIdx(null)}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.06)" horizontal={false} />
-                    <XAxis type="number" domain={[0, Math.ceil(Math.max(...sorted.map(s => s.algoPercent), 30) / 5) * 5]} tickFormatter={v => `${v}%`} stroke="#475569" tick={{ fontSize: 10, fill: '#64748b' }} />
-                    <YAxis type="category" dataKey="track" width={145}
-                      tick={({ x, y, payload, index }) => (
-                        <text x={x} y={y} textAnchor="end" dominantBaseline="middle" fontSize={10}
-                          fill={algoBarHoverIdx === index ? '#f1f5f9' : '#94a3b8'}>
-                          {payload.value}
-                        </text>
-                      )} />
-                    <Tooltip
-                      formatter={(v, name, props) => [`${v.toFixed(1)}% · ${formatNumber(props.payload.algoStreams)} streams`, 'Algo']}
-                      contentStyle={{ background: '#0f172a', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '8px', fontSize: '0.78rem' }}
-                      labelStyle={{ color: '#f1f5f9' }}
-                      itemStyle={{ color: '#f1f5f9' }}
-                    />
-                    <Bar dataKey="algoPercent" radius={[0, 6, 6, 0]}
-                      onMouseEnter={(_, index) => setAlgoBarHoverIdx(index)}
+                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: '0 0 1rem' }}>% Algorítmico por Track ({windowLabel})</p>
+                {sorted.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={sorted.length * 36 + 20}>
+                    <BarChart data={sorted} layout="vertical" margin={{ left: 8, right: 40, top: 4, bottom: 4 }}
                       onMouseLeave={() => setAlgoBarHoverIdx(null)}>
-                      {sorted.map((entry, i) => (
-                        <Cell key={i} fill={trackColors[entry.track] ?? `hsl(${265 - i * 8}, 70%, ${65 - i * 2}%)`} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.06)" horizontal={false} />
+                      <XAxis type="number" domain={[0, Math.ceil(Math.max(...sorted.map(s => s.algoPercent), 30) / 5) * 5]} tickFormatter={v => `${v}%`} stroke="#475569" tick={{ fontSize: 10, fill: '#64748b' }} />
+                      <YAxis type="category" dataKey="track" width={145}
+                        tick={({ x, y, payload, index }) => (
+                          <text x={x} y={y} textAnchor="end" dominantBaseline="middle" fontSize={10}
+                            fill={algoBarHoverIdx === index ? '#f1f5f9' : '#94a3b8'}>
+                            {payload.value}
+                          </text>
+                        )} />
+                      <Tooltip
+                        formatter={(v, name, props) => [`${v.toFixed(1)}% · ${formatNumber(props.payload.algoStreams)} streams algo`, 'Algo']}
+                        contentStyle={{ background: '#0f172a', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '8px', fontSize: '0.78rem' }}
+                        labelStyle={{ color: '#f1f5f9' }} itemStyle={{ color: '#f1f5f9' }}
+                      />
+                      <Bar dataKey="algoPercent" radius={[0, 6, 6, 0]}
+                        onMouseEnter={(_, index) => setAlgoBarHoverIdx(index)}
+                        onMouseLeave={() => setAlgoBarHoverIdx(null)}>
+                        {sorted.map((entry, i) => (
+                          <Cell key={i} fill={trackColors[entry.track] ?? `hsl(${265 - i * 8}, 70%, ${65 - i * 2}%)`} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p style={{ color: '#475569', fontSize: '0.8rem', textAlign: 'center', margin: '2rem 0' }}>Sin datos para esta ventana</p>
+                )}
               </div>
 
-              {/* ── Line chart: evolución % algo álbum ── */}
+              {/* ── Line chart: evolución % algo álbum (diario) ── */}
               <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
-                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: '0 0 1rem' }}>Evolución % Algorítmico del Álbum</p>
-                {history.filter(h => h.algoPercent > 0).length < 2 ? (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: sorted.length * 36 + 20, flexDirection: 'column', gap: '0.5rem' }}>
+                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: '0 0 1rem' }}>% Algorítmico del Álbum por Día</p>
+                {dailyEvolution.filter(d => d.pct > 0).length < 2 ? (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: Math.max(sorted.length * 36 + 20, 200), flexDirection: 'column', gap: '0.5rem' }}>
                     <span style={{ fontSize: '1.5rem' }}>📈</span>
-                    <p style={{ color: '#475569', fontSize: '0.8rem', margin: 0, textAlign: 'center' }}>Aparece con ≥ 2 días completos de datos</p>
-                    <p style={{ color: '#334155', fontSize: '0.72rem', margin: 0, textAlign: 'center' }}>
-                      {history.filter(h => h.partial).length > 0 ? `${history.filter(h => h.partial).length} día(s) con datos parciales` : ''}
-                    </p>
+                    <p style={{ color: '#475569', fontSize: '0.8rem', margin: 0, textAlign: 'center' }}>Aparece con 2+ días de datos</p>
                   </div>
                 ) : (
-                  <ResponsiveContainer width="100%" height={sorted.length * 36 + 20}>
-                    <LineChart data={history.filter(h => h.algoPercent > 0)} margin={{ top: 8, right: 20, left: 0, bottom: 4 }}>
+                  <ResponsiveContainer width="100%" height={Math.max(sorted.length * 36 + 20, 200)}>
+                    <LineChart data={dailyEvolution.filter(d => d.pct > 0)} margin={{ top: 8, right: 20, left: 0, bottom: 4 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.06)" />
                       <XAxis dataKey="date" stroke="#475569" tick={{ fontSize: 10, fill: '#64748b' }}
                         tickFormatter={v => new Date(v + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} />
                       <YAxis stroke="#475569" tickFormatter={v => `${v}%`} tick={{ fontSize: 10, fill: '#64748b' }} domain={['auto', 'auto']} />
                       <Tooltip
-                        formatter={(v, name, props) => [`${v.toFixed(1)}%${props.payload.partial ? ' (parcial)' : ''}`, '% Algo']}
+                        formatter={(v, name, props) => [`${v.toFixed(1)}% (${formatNumber(props.payload.algoTotal)} algo / ${formatNumber(props.payload.dayTotal)} total)`, '% Algo']}
                         contentStyle={{ background: '#0f172a', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '8px', fontSize: '0.78rem' }}
-                        labelFormatter={v => new Date(v + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })}
+                        labelFormatter={v => new Date(v + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'long' })}
                       />
-                      <Line type="monotone" dataKey="algoPercent" stroke="#a78bfa" strokeWidth={2.5}
-                        dot={({ cx, cy, payload }) => (
-                          <circle key={payload.date} cx={cx} cy={cy} r={payload.partial ? 3 : 5} fill={payload.partial ? '#64748b' : '#a78bfa'}
-                            stroke={payload.partial ? '#475569' : '#a78bfa'} strokeWidth={payload.partial ? 1.5 : 0} strokeDasharray={payload.partial ? '2 2' : 'none'} />
-                        )}
-                        activeDot={{ r: 6 }} />
+                      <Line type="monotone" dataKey="pct" stroke="#a78bfa" strokeWidth={2.5}
+                        dot={{ r: 4, fill: '#a78bfa' }} activeDot={{ r: 6 }} />
                     </LineChart>
                   </ResponsiveContainer>
                 )}
               </div>
             </div>
 
-            {/* ── Tabla detalle ── */}
+            {/* ── Tabla detalle (ventana seleccionada) ── */}
             <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
-              <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: '0 0 1rem' }}>Detalle por Track</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>Detalle por Track ({windowLabel})</p>
+              </div>
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid rgba(51,65,85,0.6)' }}>
-                      {['Track', 'Total 28d', 'Algo 28d', '% Algo', 'Algo 7d'].map(h => (
+                      {['Track', `Total (${windowLabel})`, `Algo (${windowLabel})`, '% Algo', 'Prom/Día'].map(h => (
                         <th key={h} style={{ textAlign: h === 'Track' ? 'left' : 'right', padding: '0.5rem 0.65rem', color: '#64748b', fontWeight: 600, fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</th>
                       ))}
                     </tr>
@@ -3742,16 +3695,15 @@ const AmorFiadoDashboard = () => {
                         <td style={{ padding: '0.55rem 0.65rem', color: '#94a3b8', textAlign: 'right' }}>{formatNumber(t.totalStreams)}</td>
                         <td style={{ padding: '0.55rem 0.65rem', color: '#a78bfa', textAlign: 'right', fontWeight: 600 }}>{formatNumber(t.algoStreams)}</td>
                         <td style={{ padding: '0.55rem 0.65rem', color: '#e2e8f0', textAlign: 'right', fontWeight: 600 }}>{t.algoPercent.toFixed(1)}%</td>
-                        <td style={{ padding: '0.55rem 0.65rem', color: '#38bdf8', textAlign: 'right' }}>{formatNumber(t.streams7d)}</td>
+                        <td style={{ padding: '0.55rem 0.65rem', color: '#38bdf8', textAlign: 'right' }}>{days > 0 ? formatNumber(Math.round(t.algoStreams / days)) : '—'}</td>
                       </tr>
                     ))}
-                    {/* Totals row */}
                     <tr style={{ borderTop: '2px solid rgba(167,139,250,0.3)', background: 'rgba(167,139,250,0.05)' }}>
                       <td style={{ padding: '0.6rem 0.65rem', color: '#e2e8f0', fontWeight: 700 }}>TOTAL ÁLBUM</td>
-                      <td style={{ padding: '0.6rem 0.65rem', color: '#e2e8f0', textAlign: 'right', fontWeight: 700 }}>{formatNumber(byTrack.reduce((s, t) => s + t.totalStreams, 0))}</td>
-                      <td style={{ padding: '0.6rem 0.65rem', color: '#a78bfa', textAlign: 'right', fontWeight: 700 }}>{formatNumber(totalAlgo28d)}</td>
-                      <td style={{ padding: '0.6rem 0.65rem', color: '#e2e8f0', textAlign: 'right', fontWeight: 700 }}>{algoData.albumAlgoPercent?.toFixed(1) ?? '—'}%</td>
-                      <td style={{ padding: '0.6rem 0.65rem', color: '#38bdf8', textAlign: 'right', fontWeight: 700 }}>{formatNumber(total7d)}</td>
+                      <td style={{ padding: '0.6rem 0.65rem', color: '#e2e8f0', textAlign: 'right', fontWeight: 700 }}>{formatNumber(totalStreams)}</td>
+                      <td style={{ padding: '0.6rem 0.65rem', color: '#a78bfa', textAlign: 'right', fontWeight: 700 }}>{formatNumber(totalAlgo)}</td>
+                      <td style={{ padding: '0.6rem 0.65rem', color: '#e2e8f0', textAlign: 'right', fontWeight: 700 }}>{albumPct.toFixed(1)}%</td>
+                      <td style={{ padding: '0.6rem 0.65rem', color: '#38bdf8', textAlign: 'right', fontWeight: 700 }}>{formatNumber(avgPerDay)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -3761,7 +3713,7 @@ const AmorFiadoDashboard = () => {
             {/* ── Nota metodológica ── */}
             <p style={{ color: '#334155', fontSize: '0.72rem', margin: 0, textAlign: 'center' }}>
               "Algorítmico" = streams desde Algorithmic Playlists (Discover Weekly, Daily Mix, Release Radar, etc.) según Spotify for Artists.
-              Datos: {algoData.latestDate ? new Date(algoData.latestDate + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'} · Período: 28 días.
+              Último dato: {latestDate ? new Date(latestDate + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'} · {allDates.length} días de data.
             </p>
 
           </div>
