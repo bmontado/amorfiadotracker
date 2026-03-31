@@ -243,6 +243,72 @@ const AmorFiadoDashboard = () => {
     }
   };
 
+  // ── Admin track view state ────────────────────────────────────────────────
+  const [adminTrackSelected, setAdminTrackSelected] = useState('ATBLM');
+  // { [date]: { streams?: string, algo?: string } }
+  const [adminTrackEdits, setAdminTrackEdits] = useState({});
+  const [adminTrackStatus, setAdminTrackStatus] = useState('idle');
+  const [adminTrackMsg, setAdminTrackMsg] = useState('');
+  const [adminTrackProgress, setAdminTrackProgress] = useState(null); // { done, total }
+
+  const adminTrackSetEdit = (date, field, value) => {
+    setAdminTrackEdits(prev => ({
+      ...prev,
+      [date]: { ...(prev[date] ?? {}), [field]: value },
+    }));
+  };
+
+  const handleTrackSave = async () => {
+    const modifiedDates = Object.keys(adminTrackEdits);
+    if (modifiedDates.length === 0) return;
+    setAdminTrackStatus('loading');
+    setAdminTrackMsg('');
+    setAdminTrackProgress({ done: 0, total: modifiedDates.length });
+    const errors = [];
+
+    for (let i = 0; i < modifiedDates.length; i++) {
+      const date = modifiedDates[i];
+      const edit = adminTrackEdits[date];
+
+      // Build full dailyTracks: current values + override selected track
+      const currentEntry = dailyLog.find(d => d.date === date);
+      const fullTracks = {};
+      TRACKS.forEach(t => { fullTracks[t] = String(currentEntry?.tracks?.[t] ?? 0); });
+      if (edit.streams !== undefined) fullTracks[adminTrackSelected] = edit.streams;
+
+      // Build algo: existing values for all tracks + override selected track
+      const algoEntry = liveData.algorithmicHistory?.find(h => h.date === date);
+      const hasAlgoEdit = edit.algo !== undefined && edit.algo !== '';
+      const algoStreams = {};
+      TRACKS.forEach(t => {
+        algoStreams[t] = String(algoEntry?.tracks?.[t]?.streams28d ?? '');
+      });
+      if (hasAlgoEdit) algoStreams[adminTrackSelected] = edit.algo;
+      const algoEnabled = hasAlgoEdit || TRACKS.some(t => algoStreams[t] !== '');
+
+      try {
+        const res = await fetch('/api/update-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ date, mode: 'edit', dailyTracks: fullTracks, algoEnabled, algoStreams }),
+        });
+        if (!res.ok) { const d = await res.json(); throw new Error(d.error); }
+      } catch (e) { errors.push(`${date}: ${e.message}`); }
+
+      setAdminTrackProgress({ done: i + 1, total: modifiedDates.length });
+    }
+
+    if (errors.length === 0) {
+      setAdminTrackStatus('success');
+      setAdminTrackMsg(`✅ ${modifiedDates.length} día(s) guardado(s) · deploy en ~30s`);
+      setAdminTrackEdits({});
+    } else {
+      setAdminTrackStatus('error');
+      setAdminTrackMsg(`❌ ${errors.join(' | ')}`);
+    }
+    setAdminTrackProgress(null);
+  };
+
   // Polling: carga data.json al montar y cada 5 minutos.
   // En prod fetchea public/data.json directo desde GitHub raw (siempre fresco,
   // sin depender de que docs/ esté reconstruido). En dev usa el servidor Vite local.
@@ -3659,6 +3725,159 @@ const AmorFiadoDashboard = () => {
         };
         const lbl = { color: '#64748b', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem', display: 'block' };
 
+        // Shared header toggle (shown in all views)
+        const viewToggle = (
+          <div style={{ display: 'flex', gap: '0.4rem', background: 'rgba(15,23,42,0.6)', borderRadius: '8px', padding: '3px' }}>
+            {[['table', '📅 Por día'], ['track', '🎵 Por track']].map(([v, label]) => (
+              <button key={v} onClick={() => { setAdminView(v); setAdminTrackEdits({}); setAdminTrackMsg(''); }}
+                style={{ background: adminView === v || (adminView === 'form' && v === 'table') ? 'rgba(249,115,22,0.2)' : 'transparent', border: 'none', borderRadius: '6px', color: adminView === v || (adminView === 'form' && v === 'table') ? '#f97316' : '#64748b', padding: '0.3rem 0.9rem', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer' }}>
+                {label}
+              </button>
+            ))}
+          </div>
+        );
+
+        // ── Vista por track ──────────────────────────────────────────────────
+        if (adminView === 'track') {
+          // Merge all dates: from dailyLog + any algo-only dates
+          const allDates = new Set([
+            ...(dailyLog ?? []).map(d => d.date),
+            ...(liveData.algorithmicHistory ?? []).map(h => h.date),
+          ]);
+          const sortedDates = [...allDates].sort((a, b) => b.localeCompare(a)); // newest first
+          const algoByDate = {};
+          (liveData.algorithmicHistory ?? []).forEach(h => { algoByDate[h.date] = h; });
+          const modCount = Object.keys(adminTrackEdits).length;
+
+          return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>⚙️ Historial por Track</p>
+                  <p style={{ color: '#475569', fontSize: '0.75rem', margin: '0.2rem 0 0' }}>Editá streams y streams algorítmicos por día para el track seleccionado</p>
+                </div>
+                {viewToggle}
+              </div>
+
+              {/* Track selector */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '10px', padding: '0.75rem 1rem' }}>
+                <span style={{ color: '#64748b', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>Track:</span>
+                <select value={adminTrackSelected}
+                  onChange={e => { setAdminTrackSelected(e.target.value); setAdminTrackEdits({}); setAdminTrackMsg(''); }}
+                  style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(51,65,85,0.6)', borderRadius: '6px', color: '#f1f5f9', fontSize: '0.9rem', fontWeight: 700, padding: '0.4rem 0.75rem', flex: 1, outline: 'none' }}>
+                  {TRACKS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+                {modCount > 0 && (
+                  <span style={{ background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.3)', color: '#f97316', borderRadius: '9999px', padding: '0.15rem 0.65rem', fontSize: '0.72rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                    {modCount} cambio{modCount > 1 ? 's' : ''} pendiente{modCount > 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
+
+              {/* Table */}
+              <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '12px', overflow: 'hidden' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                  <thead>
+                    <tr style={{ background: 'rgba(15,23,42,0.8)', borderBottom: '1px solid rgba(51,65,85,0.7)' }}>
+                      {['Día', 'Fecha', 'Streams del día', 'Algo 28d', 'Estado'].map(h => (
+                        <th key={h} style={{ padding: '0.65rem 0.85rem', color: '#64748b', fontWeight: 600, fontSize: '0.67rem', textTransform: 'uppercase', textAlign: h === 'Streams del día' || h === 'Algo 28d' ? 'center' : 'left' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sortedDates.length === 0 && (
+                      <tr><td colSpan={5} style={{ padding: '2rem', textAlign: 'center', color: '#475569' }}>No hay datos aún</td></tr>
+                    )}
+                    {sortedDates.map((date, i) => {
+                      const logEntry = dailyLog?.find(d => d.date === date);
+                      const algoEntry = algoByDate[date];
+                      const savedStreams = logEntry?.tracks?.[adminTrackSelected] ?? null;
+                      const savedAlgo   = algoEntry?.tracks?.[adminTrackSelected]?.streams28d ?? null;
+                      const edit        = adminTrackEdits[date] ?? {};
+                      const isModified  = edit.streams !== undefined || edit.algo !== undefined;
+                      const streamVal   = edit.streams !== undefined ? edit.streams : (savedStreams !== null ? String(savedStreams) : '');
+                      const algoVal     = edit.algo    !== undefined ? edit.algo    : (savedAlgo   !== null ? String(savedAlgo)   : '');
+                      const dayN        = Math.round((new Date(date + 'T12:00:00Z') - new Date('2026-03-19T00:00:00Z')) / 86400000);
+
+                      return (
+                        <tr key={date} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', background: isModified ? 'rgba(249,115,22,0.04)' : i % 2 === 0 ? 'transparent' : 'rgba(15,23,42,0.25)' }}>
+                          <td style={{ padding: '0.5rem 0.85rem', color: '#f97316', fontWeight: 700, whiteSpace: 'nowrap' }}>D+{dayN}</td>
+                          <td style={{ padding: '0.5rem 0.85rem', color: '#64748b', whiteSpace: 'nowrap' }}>{date}</td>
+                          {/* Streams input */}
+                          <td style={{ padding: '0.35rem 0.85rem' }}>
+                            <input type="number" min="0" value={streamVal}
+                              onChange={e => adminTrackSetEdit(date, 'streams', e.target.value)}
+                              placeholder={savedStreams !== null ? '—' : 'sin dato'}
+                              style={{ background: 'rgba(15,23,42,0.7)', border: `1px solid ${edit.streams !== undefined ? 'rgba(249,115,22,0.6)' : 'rgba(51,65,85,0.5)'}`, borderRadius: '6px', color: edit.streams !== undefined ? '#f97316' : '#e2e8f0', fontSize: '0.85rem', fontWeight: 600, padding: '0.3rem 0.6rem', width: '110px', outline: 'none', textAlign: 'right' }} />
+                          </td>
+                          {/* Algo input */}
+                          <td style={{ padding: '0.35rem 0.85rem' }}>
+                            <input type="number" min="0" value={algoVal}
+                              onChange={e => adminTrackSetEdit(date, 'algo', e.target.value)}
+                              placeholder={savedAlgo !== null ? '—' : 'sin dato'}
+                              style={{ background: 'rgba(15,23,42,0.7)', border: `1px solid ${edit.algo !== undefined ? 'rgba(167,139,250,0.6)' : 'rgba(51,65,85,0.5)'}`, borderRadius: '6px', color: edit.algo !== undefined ? '#a78bfa' : '#94a3b8', fontSize: '0.85rem', padding: '0.3rem 0.6rem', width: '110px', outline: 'none', textAlign: 'right' }} />
+                          </td>
+                          {/* Estado */}
+                          <td style={{ padding: '0.5rem 0.85rem' }}>
+                            {isModified
+                              ? <span style={{ color: '#f97316', fontSize: '0.7rem', fontWeight: 600 }}>● modificado</span>
+                              : savedStreams !== null || savedAlgo !== null
+                                ? <span style={{ color: '#4ade80', fontSize: '0.7rem' }}>✓ guardado</span>
+                                : <span style={{ color: '#334155', fontSize: '0.7rem' }}>sin dato</span>}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {/* Fila para nueva fecha */}
+                    {(() => {
+                      const newDate = adminDate;
+                      if (sortedDates.includes(newDate)) return null;
+                      const edit = adminTrackEdits[newDate] ?? {};
+                      return (
+                        <tr style={{ borderTop: '1px solid rgba(249,115,22,0.2)', background: 'rgba(249,115,22,0.03)' }}>
+                          <td style={{ padding: '0.5rem 0.85rem', color: '#64748b', fontSize: '0.72rem' }}>nueva</td>
+                          <td style={{ padding: '0.35rem 0.85rem' }}>
+                            <input type="date" value={adminDate} onChange={e => setAdminDate(e.target.value)}
+                              style={{ background: 'rgba(15,23,42,0.7)', border: '1px solid rgba(249,115,22,0.4)', borderRadius: '6px', color: '#f97316', fontSize: '0.8rem', padding: '0.3rem 0.5rem', outline: 'none' }} />
+                          </td>
+                          <td style={{ padding: '0.35rem 0.85rem' }}>
+                            <input type="number" min="0" value={edit.streams ?? ''}
+                              onChange={e => adminTrackSetEdit(newDate, 'streams', e.target.value)}
+                              placeholder="streams del día"
+                              style={{ background: 'rgba(15,23,42,0.7)', border: '1px solid rgba(249,115,22,0.4)', borderRadius: '6px', color: '#f97316', fontSize: '0.85rem', fontWeight: 600, padding: '0.3rem 0.6rem', width: '110px', outline: 'none', textAlign: 'right' }} />
+                          </td>
+                          <td style={{ padding: '0.35rem 0.85rem' }}>
+                            <input type="number" min="0" value={edit.algo ?? ''}
+                              onChange={e => adminTrackSetEdit(newDate, 'algo', e.target.value)}
+                              placeholder="algo 28d"
+                              style={{ background: 'rgba(15,23,42,0.7)', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '6px', color: '#a78bfa', fontSize: '0.85rem', padding: '0.3rem 0.6rem', width: '110px', outline: 'none', textAlign: 'right' }} />
+                          </td>
+                          <td style={{ padding: '0.5rem 0.85rem', color: '#f97316', fontSize: '0.7rem' }}>+ nueva fila</td>
+                        </tr>
+                      );
+                    })()}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Save */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'center' }}>
+                <button onClick={handleTrackSave}
+                  disabled={modCount === 0 || adminTrackStatus === 'loading'}
+                  style={{ background: modCount === 0 ? 'rgba(51,65,85,0.4)' : 'linear-gradient(135deg,#f97316,#ea580c)', border: 'none', borderRadius: '10px', color: modCount === 0 ? '#475569' : '#fff', fontSize: '0.9rem', fontWeight: 700, padding: '0.65rem 2rem', cursor: modCount === 0 ? 'default' : 'pointer' }}>
+                  {adminTrackStatus === 'loading'
+                    ? `⏳ Guardando ${adminTrackProgress?.done ?? 0}/${adminTrackProgress?.total ?? modCount}...`
+                    : `🚀 Guardar ${modCount > 0 ? `(${modCount} día${modCount > 1 ? 's' : ''})` : 'cambios'}`}
+                </button>
+                {adminTrackMsg && (
+                  <p style={{ color: adminTrackStatus === 'success' ? '#4ade80' : '#f87171', fontSize: '0.82rem', margin: 0 }}>{adminTrackMsg}</p>
+                )}
+              </div>
+            </div>
+          );
+        }
+
         // ── Tabla histórica ──────────────────────────────────────────────────
         if (adminView === 'table') {
           // Merge dailyLog + algo history by date
@@ -3678,9 +3897,12 @@ const AmorFiadoDashboard = () => {
                     Streams diarios por track · Clickeá una fila para editar
                   </p>
                 </div>
-                <button onClick={adminOpenNew} style={{ background: 'linear-gradient(135deg,#f97316,#ea580c)', border: 'none', borderRadius: '8px', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.2rem', cursor: 'pointer' }}>
-                  + Nuevo día
-                </button>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  {viewToggle}
+                  <button onClick={adminOpenNew} style={{ background: 'linear-gradient(135deg,#f97316,#ea580c)', border: 'none', borderRadius: '8px', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.2rem', cursor: 'pointer' }}>
+                    + Nuevo día
+                  </button>
+                </div>
               </div>
 
               {rows.length === 0 ? (
@@ -3752,9 +3974,12 @@ const AmorFiadoDashboard = () => {
                   {adminEditDate ? `✏️ Editando ${adminEditDate}` : '➕ Nuevo día'}
                 </p>
               </div>
-              <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.75rem' }}>
-                <span style={{ color: '#64748b' }}>Total del día:</span>
-                <span style={{ color: '#f97316', fontWeight: 700 }}>{adminDayTotal.toLocaleString('es-AR')}</span>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                {viewToggle}
+                <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.75rem', alignItems: 'center' }}>
+                  <span style={{ color: '#64748b' }}>Total del día:</span>
+                  <span style={{ color: '#f97316', fontWeight: 700 }}>{adminDayTotal.toLocaleString('es-AR')}</span>
+                </div>
               </div>
             </div>
 
