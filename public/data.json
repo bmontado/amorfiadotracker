@@ -1,6 +1,6 @@
 {
   "lastUpdated": {
-    "spotify": "2026-03-31T17:52:42.240Z",
+    "spotify": "2026-03-31T17:52:45.886Z",
     "social": "2026-03-25T12:00:00-03:00"
   },
   "albumLiveTotal": 606572,
@@ -41,19 +41,19 @@
     {
       "date": "2026-03-20",
       "label": "D20",
-      "note": "Primer día completo",
+      "note": "",
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 10875,
-        "ATBLM": 14710,
-        "UN GUSTO": 16320,
-        "CALL ME": 11305,
         "MAN OF WORD": 10998,
-        "OJOS TRISTES": 10905,
-        "HIELO": 9626,
+        "ATBLM": 14710,
+        "CALL ME": 11305,
         "ALQUILER": 9166,
+        "HIELO": 9626,
+        "UN GUSTO": 16320,
         "CHANGES": 9170,
-        "YA NO": 8069,
+        "OJOS TRISTES": 10905,
         "HAZLO CALLAO": 7584,
+        "YA NO": 8069,
         "TOP TIER": 7061
       }
     },
@@ -2528,6 +2528,9 @@
       "2026-03-19": {
         "streams": 1225
       },
+      "2026-03-20": {
+        "streams": 988
+      },
       "2026-03-27": {
         "streams": 1000
       }
@@ -2546,7 +2549,7 @@
     {
       "date": "2026-03-19",
       "label": "D+1",
-      "recordedAt": "2026-03-31T17:52:42.241Z",
+      "recordedAt": "2026-03-31T17:52:45.886Z",
       "albumAlgorithmicTotal28d": 1225,
       "albumAlgorithmicTotal7d": 1225,
       "albumAlgorithmicPct28d": 5.63,
@@ -2614,12 +2617,12 @@
       }
     },
     {
-      "date": "2026-03-27",
-      "label": "D+9",
-      "recordedAt": "2026-03-31T17:52:42.241Z",
-      "albumAlgorithmicTotal28d": 2225,
-      "albumAlgorithmicTotal7d": 1000,
-      "albumAlgorithmicPct28d": 0.37,
+      "date": "2026-03-20",
+      "label": "D+2",
+      "recordedAt": "2026-03-31T17:52:45.886Z",
+      "albumAlgorithmicTotal28d": 2213,
+      "albumAlgorithmicTotal7d": 2213,
+      "albumAlgorithmicPct28d": 1.5,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": {
           "streams28d": 0,
@@ -2632,9 +2635,79 @@
           "pct28d": 0
         },
         "ATBLM": {
-          "streams28d": 2225,
+          "streams28d": 2213,
+          "streams7d": 2213,
+          "pct28d": 9.53
+        },
+        "CALL ME": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "ALQUILER": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "HIELO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "UN GUSTO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "CHANGES": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "OJOS TRISTES": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "HAZLO CALLAO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "YA NO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "TOP TIER": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        }
+      }
+    },
+    {
+      "date": "2026-03-27",
+      "label": "D+9",
+      "recordedAt": "2026-03-31T17:52:45.886Z",
+      "albumAlgorithmicTotal28d": 3213,
+      "albumAlgorithmicTotal7d": 1000,
+      "albumAlgorithmicPct28d": 0.53,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "MAN OF WORD": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "ATBLM": {
+          "streams28d": 3213,
           "streams7d": 1000,
-          "pct28d": 2.56
+          "pct28d": 3.7
         },
         "CALL ME": {
           "streams28d": 0,
@@ -2749,6 +2822,13 @@
       "label": "D19",
       "tracks": {
         "ATBLM": 1225
+      }
+    },
+    {
+      "date": "2026-03-20",
+      "label": "D20",
+      "tracks": {
+        "ATBLM": 988
       }
     },
     {
