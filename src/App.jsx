@@ -17,6 +17,7 @@ import {
   AreaChart,
   Area,
   ReferenceArea,
+  ComposedChart,
 } from 'recharts';
 
 // ─── Datos dinámicos — fuente de verdad en public/data.json ───────────────────
@@ -159,6 +160,7 @@ const AmorFiadoDashboard = () => {
   const [showReportModal, setShowReportModal] = useState(false);
   const [algoBarHoverIdx, setAlgoBarHoverIdx] = useState(null);
   const [algoWindow, setAlgoWindow] = useState('7d'); // '7d' | '28d' | 'all'
+  const [algoExpandedTracks, setAlgoExpandedTracks] = useState({}); // { trackName: true }
 
   // ── Admin panel ─────────────────────────────────────────────────────────────
   const [isAdmin, setIsAdmin] = useState(() => window.location.hash === '#admin');
@@ -3760,10 +3762,11 @@ const AmorFiadoDashboard = () => {
               </div>
             </div>
 
-            {/* ── Tabla detalle (ventana seleccionada) ── */}
+            {/* ── Tabla detalle (ventana seleccionada) con gráficos desplegables ── */}
             <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>Detalle por Track ({windowLabel})</p>
+                <p style={{ color: '#475569', fontSize: '0.68rem', margin: 0 }}>click en un track para ver gráfico</p>
               </div>
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
@@ -3775,20 +3778,78 @@ const AmorFiadoDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {sorted.map((t, i) => (
-                      <tr key={t.track} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', background: i % 2 === 0 ? 'transparent' : 'rgba(51,65,85,0.1)' }}>
-                        <td style={{ padding: '0.55rem 0.65rem', fontWeight: 600 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <div style={{ width: 8, height: 8, borderRadius: '50%', background: trackColors[t.track] ?? '#a78bfa', flexShrink: 0 }} />
-                            <span style={{ color: '#e2e8f0' }}>{t.track}</span>
-                          </div>
-                        </td>
-                        <td style={{ padding: '0.55rem 0.65rem', color: '#94a3b8', textAlign: 'right' }}>{formatNumber(t.totalStreams)}</td>
-                        <td style={{ padding: '0.55rem 0.65rem', color: '#a78bfa', textAlign: 'right', fontWeight: 600 }}>{formatNumber(t.algoStreams)}</td>
-                        <td style={{ padding: '0.55rem 0.65rem', color: '#e2e8f0', textAlign: 'right', fontWeight: 600 }}>{t.algoPercent.toFixed(1)}%</td>
-                        <td style={{ padding: '0.55rem 0.65rem', color: '#38bdf8', textAlign: 'right' }}>{days > 0 ? formatNumber(Math.round(t.algoStreams / days)) : '—'}</td>
-                      </tr>
-                    ))}
+                    {sorted.map((t, i) => {
+                      const isExpanded = !!algoExpandedTracks[t.track];
+                      const tColor = trackColors[t.track] ?? '#a78bfa';
+                      return (
+                        <React.Fragment key={t.track}>
+                          <tr
+                            onClick={() => setAlgoExpandedTracks(prev => ({ ...prev, [t.track]: !prev[t.track] }))}
+                            style={{ borderBottom: isExpanded ? 'none' : '1px solid rgba(51,65,85,0.3)', background: i % 2 === 0 ? 'transparent' : 'rgba(51,65,85,0.1)', cursor: 'pointer', transition: 'background 0.15s' }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(167,139,250,0.08)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : 'rgba(51,65,85,0.1)'; }}
+                          >
+                            <td style={{ padding: '0.55rem 0.65rem', fontWeight: 600 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <span style={{ fontSize: '0.6rem', color: '#64748b', width: '1rem', textAlign: 'center', transition: 'transform 0.2s', transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)' }}>▶</span>
+                                <div style={{ width: 8, height: 8, borderRadius: '50%', background: tColor, flexShrink: 0 }} />
+                                <span style={{ color: '#e2e8f0' }}>{t.track}</span>
+                              </div>
+                            </td>
+                            <td style={{ padding: '0.55rem 0.65rem', color: '#94a3b8', textAlign: 'right' }}>{formatNumber(t.totalStreams)}</td>
+                            <td style={{ padding: '0.55rem 0.65rem', color: '#a78bfa', textAlign: 'right', fontWeight: 600 }}>{formatNumber(t.algoStreams)}</td>
+                            <td style={{ padding: '0.55rem 0.65rem', color: '#e2e8f0', textAlign: 'right', fontWeight: 600 }}>{t.algoPercent.toFixed(1)}%</td>
+                            <td style={{ padding: '0.55rem 0.65rem', color: '#38bdf8', textAlign: 'right' }}>{days > 0 ? formatNumber(Math.round(t.algoStreams / days)) : '—'}</td>
+                          </tr>
+                          {isExpanded && (() => {
+                            // Build per-track daily data: algo streams + % algo
+                            const dailyByDate = {};
+                            (dailyLog ?? []).forEach(d => { dailyByDate[d.date] = d; });
+                            const trackChartData = allDates.map(date => {
+                              const algo = trackDaily[t.track]?.[date] ?? 0;
+                              const total = dailyByDate[date]?.tracks?.[t.track] ?? 0;
+                              const pct = total > 0 ? (algo / total) * 100 : 0;
+                              return { date, algo, total, pct };
+                            });
+                            return (
+                              <tr>
+                                <td colSpan={5} style={{ padding: '0.5rem 0.65rem 1rem', borderBottom: '1px solid rgba(51,65,85,0.3)', background: 'rgba(15,23,42,0.3)' }}>
+                                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                                    <span style={{ color: tColor, fontSize: '0.72rem', fontWeight: 600 }}>Streams Algo (barras)</span>
+                                    <span style={{ color: '#64748b', fontSize: '0.72rem' }}>·</span>
+                                    <span style={{ color: '#e879f9', fontSize: '0.72rem', fontWeight: 600 }}>% Algorítmico (línea)</span>
+                                  </div>
+                                  <ResponsiveContainer width="100%" height={180}>
+                                    <ComposedChart data={trackChartData} margin={{ top: 4, right: 20, left: 0, bottom: 4 }}>
+                                      <defs>
+                                        <linearGradient id={`trkGrad_${i}`} x1="0" y1="0" x2="0" y2="1">
+                                          <stop offset="5%" stopColor={tColor} stopOpacity={0.4} />
+                                          <stop offset="95%" stopColor={tColor} stopOpacity={0.05} />
+                                        </linearGradient>
+                                      </defs>
+                                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.06)" />
+                                      <XAxis dataKey="date" stroke="#475569" tick={{ fontSize: 9, fill: '#64748b' }}
+                                        tickFormatter={v => new Date(v + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} />
+                                      <YAxis yAxisId="left" stroke="#475569" tick={{ fontSize: 9, fill: '#64748b' }}
+                                        tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v} />
+                                      <YAxis yAxisId="right" orientation="right" stroke="#475569" tick={{ fontSize: 9, fill: '#64748b' }}
+                                        tickFormatter={v => `${v.toFixed(0)}%`} domain={[0, 'auto']} />
+                                      <Tooltip
+                                        contentStyle={{ background: '#0f172a', border: `1px solid ${tColor}44`, borderRadius: '8px', fontSize: '0.72rem' }}
+                                        labelFormatter={v => new Date(v + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' })}
+                                        formatter={(v, name) => name === 'algo' ? [formatNumber(v), 'Algo streams'] : name === 'pct' ? [`${v.toFixed(1)}%`, '% Algorítmico'] : [formatNumber(v), name]}
+                                      />
+                                      <Bar yAxisId="left" dataKey="algo" fill={`url(#trkGrad_${i})`} stroke={tColor} strokeWidth={0.5} radius={[3, 3, 0, 0]} barSize={16} />
+                                      <Line yAxisId="right" type="monotone" dataKey="pct" stroke="#e879f9" strokeWidth={2} dot={{ r: 3, fill: '#e879f9' }} />
+                                    </ComposedChart>
+                                  </ResponsiveContainer>
+                                </td>
+                              </tr>
+                            );
+                          })()}
+                        </React.Fragment>
+                      );
+                    })}
                     <tr style={{ borderTop: '2px solid rgba(167,139,250,0.3)', background: 'rgba(167,139,250,0.05)' }}>
                       <td style={{ padding: '0.6rem 0.65rem', color: '#e2e8f0', fontWeight: 700 }}>TOTAL ÁLBUM</td>
                       <td style={{ padding: '0.6rem 0.65rem', color: '#e2e8f0', textAlign: 'right', fontWeight: 700 }}>{formatNumber(totalStreams)}</td>
