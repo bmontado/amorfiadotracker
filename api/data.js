@@ -18,7 +18,10 @@ export default async function handler(req, res) {
     } catch { /* si list falla, caer al fallback */ }
 
     if (blob) {
-      const dataRes = await fetch(`${blob.url}?t=${Date.now()}`);
+      // Blob privado: requiere token en el header
+      const dataRes = await fetch(blob.url, {
+        headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
+      });
       if (dataRes.ok) {
         const data = await dataRes.json();
         return res.status(200).json(data);

@@ -22,11 +22,14 @@ async function readCurrent() {
     const { blobs } = await list({ prefix: BLOB_KEY });
     const blob = blobs.find(b => b.pathname === BLOB_KEY);
     if (blob) {
-      const res = await fetch(`${blob.url}?t=${Date.now()}`);
+      // Blob privado: requiere token en el header
+      const res = await fetch(blob.url, {
+        headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
+      });
       if (res.ok) return await res.json();
     }
   } catch { /* ignorar, intentar fallback */ }
-  // Fallback: leer desde GitHub raw (primera vez, migración)
+  // Fallback: blob no existe aún — leer desde GitHub raw (migración inicial)
   const res = await fetch(`${GITHUB_FALLBACK}?t=${Date.now()}`);
   if (!res.ok) throw new Error('No se pudo leer data.json desde GitHub');
   return await res.json();
@@ -158,7 +161,7 @@ export default async function handler(req, res) {
 
   // ── 5. Guardar en Vercel Blob ──────────────────────────────────────────────
   await put(BLOB_KEY, JSON.stringify(newData, null, 2), {
-    access: 'public',
+    access: 'private',
     addRandomSuffix: false,
     contentType: 'application/json',
   });
