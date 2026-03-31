@@ -56,11 +56,18 @@ export default async function handler(req, res) {
   const newData    = { ...current };
 
   // ── 2. Upsert dailyLog ─────────────────────────────────────────────────────
+  // Merge con los valores existentes del blob: si el frontend manda 0 pero el
+  // blob ya tiene un valor positivo para ese track, se preserva el del blob.
+  // Esto evita que datos stale del frontend sobreescriban datos reales.
+  const existingEntry = (current.dailyLog ?? []).find(d => d.date === date);
   const parsed = {};
   let dayTotal = 0;
   Object.entries(dailyTracks).forEach(([t, v]) => {
-    const val = parseInt(v, 10) || 0;
-    parsed[t] = val; dayTotal += val;
+    const incoming = parseInt(v, 10) || 0;
+    const existing = existingEntry?.tracks?.[t] ?? 0;
+    // Usar el valor existente si el incoming es 0 y ya había dato real
+    parsed[t] = (incoming === 0 && existing > 0) ? existing : incoming;
+    dayTotal += parsed[t];
   });
 
   const dailyLog = (current.dailyLog ?? []).filter(d => d.date !== date && d.tracks != null);
@@ -100,9 +107,12 @@ export default async function handler(req, res) {
 
   // ── 4. Algo streams diarios (opcional) ────────────────────────────────────
   if (algoEnabled && algoDailyTracks && Object.keys(algoDailyTracks).length > 0) {
+    const existingAlgoEntry = (current.algoLog ?? []).find(d => d.date === date);
     const parsedAlgo = {};
     Object.entries(algoDailyTracks).forEach(([t, v]) => {
-      const val = parseInt(v, 10) || 0;
+      const incoming = parseInt(v, 10) || 0;
+      const existing = existingAlgoEntry?.tracks?.[t] ?? 0;
+      const val = (incoming === 0 && existing > 0) ? existing : incoming;
       if (val > 0) parsedAlgo[t] = val;
     });
     const algoLog = (current.algoLog ?? []).filter(d => d.date !== date);
