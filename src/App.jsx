@@ -3525,21 +3525,32 @@ const AmorFiadoDashboard = () => {
           'HIELO': '#818cf8', 'YA NO': '#94a3b8', 'TOP TIER': '#6ee7b7',
         };
 
-        // Build stacked daily data: each day has total + top tracks
-        const dailyDates = dailyAlbum.map(d => d.date);
-        const dailyStacked = dailyDates.map(date => {
-          const row = { date };
-          let dayTotal = 0;
-          byTrack.forEach(t => {
-            const val = t.daily7d?.[date] ?? 0;
-            row[t.track] = val;
-            dayTotal += val;
+        // Build stacked daily data from algoLog (daily entries per track)
+        const algLogArr = liveData.algoLog ?? [];
+        const dailyStacked = algLogArr
+          .slice() // don't mutate
+          .sort((a, b) => a.date.localeCompare(b.date))
+          .map(entry => {
+            const row = { date: entry.date };
+            let dayTotal = 0;
+            TRACKS.forEach(t => {
+              const val = entry.tracks?.[t] ?? 0;
+              row[t] = val;
+              dayTotal += val;
+            });
+            row.total = dayTotal;
+            return row;
           });
-          row.total = dayTotal;
-          return row;
+        // Top 5 tracks by total algo streams across all days
+        const trackTotals = {};
+        TRACKS.forEach(t => { trackTotals[t] = 0; });
+        algLogArr.forEach(entry => {
+          TRACKS.forEach(t => { trackTotals[t] += (entry.tracks?.[t] ?? 0); });
         });
-        // Top 5 tracks by algo streams for the stacked chart
-        const top5 = [...byTrack].sort((a, b) => b.algoStreams - a.algoStreams).slice(0, 5);
+        const top5 = Object.entries(trackTotals)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 5)
+          .map(([track]) => ({ track }));
 
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -3598,8 +3609,8 @@ const AmorFiadoDashboard = () => {
             {dailyStacked.length > 0 && (
               <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>Streams Algorítmicos por Día (últimos 7d)</p>
-                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: 0 }}>Top 5 tracks + otros</p>
+                  <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: 0 }}>Streams Algorítmicos por Día</p>
+                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: 0 }}>Top 5 tracks · desde lanzamiento</p>
                 </div>
                 <ResponsiveContainer width="100%" height={260}>
                   <AreaChart data={dailyStacked} margin={{ top: 8, right: 20, left: 10, bottom: 4 }}>
