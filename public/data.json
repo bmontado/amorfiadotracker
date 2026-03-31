@@ -1,6 +1,6 @@
 {
   "lastUpdated": {
-    "spotify": "2026-03-31T17:53:04.919Z",
+    "spotify": "2026-03-31T17:53:06.642Z",
     "social": "2026-03-25T12:00:00-03:00"
   },
   "albumLiveTotal": 606572,
@@ -188,6 +188,25 @@
         "HAZLO CALLAO": 2672,
         "YA NO": 3627,
         "TOP TIER": 3047
+      }
+    },
+    {
+      "date": "2026-03-28",
+      "label": "D28",
+      "note": "",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 0,
+        "MAN OF WORD": 0,
+        "ATBLM": 0,
+        "CALL ME": 0,
+        "ALQUILER": 0,
+        "HIELO": 0,
+        "UN GUSTO": 0,
+        "CHANGES": 0,
+        "OJOS TRISTES": 0,
+        "HAZLO CALLAO": 0,
+        "YA NO": 0,
+        "TOP TIER": 0
       }
     }
   ],
@@ -1512,6 +1531,25 @@
         "YA NO": 36307,
         "TOP TIER": 31256
       }
+    },
+    {
+      "date": "2026-03-28",
+      "label": "D+10",
+      "albumTotal": 606572,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 63187,
+        "MAN OF WORD": 52492,
+        "ATBLM": 86861,
+        "CALL ME": 53201,
+        "ALQUILER": 42072,
+        "HIELO": 44412,
+        "UN GUSTO": 73002,
+        "CHANGES": 45577,
+        "OJOS TRISTES": 45630,
+        "HAZLO CALLAO": 32575,
+        "YA NO": 36307,
+        "TOP TIER": 31256
+      }
     }
   ],
   "trackMetricsMeta": {
@@ -2551,6 +2589,9 @@
       },
       "2026-03-27": {
         "streams": 1162
+      },
+      "2026-03-28": {
+        "streams": 670
       }
     },
     "CALL ME": {},
@@ -2567,7 +2608,7 @@
     {
       "date": "2026-03-19",
       "label": "D+1",
-      "recordedAt": "2026-03-31T17:53:04.919Z",
+      "recordedAt": "2026-03-31T17:53:06.642Z",
       "albumAlgorithmicTotal28d": 1225,
       "albumAlgorithmicTotal7d": 1225,
       "albumAlgorithmicPct28d": 5.63,
@@ -2637,7 +2678,7 @@
     {
       "date": "2026-03-20",
       "label": "D+2",
-      "recordedAt": "2026-03-31T17:53:04.919Z",
+      "recordedAt": "2026-03-31T17:53:06.642Z",
       "albumAlgorithmicTotal28d": 2213,
       "albumAlgorithmicTotal7d": 2213,
       "albumAlgorithmicPct28d": 1.5,
@@ -2707,7 +2748,7 @@
     {
       "date": "2026-03-21",
       "label": "D+3",
-      "recordedAt": "2026-03-31T17:53:04.919Z",
+      "recordedAt": "2026-03-31T17:53:06.642Z",
       "albumAlgorithmicTotal28d": 3315,
       "albumAlgorithmicTotal7d": 3315,
       "albumAlgorithmicPct28d": 1.52,
@@ -2777,7 +2818,7 @@
     {
       "date": "2026-03-22",
       "label": "D+4",
-      "recordedAt": "2026-03-31T17:53:04.919Z",
+      "recordedAt": "2026-03-31T17:53:06.642Z",
       "albumAlgorithmicTotal28d": 4116,
       "albumAlgorithmicTotal7d": 4116,
       "albumAlgorithmicPct28d": 1.51,
@@ -2847,7 +2888,7 @@
     {
       "date": "2026-03-23",
       "label": "D+5",
-      "recordedAt": "2026-03-31T17:53:04.919Z",
+      "recordedAt": "2026-03-31T17:53:06.642Z",
       "albumAlgorithmicTotal28d": 4947,
       "albumAlgorithmicTotal7d": 4947,
       "albumAlgorithmicPct28d": 1.45,
@@ -2917,7 +2958,7 @@
     {
       "date": "2026-03-24",
       "label": "D+6",
-      "recordedAt": "2026-03-31T17:53:04.920Z",
+      "recordedAt": "2026-03-31T17:53:06.642Z",
       "albumAlgorithmicTotal28d": 5628,
       "albumAlgorithmicTotal7d": 5628,
       "albumAlgorithmicPct28d": 1.38,
@@ -2987,7 +3028,7 @@
     {
       "date": "2026-03-25",
       "label": "D+7",
-      "recordedAt": "2026-03-31T17:53:04.920Z",
+      "recordedAt": "2026-03-31T17:53:06.642Z",
       "albumAlgorithmicTotal28d": 6613,
       "albumAlgorithmicTotal7d": 6613,
       "albumAlgorithmicPct28d": 1.37,
@@ -3057,7 +3098,7 @@
     {
       "date": "2026-03-26",
       "label": "D+8",
-      "recordedAt": "2026-03-31T17:53:04.920Z",
+      "recordedAt": "2026-03-31T17:53:06.642Z",
       "albumAlgorithmicTotal28d": 7686,
       "albumAlgorithmicTotal7d": 6461,
       "albumAlgorithmicPct28d": 1.41,
@@ -3127,7 +3168,7 @@
     {
       "date": "2026-03-27",
       "label": "D+9",
-      "recordedAt": "2026-03-31T17:53:04.920Z",
+      "recordedAt": "2026-03-31T17:53:06.642Z",
       "albumAlgorithmicTotal28d": 8848,
       "albumAlgorithmicTotal7d": 6635,
       "albumAlgorithmicPct28d": 1.46,
@@ -3146,6 +3187,76 @@
           "streams28d": 8848,
           "streams7d": 6635,
           "pct28d": 10.19
+        },
+        "CALL ME": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "ALQUILER": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "HIELO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "UN GUSTO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "CHANGES": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "OJOS TRISTES": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "HAZLO CALLAO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "YA NO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "TOP TIER": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        }
+      }
+    },
+    {
+      "date": "2026-03-28",
+      "label": "D+10",
+      "recordedAt": "2026-03-31T17:53:06.642Z",
+      "albumAlgorithmicTotal28d": 9518,
+      "albumAlgorithmicTotal7d": 6203,
+      "albumAlgorithmicPct28d": 1.57,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "MAN OF WORD": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "ATBLM": {
+          "streams28d": 9518,
+          "streams7d": 6203,
+          "pct28d": 10.96
         },
         "CALL ME": {
           "streams28d": 0,
@@ -3316,6 +3427,13 @@
       "label": "D27",
       "tracks": {
         "ATBLM": 1162
+      }
+    },
+    {
+      "date": "2026-03-28",
+      "label": "D28",
+      "tracks": {
+        "ATBLM": 670
       }
     }
   ]
