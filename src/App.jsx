@@ -3928,12 +3928,27 @@ const AmorFiadoDashboard = () => {
 
         // ── Tabla histórica ──────────────────────────────────────────────────
         if (adminView === 'table') {
-          // Merge dailyLog + algo history by date
+          // Generar TODOS los días desde el lanzamiento hasta hoy
+          const LAUNCH = '2026-03-19';
+          const todayStr = new Date().toISOString().split('T')[0];
+          const allDayRows = [];
+          const logByDate = {};
+          (dailyLog ?? []).forEach(d => { logByDate[d.date] = d; });
           const algoByDate = {};
           (liveData.algorithmicHistory ?? []).forEach(h => {
             algoByDate[h.date] = h.albumAlgorithmicPct28d ?? h.albumAlgorithmicPct ?? null;
           });
-          const rows = [...(dailyLog ?? [])].reverse(); // newest first
+          // Iterar desde lanzamiento hasta hoy
+          let cur = new Date(LAUNCH + 'T12:00:00Z');
+          const end = new Date(todayStr + 'T12:00:00Z');
+          while (cur <= end) {
+            const d = cur.toISOString().split('T')[0];
+            allDayRows.push({ date: d, entry: logByDate[d] ?? null });
+            cur.setUTCDate(cur.getUTCDate() + 1);
+          }
+          allDayRows.reverse(); // más reciente primero
+
+          const missingCount = allDayRows.filter(r => !r.entry).length;
 
           return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -3942,65 +3957,61 @@ const AmorFiadoDashboard = () => {
                 <div>
                   <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '1.05rem', margin: 0 }}>⚙️ Historial de Datos</p>
                   <p style={{ color: '#475569', fontSize: '0.75rem', margin: '0.2rem 0 0' }}>
-                    Streams diarios por track · Clickeá una fila para editar
+                    Todos los días desde el lanzamiento · {missingCount > 0 ? <span style={{ color: '#f97316' }}>{missingCount} sin datos</span> : <span style={{ color: '#4ade80' }}>completo ✓</span>}
                   </p>
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                  {viewToggle}
-                  <button onClick={adminOpenNew} style={{ background: 'linear-gradient(135deg,#f97316,#ea580c)', border: 'none', borderRadius: '8px', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.2rem', cursor: 'pointer' }}>
-                    + Nuevo día
-                  </button>
-                </div>
+                {viewToggle}
               </div>
 
-              {rows.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '3rem', color: '#475569' }}>
-                  <p style={{ fontSize: '2rem', margin: '0 0 0.5rem' }}>📭</p>
-                  <p style={{ margin: 0 }}>No hay datos aún. Agregá el primer día.</p>
-                </div>
-              ) : (
-                <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid rgba(51,65,85,0.5)' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', minWidth: '900px' }}>
-                    <thead>
-                      <tr style={{ background: 'rgba(15,23,42,0.8)', borderBottom: '1px solid rgba(51,65,85,0.7)' }}>
-                        {['Día', 'Fecha', 'Total', ...TRACKS.map(t => t.split(' ')[0]), '% Algo', ''].map((h, i) => (
-                          <th key={i} style={{ padding: '0.6rem 0.7rem', color: '#64748b', fontWeight: 600, fontSize: '0.66rem', textTransform: 'uppercase', textAlign: i <= 2 ? 'left' : 'right', whiteSpace: 'nowrap' }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rows.map((row, i) => {
-                        const total = Object.values(row.tracks ?? {}).reduce((s, v) => s + v, 0);
-                        const algoPct = algoByDate[row.date];
-                        return (
-                          <tr key={row.date}
-                            onClick={() => adminOpenEdit(row)}
-                            style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', background: i % 2 === 0 ? 'transparent' : 'rgba(15,23,42,0.3)', cursor: 'pointer', transition: 'background 0.15s' }}
-                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(249,115,22,0.07)'}
-                            onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : 'rgba(15,23,42,0.3)'}
-                          >
-                            <td style={{ padding: '0.55rem 0.7rem', color: '#f97316', fontWeight: 700 }}>{row.label}</td>
-                            <td style={{ padding: '0.55rem 0.7rem', color: '#94a3b8' }}>{row.date}</td>
-                            <td style={{ padding: '0.55rem 0.7rem', color: '#e2e8f0', fontWeight: 600 }}>{total.toLocaleString('es-AR')}</td>
-                            {TRACKS.map(t => {
-                              const v = row.tracks?.[t] ?? 0;
-                              return <td key={t} style={{ padding: '0.55rem 0.7rem', color: v > 0 ? '#94a3b8' : '#334155', textAlign: 'right' }}>{v > 0 ? v.toLocaleString('es-AR') : '—'}</td>;
-                            })}
-                            <td style={{ padding: '0.55rem 0.7rem', textAlign: 'right' }}>
-                              {algoPct != null
-                                ? <span style={{ background: 'rgba(167,139,250,0.15)', color: '#a78bfa', borderRadius: '9999px', padding: '0.1rem 0.45rem', fontSize: '0.7rem', fontWeight: 600 }}>{algoPct.toFixed(1)}%</span>
-                                : <span style={{ color: '#334155' }}>—</span>}
-                            </td>
-                            <td style={{ padding: '0.55rem 0.7rem', textAlign: 'right' }}>
-                              <span style={{ color: '#475569', fontSize: '0.7rem' }}>✏️</span>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+              <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid rgba(51,65,85,0.5)' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', minWidth: '900px' }}>
+                  <thead>
+                    <tr style={{ background: 'rgba(15,23,42,0.8)', borderBottom: '1px solid rgba(51,65,85,0.7)' }}>
+                      {['Día', 'Fecha', 'Total', ...TRACKS.map(t => t.split(' ')[0]), '% Algo', ''].map((h, i) => (
+                        <th key={i} style={{ padding: '0.6rem 0.7rem', color: '#64748b', fontWeight: 600, fontSize: '0.66rem', textTransform: 'uppercase', textAlign: i <= 2 ? 'left' : 'right', whiteSpace: 'nowrap' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allDayRows.map(({ date, entry }, i) => {
+                      const dayN = Math.round((new Date(date + 'T12:00:00Z') - new Date(LAUNCH + 'T00:00:00Z')) / 86400000);
+                      const label = `D+${dayN}`;
+                      const missing = !entry;
+                      const total = missing ? null : Object.values(entry.tracks ?? {}).reduce((s, v) => s + v, 0);
+                      const algoPct = algoByDate[date] ?? null;
+                      return (
+                        <tr key={date}
+                          onClick={() => missing
+                            ? (() => { setAdminEditDate(''); setAdminDate(date); setAdminNote(''); setAdminDailyTracks(emptyTracks()); setAdminAlgoEnabled(false); setAdminAlgo(emptyTracks()); setAdminStatus('idle'); setAdminMsg(''); setAdminView('form'); })()
+                            : adminOpenEdit(entry)
+                          }
+                          style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', background: missing ? 'rgba(249,115,22,0.03)' : i % 2 === 0 ? 'transparent' : 'rgba(15,23,42,0.3)', cursor: 'pointer', transition: 'background 0.15s', opacity: missing ? 0.6 : 1 }}
+                          onMouseEnter={e => e.currentTarget.style.background = missing ? 'rgba(249,115,22,0.1)' : 'rgba(249,115,22,0.07)'}
+                          onMouseLeave={e => e.currentTarget.style.background = missing ? 'rgba(249,115,22,0.03)' : i % 2 === 0 ? 'transparent' : 'rgba(15,23,42,0.3)'}
+                        >
+                          <td style={{ padding: '0.55rem 0.7rem', color: missing ? '#475569' : '#f97316', fontWeight: 700 }}>{label}</td>
+                          <td style={{ padding: '0.55rem 0.7rem', color: missing ? '#334155' : '#94a3b8' }}>{date}</td>
+                          <td style={{ padding: '0.55rem 0.7rem', color: missing ? '#334155' : '#e2e8f0', fontWeight: 600 }}>
+                            {missing ? <span style={{ color: '#f97316', fontSize: '0.7rem', fontWeight: 600 }}>+ agregar</span> : total.toLocaleString('es-AR')}
+                          </td>
+                          {TRACKS.map(t => {
+                            const v = entry?.tracks?.[t] ?? null;
+                            return <td key={t} style={{ padding: '0.55rem 0.7rem', color: v ? '#94a3b8' : '#1e293b', textAlign: 'right' }}>{v ? v.toLocaleString('es-AR') : '—'}</td>;
+                          })}
+                          <td style={{ padding: '0.55rem 0.7rem', textAlign: 'right' }}>
+                            {algoPct != null
+                              ? <span style={{ background: 'rgba(167,139,250,0.15)', color: '#a78bfa', borderRadius: '9999px', padding: '0.1rem 0.45rem', fontSize: '0.7rem', fontWeight: 600 }}>{algoPct.toFixed(1)}%</span>
+                              : <span style={{ color: '#1e293b' }}>—</span>}
+                          </td>
+                          <td style={{ padding: '0.55rem 0.7rem', textAlign: 'right' }}>
+                            <span style={{ color: missing ? '#f97316' : '#475569', fontSize: '0.7rem' }}>{missing ? '＋' : '✏️'}</span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           );
         }
