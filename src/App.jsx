@@ -291,50 +291,45 @@ const AmorFiadoDashboard = () => {
     setAdminTrackStatus('loading');
     setAdminTrackMsg('');
     setAdminTrackProgress({ done: 0, total: modifiedDates.length });
-    const errors = [];
 
-    for (let i = 0; i < modifiedDates.length; i++) {
-      const date = modifiedDates[i];
+    // Construir todas las entradas en memoria primero
+    const entries = modifiedDates.map(date => {
       const edit = adminTrackEdits[date];
-
-      // Build full dailyTracks: current values + override selected track
       const currentEntry = dailyLog.find(d => d.date === date);
       const fullTracks = {};
       TRACKS.forEach(t => { fullTracks[t] = String(currentEntry?.tracks?.[t] ?? 0); });
       if (edit.streams !== undefined) fullTracks[adminTrackSelected] = edit.streams;
 
-      // Build algoDailyTracks: valores diarios existentes + override del track seleccionado
       const algoLogArr   = liveData.algoLog ?? [];
       const algoLogEntry = algoLogArr.find(e => e.date === date);
       const hasAlgoEdit  = edit.algo !== undefined && edit.algo !== '';
       const algoDailyTracks = {};
-      TRACKS.forEach(t => {
-        algoDailyTracks[t] = String(algoLogEntry?.tracks?.[t] ?? '');
-      });
+      TRACKS.forEach(t => { algoDailyTracks[t] = String(algoLogEntry?.tracks?.[t] ?? ''); });
       if (hasAlgoEdit) algoDailyTracks[adminTrackSelected] = edit.algo;
       const algoEnabled = hasAlgoEdit || TRACKS.some(t => algoDailyTracks[t] !== '');
 
-      try {
-        const res = await fetch('/api/update-data', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ date, mode: 'edit', dailyTracks: fullTracks, algoEnabled, algoDailyTracks }),
-        });
-        if (!res.ok) { const d = await res.json(); throw new Error(d.error); }
-      } catch (e) { errors.push(`${date}: ${e.message}`); }
+      return { date, dailyTracks: fullTracks, algoEnabled, algoDailyTracks };
+    });
 
-      setAdminTrackProgress({ done: i + 1, total: modifiedDates.length });
-    }
+    // UN SOLO request batch — evita race conditions
+    try {
+      setAdminTrackProgress({ done: 0, total: 1 });
+      const res = await fetch('/api/update-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entries }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
 
-    if (errors.length === 0) {
       setAdminTrackStatus('success');
       setAdminTrackMsg(`✅ ${modifiedDates.length} día(s) guardado(s)`);
       setAdminTrackEdits({});
       await refreshData();
       setTimeout(() => { setAdminTrackStatus('idle'); setAdminTrackMsg(''); }, 4000);
-    } else {
+    } catch (e) {
       setAdminTrackStatus('error');
-      setAdminTrackMsg(`❌ ${errors.join(' | ')}`);
+      setAdminTrackMsg(`❌ ${e.message}`);
     }
     setAdminTrackProgress(null);
   };
