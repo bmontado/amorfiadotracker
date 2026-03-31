@@ -11,6 +11,12 @@ function daysSinceLaunch(dateStr) {
   return Math.round((new Date(dateStr + 'T12:00:00Z') - LAUNCH_DATE) / 86400000);
 }
 
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().split('T')[0];
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -21,7 +27,7 @@ export default async function handler(req, res) {
   const token = process.env.GITHUB_TOKEN;
   if (!token) return res.status(500).json({ error: 'GITHUB_TOKEN no configurado en Vercel' });
 
-  const { date, note, dailyTracks, algoStreams, algoEnabled } = req.body ?? {};
+  const { date, note, dailyTracks, algoDailyTracks, algoEnabled } = req.body ?? {};
   if (!date || !dailyTracks) return res.status(400).json({ error: 'Faltan: date, dailyTracks' });
 
   // ── 1. Fetch data.json desde GitHub ────────────────────────────────────────
@@ -87,35 +93,88 @@ export default async function handler(req, res) {
   });
   newData.liveHistory = liveHistory;
 
-  // ── 4. Algo streams (opcional) ─────────────────────────────────────────────
-  if (algoEnabled && algoStreams && Object.keys(algoStreams).length > 0) {
-    // algorithmicData
-    const algD = { ...(current.algorithmicData ?? {}) };
-    Object.entries(algoStreams).forEach(([track, rawVal]) => {
-      const streams = parseInt(rawVal, 10) || 0;
-      if (!algD[track]) algD[track] = {};
-      algD[track][date] = { streams, breakdown: { algorithmicPlaylists: streams, radio: 0 } };
+  // ── 4. Algo streams diarios (opcional) ────────────────────────────────────
+  // algoDailyTracks: streams algorítmicos del día (como dailyTracks pero para algo)
+  // Se almacenan en algoLog y se calculan rolling windows de 7d y 28d
+  if (algoEnabled && algoDailyTracks && Object.keys(algoDailyTracks).length > 0) {
+
+    // Upsert algoLog — igual que dailyLog pero para streams algorítmicos diarios
+    const parsedAlgo = {};
+    Object.entries(algoDailyTracks).forEach(([t, v]) => {
+      const val = parseInt(v, 10) || 0;
+      if (val > 0) parsedAlgo[t] = val;
+    });
+    const algoLog = (current.algoLog ?? []).filter(d => d.date !== date);
+    algoLog.push({ date, label: dailyLabel, tracks: parsedAlgo });
+    algoLog.sort((a, b) => a.date.localeCompare(b.date));
+    newData.algoLog = algoLog;
+
+    // Rebuild algorithmicHistory: para cada fecha en algoLog, computar ventanas 7d y 28d
+    const algoHistory = algoLog.map(algoEntry => {
+      const d28ago = addDays(algoEntry.date, -27);
+      const d7ago  = addDays(algoEntry.date, -6);
+
+      const tracks28d = {};
+      const tracks7d  = {};
+      TRACKS.forEach(t => { tracks28d[t] = 0; tracks7d[t] = 0; });
+
+      // Sumar todas las entradas de algoLog dentro de cada ventana
+      algoLog.forEach(e => {
+        if (e.date <= algoEntry.date) {
+          TRACKS.forEach(t => {
+            if (e.date >= d28ago) tracks28d[t] += e.tracks?.[t] ?? 0;
+            if (e.date >= d7ago)  tracks7d[t]  += e.tracks?.[t] ?? 0;
+          });
+        }
+      });
+
+      // Streams totales del álbum en la ventana de 28d (denominador para el %)
+      const album28dStreams = dailyLog
+        .filter(e => e.date >= d28ago && e.date <= algoEntry.date)
+        .reduce((sum, e) => sum + TRACKS.reduce((s, t) => s + (e.tracks?.[t] ?? 0), 0), 0);
+
+      const albumAlgo28d = TRACKS.reduce((s, t) => s + tracks28d[t], 0);
+      const albumAlgo7d  = TRACKS.reduce((s, t) => s + tracks7d[t], 0);
+      const album28dPct  = album28dStreams > 0
+        ? parseFloat(((albumAlgo28d / album28dStreams) * 100).toFixed(2))
+        : 0;
+
+      // Stats por track
+      const trackStats = {};
+      TRACKS.forEach(t => {
+        const tStreams28d = dailyLog
+          .filter(e => e.date >= d28ago && e.date <= algoEntry.date)
+          .reduce((sum, e) => sum + (e.tracks?.[t] ?? 0), 0);
+        const pct28d = tStreams28d > 0
+          ? parseFloat(((tracks28d[t] / tStreams28d) * 100).toFixed(2))
+          : 0;
+        trackStats[t] = { streams28d: tracks28d[t], streams7d: tracks7d[t], pct28d };
+      });
+
+      const dayN = daysSinceLaunch(algoEntry.date);
+      return {
+        date: algoEntry.date,
+        label: `D+${dayN}`,
+        recordedAt: new Date().toISOString(),
+        albumAlgorithmicTotal28d: albumAlgo28d,
+        albumAlgorithmicTotal7d: albumAlgo7d,
+        albumAlgorithmicPct28d: album28dPct,
+        tracks: trackStats,
+      };
+    });
+    newData.algorithmicHistory = algoHistory;
+
+    // Mantener algorithmicData como valores diarios crudos por track/fecha (para gráficos)
+    const algD = {};
+    TRACKS.forEach(t => { algD[t] = {}; });
+    algoLog.forEach(e => {
+      TRACKS.forEach(t => {
+        if (e.tracks?.[t]) {
+          algD[t][e.date] = { streams: e.tracks[t] };
+        }
+      });
     });
     newData.algorithmicData = algD;
-
-    // algorithmicHistory
-    const algoTotal = Object.values(algoStreams).reduce((s, v) => s + (parseInt(v, 10) || 0), 0);
-    const algoPct   = albumTotal > 0 ? parseFloat(((algoTotal / albumTotal) * 100).toFixed(2)) : 0;
-    const tm = current.trackMetrics ?? {};
-    const algoHistTracks = {};
-    Object.entries(algoStreams).forEach(([track, rawVal]) => {
-      const streams = parseInt(rawVal, 10) || 0;
-      const tot28   = tm[track]?.streams28d ?? 0;
-      algoHistTracks[track] = { streams28d: streams, pct28d: tot28 > 0 ? parseFloat(((streams / tot28) * 100).toFixed(2)) : 0 };
-    });
-    const algoHist = (current.algorithmicHistory ?? []).filter(h => h.date !== date);
-    algoHist.push({
-      date, label: liveLabel, recordedAt: new Date().toISOString(), partial: false,
-      albumAlgorithmicTotal28d: algoTotal, albumAlgorithmicPct28d: algoPct,
-      tracks: algoHistTracks,
-    });
-    algoHist.sort((a, b) => a.date.localeCompare(b.date));
-    newData.algorithmicHistory = algoHist;
   }
 
   // ── 5. Push a GitHub ────────────────────────────────────────────────────────

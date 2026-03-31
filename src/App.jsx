@@ -185,7 +185,18 @@ const AmorFiadoDashboard = () => {
 
   const adminOpenNew = () => {
     setAdminEditDate('');
-    setAdminDate(new Date().toISOString().split('T')[0]);
+    // Por defecto: día siguiente al último en dailyLog
+    const sorted = [...(dailyLog ?? [])].sort((a, b) => a.date.localeCompare(b.date));
+    const lastDate = sorted.length > 0 ? sorted[sorted.length - 1].date : null;
+    let nextDate;
+    if (lastDate) {
+      const d = new Date(lastDate + 'T12:00:00Z');
+      d.setUTCDate(d.getUTCDate() + 1);
+      nextDate = d.toISOString().split('T')[0];
+    } else {
+      nextDate = new Date().toISOString().split('T')[0];
+    }
+    setAdminDate(nextDate);
     setAdminNote('');
     setAdminDailyTracks(emptyTracks());
     setAdminAlgoEnabled(false);
@@ -201,11 +212,11 @@ const AmorFiadoDashboard = () => {
     const tracks = { ...emptyTracks() };
     TRACKS.forEach(t => { tracks[t] = String(entry.tracks?.[t] ?? ''); });
     setAdminDailyTracks(tracks);
-    // Pre-fill algo if we have it
-    const algoH = liveData.algorithmicHistory?.find(h => h.date === entry.date);
-    if (algoH?.tracks) {
+    // Pre-fill algo desde algoLog (valores diarios reales)
+    const algoLogEntry = (liveData.algoLog ?? []).find(e => e.date === entry.date);
+    if (algoLogEntry?.tracks) {
       const algo = { ...emptyTracks() };
-      TRACKS.forEach(t => { algo[t] = String(algoH.tracks[t]?.streams28d ?? ''); });
+      TRACKS.forEach(t => { algo[t] = String(algoLogEntry.tracks[t] ?? ''); });
       setAdminAlgo(algo);
       setAdminAlgoEnabled(true);
     } else {
@@ -231,7 +242,7 @@ const AmorFiadoDashboard = () => {
           note: adminNote,
           dailyTracks: adminDailyTracks,
           algoEnabled: adminAlgoEnabled,
-          algoStreams: adminAlgoEnabled ? adminAlgo : {},
+          algoDailyTracks: adminAlgoEnabled ? adminAlgo : {},
         }),
       });
       const data = await res.json();
@@ -276,21 +287,22 @@ const AmorFiadoDashboard = () => {
       TRACKS.forEach(t => { fullTracks[t] = String(currentEntry?.tracks?.[t] ?? 0); });
       if (edit.streams !== undefined) fullTracks[adminTrackSelected] = edit.streams;
 
-      // Build algo: existing values for all tracks + override selected track
-      const algoEntry = liveData.algorithmicHistory?.find(h => h.date === date);
-      const hasAlgoEdit = edit.algo !== undefined && edit.algo !== '';
-      const algoStreams = {};
+      // Build algoDailyTracks: valores diarios existentes + override del track seleccionado
+      const algoLogArr   = liveData.algoLog ?? [];
+      const algoLogEntry = algoLogArr.find(e => e.date === date);
+      const hasAlgoEdit  = edit.algo !== undefined && edit.algo !== '';
+      const algoDailyTracks = {};
       TRACKS.forEach(t => {
-        algoStreams[t] = String(algoEntry?.tracks?.[t]?.streams28d ?? '');
+        algoDailyTracks[t] = String(algoLogEntry?.tracks?.[t] ?? '');
       });
-      if (hasAlgoEdit) algoStreams[adminTrackSelected] = edit.algo;
-      const algoEnabled = hasAlgoEdit || TRACKS.some(t => algoStreams[t] !== '');
+      if (hasAlgoEdit) algoDailyTracks[adminTrackSelected] = edit.algo;
+      const algoEnabled = hasAlgoEdit || TRACKS.some(t => algoDailyTracks[t] !== '');
 
       try {
         const res = await fetch('/api/update-data', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ date, mode: 'edit', dailyTracks: fullTracks, algoEnabled, algoStreams }),
+          body: JSON.stringify({ date, mode: 'edit', dailyTracks: fullTracks, algoEnabled, algoDailyTracks }),
         });
         if (!res.ok) { const d = await res.json(); throw new Error(d.error); }
       } catch (e) { errors.push(`${date}: ${e.message}`); }
@@ -368,80 +380,97 @@ const AmorFiadoDashboard = () => {
   const trackMetricsMeta = liveData.trackMetricsMeta ?? DEFAULT_LIVE_DATA.trackMetricsMeta;
   const campaignContext  = liveData.campaignContext  ?? null;
   const algoData = (() => {
-    const algD = liveData.algorithmicData ?? null;
-    const algH = liveData.algorithmicHistory ?? [];
-    if (!algD && algH.length === 0) return liveData.algoData ?? null;
-    if (!algD) return liveData.algoData ?? null;
-    const lastHist = algH.length > 0 ? algH[algH.length - 1] : null;
-    // Find latest date that has actual data in algorithmicData
-    const allDates = [...new Set(Object.values(algD).flatMap(dm => Object.keys(dm)))].sort();
-    const latestDate = allDates.length > 0 ? allDates[allDates.length - 1] : null;
-    if (!latestDate) return liveData.algoData ?? null;
-    const tm = liveData.trackMetrics ?? {};
-    // D+9 history has pct28d/streams28d per track — use it for accurate %
+    const algH   = liveData.algorithmicHistory ?? [];
+    const algLog = liveData.algoLog ?? [];
+    const algD   = liveData.algorithmicData ?? null;
+
+    // Necesitamos al menos algo de data
+    if (algH.length === 0 && algLog.length === 0 && !algD) return liveData.algoData ?? null;
+
+    const lastHist   = algH.length > 0 ? algH[algH.length - 1] : null;
     const histTracks = lastHist?.tracks ?? {};
-    const byTrack = Object.entries(algD)
-      .map(([track, dateMap]) => {
-        const entry = dateMap[latestDate] ?? null;
-        if (!entry) return null;
-        const algoStreams = entry.streams ?? 0;
-        const totalStreams = tm[track]?.streams28d ?? 0;
-        // Calculate % from trackMetrics, fallback to history pct28d
+    const tm         = liveData.trackMetrics ?? {};
+
+    // latestDate: última fecha con datos algorítmicos
+    const latestDate = lastHist?.date ?? (algLog.length > 0 ? algLog[algLog.length - 1].date : null);
+    if (!latestDate) return liveData.algoData ?? null;
+
+    // byTrack: stats 28d/7d por track —————————————————————————————————————
+    let byTrack;
+    if (Object.keys(histTracks).length > 0) {
+      // Nuevo esquema: algorithmicHistory tiene stats pre-calculados de windows
+      byTrack = TRACKS.map(track => {
         const ht = histTracks[track];
-        const algoPercent = totalStreams > 0
-          ? (algoStreams / totalStreams) * 100
-          : (ht?.pct28d ?? 0);
-        // daily7d for per-day algo chart
-        const daily7d = entry.daily7d ?? null;
-        // 7d streams from history or sum of daily7d
-        const streams7d = ht?.streams7d ?? (daily7d ? Object.values(daily7d).reduce((a, b) => a + b, 0) : 0);
-        return {
-          track,
-          algoPercent,
-          algoStreams,
-          streams7d,
-          totalStreams,
+        if (!ht) return null;
+        const algoStreams  = ht.streams28d ?? 0;
+        const streams7d    = ht.streams7d  ?? 0;
+        const algoPercent  = ht.pct28d     ?? 0;
+        const totalStreams  = tm[track]?.streams28d ?? 0;
+        return { track, algoPercent, algoStreams, streams7d, totalStreams, playlistStreams: 0, radioStreams: 0, daily7d: null };
+      }).filter(Boolean);
+    } else if (algD) {
+      // Esquema antiguo: algorithmicData tiene valor snapshot, calcular % desde trackMetrics
+      const allDates = [...new Set(Object.values(algD).flatMap(dm => Object.keys(dm)))].sort();
+      const latD = allDates[allDates.length - 1];
+      byTrack = Object.entries(algD).map(([track, dateMap]) => {
+        const entry = dateMap[latD] ?? null;
+        if (!entry) return null;
+        const algoStreams  = entry.streams ?? 0;
+        const totalStreams  = tm[track]?.streams28d ?? 0;
+        const ht           = histTracks[track];
+        const algoPercent  = totalStreams > 0 ? (algoStreams / totalStreams) * 100 : (ht?.pct28d ?? 0);
+        const daily7d      = entry.daily7d ?? null;
+        const streams7d    = ht?.streams7d ?? (daily7d ? Object.values(daily7d).reduce((a, b) => a + b, 0) : 0);
+        return { track, algoPercent, algoStreams, streams7d, totalStreams,
           playlistStreams: entry.breakdown?.algorithmicPlaylists ?? 0,
-          radioStreams: entry.breakdown?.radio ?? 0,
-          daily7d,
-        };
-      })
-      .filter(Boolean);
-    // History: handle both albumAlgorithmicPct and albumAlgorithmicPct28d naming
+          radioStreams: entry.breakdown?.radio ?? 0, daily7d };
+      }).filter(Boolean);
+    } else {
+      byTrack = [];
+    }
+
+    // history: evolución del % algorítmico del álbum ————————————————————————
     const history = algH.map(h => ({
       date: h.date,
       label: h.label ?? '',
-      algoPercent: h.albumAlgorithmicPct28d ?? h.albumAlgorithmicPct ?? 0,
-      algoStreams: h.albumAlgorithmicTotal28d ?? h.albumAlgorithmicTotal ?? 0,
+      algoPercent:   h.albumAlgorithmicPct28d  ?? h.albumAlgorithmicPct  ?? 0,
+      algoStreams:   h.albumAlgorithmicTotal28d ?? h.albumAlgorithmicTotal ?? 0,
+      algoStreams7d: h.albumAlgorithmicTotal7d  ?? 0,
       partial: h.partial ?? false,
     }));
     const nonPartial = history.filter(h => !h.partial && h.algoPercent > 0);
-    const algoTrend = nonPartial.length >= 2
+    const algoTrend  = nonPartial.length >= 2
       ? nonPartial[nonPartial.length - 1].algoPercent - nonPartial[nonPartial.length - 2].algoPercent
       : null;
-    // Album-level stats from latest history entry
-    const albumPct = lastHist?.albumAlgorithmicPct28d ?? lastHist?.albumAlgorithmicPct ?? null;
-    const albumStreams = lastHist?.albumAlgorithmicTotal28d ?? lastHist?.albumAlgorithmicTotal ?? 0;
-    // Build daily7d album-level chart data (sum all tracks per day)
-    const dailyAlbum = {};
-    byTrack.forEach(t => {
-      if (t.daily7d) {
-        Object.entries(t.daily7d).forEach(([date, val]) => {
-          dailyAlbum[date] = (dailyAlbum[date] ?? 0) + val;
-        });
-      }
-    });
-    const dailyAlbumArr = Object.entries(dailyAlbum).sort(([a], [b]) => a.localeCompare(b)).map(([date, streams]) => ({ date, streams }));
-    return {
-      byTrack,
-      history,
-      algoTrend,
-      albumAlgoPercent: albumPct,
-      albumAlgoStreams: albumStreams,
-      dailyAlbum: dailyAlbumArr,
-      period: '28 días',
-      latestDate,
-    };
+
+    const albumPct     = lastHist?.albumAlgorithmicPct28d  ?? lastHist?.albumAlgorithmicPct  ?? null;
+    const albumStreams  = lastHist?.albumAlgorithmicTotal28d ?? lastHist?.albumAlgorithmicTotal ?? 0;
+
+    // dailyAlbum: gráfico diario —————————————————————————————————————————————
+    // Preferir algoLog (diarios reales); fallback a daily7d de byTrack
+    let dailyAlbumArr = [];
+    if (algLog.length > 0) {
+      const dailyAlbum = {};
+      algLog.forEach(entry => {
+        const total = TRACKS.reduce((s, t) => s + (entry.tracks?.[t] ?? 0), 0);
+        if (total > 0) dailyAlbum[entry.date] = total;
+      });
+      dailyAlbumArr = Object.entries(dailyAlbum)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([date, streams]) => ({ date, streams }));
+    } else {
+      const dailyAlbum = {};
+      byTrack.forEach(t => {
+        if (t.daily7d) {
+          Object.entries(t.daily7d).forEach(([d, v]) => { dailyAlbum[d] = (dailyAlbum[d] ?? 0) + v; });
+        }
+      });
+      dailyAlbumArr = Object.entries(dailyAlbum)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([date, streams]) => ({ date, streams }));
+    }
+
+    return { byTrack, history, algoTrend, albumAlgoPercent: albumPct, albumAlgoStreams: albumStreams, dailyAlbum: dailyAlbumArr, period: '28 días', latestDate };
   })();
 
   // Social posts — live desde liveData.socialPosts (actualizado por amor-fiado-social-scraper)
@@ -3739,14 +3768,14 @@ const AmorFiadoDashboard = () => {
 
         // ── Vista por track ──────────────────────────────────────────────────
         if (adminView === 'track') {
-          // Merge all dates: from dailyLog + any algo-only dates
+          // Merge all dates: from dailyLog + algoLog
           const allDates = new Set([
             ...(dailyLog ?? []).map(d => d.date),
-            ...(liveData.algorithmicHistory ?? []).map(h => h.date),
+            ...(liveData.algoLog ?? []).map(e => e.date),
           ]);
           const sortedDates = [...allDates].sort((a, b) => b.localeCompare(a)); // newest first
           const algoByDate = {};
-          (liveData.algorithmicHistory ?? []).forEach(h => { algoByDate[h.date] = h; });
+          (liveData.algoLog ?? []).forEach(e => { algoByDate[e.date] = e; });
           const modCount = Object.keys(adminTrackEdits).length;
 
           return (
@@ -3780,8 +3809,8 @@ const AmorFiadoDashboard = () => {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
                   <thead>
                     <tr style={{ background: 'rgba(15,23,42,0.8)', borderBottom: '1px solid rgba(51,65,85,0.7)' }}>
-                      {['Día', 'Fecha', 'Streams del día', 'Algo 28d', 'Estado'].map(h => (
-                        <th key={h} style={{ padding: '0.65rem 0.85rem', color: '#64748b', fontWeight: 600, fontSize: '0.67rem', textTransform: 'uppercase', textAlign: h === 'Streams del día' || h === 'Algo 28d' ? 'center' : 'left' }}>{h}</th>
+                      {['Día', 'Fecha', 'Streams del día', 'Algo (día)', 'Estado'].map(h => (
+                        <th key={h} style={{ padding: '0.65rem 0.85rem', color: '#64748b', fontWeight: 600, fontSize: '0.67rem', textTransform: 'uppercase', textAlign: h === 'Streams del día' || h === 'Algo (día)' ? 'center' : 'left' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -3793,7 +3822,7 @@ const AmorFiadoDashboard = () => {
                       const logEntry = dailyLog?.find(d => d.date === date);
                       const algoEntry = algoByDate[date];
                       const savedStreams = logEntry?.tracks?.[adminTrackSelected] ?? null;
-                      const savedAlgo   = algoEntry?.tracks?.[adminTrackSelected]?.streams28d ?? null;
+                      const savedAlgo   = algoEntry?.tracks?.[adminTrackSelected] ?? null;
                       const edit        = adminTrackEdits[date] ?? {};
                       const isModified  = edit.streams !== undefined || edit.algo !== undefined;
                       const streamVal   = edit.streams !== undefined ? edit.streams : (savedStreams !== null ? String(savedStreams) : '');
@@ -3850,7 +3879,7 @@ const AmorFiadoDashboard = () => {
                           <td style={{ padding: '0.35rem 0.85rem' }}>
                             <input type="number" min="0" value={edit.algo ?? ''}
                               onChange={e => adminTrackSetEdit(newDate, 'algo', e.target.value)}
-                              placeholder="algo 28d"
+                              placeholder="algo del día"
                               style={{ background: 'rgba(15,23,42,0.7)', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '6px', color: '#a78bfa', fontSize: '0.85rem', padding: '0.3rem 0.6rem', width: '110px', outline: 'none', textAlign: 'right' }} />
                           </td>
                           <td style={{ padding: '0.5rem 0.85rem', color: '#f97316', fontSize: '0.7rem' }}>+ nueva fila</td>
@@ -4052,24 +4081,26 @@ const AmorFiadoDashboard = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: adminAlgoEnabled ? '0.85rem' : 0 }}>
                 <button onClick={() => setAdminAlgoEnabled(p => !p)}
                   style={{ background: adminAlgoEnabled ? 'rgba(167,139,250,0.12)' : 'rgba(51,65,85,0.3)', border: `1px solid ${adminAlgoEnabled ? 'rgba(167,139,250,0.5)' : 'rgba(51,65,85,0.6)'}`, borderRadius: '6px', color: adminAlgoEnabled ? '#a78bfa' : '#64748b', padding: '0.35rem 0.9rem', fontSize: '0.8rem', cursor: 'pointer' }}>
-                  🤖 {adminAlgoEnabled ? 'Ocultar streams algorítmicos' : 'Agregar streams algorítmicos (opcional)'}
+                  🤖 {adminAlgoEnabled ? 'Ocultar algo streams' : 'Agregar streams algorítmicos del día (opcional)'}
                 </button>
               </div>
               {adminAlgoEnabled && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
                   {TRACKS.map(track => {
-                    const algoH = (liveData.algorithmicHistory ?? []).filter(h => h.tracks?.[track]?.streams28d);
-                    const lastAlgo = algoH.length > 0 ? algoH[algoH.length - 1] : null;
+                    // Buscar el último valor diario real en algoLog para este track
+                    const sortedAlgoLog = [...(liveData.algoLog ?? [])].sort((a,b) => a.date.localeCompare(b.date));
+                    const lastAlgoEntry = [...sortedAlgoLog].reverse().find(e => e.tracks?.[track] != null);
+                    const lastAlgoVal   = lastAlgoEntry?.tracks?.[track] ?? null;
                     return (
                       <div key={track}>
                         <span style={lbl}>{track}</span>
                         <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
                           <input type="number" min="0" value={adminAlgo[track]}
                             onChange={e => setAdminAlgo(p => ({ ...p, [track]: e.target.value }))}
-                            placeholder={lastAlgo ? lastAlgo.tracks[track].streams28d.toLocaleString('es-AR') : 'streams 28d'}
+                            placeholder={lastAlgoVal != null ? lastAlgoVal.toLocaleString('es-AR') : 'algo del día'}
                             style={inp}
                           />
-                          {lastAlgo && <span style={{ color: '#475569', fontSize: '0.68rem', whiteSpace: 'nowrap' }}>prev: {lastAlgo.tracks[track]?.streams28d?.toLocaleString('es-AR')}</span>}
+                          {lastAlgoVal != null && <span style={{ color: '#475569', fontSize: '0.68rem', whiteSpace: 'nowrap' }}>prev: {lastAlgoVal.toLocaleString('es-AR')}</span>}
                         </div>
                       </div>
                     );
