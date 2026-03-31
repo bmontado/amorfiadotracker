@@ -163,6 +163,7 @@ export default async function handler(req, res) {
   await put(BLOB_KEY, JSON.stringify(newData, null, 2), {
     access: 'private',
     addRandomSuffix: false,
+    allowOverwrite: true,
     contentType: 'application/json',
   });
 
