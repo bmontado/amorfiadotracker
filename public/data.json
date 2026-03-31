@@ -1,6 +1,6 @@
 {
   "lastUpdated": {
-    "spotify": "2026-03-31T18:08:20.794Z",
+    "spotify": "2026-03-31T18:08:24.533Z",
     "social": "2026-03-25T12:00:00-03:00"
   },
   "albumLiveTotal": 560479,
@@ -98,19 +98,19 @@
     {
       "date": "2026-03-23",
       "label": "D23",
-      "note": "Streams diarios",
+      "note": "",
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 7009,
-        "ATBLM": 9125,
-        "UN GUSTO": 8370,
-        "CALL ME": 6136,
         "MAN OF WORD": 6133,
-        "OJOS TRISTES": 5271,
-        "HIELO": 5194,
-        "CHANGES": 5236,
+        "ATBLM": 9125,
+        "CALL ME": 6136,
         "ALQUILER": 5553,
-        "YA NO": 4314,
+        "HIELO": 5194,
+        "UN GUSTO": 8370,
+        "CHANGES": 5236,
+        "OJOS TRISTES": 5271,
         "HAZLO CALLAO": 3777,
+        "YA NO": 4314,
         "TOP TIER": 3717
       }
     },
@@ -2659,6 +2659,13 @@
   },
   "algoLog": [
     {
+      "date": "2026-03-23",
+      "label": "D23",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 631
+      }
+    },
+    {
       "date": "2026-03-24",
       "label": "D24",
       "tracks": {
@@ -2703,17 +2710,87 @@
   ],
   "algorithmicHistory": [
     {
-      "date": "2026-03-24",
-      "label": "D+6",
-      "recordedAt": "2026-03-31T18:08:20.795Z",
-      "albumAlgorithmicTotal28d": 681,
-      "albumAlgorithmicTotal7d": 681,
-      "albumAlgorithmicPct28d": 0.17,
+      "date": "2026-03-23",
+      "label": "D+5",
+      "recordedAt": "2026-03-31T18:08:24.533Z",
+      "albumAlgorithmicTotal28d": 631,
+      "albumAlgorithmicTotal7d": 631,
+      "albumAlgorithmicPct28d": 0.18,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": {
-          "streams28d": 681,
-          "streams7d": 681,
-          "pct28d": 1.61
+          "streams28d": 631,
+          "streams7d": 631,
+          "pct28d": 1.74
+        },
+        "MAN OF WORD": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "ATBLM": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "CALL ME": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "ALQUILER": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "HIELO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "UN GUSTO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "CHANGES": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "OJOS TRISTES": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "HAZLO CALLAO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "YA NO": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        },
+        "TOP TIER": {
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
+        }
+      }
+    },
+    {
+      "date": "2026-03-24",
+      "label": "D+6",
+      "recordedAt": "2026-03-31T18:08:24.534Z",
+      "albumAlgorithmicTotal28d": 1312,
+      "albumAlgorithmicTotal7d": 1312,
+      "albumAlgorithmicPct28d": 0.32,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": {
+          "streams28d": 1312,
+          "streams7d": 1312,
+          "pct28d": 3.09
         },
         "MAN OF WORD": {
           "streams28d": 0,
@@ -2775,15 +2852,15 @@
     {
       "date": "2026-03-25",
       "label": "D+7",
-      "recordedAt": "2026-03-31T18:08:20.795Z",
-      "albumAlgorithmicTotal28d": 1666,
-      "albumAlgorithmicTotal7d": 1666,
-      "albumAlgorithmicPct28d": 0.35,
+      "recordedAt": "2026-03-31T18:08:24.534Z",
+      "albumAlgorithmicTotal28d": 2297,
+      "albumAlgorithmicTotal7d": 2297,
+      "albumAlgorithmicPct28d": 0.48,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": {
-          "streams28d": 1666,
-          "streams7d": 1666,
-          "pct28d": 3.32
+          "streams28d": 2297,
+          "streams7d": 2297,
+          "pct28d": 4.58
         },
         "MAN OF WORD": {
           "streams28d": 0,
@@ -2845,15 +2922,15 @@
     {
       "date": "2026-03-26",
       "label": "D+8",
-      "recordedAt": "2026-03-31T18:08:20.795Z",
-      "albumAlgorithmicTotal28d": 2739,
-      "albumAlgorithmicTotal7d": 2739,
-      "albumAlgorithmicPct28d": 0.5,
+      "recordedAt": "2026-03-31T18:08:24.534Z",
+      "albumAlgorithmicTotal28d": 3370,
+      "albumAlgorithmicTotal7d": 3370,
+      "albumAlgorithmicPct28d": 0.62,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": {
-          "streams28d": 2739,
-          "streams7d": 2739,
-          "pct28d": 4.81
+          "streams28d": 3370,
+          "streams7d": 3370,
+          "pct28d": 5.92
         },
         "MAN OF WORD": {
           "streams28d": 0,
@@ -2915,15 +2992,15 @@
     {
       "date": "2026-03-27",
       "label": "D+9",
-      "recordedAt": "2026-03-31T18:08:20.795Z",
-      "albumAlgorithmicTotal28d": 3901,
-      "albumAlgorithmicTotal7d": 3901,
-      "albumAlgorithmicPct28d": 0.71,
+      "recordedAt": "2026-03-31T18:08:24.534Z",
+      "albumAlgorithmicTotal28d": 4532,
+      "albumAlgorithmicTotal7d": 4532,
+      "albumAlgorithmicPct28d": 0.82,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": {
-          "streams28d": 3901,
-          "streams7d": 3901,
-          "pct28d": 6.17
+          "streams28d": 4532,
+          "streams7d": 4532,
+          "pct28d": 7.17
         },
         "MAN OF WORD": {
           "streams28d": 0,
@@ -2985,15 +3062,15 @@
     {
       "date": "2026-03-28",
       "label": "D+10",
-      "recordedAt": "2026-03-31T18:08:20.795Z",
-      "albumAlgorithmicTotal28d": 4571,
-      "albumAlgorithmicTotal7d": 4571,
-      "albumAlgorithmicPct28d": 0.82,
+      "recordedAt": "2026-03-31T18:08:24.534Z",
+      "albumAlgorithmicTotal28d": 5202,
+      "albumAlgorithmicTotal7d": 5202,
+      "albumAlgorithmicPct28d": 0.93,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": {
-          "streams28d": 4571,
-          "streams7d": 4571,
-          "pct28d": 6.72
+          "streams28d": 5202,
+          "streams7d": 5202,
+          "pct28d": 7.65
         },
         "MAN OF WORD": {
           "streams28d": 0,
@@ -3055,15 +3132,15 @@
     {
       "date": "2026-03-29",
       "label": "D+11",
-      "recordedAt": "2026-03-31T18:08:20.795Z",
-      "albumAlgorithmicTotal28d": 5044,
-      "albumAlgorithmicTotal7d": 5044,
-      "albumAlgorithmicPct28d": 0.9,
+      "recordedAt": "2026-03-31T18:08:24.534Z",
+      "albumAlgorithmicTotal28d": 5675,
+      "albumAlgorithmicTotal7d": 5675,
+      "albumAlgorithmicPct28d": 1.01,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": {
-          "streams28d": 5044,
-          "streams7d": 5044,
-          "pct28d": 7.05
+          "streams28d": 5675,
+          "streams7d": 5675,
+          "pct28d": 7.93
         },
         "MAN OF WORD": {
           "streams28d": 0,
@@ -3125,6 +3202,9 @@
   ],
   "algorithmicData": {
     "CUANDO ESCRIBÍA ASIMETRÍA": {
+      "2026-03-23": {
+        "streams": 631
+      },
       "2026-03-24": {
         "streams": 681
       },
