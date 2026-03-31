@@ -1,6 +1,6 @@
 {
   "lastUpdated": {
-    "spotify": "2026-03-31T17:53:03.094Z",
+    "spotify": "2026-03-31T17:53:04.919Z",
     "social": "2026-03-25T12:00:00-03:00"
   },
   "albumLiveTotal": 606572,
@@ -2550,7 +2550,7 @@
         "streams": 1073
       },
       "2026-03-27": {
-        "streams": 1000
+        "streams": 1162
       }
     },
     "CALL ME": {},
@@ -2567,7 +2567,7 @@
     {
       "date": "2026-03-19",
       "label": "D+1",
-      "recordedAt": "2026-03-31T17:53:03.095Z",
+      "recordedAt": "2026-03-31T17:53:04.919Z",
       "albumAlgorithmicTotal28d": 1225,
       "albumAlgorithmicTotal7d": 1225,
       "albumAlgorithmicPct28d": 5.63,
@@ -2637,7 +2637,7 @@
     {
       "date": "2026-03-20",
       "label": "D+2",
-      "recordedAt": "2026-03-31T17:53:03.096Z",
+      "recordedAt": "2026-03-31T17:53:04.919Z",
       "albumAlgorithmicTotal28d": 2213,
       "albumAlgorithmicTotal7d": 2213,
       "albumAlgorithmicPct28d": 1.5,
@@ -2707,7 +2707,7 @@
     {
       "date": "2026-03-21",
       "label": "D+3",
-      "recordedAt": "2026-03-31T17:53:03.096Z",
+      "recordedAt": "2026-03-31T17:53:04.919Z",
       "albumAlgorithmicTotal28d": 3315,
       "albumAlgorithmicTotal7d": 3315,
       "albumAlgorithmicPct28d": 1.52,
@@ -2777,7 +2777,7 @@
     {
       "date": "2026-03-22",
       "label": "D+4",
-      "recordedAt": "2026-03-31T17:53:03.096Z",
+      "recordedAt": "2026-03-31T17:53:04.919Z",
       "albumAlgorithmicTotal28d": 4116,
       "albumAlgorithmicTotal7d": 4116,
       "albumAlgorithmicPct28d": 1.51,
@@ -2847,7 +2847,7 @@
     {
       "date": "2026-03-23",
       "label": "D+5",
-      "recordedAt": "2026-03-31T17:53:03.096Z",
+      "recordedAt": "2026-03-31T17:53:04.919Z",
       "albumAlgorithmicTotal28d": 4947,
       "albumAlgorithmicTotal7d": 4947,
       "albumAlgorithmicPct28d": 1.45,
@@ -2917,7 +2917,7 @@
     {
       "date": "2026-03-24",
       "label": "D+6",
-      "recordedAt": "2026-03-31T17:53:03.096Z",
+      "recordedAt": "2026-03-31T17:53:04.920Z",
       "albumAlgorithmicTotal28d": 5628,
       "albumAlgorithmicTotal7d": 5628,
       "albumAlgorithmicPct28d": 1.38,
@@ -2987,7 +2987,7 @@
     {
       "date": "2026-03-25",
       "label": "D+7",
-      "recordedAt": "2026-03-31T17:53:03.096Z",
+      "recordedAt": "2026-03-31T17:53:04.920Z",
       "albumAlgorithmicTotal28d": 6613,
       "albumAlgorithmicTotal7d": 6613,
       "albumAlgorithmicPct28d": 1.37,
@@ -3057,7 +3057,7 @@
     {
       "date": "2026-03-26",
       "label": "D+8",
-      "recordedAt": "2026-03-31T17:53:03.096Z",
+      "recordedAt": "2026-03-31T17:53:04.920Z",
       "albumAlgorithmicTotal28d": 7686,
       "albumAlgorithmicTotal7d": 6461,
       "albumAlgorithmicPct28d": 1.41,
@@ -3127,10 +3127,10 @@
     {
       "date": "2026-03-27",
       "label": "D+9",
-      "recordedAt": "2026-03-31T17:53:03.097Z",
-      "albumAlgorithmicTotal28d": 8686,
-      "albumAlgorithmicTotal7d": 6473,
-      "albumAlgorithmicPct28d": 1.43,
+      "recordedAt": "2026-03-31T17:53:04.920Z",
+      "albumAlgorithmicTotal28d": 8848,
+      "albumAlgorithmicTotal7d": 6635,
+      "albumAlgorithmicPct28d": 1.46,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": {
           "streams28d": 0,
@@ -3143,9 +3143,9 @@
           "pct28d": 0
         },
         "ATBLM": {
-          "streams28d": 8686,
-          "streams7d": 6473,
-          "pct28d": 10
+          "streams28d": 8848,
+          "streams7d": 6635,
+          "pct28d": 10.19
         },
         "CALL ME": {
           "streams28d": 0,
@@ -3315,7 +3315,7 @@
       "date": "2026-03-27",
       "label": "D27",
       "tracks": {
-        "ATBLM": 1000
+        "ATBLM": 1162
       }
     }
   ]
