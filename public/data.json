@@ -1,22 +1,22 @@
 {
   "lastUpdated": {
-    "spotify": "2026-03-29T00:35:05Z",
+    "spotify": "2026-03-31T17:50:09.786Z",
     "social": "2026-03-25T12:00:00-03:00"
   },
-  "albumLiveTotal": 1009135,
+  "albumLiveTotal": 606572,
   "liveTotals": {
-    "CUANDO ESCRIBÍA ASIMETRÍA": 306959,
-    "MAN OF WORD": 53237,
-    "ATBLM": 246210,
-    "CALL ME": 53296,
-    "ALQUILER": 41540,
-    "HIELO": 44148,
-    "UN GUSTO": 73658,
-    "CHANGES": 45914,
-    "OJOS TRISTES": 44838,
-    "HAZLO CALLAO": 32347,
-    "YA NO": 36014,
-    "TOP TIER": 30974
+    "CUANDO ESCRIBÍA ASIMETRÍA": 63187,
+    "MAN OF WORD": 52492,
+    "ATBLM": 86861,
+    "CALL ME": 53201,
+    "ALQUILER": 42072,
+    "HIELO": 44412,
+    "UN GUSTO": 73002,
+    "CHANGES": 45577,
+    "OJOS TRISTES": 45630,
+    "HAZLO CALLAO": 32575,
+    "YA NO": 36307,
+    "TOP TIER": 31256
   },
   "dailyLog": [
     {
@@ -174,7 +174,7 @@
     {
       "date": "2026-03-27",
       "label": "D27",
-      "note": "Día 9 post-lanzamiento",
+      "note": "",
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 6234,
         "MAN OF WORD": 5347,
@@ -1343,142 +1343,174 @@
   },
   "liveHistory": [
     {
-      "date": "2026-03-22",
-      "label": "D+3",
-      "recordedAt": "2026-03-22T15:00:00-03:00",
-      "albumTotal": 678677,
+      "date": "2026-03-19",
+      "label": "D+1",
+      "albumTotal": 21756,
       "tracks": {
-        "CUANDO ESCRIBÍA ASIMETRÍA": 273884,
-        "ATBLM": 200669,
-        "UN GUSTO": 31749,
-        "CALL ME": 23750,
-        "MAN OF WORD": 22919,
-        "OJOS TRISTES": 21652,
-        "HIELO": 19885,
-        "CHANGES": 19758,
-        "ALQUILER": 18508,
-        "YA NO": 16522,
-        "HAZLO CALLAO": 15226,
-        "TOP TIER": 14298
+        "CUANDO ESCRIBÍA ASIMETRÍA": 5814,
+        "MAN OF WORD": 1293,
+        "ATBLM": 8513,
+        "CALL ME": 1032,
+        "ALQUILER": 879,
+        "HIELO": 753,
+        "UN GUSTO": 806,
+        "CHANGES": 676,
+        "OJOS TRISTES": 649,
+        "HAZLO CALLAO": 486,
+        "YA NO": 472,
+        "TOP TIER": 383
+      }
+    },
+    {
+      "date": "2026-03-20",
+      "label": "D+2",
+      "albumTotal": 147545,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 16689,
+        "MAN OF WORD": 12291,
+        "ATBLM": 23223,
+        "CALL ME": 12337,
+        "ALQUILER": 10045,
+        "HIELO": 10379,
+        "UN GUSTO": 17126,
+        "CHANGES": 9846,
+        "OJOS TRISTES": 11554,
+        "HAZLO CALLAO": 8070,
+        "YA NO": 8541,
+        "TOP TIER": 7444
+      }
+    },
+    {
+      "date": "2026-03-21",
+      "label": "D+3",
+      "albumTotal": 218295,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 23768,
+        "MAN OF WORD": 18259,
+        "ATBLM": 32965,
+        "CALL ME": 18631,
+        "ALQUILER": 14867,
+        "HIELO": 15713,
+        "UN GUSTO": 25380,
+        "CHANGES": 15059,
+        "OJOS TRISTES": 17262,
+        "HAZLO CALLAO": 12154,
+        "YA NO": 12929,
+        "TOP TIER": 11308
+      }
+    },
+    {
+      "date": "2026-03-22",
+      "label": "D+4",
+      "albumTotal": 272444,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 29232,
+        "MAN OF WORD": 22746,
+        "ATBLM": 40533,
+        "CALL ME": 23557,
+        "ALQUILER": 18360,
+        "HIELO": 19735,
+        "UN GUSTO": 31500,
+        "CHANGES": 19593,
+        "OJOS TRISTES": 21482,
+        "HAZLO CALLAO": 15120,
+        "YA NO": 16399,
+        "TOP TIER": 14187
       }
     },
     {
       "date": "2026-03-23",
-      "label": "D+4",
-      "recordedAt": "2026-03-23T12:06:43-03:00",
-      "albumTotal": 704025,
+      "label": "D+5",
+      "albumTotal": 342279,
       "tracks": {
-        "CUANDO ESCRIBÍA ASIMETRÍA": 276622,
-        "ATBLM": 204181,
-        "UN GUSTO": 34953,
-        "CALL ME": 26075,
-        "MAN OF WORD": 25068,
-        "OJOS TRISTES": 23695,
-        "HIELO": 21708,
-        "CHANGES": 21535,
-        "ALQUILER": 20058,
-        "YA NO": 18126,
-        "HAZLO CALLAO": 16594,
-        "TOP TIER": 15674
+        "CUANDO ESCRIBÍA ASIMETRÍA": 36241,
+        "MAN OF WORD": 28879,
+        "ATBLM": 49658,
+        "CALL ME": 29693,
+        "ALQUILER": 23913,
+        "HIELO": 24929,
+        "UN GUSTO": 39870,
+        "CHANGES": 24829,
+        "OJOS TRISTES": 26753,
+        "HAZLO CALLAO": 18897,
+        "YA NO": 20713,
+        "TOP TIER": 17904
       }
     },
     {
       "date": "2026-03-24",
-      "label": "D+5",
-      "recordedAt": "2026-03-24T17:29:42-03:00",
-      "albumTotal": 795837,
+      "label": "D+6",
+      "albumTotal": 407699,
       "tracks": {
-        "CUANDO ESCRIBÍA ASIMETRÍA": 285356,
-        "ATBLM": 215877,
-        "UN GUSTO": 45750,
-        "CALL ME": 34082,
-        "MAN OF WORD": 33650,
-        "OJOS TRISTES": 30407,
-        "HIELO": 28625,
-        "CHANGES": 28529,
-        "ALQUILER": 27476,
-        "YA NO": 23799,
-        "HAZLO CALLAO": 21713,
-        "TOP TIER": 20573
+        "CUANDO ESCRIBÍA ASIMETRÍA": 42401,
+        "MAN OF WORD": 35020,
+        "ATBLM": 58119,
+        "CALL ME": 35371,
+        "ALQUILER": 29540,
+        "HIELO": 29747,
+        "UN GUSTO": 47656,
+        "CHANGES": 29858,
+        "OJOS TRISTES": 31472,
+        "HAZLO CALLAO": 22696,
+        "YA NO": 24600,
+        "TOP TIER": 21219
       }
     },
     {
       "date": "2026-03-25",
-      "label": "D+6",
-      "recordedAt": "2026-03-25T16:30:00-03:00",
-      "albumTotal": 853521,
+      "label": "D+7",
+      "albumTotal": 482500,
       "tracks": {
-        "CUANDO ESCRIBÍA ASIMETRÍA": 290837,
-        "ATBLM": 223698,
-        "MAN OF WORD": 39376,
-        "CALL ME": 39063,
-        "ALQUILER": 32480,
-        "HIELO": 32619,
-        "UN GUSTO": 53084,
-        "CHANGES": 33066,
-        "OJOS TRISTES": 34162,
-        "HAZLO CALLAO": 24972,
-        "YA NO": 26969,
-        "TOP TIER": 23195
+        "CUANDO ESCRIBÍA ASIMETRÍA": 50151,
+        "MAN OF WORD": 41566,
+        "ATBLM": 68815,
+        "CALL ME": 41865,
+        "ALQUILER": 34940,
+        "HIELO": 35170,
+        "UN GUSTO": 56482,
+        "CHANGES": 35355,
+        "OJOS TRISTES": 37151,
+        "HAZLO CALLAO": 26847,
+        "YA NO": 29083,
+        "TOP TIER": 25075
       }
     },
     {
       "date": "2026-03-26",
-      "label": "D+7",
-      "recordedAt": "2026-03-26T16:00:00-03:00",
-      "albumTotal": 928322,
+      "label": "D+8",
+      "albumTotal": 545902,
       "tracks": {
-        "ATBLM": 234394,
-        "CUANDO ESCRIBÍA ASIMETRÍA": 298587,
-        "MAN OF WORD": 45922,
-        "CALL ME": 45557,
-        "ALQUILER": 37880,
-        "HIELO": 38042,
-        "UN GUSTO": 61910,
-        "CHANGES": 38563,
-        "OJOS TRISTES": 39841,
-        "HAZLO CALLAO": 29123,
-        "YA NO": 31452,
-        "TOP TIER": 27051
+        "CUANDO ESCRIBÍA ASIMETRÍA": 56953,
+        "MAN OF WORD": 47145,
+        "ATBLM": 77714,
+        "CALL ME": 47735,
+        "ALQUILER": 38519,
+        "HIELO": 39695,
+        "UN GUSTO": 65062,
+        "CHANGES": 40772,
+        "OJOS TRISTES": 41515,
+        "HAZLO CALLAO": 29903,
+        "YA NO": 32680,
+        "TOP TIER": 28209
       }
     },
     {
       "date": "2026-03-27",
-      "label": "D+8",
-      "recordedAt": "2026-03-27T17:00:00-03:00",
-      "albumTotal": 1003224,
+      "label": "D+9",
+      "albumTotal": 606572,
       "tracks": {
-        "CUANDO ESCRIBÍA ASIMETRÍA": 306630,
-        "MAN OF WORD": 52981,
-        "ATBLM": 245713,
-        "CALL ME": 52624,
-        "ALQUILER": 41174,
-        "HIELO": 43649,
-        "UN GUSTO": 72606,
-        "CHANGES": 45345,
-        "OJOS TRISTES": 44373,
-        "HAZLO CALLAO": 32033,
-        "YA NO": 35475,
-        "TOP TIER": 30621
-      },
-      "note": "Todos los tracks live (12/12)"
-    },
-    {
-      "date": "2026-03-28",
-      "albumTotal": 1009135,
-      "tracks": {
-        "CUANDO ESCRIBÍA ASIMETRÍA": 306959,
-        "MAN OF WORD": 53237,
-        "ATBLM": 246210,
-        "CALL ME": 53296,
-        "ALQUILER": 41540,
-        "HIELO": 44148,
-        "UN GUSTO": 73658,
-        "CHANGES": 45914,
-        "OJOS TRISTES": 44838,
-        "HAZLO CALLAO": 32347,
-        "YA NO": 36014,
-        "TOP TIER": 30974
+        "CUANDO ESCRIBÍA ASIMETRÍA": 63187,
+        "MAN OF WORD": 52492,
+        "ATBLM": 86861,
+        "CALL ME": 53201,
+        "ALQUILER": 42072,
+        "HIELO": 44412,
+        "UN GUSTO": 73002,
+        "CHANGES": 45577,
+        "OJOS TRISTES": 45630,
+        "HAZLO CALLAO": 32575,
+        "YA NO": 36307,
+        "TOP TIER": 31256
       }
     }
   ],
@@ -2490,434 +2522,91 @@
     }
   },
   "algorithmicData": {
-    "CUANDO ESCRIBÍA ASIMETRÍA": {
-      "2026-03-28": {
-        "streams": 35881,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 35881
-        },
-        "daily7d": {
-          "2026-03-21": 1102,
-          "2026-03-22": 801,
-          "2026-03-23": 831,
-          "2026-03-24": 681,
-          "2026-03-25": 985,
-          "2026-03-26": 1073,
-          "2026-03-27": 1162
-        },
-        "daily7dTotal": 6635
-      },
-      "2026-03-26": null,
-      "2026-03-27": null
-    },
-    "MAN OF WORD": {
-      "2026-03-28": {
-        "streams": 7077,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 7077
-        },
-        "daily7d": {
-          "2026-03-21": 311,
-          "2026-03-22": 307,
-          "2026-03-23": 654,
-          "2026-03-24": 1231,
-          "2026-03-25": 2250,
-          "2026-03-26": 1049,
-          "2026-03-27": 1197
-        },
-        "daily7dTotal": 6999
-      },
-      "2026-03-26": null,
-      "2026-03-27": null
-    },
+    "CUANDO ESCRIBÍA ASIMETRÍA": {},
+    "MAN OF WORD": {},
     "ATBLM": {
-      "2026-03-28": {
-        "streams": 64178,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 64178
-        },
-        "daily7d": {
-          "2026-03-21": 2399,
-          "2026-03-22": 1619,
-          "2026-03-23": 1528,
-          "2026-03-24": 1614,
-          "2026-03-25": 2313,
-          "2026-03-26": 1440,
-          "2026-03-27": 2212
-        },
-        "daily7dTotal": 13125
-      },
-      "2026-03-26": {
-        "streams": 52549,
-        "pct": 23.03,
-        "periodDays": 28,
-        "breakdown": {
-          "algorithmicPlaylists": 52549,
-          "radio": 0,
-          "other": 0
-        }
-      },
       "2026-03-27": {
-        "streams": 13822,
-        "pct": 20.11,
-        "periodDays": 7,
-        "periodRange": "2026-03-20/2026-03-26",
-        "note": "7-day window Mar 20-26 (ALL_PROGRAMMED_SOURCES)",
-        "breakdown": {
-          "algorithmicPlaylists": 13822,
-          "radio": 0,
-          "other": 0
-        },
-        "daily": {
-          "2026-03-20": 2909,
-          "2026-03-21": 2399,
-          "2026-03-22": 1619,
-          "2026-03-23": 1528,
-          "2026-03-24": 1614,
-          "2026-03-25": 2313,
-          "2026-03-26": 1440
-        }
+        "streams": 1000
       }
     },
-    "CALL ME": {
-      "2026-03-28": {
-        "streams": 2657,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 2657
-        },
-        "daily7d": {
-          "2026-03-21": 69,
-          "2026-03-22": 204,
-          "2026-03-23": 151,
-          "2026-03-24": 240,
-          "2026-03-25": 804,
-          "2026-03-26": 654,
-          "2026-03-27": 504
-        },
-        "daily7dTotal": 2626
-      },
-      "2026-03-26": null,
-      "2026-03-27": null
-    },
-    "ALQUILER": {
-      "2026-03-28": {
-        "streams": 5211,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 5211
-        },
-        "daily7d": {
-          "2026-03-21": 211,
-          "2026-03-22": 312,
-          "2026-03-23": 1337,
-          "2026-03-24": 1719,
-          "2026-03-25": 751,
-          "2026-03-26": 426,
-          "2026-03-27": 431
-        },
-        "daily7dTotal": 5187
-      },
-      "2026-03-26": null,
-      "2026-03-27": null
-    },
-    "HIELO": {
-      "2026-03-28": {
-        "streams": 2912,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 2912
-        },
-        "daily7d": {
-          "2026-03-21": 64,
-          "2026-03-22": 207,
-          "2026-03-23": 170,
-          "2026-03-24": 406,
-          "2026-03-25": 568,
-          "2026-03-26": 477,
-          "2026-03-27": 999
-        },
-        "daily7dTotal": 2891
-      },
-      "2026-03-26": null,
-      "2026-03-27": null
-    },
-    "UN GUSTO": {
-      "2026-03-28": {
-        "streams": 17255,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 17255
-        },
-        "daily7d": {
-          "2026-03-21": 1913,
-          "2026-03-22": 1039,
-          "2026-03-23": 1629,
-          "2026-03-24": 1456,
-          "2026-03-25": 2419,
-          "2026-03-26": 1481,
-          "2026-03-27": 1434
-        },
-        "daily7dTotal": 11371
-      },
-      "2026-03-26": {
-        "streams": 7580,
-        "pct": 13.27,
-        "periodDays": 28,
-        "breakdown": {
-          "algorithmicPlaylists": 7580,
-          "radio": 0,
-          "other": 0
-        }
-      },
-      "2026-03-27": null
-    },
-    "CHANGES": {
-      "2026-03-28": {
-        "streams": 6472,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 6472
-        },
-        "daily7d": {
-          "2026-03-21": 327,
-          "2026-03-22": 750,
-          "2026-03-23": 528,
-          "2026-03-24": 834,
-          "2026-03-25": 1979,
-          "2026-03-26": 1063,
-          "2026-03-27": 919
-        },
-        "daily7dTotal": 6400
-      },
-      "2026-03-26": null,
-      "2026-03-27": null
-    },
-    "OJOS TRISTES": {
-      "2026-03-28": {
-        "streams": 4401,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 4401
-        },
-        "daily7d": {
-          "2026-03-21": 461,
-          "2026-03-22": 364,
-          "2026-03-23": 332,
-          "2026-03-24": 362,
-          "2026-03-25": 425,
-          "2026-03-26": 526,
-          "2026-03-27": 491
-        },
-        "daily7dTotal": 2961
-      },
-      "2026-03-26": null,
-      "2026-03-27": null
-    },
-    "HAZLO CALLAO": {
-      "2026-03-28": {
-        "streams": 3078,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 3078
-        },
-        "daily7d": {
-          "2026-03-21": 284,
-          "2026-03-22": 270,
-          "2026-03-23": 311,
-          "2026-03-24": 761,
-          "2026-03-25": 643,
-          "2026-03-26": 355,
-          "2026-03-27": 250
-        },
-        "daily7dTotal": 2874
-      },
-      "2026-03-26": null,
-      "2026-03-27": null
-    },
-    "YA NO": {
-      "2026-03-28": {
-        "streams": 1136,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 1136
-        },
-        "daily7d": {
-          "2026-03-21": 58,
-          "2026-03-22": 152,
-          "2026-03-23": 98,
-          "2026-03-24": 119,
-          "2026-03-25": 158,
-          "2026-03-26": 91,
-          "2026-03-27": 424
-        },
-        "daily7dTotal": 1100
-      },
-      "2026-03-26": null,
-      "2026-03-27": null
-    },
-    "TOP TIER": {
-      "2026-03-28": {
-        "streams": 1105,
-        "periodDays": 28,
-        "periodRange": "2026-02-28/2026-03-27",
-        "breakdown": {
-          "algorithmicPlaylists": 1105
-        },
-        "daily7d": {
-          "2026-03-21": 40,
-          "2026-03-22": 92,
-          "2026-03-23": 156,
-          "2026-03-24": 100,
-          "2026-03-25": 223,
-          "2026-03-26": 173,
-          "2026-03-27": 258
-        },
-        "daily7dTotal": 1042
-      },
-      "2026-03-26": null,
-      "2026-03-27": null
-    }
+    "CALL ME": {},
+    "ALQUILER": {},
+    "HIELO": {},
+    "UN GUSTO": {},
+    "CHANGES": {},
+    "OJOS TRISTES": {},
+    "HAZLO CALLAO": {},
+    "YA NO": {},
+    "TOP TIER": {}
   },
   "algorithmicHistory": [
     {
-      "date": "2026-03-26",
-      "label": "D+7",
-      "recordedAt": "2026-03-26T20:15:00Z",
-      "partial": true,
-      "note": "Solo 2/12 tracks con data algorítmica (S4A no cargó el resto)",
-      "albumAlgorithmicTotal": 60129,
-      "albumAlgorithmicPct": 6.48,
-      "tracks": {
-        "ATBLM": {
-          "streams": 52549,
-          "pct": 23.03
-        },
-        "CUANDO ESCRIBÍA ASIMETRÍA": null,
-        "MAN OF WORD": null,
-        "CALL ME": null,
-        "ALQUILER": null,
-        "HIELO": null,
-        "UN GUSTO": {
-          "streams": 7580,
-          "pct": 13.27
-        },
-        "CHANGES": null,
-        "OJOS TRISTES": null,
-        "HAZLO CALLAO": null,
-        "YA NO": null,
-        "TOP TIER": null
-      }
-    },
-    {
       "date": "2026-03-27",
-      "label": "D+8",
-      "recordedAt": "2026-03-27T20:00:00Z",
-      "partial": true,
-      "note": "Solo ATBLM con data algorítmica 7d (S4A no disponible para el resto hoy)",
-      "albumAlgorithmicTotal": 13822,
-      "albumAlgorithmicPct": 5.18,
-      "tracks": {
-        "ATBLM": {
-          "streams": 13822,
-          "pct": 20.11,
-          "periodDays": 7
-        },
-        "CUANDO ESCRIBÍA ASIMETRÍA": null,
-        "MAN OF WORD": null,
-        "CALL ME": null,
-        "ALQUILER": null,
-        "HIELO": null,
-        "UN GUSTO": null,
-        "CHANGES": null,
-        "OJOS TRISTES": null,
-        "HAZLO CALLAO": null,
-        "YA NO": null,
-        "TOP TIER": null
-      }
-    },
-    {
-      "date": "2026-03-28",
       "label": "D+9",
-      "recordedAt": "2026-03-28T17:38:35Z",
-      "partial": false,
-      "note": "All 12 tracks captured via sos-aggregates + sos-timelines API",
-      "albumAlgorithmicTotal28d": 151363,
-      "albumAlgorithmicPct28d": 15,
+      "recordedAt": "2026-03-31T17:50:09.787Z",
+      "albumAlgorithmicTotal28d": 1000,
+      "albumAlgorithmicTotal7d": 1000,
+      "albumAlgorithmicPct28d": 0.16,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": {
-          "streams28d": 35881,
-          "streams7d": 6635,
-          "pct28d": 11.69
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
         },
         "MAN OF WORD": {
-          "streams28d": 7077,
-          "streams7d": 6999,
-          "pct28d": 13.29
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
         },
         "ATBLM": {
-          "streams28d": 64178,
-          "streams7d": 13125,
-          "pct28d": 26.07
+          "streams28d": 1000,
+          "streams7d": 1000,
+          "pct28d": 1.15
         },
         "CALL ME": {
-          "streams28d": 2657,
-          "streams7d": 2626,
-          "pct28d": 4.99
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
         },
         "ALQUILER": {
-          "streams28d": 5211,
-          "streams7d": 5187,
-          "pct28d": 12.54
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
         },
         "HIELO": {
-          "streams28d": 2912,
-          "streams7d": 2891,
-          "pct28d": 6.6
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
         },
         "UN GUSTO": {
-          "streams28d": 17255,
-          "streams7d": 11371,
-          "pct28d": 23.43
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
         },
         "CHANGES": {
-          "streams28d": 6472,
-          "streams7d": 6400,
-          "pct28d": 14.1
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
         },
         "OJOS TRISTES": {
-          "streams28d": 4401,
-          "streams7d": 2961,
-          "pct28d": 9.82
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
         },
         "HAZLO CALLAO": {
-          "streams28d": 3078,
-          "streams7d": 2874,
-          "pct28d": 9.52
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
         },
         "YA NO": {
-          "streams28d": 1136,
-          "streams7d": 1100,
-          "pct28d": 3.15
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
         },
         "TOP TIER": {
-          "streams28d": 1105,
-          "streams7d": 1042,
-          "pct28d": 3.57
+          "streams28d": 0,
+          "streams7d": 0,
+          "pct28d": 0
         }
       }
     }
@@ -2980,5 +2669,14 @@
     "TOP TIER": {
       "2026-03-26": 3856
     }
-  }
+  },
+  "algoLog": [
+    {
+      "date": "2026-03-27",
+      "label": "D27",
+      "tracks": {
+        "ATBLM": 1000
+      }
+    }
+  ]
 }
