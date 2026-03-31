@@ -22,9 +22,13 @@ async function readCurrent() {
     const { blobs } = await list({ prefix: BLOB_KEY });
     const blob = blobs.find(b => b.pathname === BLOB_KEY);
     if (blob) {
-      // Blob privado: requiere token en el header
-      const res = await fetch(blob.url, {
-        headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
+      // Blob privado: token + no-cache para leer siempre la versión más reciente
+      const res = await fetch(`${blob.url}?t=${Date.now()}`, {
+        headers: {
+          Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
+          'Cache-Control': 'no-store, no-cache',
+          'Pragma': 'no-cache',
+        },
       });
       if (res.ok) return await res.json();
     }
