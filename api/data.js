@@ -11,17 +11,21 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
   try {
-    const { blobs } = await list({ prefix: BLOB_KEY });
-    const blob = blobs.find(b => b.pathname === BLOB_KEY);
+    let blob = null;
+    try {
+      const { blobs } = await list({ prefix: BLOB_KEY });
+      blob = blobs.find(b => b.pathname === BLOB_KEY) ?? null;
+    } catch { /* si list falla, caer al fallback */ }
 
     if (blob) {
       const dataRes = await fetch(`${blob.url}?t=${Date.now()}`);
-      if (!dataRes.ok) throw new Error('Blob fetch failed');
-      const data = await dataRes.json();
-      return res.status(200).json(data);
+      if (dataRes.ok) {
+        const data = await dataRes.json();
+        return res.status(200).json(data);
+      }
     }
 
-    // Fallback: blob no existe aún — leer desde GitHub raw
+    // Fallback: blob no existe o falló — leer desde GitHub raw
     const ghRes = await fetch(`${GITHUB_FALLBACK}?t=${Date.now()}`);
     if (!ghRes.ok) throw new Error('GitHub fallback failed');
     const data = await ghRes.json();

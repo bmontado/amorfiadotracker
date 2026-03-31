@@ -42,6 +42,8 @@ export default async function handler(req, res) {
   const { date, note, dailyTracks, algoDailyTracks, algoEnabled } = req.body ?? {};
   if (!date || !dailyTracks) return res.status(400).json({ error: 'Faltan: date, dailyTracks' });
 
+  try {
+
   // ── 1. Leer estado actual desde Blob (o GitHub como fallback) ──────────────
   const current = await readCurrent();
 
@@ -162,4 +164,9 @@ export default async function handler(req, res) {
   });
 
   return res.status(200).json({ success: true, albumTotal, dayTotal, liveLabel });
+
+  } catch (e) {
+    console.error('update-data error:', e?.message ?? e);
+    return res.status(500).json({ error: e?.message ?? 'Error interno del servidor' });
+  }
 }
