@@ -1,10 +1,10 @@
-// Vercel serverless function — recibe datos del panel admin y los pushea a GitHub
-// Variables de entorno requeridas: GITHUB_TOKEN
-// mode: 'edit' → recibe dailyTracks (streams del día), recalcula cumulativos
+// Vercel serverless function — recibe datos del panel admin y los guarda en Vercel Blob
+// Variables de entorno requeridas: BLOB_READ_WRITE_TOKEN (auto-configurado por Vercel Blob)
 
-const OWNER = 'bmontado';
-const REPO  = 'amorfiadotracker';
-const PATH  = 'public/data.json';
+import { list, put } from '@vercel/blob';
+
+const BLOB_KEY = 'data.json';
+const GITHUB_FALLBACK = 'https://raw.githubusercontent.com/bmontado/amorfiadotracker/main/public/data.json';
 const LAUNCH_DATE = new Date('2026-03-19T00:00:00Z');
 
 function daysSinceLaunch(dateStr) {
@@ -17,6 +17,21 @@ function addDays(dateStr, n) {
   return d.toISOString().split('T')[0];
 }
 
+async function readCurrent() {
+  try {
+    const { blobs } = await list({ prefix: BLOB_KEY });
+    const blob = blobs.find(b => b.pathname === BLOB_KEY);
+    if (blob) {
+      const res = await fetch(`${blob.url}?t=${Date.now()}`);
+      if (res.ok) return await res.json();
+    }
+  } catch { /* ignorar, intentar fallback */ }
+  // Fallback: leer desde GitHub raw (primera vez, migración)
+  const res = await fetch(`${GITHUB_FALLBACK}?t=${Date.now()}`);
+  if (!res.ok) throw new Error('No se pudo leer data.json desde GitHub');
+  return await res.json();
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -24,31 +39,16 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const token = process.env.GITHUB_TOKEN;
-  if (!token) return res.status(500).json({ error: 'GITHUB_TOKEN no configurado en Vercel' });
-
   const { date, note, dailyTracks, algoDailyTracks, algoEnabled } = req.body ?? {};
   if (!date || !dailyTracks) return res.status(400).json({ error: 'Faltan: date, dailyTracks' });
 
-  // ── 1. Fetch data.json desde GitHub ────────────────────────────────────────
-  const ghHeaders = {
-    Authorization: `Bearer ${token}`,
-    Accept: 'application/vnd.github.v3+json',
-    'User-Agent': 'amorfiadotracker-admin',
-  };
-  const fileRes = await fetch(
-    `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`,
-    { headers: ghHeaders }
-  );
-  if (!fileRes.ok) return res.status(500).json({ error: `GitHub fetch: ${await fileRes.text()}` });
-  const fileData = await fileRes.json();
-  const sha      = fileData.sha;
-  const current  = JSON.parse(Buffer.from(fileData.content, 'base64').toString('utf8'));
+  // ── 1. Leer estado actual desde Blob (o GitHub como fallback) ──────────────
+  const current = await readCurrent();
 
-  const n         = daysSinceLaunch(date);
-  const liveLabel = `D+${n}`;
+  const n          = daysSinceLaunch(date);
+  const liveLabel  = `D+${n}`;
   const dailyLabel = `D${new Date(date + 'T12:00:00Z').getUTCDate()}`;
-  const newData   = { ...current };
+  const newData    = { ...current };
 
   // ── 2. Upsert dailyLog ─────────────────────────────────────────────────────
   const parsed = {};
@@ -63,7 +63,7 @@ export default async function handler(req, res) {
   dailyLog.sort((a, b) => a.date.localeCompare(b.date));
   newData.dailyLog = dailyLog;
 
-  // ── 3. Recalcular cumulativos desde dailyLog ────────────────────────────────
+  // ── 3. Recalcular cumulativos desde dailyLog ───────────────────────────────
   const TRACKS = [
     'CUANDO ESCRIBÍA ASIMETRÍA', 'MAN OF WORD', 'ATBLM', 'CALL ME',
     'ALQUILER', 'HIELO', 'UN GUSTO', 'CHANGES',
@@ -94,11 +94,7 @@ export default async function handler(req, res) {
   newData.liveHistory = liveHistory;
 
   // ── 4. Algo streams diarios (opcional) ────────────────────────────────────
-  // algoDailyTracks: streams algorítmicos del día (como dailyTracks pero para algo)
-  // Se almacenan en algoLog y se calculan rolling windows de 7d y 28d
   if (algoEnabled && algoDailyTracks && Object.keys(algoDailyTracks).length > 0) {
-
-    // Upsert algoLog — igual que dailyLog pero para streams algorítmicos diarios
     const parsedAlgo = {};
     Object.entries(algoDailyTracks).forEach(([t, v]) => {
       const val = parseInt(v, 10) || 0;
@@ -109,16 +105,13 @@ export default async function handler(req, res) {
     algoLog.sort((a, b) => a.date.localeCompare(b.date));
     newData.algoLog = algoLog;
 
-    // Rebuild algorithmicHistory: para cada fecha en algoLog, computar ventanas 7d y 28d
+    // Rebuild algorithmicHistory con ventanas 7d y 28d desde algoLog
     const algoHistory = algoLog.map(algoEntry => {
       const d28ago = addDays(algoEntry.date, -27);
       const d7ago  = addDays(algoEntry.date, -6);
-
       const tracks28d = {};
       const tracks7d  = {};
       TRACKS.forEach(t => { tracks28d[t] = 0; tracks7d[t] = 0; });
-
-      // Sumar todas las entradas de algoLog dentro de cada ventana
       algoLog.forEach(e => {
         if (e.date <= algoEntry.date) {
           TRACKS.forEach(t => {
@@ -127,68 +120,46 @@ export default async function handler(req, res) {
           });
         }
       });
-
-      // Streams totales del álbum en la ventana de 28d (denominador para el %)
       const album28dStreams = dailyLog
         .filter(e => e.date >= d28ago && e.date <= algoEntry.date)
         .reduce((sum, e) => sum + TRACKS.reduce((s, t) => s + (e.tracks?.[t] ?? 0), 0), 0);
-
       const albumAlgo28d = TRACKS.reduce((s, t) => s + tracks28d[t], 0);
       const albumAlgo7d  = TRACKS.reduce((s, t) => s + tracks7d[t], 0);
       const album28dPct  = album28dStreams > 0
-        ? parseFloat(((albumAlgo28d / album28dStreams) * 100).toFixed(2))
-        : 0;
-
-      // Stats por track
+        ? parseFloat(((albumAlgo28d / album28dStreams) * 100).toFixed(2)) : 0;
       const trackStats = {};
       TRACKS.forEach(t => {
         const tStreams28d = dailyLog
           .filter(e => e.date >= d28ago && e.date <= algoEntry.date)
           .reduce((sum, e) => sum + (e.tracks?.[t] ?? 0), 0);
         const pct28d = tStreams28d > 0
-          ? parseFloat(((tracks28d[t] / tStreams28d) * 100).toFixed(2))
-          : 0;
+          ? parseFloat(((tracks28d[t] / tStreams28d) * 100).toFixed(2)) : 0;
         trackStats[t] = { streams28d: tracks28d[t], streams7d: tracks7d[t], pct28d };
       });
-
       const dayN = daysSinceLaunch(algoEntry.date);
       return {
-        date: algoEntry.date,
-        label: `D+${dayN}`,
+        date: algoEntry.date, label: `D+${dayN}`,
         recordedAt: new Date().toISOString(),
-        albumAlgorithmicTotal28d: albumAlgo28d,
-        albumAlgorithmicTotal7d: albumAlgo7d,
-        albumAlgorithmicPct28d: album28dPct,
-        tracks: trackStats,
+        albumAlgorithmicTotal28d: albumAlgo28d, albumAlgorithmicTotal7d: albumAlgo7d,
+        albumAlgorithmicPct28d: album28dPct, tracks: trackStats,
       };
     });
     newData.algorithmicHistory = algoHistory;
 
-    // Mantener algorithmicData como valores diarios crudos por track/fecha (para gráficos)
     const algD = {};
     TRACKS.forEach(t => { algD[t] = {}; });
     algoLog.forEach(e => {
-      TRACKS.forEach(t => {
-        if (e.tracks?.[t]) {
-          algD[t][e.date] = { streams: e.tracks[t] };
-        }
-      });
+      TRACKS.forEach(t => { if (e.tracks?.[t]) algD[t][e.date] = { streams: e.tracks[t] }; });
     });
     newData.algorithmicData = algD;
   }
 
-  // ── 5. Push a GitHub ────────────────────────────────────────────────────────
-  const content = Buffer.from(JSON.stringify(newData, null, 2)).toString('base64');
-  const message = `data: ${liveLabel} manual entry ${date} — +${dayTotal.toLocaleString('es-AR')} streams`;
-  const pushRes = await fetch(
-    `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`,
-    {
-      method: 'PUT',
-      headers: { ...ghHeaders, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, content, sha }),
-    }
-  );
-  if (!pushRes.ok) return res.status(500).json({ error: `GitHub push: ${await pushRes.text()}` });
+  // ── 5. Guardar en Vercel Blob ──────────────────────────────────────────────
+  await put(BLOB_KEY, JSON.stringify(newData, null, 2), {
+    access: 'public',
+    addRandomSuffix: false,
+    contentType: 'application/json',
+  });
 
-  return res.status(200).json({ success: true, albumTotal, dayTotal, liveLabel, message });
+  return res.status(200).json({ success: true, albumTotal, dayTotal, liveLabel });
 }

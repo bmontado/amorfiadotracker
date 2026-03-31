@@ -342,9 +342,8 @@ const AmorFiadoDashboard = () => {
   // Polling: carga data.json al montar y cada 5 minutos.
   // En prod fetchea public/data.json directo desde GitHub raw (siempre fresco,
   // sin depender de que docs/ esté reconstruido). En dev usa el servidor Vite local.
-  const DATA_BASE_URL = import.meta.env.PROD
-    ? 'https://raw.githubusercontent.com/bmontado/amorfiadotracker/main/public/data.json'
-    : '/data.json';
+  // Siempre leer desde /api/data (Vercel Blob) — en dev y prod
+  const DATA_BASE_URL = '/api/data';
 
   const refreshData = React.useCallback(async () => {
     try {
