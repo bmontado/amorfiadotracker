@@ -3787,14 +3787,20 @@ const AmorFiadoDashboard = () => {
 
         // ── Vista por track ──────────────────────────────────────────────────
         if (adminView === 'track') {
-          // Merge all dates: from dailyLog + algoLog
-          const allDates = new Set([
-            ...(dailyLog ?? []).map(d => d.date),
-            ...(liveData.algoLog ?? []).map(e => e.date),
-          ]);
-          const sortedDates = [...allDates].sort((a, b) => b.localeCompare(a)); // newest first
+          // Todos los días desde el lanzamiento hasta hoy
+          const LAUNCH = '2026-03-19';
+          const todayStr = new Date().toISOString().split('T')[0];
+          const sortedDates = [];
+          let cur = new Date(LAUNCH + 'T12:00:00Z');
+          const end = new Date(todayStr + 'T12:00:00Z');
+          while (cur <= end) {
+            sortedDates.unshift(cur.toISOString().split('T')[0]); // newest first
+            cur.setUTCDate(cur.getUTCDate() + 1);
+          }
           const algoByDate = {};
           (liveData.algoLog ?? []).forEach(e => { algoByDate[e.date] = e; });
+          const logByDate = {};
+          (dailyLog ?? []).forEach(d => { logByDate[d.date] = d; });
           const modCount = Object.keys(adminTrackEdits).length;
 
           return (
@@ -3834,77 +3840,48 @@ const AmorFiadoDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {sortedDates.length === 0 && (
-                      <tr><td colSpan={5} style={{ padding: '2rem', textAlign: 'center', color: '#475569' }}>No hay datos aún</td></tr>
-                    )}
                     {sortedDates.map((date, i) => {
-                      const logEntry = dailyLog?.find(d => d.date === date);
-                      const algoEntry = algoByDate[date];
+                      const logEntry    = logByDate[date];
+                      const algoEntry   = algoByDate[date];
                       const savedStreams = logEntry?.tracks?.[adminTrackSelected] ?? null;
                       const savedAlgo   = algoEntry?.tracks?.[adminTrackSelected] ?? null;
                       const edit        = adminTrackEdits[date] ?? {};
                       const isModified  = edit.streams !== undefined || edit.algo !== undefined;
+                      const hasSavedData = savedStreams !== null || savedAlgo !== null;
                       const streamVal   = edit.streams !== undefined ? edit.streams : (savedStreams !== null ? String(savedStreams) : '');
                       const algoVal     = edit.algo    !== undefined ? edit.algo    : (savedAlgo   !== null ? String(savedAlgo)   : '');
-                      const dayN        = Math.round((new Date(date + 'T12:00:00Z') - new Date('2026-03-19T00:00:00Z')) / 86400000);
+                      const dayN        = Math.round((new Date(date + 'T12:00:00Z') - new Date(LAUNCH + 'T00:00:00Z')) / 86400000);
+                      const isEmpty     = !hasSavedData && !isModified;
 
                       return (
-                        <tr key={date} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', background: isModified ? 'rgba(249,115,22,0.04)' : i % 2 === 0 ? 'transparent' : 'rgba(15,23,42,0.25)' }}>
-                          <td style={{ padding: '0.5rem 0.85rem', color: '#f97316', fontWeight: 700, whiteSpace: 'nowrap' }}>D+{dayN}</td>
-                          <td style={{ padding: '0.5rem 0.85rem', color: '#64748b', whiteSpace: 'nowrap' }}>{date}</td>
+                        <tr key={date} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', background: isModified ? 'rgba(249,115,22,0.04)' : isEmpty ? 'rgba(249,115,22,0.02)' : i % 2 === 0 ? 'transparent' : 'rgba(15,23,42,0.25)', opacity: isEmpty ? 0.55 : 1 }}>
+                          <td style={{ padding: '0.5rem 0.85rem', color: isEmpty ? '#475569' : '#f97316', fontWeight: 700, whiteSpace: 'nowrap' }}>D+{dayN}</td>
+                          <td style={{ padding: '0.5rem 0.85rem', color: isEmpty ? '#334155' : '#64748b', whiteSpace: 'nowrap' }}>{date}</td>
                           {/* Streams input */}
                           <td style={{ padding: '0.35rem 0.85rem' }}>
                             <input type="number" min="0" value={streamVal}
                               onChange={e => adminTrackSetEdit(date, 'streams', e.target.value)}
-                              placeholder={savedStreams !== null ? '—' : 'sin dato'}
+                              placeholder="sin dato"
                               style={{ background: 'rgba(15,23,42,0.7)', border: `1px solid ${edit.streams !== undefined ? 'rgba(249,115,22,0.6)' : 'rgba(51,65,85,0.5)'}`, borderRadius: '6px', color: edit.streams !== undefined ? '#f97316' : '#e2e8f0', fontSize: '0.85rem', fontWeight: 600, padding: '0.3rem 0.6rem', width: '110px', outline: 'none', textAlign: 'right' }} />
                           </td>
                           {/* Algo input */}
                           <td style={{ padding: '0.35rem 0.85rem' }}>
                             <input type="number" min="0" value={algoVal}
                               onChange={e => adminTrackSetEdit(date, 'algo', e.target.value)}
-                              placeholder={savedAlgo !== null ? '—' : 'sin dato'}
+                              placeholder="sin dato"
                               style={{ background: 'rgba(15,23,42,0.7)', border: `1px solid ${edit.algo !== undefined ? 'rgba(167,139,250,0.6)' : 'rgba(51,65,85,0.5)'}`, borderRadius: '6px', color: edit.algo !== undefined ? '#a78bfa' : '#94a3b8', fontSize: '0.85rem', padding: '0.3rem 0.6rem', width: '110px', outline: 'none', textAlign: 'right' }} />
                           </td>
                           {/* Estado */}
                           <td style={{ padding: '0.5rem 0.85rem' }}>
                             {isModified
                               ? <span style={{ color: '#f97316', fontSize: '0.7rem', fontWeight: 600 }}>● modificado</span>
-                              : savedStreams !== null || savedAlgo !== null
+                              : hasSavedData
                                 ? <span style={{ color: '#4ade80', fontSize: '0.7rem' }}>✓ guardado</span>
                                 : <span style={{ color: '#334155', fontSize: '0.7rem' }}>sin dato</span>}
                           </td>
                         </tr>
                       );
                     })}
-                    {/* Fila para nueva fecha */}
-                    {(() => {
-                      const newDate = adminDate;
-                      if (sortedDates.includes(newDate)) return null;
-                      const edit = adminTrackEdits[newDate] ?? {};
-                      return (
-                        <tr style={{ borderTop: '1px solid rgba(249,115,22,0.2)', background: 'rgba(249,115,22,0.03)' }}>
-                          <td style={{ padding: '0.5rem 0.85rem', color: '#64748b', fontSize: '0.72rem' }}>nueva</td>
-                          <td style={{ padding: '0.35rem 0.85rem' }}>
-                            <input type="date" value={adminDate} onChange={e => setAdminDate(e.target.value)}
-                              style={{ background: 'rgba(15,23,42,0.7)', border: '1px solid rgba(249,115,22,0.4)', borderRadius: '6px', color: '#f97316', fontSize: '0.8rem', padding: '0.3rem 0.5rem', outline: 'none' }} />
-                          </td>
-                          <td style={{ padding: '0.35rem 0.85rem' }}>
-                            <input type="number" min="0" value={edit.streams ?? ''}
-                              onChange={e => adminTrackSetEdit(newDate, 'streams', e.target.value)}
-                              placeholder="streams del día"
-                              style={{ background: 'rgba(15,23,42,0.7)', border: '1px solid rgba(249,115,22,0.4)', borderRadius: '6px', color: '#f97316', fontSize: '0.85rem', fontWeight: 600, padding: '0.3rem 0.6rem', width: '110px', outline: 'none', textAlign: 'right' }} />
-                          </td>
-                          <td style={{ padding: '0.35rem 0.85rem' }}>
-                            <input type="number" min="0" value={edit.algo ?? ''}
-                              onChange={e => adminTrackSetEdit(newDate, 'algo', e.target.value)}
-                              placeholder="algo del día"
-                              style={{ background: 'rgba(15,23,42,0.7)', border: '1px solid rgba(167,139,250,0.3)', borderRadius: '6px', color: '#a78bfa', fontSize: '0.85rem', padding: '0.3rem 0.6rem', width: '110px', outline: 'none', textAlign: 'right' }} />
-                          </td>
-                          <td style={{ padding: '0.5rem 0.85rem', color: '#f97316', fontSize: '0.7rem' }}>+ nueva fila</td>
-                        </tr>
-                      );
-                    })()}
                   </tbody>
                 </table>
               </div>
