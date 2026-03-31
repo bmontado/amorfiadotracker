@@ -547,12 +547,12 @@ const AmorFiadoDashboard = () => {
       }
     }
 
-    // Sort: most recent first, then by type priority
-    const typePriority = { best_day: 0, best_pct: 1, sustained: 2, new_track: 3, spike_album: 4, spike_track: 5, drop_album: 6, drop_track: 7 };
+    // Sort: most recent date first, then by type priority within same date
+    const typePriority = { spike_album: 0, drop_album: 1, new_track: 2, spike_track: 3, sustained: 4, drop_track: 5, best_day: 6, best_pct: 7 };
     insights.sort((a, b) => {
-      const dp = (typePriority[a.type] ?? 99) - (typePriority[b.type] ?? 99);
-      if (dp !== 0) return dp;
-      return b.date.localeCompare(a.date);
+      const dd = b.date.localeCompare(a.date);
+      if (dd !== 0) return dd;
+      return (typePriority[a.type] ?? 99) - (typePriority[b.type] ?? 99);
     });
 
     return { trackDaily, allDates, latestDate, computeStats, dailyEvolution, trend, insights };
@@ -3735,14 +3735,14 @@ const AmorFiadoDashboard = () => {
               {/* ── Line chart: evolución % algo álbum (diario) ── */}
               <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
                 <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: '0 0 1rem' }}>% Algorítmico del Álbum por Día</p>
-                {dailyEvolution.filter(d => d.pct > 0).length < 2 ? (
+                {dailyEvolution.filter(d => d.pct > 0 && d.date > '2026-03-19').length < 2 ? (
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: Math.max(sorted.length * 36 + 20, 200), flexDirection: 'column', gap: '0.5rem' }}>
                     <span style={{ fontSize: '1.5rem' }}>📈</span>
                     <p style={{ color: '#475569', fontSize: '0.8rem', margin: 0, textAlign: 'center' }}>Aparece con 2+ días de datos</p>
                   </div>
                 ) : (
                   <ResponsiveContainer width="100%" height={Math.max(sorted.length * 36 + 20, 200)}>
-                    <LineChart data={dailyEvolution.filter(d => d.pct > 0)} margin={{ top: 8, right: 20, left: 0, bottom: 4 }}>
+                    <LineChart data={dailyEvolution.filter(d => d.pct > 0 && d.date > '2026-03-19')} margin={{ top: 8, right: 20, left: 0, bottom: 4 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.06)" />
                       <XAxis dataKey="date" stroke="#475569" tick={{ fontSize: 10, fill: '#64748b' }}
                         tickFormatter={v => new Date(v + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} />
