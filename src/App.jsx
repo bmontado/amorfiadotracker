@@ -464,7 +464,98 @@ const AmorFiadoDashboard = () => {
       trend = avgRecent - avgPrev;
     }
 
-    return { trackDaily, allDates, latestDate, computeStats, dailyEvolution, trend };
+    // ── Insights detection ──────────────────────────────────────────────
+    const insights = [];
+    const fmtDate = d => new Date(d + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+    const fmtNum = n => new Intl.NumberFormat('es-AR').format(Math.round(n));
+
+    if (allDates.length >= 2) {
+      // 1) Album-level spikes & drops (day-over-day)
+      for (let i = 1; i < dailyEvolution.length; i++) {
+        const prev = dailyEvolution[i - 1];
+        const curr = dailyEvolution[i];
+        if (prev.algoTotal === 0) continue;
+        const change = ((curr.algoTotal - prev.algoTotal) / prev.algoTotal) * 100;
+        if (change >= 40) {
+          insights.push({ type: 'spike_album', date: curr.date, change, from: prev.algoTotal, to: curr.algoTotal, icon: '📈', color: '#4ade80',
+            text: `${fmtDate(curr.date)}: +${change.toFixed(0)}% streams algo del álbum (${fmtNum(prev.algoTotal)} → ${fmtNum(curr.algoTotal)})` });
+        } else if (change <= -30) {
+          insights.push({ type: 'drop_album', date: curr.date, change, from: prev.algoTotal, to: curr.algoTotal, icon: '📉', color: '#f87171',
+            text: `${fmtDate(curr.date)}: ${change.toFixed(0)}% streams algo del álbum (${fmtNum(prev.algoTotal)} → ${fmtNum(curr.algoTotal)})` });
+        }
+      }
+
+      // 2) Track-level: new algo entry, big spikes, sustained growth
+      TRACKS.forEach(track => {
+        const vals = allDates.map(d => trackDaily[track][d] ?? 0);
+        for (let i = 1; i < vals.length; i++) {
+          const prev = vals[i - 1];
+          const curr = vals[i];
+          // New track entering algo (was 0 or < 50, now > 300)
+          if (prev < 50 && curr >= 300) {
+            insights.push({ type: 'new_track', date: allDates[i], track, value: curr, icon: '🆕', color: '#38bdf8',
+              text: `${fmtDate(allDates[i])}: ${track} entró al push algorítmico (${fmtNum(curr)} streams)` });
+          }
+          // Track spike (> 80% jump with meaningful volume)
+          else if (prev >= 100 && curr >= 300 && ((curr - prev) / prev) >= 0.8) {
+            const pctChg = ((curr - prev) / prev) * 100;
+            insights.push({ type: 'spike_track', date: allDates[i], track, change: pctChg, from: prev, to: curr, icon: '🔥', color: '#f97316',
+              text: `${fmtDate(allDates[i])}: ${track} +${pctChg.toFixed(0)}% (${fmtNum(prev)} → ${fmtNum(curr)})` });
+          }
+          // Track drop (> 50% drop with meaningful volume)
+          else if (prev >= 300 && curr < prev * 0.5) {
+            const pctChg = ((curr - prev) / prev) * 100;
+            insights.push({ type: 'drop_track', date: allDates[i], track, change: pctChg, from: prev, to: curr, icon: '⬇️', color: '#94a3b8',
+              text: `${fmtDate(allDates[i])}: ${track} ${pctChg.toFixed(0)}% (${fmtNum(prev)} → ${fmtNum(curr)})` });
+          }
+        }
+        // Sustained growth (3+ consecutive days growing)
+        let streak = 0;
+        let streakStart = 0;
+        for (let i = 1; i < vals.length; i++) {
+          if (vals[i] > vals[i - 1] && vals[i] >= 100) {
+            if (streak === 0) streakStart = i - 1;
+            streak++;
+          } else {
+            if (streak >= 3) {
+              insights.push({ type: 'sustained', date: allDates[i - 1], track, days: streak + 1, icon: '🚀', color: '#a78bfa',
+                from: vals[streakStart], to: vals[i - 1],
+                text: `${fmtDate(allDates[streakStart])}–${fmtDate(allDates[i - 1])}: ${track} creció ${streak + 1} días seguidos (${fmtNum(vals[streakStart])} → ${fmtNum(vals[i - 1])})` });
+            }
+            streak = 0;
+          }
+        }
+        if (streak >= 3) {
+          insights.push({ type: 'sustained', date: allDates[allDates.length - 1], track, days: streak + 1, icon: '🚀', color: '#a78bfa',
+            from: vals[vals.length - 1 - streak], to: vals[vals.length - 1],
+            text: `${fmtDate(allDates[allDates.length - 1 - streak])}–${fmtDate(allDates[allDates.length - 1])}: ${track} creció ${streak + 1} días seguidos (${fmtNum(vals[vals.length - 1 - streak])} → ${fmtNum(vals[vals.length - 1])})` });
+        }
+      });
+
+      // 3) Best algo day
+      const bestDay = dailyEvolution.reduce((best, d) => d.algoTotal > best.algoTotal ? d : best, dailyEvolution[0]);
+      if (bestDay.algoTotal > 0) {
+        insights.push({ type: 'best_day', date: bestDay.date, icon: '👑', color: '#facc15',
+          text: `Mejor día: ${fmtDate(bestDay.date)} con ${fmtNum(bestDay.algoTotal)} streams algo (${bestDay.pct.toFixed(1)}% del total)` });
+      }
+
+      // 4) Highest % algo day
+      const bestPctDay = dailyEvolution.filter(d => d.dayTotal > 0).reduce((best, d) => d.pct > best.pct ? d : best, dailyEvolution[0]);
+      if (bestPctDay.pct > 0 && bestPctDay.date !== bestDay.date) {
+        insights.push({ type: 'best_pct', date: bestPctDay.date, icon: '🎯', color: '#e879f9',
+          text: `Mayor % algo: ${fmtDate(bestPctDay.date)} con ${bestPctDay.pct.toFixed(1)}% (${fmtNum(bestPctDay.algoTotal)} de ${fmtNum(bestPctDay.dayTotal)})` });
+      }
+    }
+
+    // Sort: most recent first, then by type priority
+    const typePriority = { best_day: 0, best_pct: 1, sustained: 2, new_track: 3, spike_album: 4, spike_track: 5, drop_album: 6, drop_track: 7 };
+    insights.sort((a, b) => {
+      const dp = (typePriority[a.type] ?? 99) - (typePriority[b.type] ?? 99);
+      if (dp !== 0) return dp;
+      return b.date.localeCompare(a.date);
+    });
+
+    return { trackDaily, allDates, latestDate, computeStats, dailyEvolution, trend, insights };
   }, [liveData.algoLog, dailyLog]);
 
   // Social posts — live desde liveData.socialPosts (actualizado por amor-fiado-social-scraper)
@@ -3487,7 +3578,7 @@ const AmorFiadoDashboard = () => {
           );
         }
 
-        const { trackDaily, allDates, latestDate, computeStats, dailyEvolution, trend } = algoComputed;
+        const { trackDaily, allDates, latestDate, computeStats, dailyEvolution, trend, insights } = algoComputed;
         const stats = computeStats(algoWindow);
         const { byTrack, totalAlgo, totalStreams, albumPct, avgPerDay, days } = stats;
         const sorted = [...byTrack].sort((a, b) => b.algoPercent - a.algoPercent);
@@ -3709,6 +3800,25 @@ const AmorFiadoDashboard = () => {
                 </table>
               </div>
             </div>
+
+            {/* ── Detecciones / Insights ── */}
+            {insights.length > 0 && (
+              <div style={{ background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(51,65,85,0.5)', borderRadius: '14px', padding: '1.2rem' }}>
+                <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: '0.95rem', margin: '0 0 1rem' }}>Detecciones</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {insights.map((ins, i) => (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'flex-start', gap: '0.6rem',
+                      padding: '0.6rem 0.8rem', borderRadius: '8px',
+                      background: `${ins.color}08`, border: `1px solid ${ins.color}18`,
+                    }}>
+                      <span style={{ fontSize: '1rem', flexShrink: 0, lineHeight: 1.4 }}>{ins.icon}</span>
+                      <p style={{ color: '#cbd5e1', fontSize: '0.8rem', margin: 0, lineHeight: 1.5 }}>{ins.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* ── Nota metodológica ── */}
             <p style={{ color: '#334155', fontSize: '0.72rem', margin: 0, textAlign: 'center' }}>
