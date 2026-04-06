@@ -25,22 +25,19 @@ function addDays(dateStr, n) {
 }
 
 async function readCurrent() {
-  try {
-    const { blobs } = await list({ prefix: BLOB_KEY });
-    const blob = blobs.find(b => b.pathname === BLOB_KEY);
-    if (blob) {
-      const res = await fetch(`${blob.url}?t=${Date.now()}`, {
-        headers: {
-          Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
-          'Cache-Control': 'no-store, no-cache',
-          'Pragma': 'no-cache',
-        },
-      });
-      if (res.ok) return await res.json();
-    }
-  } catch { /* caer al fallback */ }
-  const res = await fetch(`${GITHUB_FALLBACK}?t=${Date.now()}`);
-  if (!res.ok) throw new Error('No se pudo leer data.json');
+  // Intentar leer desde el blob — NUNCA caer al fallback de GitHub en el write path
+  // (el fallback solo es seguro para lecturas de la UI, no para saves)
+  const { blobs } = await list({ prefix: BLOB_KEY });
+  const blob = blobs.find(b => b.pathname === BLOB_KEY);
+  if (!blob) throw new Error('Blob no encontrado — inicializá el blob antes de guardar');
+  const res = await fetch(`${blob.url}?t=${Date.now()}`, {
+    headers: {
+      Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
+      'Cache-Control': 'no-store, no-cache',
+      'Pragma': 'no-cache',
+    },
+  });
+  if (!res.ok) throw new Error(`No se pudo leer el blob (HTTP ${res.status})`);
   return await res.json();
 }
 
