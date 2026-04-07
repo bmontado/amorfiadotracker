@@ -20,6 +20,14 @@ import {
   ComposedChart,
 } from 'recharts';
 
+// ─── Helper: fecha legible ───────────────────────────────────────────────────
+const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+function fmtDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T12:00:00Z');
+  return `${d.getUTCDate()} ${MESES[d.getUTCMonth()]}`;
+}
+
 // ─── Datos dinámicos — fuente de verdad en public/data.json ───────────────────
 // Este objeto es el fallback inicial. La app lo reemplaza al cargar data.json
 // y lo refresca automáticamente cada 5 minutos.
@@ -36,14 +44,14 @@ const DEFAULT_LIVE_DATA = {
     'YA NO': 18126, 'HAZLO CALLAO': 16594, 'TOP TIER': 15674,
   },
   dailyLog: [
-    { date: '2026-03-19', label: 'D19', note: '~1 h post-lanzamiento (20:00 UTC-3)', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 5814, 'ATBLM': 8513, 'UN GUSTO': 806, 'CALL ME': 1032, 'MAN OF WORD': 1293, 'OJOS TRISTES': 649, 'HIELO': 753, 'ALQUILER': 879, 'CHANGES': 676, 'YA NO': 472, 'HAZLO CALLAO': 486, 'TOP TIER': 383 } },
-    { date: '2026-03-20', label: 'D20', note: 'Primer día completo', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 10875, 'ATBLM': 14710, 'UN GUSTO': 16320, 'CALL ME': 11305, 'MAN OF WORD': 10998, 'OJOS TRISTES': 10905, 'HIELO': 9626, 'ALQUILER': 9166, 'CHANGES': 9170, 'YA NO': 8069, 'HAZLO CALLAO': 7584, 'TOP TIER': 7061 } },
-    { date: '2026-03-21', label: 'D21', note: 'Segundo día completo', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 7079, 'ATBLM': 9742, 'UN GUSTO': 8254, 'CALL ME': 6294, 'MAN OF WORD': 5968, 'OJOS TRISTES': 5708, 'HIELO': 5334, 'ALQUILER': 4822, 'CHANGES': 5213, 'YA NO': 4388, 'HAZLO CALLAO': 4084, 'TOP TIER': 3864 } },
-    { date: '2026-03-22', label: 'D22', note: 'Tercer día completo', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 5464, 'ATBLM': 7568, 'UN GUSTO': 6120, 'CALL ME': 4926, 'MAN OF WORD': 4487, 'OJOS TRISTES': 4220, 'HIELO': 4022, 'ALQUILER': 3493, 'CHANGES': 4534, 'YA NO': 3470, 'HAZLO CALLAO': 2966, 'TOP TIER': 2879 } },
+    { date: '2026-03-19', label: '19 Mar', note: '', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 5814, 'ATBLM': 8513, 'UN GUSTO': 806, 'CALL ME': 1032, 'MAN OF WORD': 1293, 'OJOS TRISTES': 649, 'HIELO': 753, 'ALQUILER': 879, 'CHANGES': 676, 'YA NO': 472, 'HAZLO CALLAO': 486, 'TOP TIER': 383 } },
+    { date: '2026-03-20', label: '20 Mar', note: '', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 10875, 'ATBLM': 14710, 'UN GUSTO': 16320, 'CALL ME': 11305, 'MAN OF WORD': 10998, 'OJOS TRISTES': 10905, 'HIELO': 9626, 'ALQUILER': 9166, 'CHANGES': 9170, 'YA NO': 8069, 'HAZLO CALLAO': 7584, 'TOP TIER': 7061 } },
+    { date: '2026-03-21', label: '21 Mar', note: '', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 7079, 'ATBLM': 9742, 'UN GUSTO': 8254, 'CALL ME': 6294, 'MAN OF WORD': 5968, 'OJOS TRISTES': 5708, 'HIELO': 5334, 'ALQUILER': 4822, 'CHANGES': 5213, 'YA NO': 4388, 'HAZLO CALLAO': 4084, 'TOP TIER': 3864 } },
+    { date: '2026-03-22', label: '22 Mar', note: '', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 5464, 'ATBLM': 7568, 'UN GUSTO': 6120, 'CALL ME': 4926, 'MAN OF WORD': 4487, 'OJOS TRISTES': 4220, 'HIELO': 4022, 'ALQUILER': 3493, 'CHANGES': 4534, 'YA NO': 3470, 'HAZLO CALLAO': 2966, 'TOP TIER': 2879 } },
   ],
   liveHistory: [
-    { date: '2026-03-22', label: 'D+3', recordedAt: '2026-03-22T15:00:00-03:00', albumTotal: 678677, tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 273884, 'ATBLM': 200669, 'UN GUSTO': 31749, 'CALL ME': 23750, 'MAN OF WORD': 22919, 'OJOS TRISTES': 21652, 'HIELO': 19885, 'CHANGES': 19758, 'ALQUILER': 18508, 'YA NO': 16522, 'HAZLO CALLAO': 15226, 'TOP TIER': 14298 } },
-    { date: '2026-03-23', label: 'D+4', recordedAt: '2026-03-23T12:06:43-03:00', albumTotal: 704025, tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 276622, 'ATBLM': 204181, 'UN GUSTO': 34953, 'CALL ME': 26075, 'MAN OF WORD': 25068, 'OJOS TRISTES': 23695, 'HIELO': 21708, 'CHANGES': 21535, 'ALQUILER': 20058, 'YA NO': 18126, 'HAZLO CALLAO': 16594, 'TOP TIER': 15674 } },
+    { date: '2026-03-22', label: '22 Mar', recordedAt: '2026-03-22T15:00:00-03:00', albumTotal: 678677, tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 273884, 'ATBLM': 200669, 'UN GUSTO': 31749, 'CALL ME': 23750, 'MAN OF WORD': 22919, 'OJOS TRISTES': 21652, 'HIELO': 19885, 'CHANGES': 19758, 'ALQUILER': 18508, 'YA NO': 16522, 'HAZLO CALLAO': 15226, 'TOP TIER': 14298 } },
+    { date: '2026-03-23', label: '23 Mar', recordedAt: '2026-03-23T12:06:43-03:00', albumTotal: 704025, tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 276622, 'ATBLM': 204181, 'UN GUSTO': 34953, 'CALL ME': 26075, 'MAN OF WORD': 25068, 'OJOS TRISTES': 23695, 'HIELO': 21708, 'CHANGES': 21535, 'ALQUILER': 20058, 'YA NO': 18126, 'HAZLO CALLAO': 16594, 'TOP TIER': 15674 } },
   ],
   releaseEngagements: {
     '6EPWuQUeAaRp61S8qG0fri': {
@@ -786,7 +794,7 @@ const AmorFiadoDashboard = () => {
     const LAUNCH_DATE = '2026-03-19';
     const daysLive = Math.max(1, Math.floor((Date.now() - new Date(LAUNCH_DATE + 'T23:00:00Z').getTime()) / 86400000));
     const albumDecayD20D21 = day20Streams > 0 ? (day21Streams - day20Streams) / day20Streams * 100 : null;
-    const EXPECTED_DECAY_PCT = -46; // ref curve CEA+ATBLM D20→D21 ≈ -46%
+    const EXPECTED_DECAY_PCT = -46; // ref curve CEA+ATBLM 20→21 Mar ≈ -46%
     const decayDiff = albumDecayD20D21 !== null ? albumDecayD20D21 - EXPECTED_DECAY_PCT : null;
     const healthStatus = decayDiff === null ? 'Calculando'
       : decayDiff > 12  ? 'Buena retención'
@@ -921,10 +929,10 @@ const AmorFiadoDashboard = () => {
               <span style={{ background: `${metrics.healthColor}1a`, border: `1px solid ${metrics.healthColor}55`, color: metrics.healthColor, fontSize: '0.72rem', fontWeight: 800, padding: '0.3rem 0.9rem', borderRadius: '9999px', letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
                 {metrics.healthStatus}
               </span>
-              <span style={{ color: '#475569', fontSize: '0.78rem' }}>D+{metrics.daysLive} · lanzamiento 19/03/26</span>
+              <span style={{ color: '#475569', fontSize: '0.78rem' }}>{fmtDate(dailyLog[dailyLog.length - 1]?.date)} · lanzamiento 19/03/26</span>
               {metrics.albumDecayD20D21 !== null && (
                 <span style={{ fontSize: '0.73rem', color: '#475569' }}>
-                  Decay D20→D21: <span style={{ color: metrics.healthColor, fontWeight: 700 }}>{metrics.albumDecayD20D21.toFixed(1)}%</span>
+                  Decay 20→21 Mar: <span style={{ color: metrics.healthColor, fontWeight: 700 }}>{metrics.albumDecayD20D21.toFixed(1)}%</span>
                   <span style={{ color: '#334155' }}> (esperado ~-46%)</span>
                 </span>
               )}
@@ -953,10 +961,10 @@ const AmorFiadoDashboard = () => {
             const topSocialEntry = Object.entries(socialByTrack).sort((a, b) => b[1] - a[1])[0];
             const cards = [
               { label: 'Streams acumulados', value: formatNumber(albumLiveTotal), sub: `12 tracks · ${formatLastUpdated(lastUpdated.spotify)}`, color: '#f97316' },
-              { label: `Días activo`, value: `D+${metrics.daysLive}`, sub: 'Desde lanzamiento', color: '#38bdf8' },
+              { label: `Días activo`, value: `${metrics.daysLive}`, sub: `Desde 19 Mar`, color: '#38bdf8' },
               { label: 'Líder acumulado', value: metrics.topLiveTrack?.name || '—', sub: formatNumber(metrics.topLiveTrack?.liveTotal || 0) + ' streams live', color: '#4ade80' },
-              { label: 'Mejor retención', value: metrics.bestRetentionTrack?.name || '—', sub: `D20→D21: ${metrics.bestRetentionTrack?.decayD20toD21}%`, color: '#a78bfa' },
-              { label: 'Decay álbum D20→D21', value: metrics.albumDecayD20D21 !== null ? `${metrics.albumDecayD20D21.toFixed(1)}%` : '—', sub: 'esperado ~-46%', color: metrics.healthColor },
+              { label: 'Mejor retención', value: metrics.bestRetentionTrack?.name || '—', sub: `20→21 Mar: ${metrics.bestRetentionTrack?.decayD20toD21}%`, color: '#a78bfa' },
+              { label: 'Decay álbum 20→21 Mar', value: metrics.albumDecayD20D21 !== null ? `${metrics.albumDecayD20D21.toFixed(1)}%` : '—', sub: 'esperado ~-46%', color: metrics.healthColor },
               { label: 'Top social', value: topSocialEntry ? topSocialEntry[0] : '—', sub: topSocialEntry ? formatNumber(topSocialEntry[1]) + ' views totales' : '', color: '#e879f9' },
             ];
             return (
@@ -1026,13 +1034,13 @@ const AmorFiadoDashboard = () => {
               momentumTrack ? {
                 color: '#4ade80', badge: 'MOMENTUM', category: 'Playlist',
                 title: `Pitch ${momentumTrack.name}`,
-                body: `Mejor retención del álbum (${momentumTrack.decayD20toD21}% D20→D21). Señal de fidelidad de oyentes — perfil ideal para playlists editoriales.`,
+                body: `Mejor retención del álbum (${momentumTrack.decayD20toD21}% 20→21 Mar). Señal de fidelidad de oyentes — perfil ideal para playlists editoriales.`,
                 action: 'Enviar a curadoras de Spotify/Apple en los próximos días.',
               } : null,
               {
-                color: '#38bdf8', badge: nextMilestone ? `D${nextMilestone}` : 'D28', category: 'Proyección',
-                title: nextMilestone ? `Checkpoint D+${nextMilestone} en ${daysToMilestone}d` : 'Ventana D28 completada',
-                body: `${nextMilestone ? `En ${daysToMilestone} día${daysToMilestone !== 1 ? 's' : ''} se puede comparar la proyección del modelo vs. datos reales del D+${nextMilestone}.` : 'Los primeros 28 días ya transcurrieron. Revisar retención mensual.'}`,
+                color: '#38bdf8', badge: nextMilestone ? `Día ${nextMilestone}` : 'Día 28', category: 'Proyección',
+                title: nextMilestone ? `Checkpoint día ${nextMilestone} en ${daysToMilestone}d` : 'Ventana de 28 días completada',
+                body: `${nextMilestone ? `En ${daysToMilestone} día${daysToMilestone !== 1 ? 's' : ''} se puede comparar la proyección del modelo vs. datos reales del día ${nextMilestone}.` : 'Los primeros 28 días ya transcurrieron. Revisar retención mensual.'}`,
                 action: nextMilestone ? 'Actualizar dailyLog y revisar precisión del modelo en Decay Intel.' : 'Analizar streams mensuales y streams/oyente.',
               },
             ].filter(Boolean);
@@ -1189,7 +1197,7 @@ const AmorFiadoDashboard = () => {
                 const lastFullDay = fullDays[fullDays.length - 1];
                 const decayColLabel = d20entry && lastFullDay && lastFullDay.date !== d20entry.date
                   ? `${d20entry.label}→${lastFullDay.label}`
-                  : 'D20→D21';
+                  : '20→21 Mar';
                 return (
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                     <thead>
@@ -1254,7 +1262,7 @@ const AmorFiadoDashboard = () => {
             // Si el rankDay actual no existe en la nueva lista (ej. venía de 'day20'), usar D20 o el último
             const validKey = rankDays.find(d => d.key === rankDay)
               ? rankDay
-              : (rankDays.find(d => d.label === 'D20')?.key ?? rankDays[rankDays.length - 1]?.key);
+              : (rankDays.find(d => d.label === '20 Mar')?.key ?? rankDays[rankDays.length - 1]?.key);
             const idx = rankDays.findIndex(d => d.key === validKey);
             const current = rankDays[idx] || rankDays[0];
             // Streams del día seleccionado leídos directo del dailyLog
@@ -1333,8 +1341,8 @@ const AmorFiadoDashboard = () => {
               const worstRetVal = parseFloat(worstRetention.decayD20toD21);
               const insights = [
                 { dot: top3Pct <= 55 ? '#4ade80' : '#fbbf24', text: `Top 3 tracks (${top3.map(t => t.fullName.split(' ')[0]).join(', ')}) concentran el ${top3Pct}% de los streams del D20. ${top3Pct <= 55 ? 'Distribución equilibrada — el long tail tiene potencial.' : 'Catálogo con hit dominante — los tracks menores necesitan más tracción.'}` },
-                { dot: bestRetVal >= 0 ? '#4ade80' : '#fbbf24', text: `Mejor retención D20→D21: ${bestRetention.name} (${bestRetVal >= 0 ? '+' : ''}${bestRetention.decayD20toD21}%). ${bestRetVal >= 0 ? 'Creció en su segundo día completo — posible efecto de social media o playlist tardío.' : 'Menor caída entre todos los tracks del álbum.'}` },
-                { dot: Math.abs(worstRetVal) > 55 ? '#f87171' : '#fb923c', text: `Mayor decay D20→D21: ${worstRetention.name} (${worstRetention.decayD20toD21}%). ${Math.abs(worstRetVal) > 55 ? 'Caída pronunciada — candidato para push en playlist o social.' : 'Dentro del rango esperado para el segundo día de un álbum nuevo.'}` },
+                { dot: bestRetVal >= 0 ? '#4ade80' : '#fbbf24', text: `Mejor retención 20→21 Mar: ${bestRetention.name} (${bestRetVal >= 0 ? '+' : ''}${bestRetention.decayD20toD21}%). ${bestRetVal >= 0 ? 'Creció en su segundo día completo — posible efecto de social media o playlist tardío.' : 'Menor caída entre todos los tracks del álbum.'}` },
+                { dot: Math.abs(worstRetVal) > 55 ? '#f87171' : '#fb923c', text: `Mayor decay 20→21 Mar: ${worstRetention.name} (${worstRetention.decayD20toD21}%). ${Math.abs(worstRetVal) > 55 ? 'Caída pronunciada — candidato para push en playlist o social.' : 'Dentro del rango esperado para el segundo día de un álbum nuevo.'}` },
                 outperformers.length > 0 ? { dot: '#4ade80', text: `Outperformer${outperformers.length > 1 ? 's' : ''} estadístico${outperformers.length > 1 ? 's' : ''} (Z > 1.5): ${outperformers.map(t => t.name).join(', ')} — superaron significativamente el promedio del álbum en D20 (${formatNumber(metrics.avgDay20Album)} streams).` } : null,
                 underperformers.length > 0 ? { dot: '#f87171', text: `Underperformer${underperformers.length > 1 ? 's' : ''} estadístico${underperformers.length > 1 ? 's' : ''} (Z < -1.5): ${underperformers.map(t => t.name).join(', ')} — por debajo del promedio. Candidatos para push en social o colaboración con el artista.` } : null,
               ].filter(Boolean);
@@ -1369,7 +1377,7 @@ const AmorFiadoDashboard = () => {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
                 {[
                   { label: 'Acumulado al ' + (last?.label || '—'), value: last ? formatNumber(last.albumTotal) : '—', color: '#f97316' },
-                  { label: 'Streams D+1 (20/03)', value: launchDayStreams ? formatNumber(launchDayStreams) : '—', color: '#4ade80' },
+                  { label: 'Streams 20 Mar', value: launchDayStreams ? formatNumber(launchDayStreams) : '—', color: '#4ade80' },
                   { label: 'Días de datos', value: String(dailyHistory.length), color: '#38bdf8' },
                   { label: 'Track líder total', value: topTrack?.[0] || '—', sub: topTrack ? formatNumber(topTrack[1]) + ' streams' : '', color: '#fbbf24' },
                 ].map((card, i) => (
@@ -1914,10 +1922,10 @@ const AmorFiadoDashboard = () => {
                             itemSorter={(item) => -(item.value ?? -999)}
                           />
                           {/* Peak = 0% */}
-                          <ReferenceLine y={0} stroke="rgba(249,115,22,0.5)" strokeWidth={1.5} label={{ value: 'Peak D20 (0%)', fill: '#f97316', fontSize: 9, position: 'insideLeft' }} />
+                          <ReferenceLine y={0} stroke="rgba(249,115,22,0.5)" strokeWidth={1.5} label={{ value: 'Peak 20 Mar (0%)', fill: '#f97316', fontSize: 9, position: 'insideLeft' }} />
                           {/* Referencia: decay esperado en D21 según curva CEA+ATBLM */}
                           <ReferenceLine y={refLine} stroke="rgba(148,163,184,0.25)" strokeDasharray="5 3"
-                            label={{ value: `ref. D21 (${refLine}%)`, fill: '#64748b', fontSize: 9, position: 'insideRight' }} />
+                            label={{ value: `ref. 21 Mar (${refLine}%)`, fill: '#64748b', fontSize: 9, position: 'insideRight' }} />
                           <Legend wrapperStyle={{ fontSize: '0.68rem', paddingTop: '0.5rem' }} />
                           {trackList.map(t => (
                             <Line
@@ -1994,7 +2002,7 @@ const AmorFiadoDashboard = () => {
                 })
                 .sort((a, b) => a.daysFromD21 - b.daysFromD21);
               const insights = [
-                { dot: '#38bdf8', text: `Decay de referencia D20→D21 (curva CEA+ATBLM): ~${expectedDecayPct}% de caída esperada. Los tracks dentro de ±10% de ese rango tienen un comportamiento normal.` },
+                { dot: '#38bdf8', text: `Decay de referencia 20→21 Mar (curva CEA+ATBLM): ~${expectedDecayPct}% de caída esperada. Los tracks dentro de ±10% de ese rango tienen un comportamiento normal.` },
                 growing.length > 0 ? { dot: '#4ade80', text: `Tracks por encima de la referencia (creciendo o decay < ${Math.round(parseFloat(expectedDecayPct) - 10)}%): ${growing.map(t => `${t.name} (${parseFloat(t.decayD20toD21) >= 0 ? '+' : ''}${t.decayD20toD21}%)`).join(', ')} — posible impulso de social media o playlisting.` } : null,
                 inline.length > 0 ? { dot: '#fbbf24', text: `Tracks dentro del rango esperado: ${inline.map(t => t.name).join(', ')} — comportamiento de decay normal para un lanzamiento nuevo.` } : null,
                 faster.length > 0 ? { dot: '#f87171', text: `Tracks con decay por encima de lo esperado (>${parseInt(expectedDecayPct) + 10}%): ${faster.map(t => `${t.name} (${t.decayD20toD21}%)`).join(', ')} — candidatos para push en social o pitching a playlists.` } : null,
@@ -2369,7 +2377,7 @@ const AmorFiadoDashboard = () => {
                         </LineChart>
                       </ResponsiveContainer>
                       <p style={{ color: '#475569', fontSize: '0.7rem', textAlign: 'center', margin: '0.5rem 0 0' }}>
-                        Puntos rellenos = datos reales (D20–D{(postAlbumEntries[postAlbumEntries.length - 1]?.label) || 'D21'}) · Puntos vacíos = proyección
+                        Puntos rellenos = datos reales (20 Mar–{(postAlbumEntries[postAlbumEntries.length - 1]?.label) || '21 Mar'}) · Puntos vacíos = proyección
                       </p>
                     </div>
                   )}
@@ -2481,7 +2489,7 @@ const AmorFiadoDashboard = () => {
             </button>
             {decayMethodOpen && (
               <div style={{ padding: '0.85rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.78rem', color: '#64748b', background: 'rgba(15,23,42,0.2)', borderTop: '1px solid rgba(51,65,85,0.25)' }}>
-                <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Decay D20→D21:</strong> Variación porcentual entre el día 20 y el día 21 completos.</p>
+                <p style={{ margin: 0 }}><strong style={{ color: '#94a3b8' }}>Decay 20→21 Mar:</strong> Variación porcentual entre el día 20 y el día 21 completos.</p>
                 <p style={{ margin: 0 }}><strong style={{ color: '#4ade80' }}>Outperformer:</strong> Z-score {'>'} 1.5 vs. promedio de tracks nuevos en D20.</p>
                 <p style={{ margin: 0 }}><strong style={{ color: '#f87171' }}>Underperformer:</strong> Z-score {'<'} -1.5 vs. promedio.</p>
                 <p style={{ margin: 0 }}><strong style={{ color: '#fbbf24' }}>Album Bump:</strong> Single pre-álbum con spike por efecto del lanzamiento.</p>
@@ -2664,7 +2672,7 @@ const AmorFiadoDashboard = () => {
                 <div style={{ background: 'rgba(30,41,59,0.4)', borderRadius: '12px', padding: '1.5rem', border: '1px solid rgba(51,65,85,0.5)', marginBottom: '2.5rem' }}>
                   <h2 style={{ color: '#a78bfa', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>Impacto Social → Streams</h2>
                   <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.25rem' }}>
-                    Streams diarios del álbum con marcadores de posts. <span style={{ color: '#e879f9' }}>● Instagram</span> · <span style={{ color: '#22d3ee' }}>● TikTok</span> · <span style={{ color: '#a78bfa' }}>★ Ambos</span>. Hacé hover para ver el post y su impacto en D+1.
+                    Streams diarios del álbum con marcadores de posts. <span style={{ color: '#e879f9' }}>● Instagram</span> · <span style={{ color: '#22d3ee' }}>● TikTok</span> · <span style={{ color: '#a78bfa' }}>★ Ambos</span>. Hacé hover para ver el post y su impacto al día siguiente.
                   </p>
                   <ResponsiveContainer width="100%" height={360}>
                     <AreaChart data={impactData} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
@@ -2979,7 +2987,7 @@ const AmorFiadoDashboard = () => {
                     action: 'Replicar el formato del snippet de ATBLM para los tracks nuevos.',
                   } : null,
                   negDeltas.length > 0 ? {
-                    color: '#64748b', badge: 'INFO', category: 'D+1 Correlación',
+                    color: '#64748b', badge: 'INFO', category: 'Correlación post',
                     title: `${negDeltas.length} post${negDeltas.length > 1 ? 's' : ''} correlacionan con caída de streams`,
                     metric: String(negDeltas.length), metricSub: `post${negDeltas.length > 1 ? 's' : ''} con delta negativo`,
                     body: `${negDeltas.slice(0, 2).map(p => `${p.platform === 'instagram' ? 'IG' : 'TK'} ${new Date(p.date + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} (${formatNumber(p.streamDelta)})`).join(' · ')}. No implica causalidad directa.`,
@@ -3985,7 +3993,7 @@ const AmorFiadoDashboard = () => {
 
                       return (
                         <tr key={date} style={{ borderBottom: '1px solid rgba(51,65,85,0.3)', background: isModified ? 'rgba(249,115,22,0.04)' : isEmpty ? 'rgba(249,115,22,0.02)' : i % 2 === 0 ? 'transparent' : 'rgba(15,23,42,0.25)', opacity: isEmpty ? 0.55 : 1 }}>
-                          <td style={{ padding: '0.5rem 0.85rem', color: isEmpty ? '#475569' : '#f97316', fontWeight: 700, whiteSpace: 'nowrap' }}>D+{dayN}</td>
+                          <td style={{ padding: '0.5rem 0.85rem', color: isEmpty ? '#475569' : '#f97316', fontWeight: 700, whiteSpace: 'nowrap' }}>{fmtDate(date)}</td>
                           <td style={{ padding: '0.5rem 0.85rem', color: isEmpty ? '#334155' : '#64748b', whiteSpace: 'nowrap' }}>{date}</td>
                           {/* Streams input */}
                           <td style={{ padding: '0.35rem 0.85rem' }}>
@@ -4081,8 +4089,7 @@ const AmorFiadoDashboard = () => {
                   </thead>
                   <tbody>
                     {allDayRows.map(({ date, entry }, i) => {
-                      const dayN = Math.round((new Date(date + 'T12:00:00Z') - new Date(LAUNCH + 'T00:00:00Z')) / 86400000);
-                      const label = `D+${dayN}`;
+                      const label = fmtDate(date);
                       const missing = !entry;
                       const total = missing ? null : Object.values(entry.tracks ?? {}).reduce((s, v) => s + v, 0);
                       const algoPct = algoByDate[date] ?? null;
