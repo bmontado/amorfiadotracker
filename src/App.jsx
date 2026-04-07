@@ -33,15 +33,15 @@ function fmtDate(dateStr) {
 // y lo refresca automáticamente cada 5 minutos.
 const DEFAULT_LIVE_DATA = {
   lastUpdated: {
-    spotify: '2026-03-23T12:06:43-03:00',
+    spotify: '2026-04-07T12:00:00-03:00',
     social:  '2026-03-22T15:00:00-03:00',
   },
-  albumLiveTotal: 704025,
+  albumLiveTotal: 1433444,
   liveTotals: {
-    'CUANDO ESCRIBÍA ASIMETRÍA': 276622, 'ATBLM': 204181, 'UN GUSTO': 34953,
-    'CALL ME': 26075, 'MAN OF WORD': 25068, 'OJOS TRISTES': 23695,
-    'HIELO': 21708, 'CHANGES': 21535, 'ALQUILER': 20058,
-    'YA NO': 18126, 'HAZLO CALLAO': 16594, 'TOP TIER': 15674,
+    'CUANDO ESCRIBÍA ASIMETRÍA': 349412, 'ATBLM': 306595, 'UN GUSTO': 143251,
+    'CALL ME': 93133, 'MAN OF WORD': 90225, 'CHANGES': 79614,
+    'HIELO': 75502, 'OJOS TRISTES': 71348, 'ALQUILER': 63067,
+    'YA NO': 59997, 'TOP TIER': 51077, 'HAZLO CALLAO': 50223,
   },
   dailyLog: [
     { date: '2026-03-19', label: '19 Mar', note: '', tracks: { 'CUANDO ESCRIBÍA ASIMETRÍA': 5814, 'ATBLM': 8513, 'UN GUSTO': 806, 'CALL ME': 1032, 'MAN OF WORD': 1293, 'OJOS TRISTES': 649, 'HIELO': 753, 'ALQUILER': 879, 'CHANGES': 676, 'YA NO': 472, 'HAZLO CALLAO': 486, 'TOP TIER': 383 } },
@@ -1001,7 +1001,7 @@ const AmorFiadoDashboard = () => {
             </ResponsiveContainer>
           </div>
 
-          {/* ── 4. Accionables ── */}
+          {/* ── 4. Accionables (dinámicos — últimos 7 días) ── */}
           {(() => {
             const socialByTrack = {};
             const lastPostByTrack = {};
@@ -1012,36 +1012,72 @@ const AmorFiadoDashboard = () => {
                 lastPostByTrack[p.track] = p.date;
               }
             });
-            const launchDate = new Date('2026-03-19');
-            const needsPush = metrics.worstDecayTrack ? {
-              track: metrics.worstDecayTrack.name,
-              decay: metrics.worstDecayTrack.decayD20toD21,
-              lastPost: lastPostByTrack[metrics.worstDecayTrack.name] || null,
-              daysSincePost: lastPostByTrack[metrics.worstDecayTrack.name]
-                ? Math.floor((new Date() - new Date(lastPostByTrack[metrics.worstDecayTrack.name])) / 86400000)
-                : null,
-            } : null;
-            const momentumTrack = metrics.bestRetentionTrack;
-            const nextMilestone = [7, 14, 21, 28].find(m => m > metrics.daysLive) || null;
-            const daysToMilestone = nextMilestone ? nextMilestone - metrics.daysLive : null;
+
+            // ── Calcular tendencias recientes desde dailyLog ──
+            const dl = dailyLog.filter(e => e.tracks);
+            const last7 = dl.slice(-7);
+            const prev7 = dl.slice(-14, -7);
+            const ALBUM_TRACKS = ['CUANDO ESCRIBÍA ASIMETRÍA','MAN OF WORD','ATBLM','CALL ME','ALQUILER','HIELO','UN GUSTO','CHANGES','OJOS TRISTES','HAZLO CALLAO','YA NO','TOP TIER'];
+
+            // Streams por track últimos 7d vs previos 7d
+            const track7d = {};
+            const trackPrev7d = {};
+            const trackTrend = {};
+            ALBUM_TRACKS.forEach(t => {
+              track7d[t] = last7.reduce((s, e) => s + (e.tracks[t] || 0), 0);
+              trackPrev7d[t] = prev7.reduce((s, e) => s + (e.tracks[t] || 0), 0);
+              trackTrend[t] = trackPrev7d[t] > 0 ? ((track7d[t] - trackPrev7d[t]) / trackPrev7d[t] * 100) : 0;
+            });
+
+            // Algo % por track últimos 7d (del algoLog)
+            const aLog = (liveData.algoLog || []);
+            const algoLast7 = aLog.slice(-7);
+            const trackAlgo7d = {};
+            ALBUM_TRACKS.forEach(t => {
+              const algoStreams = algoLast7.reduce((s, e) => s + (e.tracks?.[t] || 0), 0);
+              trackAlgo7d[t] = track7d[t] > 0 ? (algoStreams / track7d[t] * 100) : 0;
+            });
+
+            // Track con peor tendencia semanal = candidato a PUSH
+            const sortedByTrend = ALBUM_TRACKS.map(t => ({ name: t, trend: trackTrend[t], streams7d: track7d[t] }))
+              .sort((a, b) => a.trend - b.trend);
+            const worstTrend = sortedByTrend[0];
+            const daysSincePost = lastPostByTrack[worstTrend.name]
+              ? Math.floor((new Date() - new Date(lastPostByTrack[worstTrend.name])) / 86400000) : null;
+
+            // Track con mejor tendencia + alto % algorítmico = MOMENTUM
+            const sortedByMomentum = ALBUM_TRACKS.map(t => ({
+              name: t, trend: trackTrend[t], algoPct: trackAlgo7d[t], streams7d: track7d[t],
+              score: trackTrend[t] * 0.4 + trackAlgo7d[t] * 0.6,
+            })).sort((a, b) => b.score - a.score);
+            const bestMomentum = sortedByMomentum[0];
+
+            // Último día vs anterior para tendencia del álbum
+            const lastDay = dl[dl.length - 1];
+            const prevDay = dl.length >= 2 ? dl[dl.length - 2] : null;
+            const lastDayTotal = lastDay ? ALBUM_TRACKS.reduce((s, t) => s + (lastDay.tracks[t] || 0), 0) : 0;
+            const prevDayTotal = prevDay ? ALBUM_TRACKS.reduce((s, t) => s + (prevDay.tracks[t] || 0), 0) : 0;
+            const dayOverDay = prevDayTotal > 0 ? ((lastDayTotal - prevDayTotal) / prevDayTotal * 100).toFixed(1) : '0';
+            const albumWeekTotal = last7.reduce((s, e) => s + ALBUM_TRACKS.reduce((a, t) => a + (e.tracks[t] || 0), 0), 0);
+
             const actions = [
-              needsPush ? {
-                color: '#f87171', badge: 'PUSH', category: 'Esta semana',
-                title: `Activar ${needsPush.track}`,
-                body: `Mayor decay del álbum (${needsPush.decay}%). ${needsPush.lastPost ? `Último post: hace ${needsPush.daysSincePost}d.` : 'Sin cobertura social desde lanzamiento.'}`,
-                action: 'Publicar snippet o contenido de letra en TikTok o IG Reels.',
-              } : null,
-              momentumTrack ? {
-                color: '#4ade80', badge: 'MOMENTUM', category: 'Playlist',
-                title: `Pitch ${momentumTrack.name}`,
-                body: `Mejor retención del álbum (${momentumTrack.decayD20toD21}% 20→21 Mar). Señal de fidelidad de oyentes — perfil ideal para playlists editoriales.`,
-                action: 'Enviar a curadoras de Spotify/Apple en los próximos días.',
-              } : null,
               {
-                color: '#38bdf8', badge: nextMilestone ? `Día ${nextMilestone}` : 'Día 28', category: 'Proyección',
-                title: nextMilestone ? `Checkpoint día ${nextMilestone} en ${daysToMilestone}d` : 'Ventana de 28 días completada',
-                body: `${nextMilestone ? `En ${daysToMilestone} día${daysToMilestone !== 1 ? 's' : ''} se puede comparar la proyección del modelo vs. datos reales del día ${nextMilestone}.` : 'Los primeros 28 días ya transcurrieron. Revisar retención mensual.'}`,
-                action: nextMilestone ? 'Actualizar dailyLog y revisar precisión del modelo en Decay Intel.' : 'Analizar streams mensuales y streams/oyente.',
+                color: '#f87171', badge: 'PUSH', category: 'Esta semana',
+                title: `Activar ${worstTrend.name}`,
+                body: `Peor tendencia semanal: ${worstTrend.trend >= 0 ? '+' : ''}${worstTrend.trend.toFixed(1)}% vs semana anterior (${formatNumber(worstTrend.streams7d)} streams en 7d).${daysSincePost != null ? ` Último post: hace ${daysSincePost}d.` : ' Sin cobertura social reciente.'}`,
+                action: 'Publicar snippet o contenido de letra en TikTok o IG Reels para reactivar.',
+              },
+              {
+                color: '#4ade80', badge: 'MOMENTUM', category: 'Playlist',
+                title: `Pitch ${bestMomentum.name}`,
+                body: `Mejor momentum: tendencia ${bestMomentum.trend >= 0 ? '+' : ''}${bestMomentum.trend.toFixed(1)}% semanal, ${bestMomentum.algoPct.toFixed(0)}% algorítmico en 7d. Perfil ideal para playlists editoriales.`,
+                action: 'Enviar a curadoras de Spotify/Apple esta semana.',
+              },
+              {
+                color: '#38bdf8', badge: `D+${metrics.daysLive}`, category: 'Estado',
+                title: `${formatNumber(albumWeekTotal)} streams esta semana`,
+                body: `Último día: ${formatNumber(lastDayTotal)} streams (${parseFloat(dayOverDay) >= 0 ? '+' : ''}${dayOverDay}% vs día anterior). Álbum en día ${metrics.daysLive} desde lanzamiento.`,
+                action: prevDayTotal > lastDayTotal ? 'Tendencia bajando — considerar acción de contenido o social push.' : 'Tendencia estable o subiendo — mantener estrategia actual.',
               },
             ].filter(Boolean);
             return (
