@@ -24,16 +24,35 @@ function addDays(dateStr, n) {
   return d.toISOString().split('T')[0];
 }
 
-async function readCurrent() {
-  // Usar head() para obtener el downloadUrl firmado del blob privado
-  // NUNCA caer al fallback de GitHub en el write path
-  const { blobs } = await list({ prefix: BLOB_KEY });
-  const blob = blobs.find(b => b.pathname === BLOB_KEY);
-  if (!blob) throw new Error('Blob no encontrado — inicializá el blob antes de guardar');
-  const blobMeta = await head(blob.url);
-  const res = await fetch(blobMeta.downloadUrl);
-  if (!res.ok) throw new Error(`No se pudo leer el blob (HTTP ${res.status})`);
-  return await res.json();
+async function readCurrent({ allowGithubFallback = false } = {}) {
+  // Intentar leer desde blob privado usando head() para URL firmada
+  try {
+    const { blobs } = await list({ prefix: BLOB_KEY });
+    const blob = blobs.find(b => b.pathname === BLOB_KEY);
+    if (blob) {
+      const blobMeta = await head(blob.url);
+      // Intentar downloadUrl primero, luego url directo con token
+      for (const url of [blobMeta.downloadUrl, `${blob.url}?t=${Date.now()}`]) {
+        if (!url) continue;
+        const headers = url.includes('token=') ? {} : {
+          Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
+        };
+        const res = await fetch(url, { headers });
+        if (res.ok) return await res.json();
+        console.error(`Blob fetch failed (${res.status}) for URL: ${url.substring(0, 60)}`);
+      }
+    }
+  } catch (e) {
+    console.error('Blob read error:', e?.message);
+  }
+  // Solo usar fallback de GitHub si explícitamente permitido (recovery)
+  if (allowGithubFallback) {
+    console.warn('RECOVERY MODE: leyendo base desde GitHub fallback');
+    const ghRes = await fetch(`${GITHUB_FALLBACK}?t=${Date.now()}`);
+    if (!ghRes.ok) throw new Error('GitHub fallback también falló');
+    return await ghRes.json();
+  }
+  throw new Error('No se pudo leer el blob y GitHub fallback no está habilitado');
 }
 
 function rebuildCumulatives(dailyLog) {
@@ -111,7 +130,8 @@ export default async function handler(req, res) {
     if (!entries?.length) return res.status(400).json({ error: 'Faltan datos' });
 
     // ── 1. UN SOLO READ ────────────────────────────────────────────────────────
-    const current = await readCurrent();
+    // bootstrapFromGithub: solo para recovery cuando blob y GitHub están sincronizados
+    const current = await readCurrent({ allowGithubFallback: !!body.bootstrapFromGithub });
     let dailyLog = [...(current.dailyLog ?? []).filter(d => d.tracks != null)];
     let algoLog  = [...(current.algoLog   ?? [])];
     let hasAlgo  = false;
