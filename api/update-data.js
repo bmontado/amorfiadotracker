@@ -2,7 +2,7 @@
 // Soporta modo batch: un solo read + N merges en memoria + un solo write
 // Elimina race conditions del ciclo leer-modificar-escribir secuencial
 
-import { list, put, getDownloadUrl } from '@vercel/blob';
+import { list, put, head } from '@vercel/blob';
 
 const BLOB_KEY = 'data.json';
 const GITHUB_FALLBACK = 'https://raw.githubusercontent.com/bmontado/amorfiadotracker/main/public/data.json';
@@ -25,13 +25,13 @@ function addDays(dateStr, n) {
 }
 
 async function readCurrent() {
-  // Usar getDownloadUrl para obtener una URL firmada sin problemas de auth manual
+  // Usar head() para obtener el downloadUrl firmado del blob privado
   // NUNCA caer al fallback de GitHub en el write path
   const { blobs } = await list({ prefix: BLOB_KEY });
   const blob = blobs.find(b => b.pathname === BLOB_KEY);
   if (!blob) throw new Error('Blob no encontrado — inicializá el blob antes de guardar');
-  const downloadUrl = await getDownloadUrl(blob.url);
-  const res = await fetch(downloadUrl);
+  const blobMeta = await head(blob.url);
+  const res = await fetch(blobMeta.downloadUrl);
   if (!res.ok) throw new Error(`No se pudo leer el blob (HTTP ${res.status})`);
   return await res.json();
 }
