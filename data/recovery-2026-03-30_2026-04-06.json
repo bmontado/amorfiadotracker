@@ -1,0 +1,262 @@
+{
+  "description": "Datos recuperados via scraper S4A — Mar 30 a Abr 6 2026. Aplicar al blob cuando el store esté activo.",
+  "scrapedAt": "2026-04-07",
+  "entries": [
+    {
+      "date": "2026-03-30",
+      "dailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 4976,
+        "MAN OF WORD": 4800,
+        "ATBLM": 7204,
+        "CALL ME": 4505,
+        "ALQUILER": 2475,
+        "HIELO": 3553,
+        "UN GUSTO": 8201,
+        "CHANGES": 3542,
+        "OJOS TRISTES": 3165,
+        "HAZLO CALLAO": 2306,
+        "YA NO": 2683,
+        "TOP TIER": 2269
+      },
+      "algoDailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 610,
+        "MAN OF WORD": 1480,
+        "ATBLM": 1315,
+        "CALL ME": 375,
+        "ALQUILER": 333,
+        "HIELO": 597,
+        "UN GUSTO": 2246,
+        "CHANGES": 650,
+        "OJOS TRISTES": 296,
+        "HAZLO CALLAO": 384,
+        "YA NO": 178,
+        "TOP TIER": 183
+      },
+      "algoEnabled": true
+    },
+    {
+      "date": "2026-03-31",
+      "dailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 4375,
+        "MAN OF WORD": 4228,
+        "ATBLM": 6763,
+        "CALL ME": 4482,
+        "ALQUILER": 2395,
+        "HIELO": 3415,
+        "UN GUSTO": 7789,
+        "CHANGES": 4114,
+        "OJOS TRISTES": 2985,
+        "HAZLO CALLAO": 1879,
+        "YA NO": 2691,
+        "TOP TIER": 2124
+      },
+      "algoDailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 523,
+        "MAN OF WORD": 1259,
+        "ATBLM": 1295,
+        "CALL ME": 514,
+        "ALQUILER": 360,
+        "HIELO": 609,
+        "UN GUSTO": 2171,
+        "CHANGES": 1371,
+        "OJOS TRISTES": 396,
+        "HAZLO CALLAO": 123,
+        "YA NO": 333,
+        "TOP TIER": 182
+      },
+      "algoEnabled": true
+    },
+    {
+      "date": "2026-04-01",
+      "dailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 4789,
+        "MAN OF WORD": 4006,
+        "ATBLM": 6822,
+        "CALL ME": 4552,
+        "ALQUILER": 2368,
+        "HIELO": 3597,
+        "UN GUSTO": 7910,
+        "CHANGES": 4718,
+        "OJOS TRISTES": 2954,
+        "HAZLO CALLAO": 1900,
+        "YA NO": 2682,
+        "TOP TIER": 2282
+      },
+      "algoDailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 570,
+        "MAN OF WORD": 946,
+        "ATBLM": 1214,
+        "CALL ME": 714,
+        "ALQUILER": 248,
+        "HIELO": 664,
+        "UN GUSTO": 2439,
+        "CHANGES": 1958,
+        "OJOS TRISTES": 406,
+        "HAZLO CALLAO": 122,
+        "YA NO": 335,
+        "TOP TIER": 145
+      },
+      "algoEnabled": true
+    },
+    {
+      "date": "2026-04-02",
+      "dailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 4402,
+        "MAN OF WORD": 3455,
+        "ATBLM": 6085,
+        "CALL ME": 3957,
+        "ALQUILER": 2316,
+        "HIELO": 2862,
+        "UN GUSTO": 7833,
+        "CHANGES": 3682,
+        "OJOS TRISTES": 2546,
+        "HAZLO CALLAO": 1712,
+        "YA NO": 2203,
+        "TOP TIER": 2010
+      },
+      "algoDailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 578,
+        "MAN OF WORD": 610,
+        "ATBLM": 1155,
+        "CALL ME": 511,
+        "ALQUILER": 393,
+        "HIELO": 305,
+        "UN GUSTO": 2901,
+        "CHANGES": 1174,
+        "OJOS TRISTES": 250,
+        "HAZLO CALLAO": 135,
+        "YA NO": 86,
+        "TOP TIER": 184
+      },
+      "algoEnabled": true
+    },
+    {
+      "date": "2026-04-03",
+      "dailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 3527,
+        "MAN OF WORD": 2909,
+        "ATBLM": 5067,
+        "CALL ME": 3207,
+        "ALQUILER": 1926,
+        "HIELO": 2505,
+        "UN GUSTO": 6428,
+        "CHANGES": 2665,
+        "OJOS TRISTES": 2180,
+        "HAZLO CALLAO": 1553,
+        "YA NO": 1997,
+        "TOP TIER": 1777
+      },
+      "algoDailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 365,
+        "MAN OF WORD": 544,
+        "ATBLM": 794,
+        "CALL ME": 348,
+        "ALQUILER": 234,
+        "HIELO": 320,
+        "UN GUSTO": 1952,
+        "CHANGES": 559,
+        "OJOS TRISTES": 120,
+        "HAZLO CALLAO": 168,
+        "YA NO": 125,
+        "TOP TIER": 160
+      },
+      "algoEnabled": true
+    },
+    {
+      "date": "2026-04-04",
+      "dailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 3326,
+        "MAN OF WORD": 2835,
+        "ATBLM": 4970,
+        "CALL ME": 3139,
+        "ALQUILER": 1718,
+        "HIELO": 2499,
+        "UN GUSTO": 5750,
+        "CHANGES": 2672,
+        "OJOS TRISTES": 2052,
+        "HAZLO CALLAO": 1497,
+        "YA NO": 1955,
+        "TOP TIER": 1747
+      },
+      "algoDailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 277,
+        "MAN OF WORD": 621,
+        "ATBLM": 827,
+        "CALL ME": 353,
+        "ALQUILER": 149,
+        "HIELO": 480,
+        "UN GUSTO": 1688,
+        "CHANGES": 661,
+        "OJOS TRISTES": 169,
+        "HAZLO CALLAO": 193,
+        "YA NO": 149,
+        "TOP TIER": 109
+      },
+      "algoEnabled": true
+    },
+    {
+      "date": "2026-04-05",
+      "dailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 3421,
+        "MAN OF WORD": 2978,
+        "ATBLM": 4881,
+        "CALL ME": 3374,
+        "ALQUILER": 1705,
+        "HIELO": 2546,
+        "UN GUSTO": 5398,
+        "CHANGES": 2505,
+        "OJOS TRISTES": 2073,
+        "HAZLO CALLAO": 1320,
+        "YA NO": 2032,
+        "TOP TIER": 1658
+      },
+      "algoDailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 464,
+        "MAN OF WORD": 838,
+        "ATBLM": 947,
+        "CALL ME": 653,
+        "ALQUILER": 213,
+        "HIELO": 602,
+        "UN GUSTO": 1671,
+        "CHANGES": 624,
+        "OJOS TRISTES": 333,
+        "HAZLO CALLAO": 148,
+        "YA NO": 325,
+        "TOP TIER": 123
+      },
+      "algoEnabled": true
+    },
+    {
+      "date": "2026-04-06",
+      "dailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 5298,
+        "MAN OF WORD": 4558,
+        "ATBLM": 6614,
+        "CALL ME": 4947,
+        "ALQUILER": 2409,
+        "HIELO": 3746,
+        "UN GUSTO": 7649,
+        "CHANGES": 3587,
+        "OJOS TRISTES": 3098,
+        "HAZLO CALLAO": 1983,
+        "YA NO": 2810,
+        "TOP TIER": 2279
+      },
+      "algoDailyTracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 1025,
+        "MAN OF WORD": 1461,
+        "ATBLM": 1255,
+        "CALL ME": 977,
+        "ALQUILER": 360,
+        "HIELO": 968,
+        "UN GUSTO": 2298,
+        "CHANGES": 886,
+        "OJOS TRISTES": 581,
+        "HAZLO CALLAO": 218,
+        "YA NO": 440,
+        "TOP TIER": 162
+      },
+      "algoEnabled": true
+    }
+  ]
+}
