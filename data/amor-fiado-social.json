@@ -6,99 +6,107 @@
     "tiktok": "@zeballos1717"
   },
   "campaignStartDate": "2026-01-28",
-  "lastScraped": "2026-03-25T12:00:00-03:00",
+  "lastScraped": "2026-04-07T15:55:33-03:00",
   "posts": [
     {
-      "url": "https://www.instagram.com/reel/DURexnHjuy4/",
       "date": "2026-02-02",
+      "url": "https://www.instagram.com/reel/DURexnHjuy4/",
       "caption": "CEA teaser con Juan Minujín",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "teaser",
       "views": 406000,
       "likes": 17000,
       "saves": 0,
-      "platform": "instagram"
+      "platform": "instagram",
+      "account": "@zeballos17"
     },
     {
-      "url": "https://www.instagram.com/reel/DUa9-8bjgmB/",
       "date": "2026-02-06",
+      "url": "https://www.instagram.com/reel/DUa9-8bjgmB/",
       "caption": "CUANDO ESCRIBÍA ASIMETRÍA — Ya disponible",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "release",
       "views": 133000,
       "likes": 6508,
       "saves": 0,
-      "platform": "instagram"
+      "platform": "instagram",
+      "account": "@zeballos17"
     },
     {
-      "url": "https://www.instagram.com/reel/DUrNhIvDmv2/",
       "date": "2026-02-12",
+      "url": "https://www.instagram.com/reel/DUrNhIvDmv2/",
       "caption": "AMOR FIADO promo (audio: CEA)",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "promo",
       "views": 108000,
       "likes": 5624,
       "saves": 0,
-      "platform": "instagram"
+      "platform": "instagram",
+      "account": "@zeballos17"
     },
     {
-      "url": "https://www.instagram.com/reel/DVUSGuKjviG/",
       "date": "2026-02-28",
+      "url": "https://www.instagram.com/reel/DVUSGuKjviG/",
       "caption": "ATBLM — Segundo adelanto",
       "track": "ATBLM",
       "type": "release",
       "views": 169000,
       "likes": 9620,
       "saves": 0,
-      "platform": "instagram"
+      "platform": "instagram",
+      "account": "@zeballos17"
     },
     {
-      "url": "https://www.instagram.com/reel/DVuLW64Dssw/",
       "date": "2026-03-10",
+      "url": "https://www.instagram.com/reel/DVuLW64Dssw/",
       "caption": "Nueve días para AMOR FIADO",
       "track": "AMOR FIADO",
       "type": "promo",
       "views": 118000,
       "likes": 6661,
       "saves": 0,
-      "platform": "instagram"
+      "platform": "instagram",
+      "account": "@zeballos17"
     },
     {
-      "url": "https://www.instagram.com/reel/DWEezrPjpH9/",
       "date": "2026-03-19",
+      "url": "https://www.instagram.com/reel/DWEezrPjpH9/",
       "caption": "Gracias Buenos Aires, estrenamos AMOR FIADO",
       "track": "AMOR FIADO",
       "type": "launch",
       "views": 92400,
       "likes": 5009,
       "saves": 0,
-      "platform": "instagram"
+      "platform": "instagram",
+      "account": "@zeballos17"
     },
     {
-      "url": "https://www.instagram.com/reel/DWFzDpbjpuS/",
       "date": "2026-03-20",
+      "url": "https://www.instagram.com/reel/DWFzDpbjpuS/",
       "caption": "AMOR FIADO YA DISPONIBLE",
       "track": "AMOR FIADO",
       "type": "launch",
-      "views": 99000,
+      "views": 8856,
       "likes": 5873,
       "saves": 0,
-      "platform": "instagram"
+      "platform": "instagram",
+      "account": "@zeballos17"
     },
     {
-      "url": "https://www.instagram.com/reel/DWJqPCdjqMF/",
       "date": "2026-03-21",
+      "url": "https://www.instagram.com/reel/DWJqPCdjqMF/",
       "caption": "UN GUSTO ft @mesita — Videoclip",
       "track": "UN GUSTO",
       "type": "release",
-      "views": 138000,
+      "views": 9804,
       "likes": 8800,
       "saves": 0,
-      "platform": "instagram"
+      "platform": "instagram",
+      "account": "@zeballos17"
     },
     {
-      "url": "https://www.instagram.com/reel/DURe_gpEmSQ/",
       "date": "2026-02-02",
+      "url": "https://www.instagram.com/reel/DURe_gpEmSQ/",
       "caption": "CUANDO ESCRIBÍA ASIMETRÍA — Estreno este jueves 5/2",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "teaser",
@@ -109,8 +117,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/reel/DUZNWhfkqxz/",
       "date": "2026-02-05",
+      "url": "https://www.instagram.com/reel/DUZNWhfkqxz/",
       "caption": "CUANDO ESCRIBÍA ASIMETRÍA — YA DISPONIBLE 🐎",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "release",
@@ -121,8 +129,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/reel/DUdVDHpkclS/",
       "date": "2026-02-07",
+      "url": "https://www.instagram.com/reel/DUdVDHpkclS/",
       "caption": "CUANDO ESCRIBÍA ASIMETRÍA — Un lanzamiento de @zeballos17 con @juanminujin",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "release",
@@ -133,8 +141,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/reel/DUqkUy7EY5T/",
       "date": "2026-02-12",
+      "url": "https://www.instagram.com/reel/DUqkUy7EY5T/",
       "caption": "Capítulo inédito de Jackass por @zeballos17",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "promo",
@@ -145,8 +153,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/reel/DU55K4pkaY4/",
       "date": "2026-02-18",
+      "url": "https://www.instagram.com/reel/DU55K4pkaY4/",
       "caption": "ATBLM",
       "track": "ATBLM",
       "type": "teaser",
@@ -157,8 +165,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/reel/DU_rZprErde/",
       "date": "2026-02-20",
+      "url": "https://www.instagram.com/reel/DU_rZprErde/",
       "caption": "Podemos volver vos y yo pero nunca nosotros 🐎",
       "track": "ATBLM",
       "type": "teaser",
@@ -169,8 +177,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/reel/DVPTu0tklX6/",
       "date": "2026-02-26",
+      "url": "https://www.instagram.com/reel/DVPTu0tklX6/",
       "caption": "ATBLM — YA DISPONIBLE",
       "track": "ATBLM",
       "type": "release",
@@ -181,8 +189,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/reel/DVMaOkPEo85/",
       "date": "2026-02-28",
+      "url": "https://www.instagram.com/reel/DVMaOkPEo85/",
       "caption": "ATBLM",
       "track": "ATBLM",
       "type": "release",
@@ -193,8 +201,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/reel/DVhCSd2kgwC/",
       "date": "2026-03-05",
+      "url": "https://www.instagram.com/reel/DVhCSd2kgwC/",
       "caption": "06 DE MARZO, UN DÍA IMPORTANTE 🐎 ESTÉN PILLOS",
       "track": "AMOR FIADO",
       "type": "promo",
@@ -205,8 +213,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/reel/DVqbN4OAG2W/",
       "date": "2026-03-09",
+      "url": "https://www.instagram.com/reel/DVqbN4OAG2W/",
       "caption": "Nos vemos el 18 y 19 para la pre escucha de AMOR FIADO 🇦🇷🇺🇾",
       "track": "AMOR FIADO",
       "type": "promo",
@@ -217,8 +225,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/reel/DVzI-UxEh_G/",
       "date": "2026-03-12",
+      "url": "https://www.instagram.com/reel/DVzI-UxEh_G/",
       "caption": "Quienes esperan con ansias AMOR FIADO? 19/03 🐎",
       "track": "AMOR FIADO",
       "type": "promo",
@@ -229,8 +237,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/reel/DWKDUUvAp1H/",
       "date": "2026-03-21",
+      "url": "https://www.instagram.com/reel/DWKDUUvAp1H/",
       "caption": "UN GUSTO en Vorterix 🐎 @zeballos17 ft @mesita",
       "track": "UN GUSTO",
       "type": "release",
@@ -241,242 +249,260 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7600558176781520149",
       "date": "2026-01-28",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7600558176781520149",
       "caption": "05.02 @asimetria17",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "teaser",
       "views": 12300,
       "likes": 950,
       "saves": 40,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7601302776626384149",
       "date": "2026-01-30",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7601302776626384149",
       "caption": "Se viene @asimetria17",
       "track": "AMOR FIADO",
       "type": "teaser",
       "views": 60300,
       "likes": 8121,
       "saves": 251,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7603157705921957141",
       "date": "2026-02-04",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7603157705921957141",
       "caption": "Es mañana mi gente @asimetria17",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "teaser",
       "views": 29800,
       "likes": 4600,
       "saves": 115,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7603879276328373525",
       "date": "2026-02-06",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7603879276328373525",
       "caption": "Sigo haciendo temas de lo que me gusta",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "release",
       "views": 44500,
       "likes": 5922,
       "saves": 267,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7606141408382160149",
       "date": "2026-02-12",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7606141408382160149",
       "caption": "Pero afuera nada invita a ir #amorfiado",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "promo",
       "views": 79200,
       "likes": 11100,
       "saves": 716,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7608593812587416852",
       "date": "2026-02-19",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7608593812587416852",
       "caption": "ATBLM snippet viral",
       "track": "ATBLM",
       "type": "teaser",
       "views": 185500,
       "likes": 25800,
       "saves": 2782,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7609155471529856276",
       "date": "2026-02-21",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7609155471529856276",
       "caption": "ATBLM snippet 2",
       "track": "ATBLM",
       "type": "teaser",
       "views": 136700,
       "likes": 23200,
       "saves": 1424,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7609510867570576661",
       "date": "2026-02-21",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7609510867570576661",
       "caption": "ATBLM snippet pool vibes",
       "track": "ATBLM",
       "type": "teaser",
       "views": 66000,
       "likes": 10800,
       "saves": 509,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7610835979628203284",
       "date": "2026-02-25",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7610835979628203284",
       "caption": "ATBLM 26/02 Es mañana dalee",
       "track": "ATBLM",
       "type": "teaser",
       "views": 44500,
       "likes": 7374,
       "saves": 209,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7611317540157017364",
       "date": "2026-02-26",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7611317540157017364",
       "caption": "ATBLM YA DISPONIBLE @asimetria17",
       "track": "ATBLM",
       "type": "release",
       "views": 39400,
       "likes": 5563,
       "saves": 297,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7612070065856433428",
       "date": "2026-02-28",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7612070065856433428",
       "caption": "Segundo adelanto AMOR FIADO — ATBLM video",
       "track": "ATBLM",
       "type": "release",
       "views": 107500,
       "likes": 15400,
       "saves": 1059,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7615777036631657749",
       "date": "2026-03-10",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7615777036631657749",
       "caption": "MENOS DE 9 DÍAS PARA AMOR FIADO",
       "track": "AMOR FIADO",
       "type": "promo",
-      "views": 18600,
+      "views": 20900,
       "likes": 2694,
       "saves": 123,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7617125475596455189",
       "date": "2026-03-14",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7617125475596455189",
       "caption": "5 días para AMOR FIADO",
       "track": "AMOR FIADO",
       "type": "promo",
-      "views": 29900,
+      "views": 35500,
       "likes": 3713,
       "saves": 73,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7619728786610785556",
       "date": "2026-03-21",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7619728786610785556",
       "caption": "UN GUSTO ft @Mesa Tra",
       "track": "UN GUSTO",
       "type": "release",
-      "views": 26600,
+      "views": 36100,
       "likes": 2595,
       "saves": 120,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7620071012536749333",
       "date": "2026-03-22",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7620071012536749333",
       "caption": "Ya escucharon ojos tristes ft @Rei?",
       "track": "OJOS TRISTES",
       "type": "promo",
-      "views": 15700,
+      "views": 18900,
       "likes": 1197,
       "saves": 24,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7620486613327531285",
       "date": "2026-03-23",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7620486613327531285",
       "caption": "UN GUSTO MAMI",
       "track": "UN GUSTO",
       "type": "release",
-      "views": 18900,
+      "views": 31400,
       "likes": 3824,
       "saves": 150,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7620959928739548437",
       "date": "2026-03-24",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7620959928739548437",
       "caption": "A ti te gusta el estrés, a mi quitartelo",
       "track": "AMOR FIADO",
       "type": "promo",
-      "views": 8793,
+      "views": 25500,
       "likes": 2158,
       "saves": 91,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballos1717/video/7621199321404411157",
       "date": "2026-03-25",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7621199321404411157",
       "caption": "La prensa es mala bb a mi me avala el corte",
       "track": "AMOR FIADO",
       "type": "promo",
-      "views": 5530,
+      "views": 21400,
       "likes": 1110,
       "saves": 30,
-      "platform": "tiktok"
+      "platform": "tiktok",
+      "account": "@zeballos1717"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7592380954136661278",
       "date": "2026-01-06",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7592380954136661278",
       "caption": "Ya vendrán tiempos mejores amor, tiempos mas bellos ❤️‍🩹",
       "track": "AMOR FIADO",
       "type": "kiosko",
-      "views": 476100,
+      "views": 484700,
       "likes": 64500,
       "saves": 5183,
       "platform": "tiktok",
       "account": "@zeballosrap"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7604991681926155550",
       "date": "2026-02-09",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7604991681926155550",
       "caption": "Vayan a escuchar 'Cuando escribia Asimetria' ❤️❤️❤️",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "kiosko",
-      "views": 31700,
+      "views": 33600,
       "likes": 3904,
       "saves": 64,
       "platform": "tiktok",
       "account": "@zeballosrap"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7610426346094808350",
       "date": "2026-02-24",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7610426346094808350",
       "caption": "En unas horas están todos gritando ATBLM ⛓️‍💥",
       "track": "ATBLM",
       "type": "kiosko",
-      "views": 27100,
+      "views": 27700,
       "likes": 3611,
       "saves": 222,
       "platform": "tiktok",
       "account": "@zeballosrap"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7613464564218203422",
       "date": "2026-03-04",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7613464564218203422",
       "caption": "ATBLMATBLMATBLMATBLM qué les pareciooooo⛓️‍💥",
       "track": "ATBLM",
       "type": "kiosko",
@@ -487,8 +513,8 @@
       "account": "@zeballosrap"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7613775286248738079",
       "date": "2026-03-05",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7613775286248738079",
       "caption": "ATBLM hasta que suena el despertador ❤️‍🩹",
       "track": "ATBLM",
       "type": "kiosko",
@@ -499,8 +525,8 @@
       "account": "@zeballosrap"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7614522981687020831",
       "date": "2026-03-07",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7614522981687020831",
       "caption": "Qué ganas de dormirme en un abrazo ⛓️‍💥❤️‍🩹",
       "track": "AMOR FIADO",
       "type": "kiosko",
@@ -511,8 +537,8 @@
       "account": "@zeballosrap"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7617609896061570334",
       "date": "2026-03-15",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7617609896061570334",
       "caption": "Quien viene a la escuchaaaaaa ⛓️‍💥",
       "track": "AMOR FIADO",
       "type": "kiosko",
@@ -523,8 +549,8 @@
       "account": "@zeballosrap"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7619154242586086687",
       "date": "2026-03-20",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7619154242586086687",
       "caption": "Llamame cuando quieras⛓️‍💥",
       "track": "AMOR FIADO",
       "type": "kiosko",
@@ -535,8 +561,8 @@
       "account": "@zeballosrap"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7619168179104877854",
       "date": "2026-03-20",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7619168179104877854",
       "caption": "Desayuno ice⛓️‍💥💔",
       "track": "AMOR FIADO",
       "type": "kiosko",
@@ -547,8 +573,8 @@
       "account": "@zeballosrap"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7619404515783085342",
       "date": "2026-03-20",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7619404515783085342",
       "caption": "ALASDOSYVEINTIDOS LOSDOSDESVESTIDOS ⛓️‍💥",
       "track": "AMOR FIADO",
       "type": "kiosko",
@@ -559,8 +585,8 @@
       "account": "@zeballosrap"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7619748147912314142",
       "date": "2026-03-21",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7619748147912314142",
       "caption": "En chanclas o en Cortez 🫵",
       "track": "AMOR FIADO",
       "type": "kiosko",
@@ -571,8 +597,8 @@
       "account": "@zeballosrap"
     },
     {
-      "url": "https://www.instagram.com/asimetria17/reel/DWKDUUvAp1H/",
       "date": "2026-03-23",
+      "url": "https://www.instagram.com/asimetria17/reel/DWKDUUvAp1H/",
       "caption": "UN GUSTO en Vorterix 🐎 @zeballos17 ft @mesita",
       "track": "UN GUSTO",
       "type": "promo",
@@ -583,8 +609,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/asimetria17/reel/DVzI-UxEh_G/",
       "date": "2026-03-16",
+      "url": "https://www.instagram.com/asimetria17/reel/DVzI-UxEh_G/",
       "caption": "Quienes esperan con ansias AMOR FIADO? 19/03 🐎",
       "track": "AMOR FIADO",
       "type": "promo",
@@ -595,8 +621,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/asimetria17/reel/DVhCSd2kgwC/",
       "date": "2026-03-05",
+      "url": "https://www.instagram.com/asimetria17/reel/DVhCSd2kgwC/",
       "caption": "06 DE MARZO, UN DÍA IMPORTANTE 🐎 ESTÉN PILLOS",
       "track": "ATBLM",
       "type": "promo",
@@ -607,8 +633,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/asimetria17/reel/DVPTu0tklX6/",
       "date": "2026-02-26",
+      "url": "https://www.instagram.com/asimetria17/reel/DVPTu0tklX6/",
       "caption": "ATBLM | Prod. @pmpsounds @leavetheclubmusic @christianrich | YA DISPONIBLE 🇺🇾🇪🇸🇮🇹🇺🇸",
       "track": "ATBLM",
       "type": "release",
@@ -619,8 +645,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/asimetria17/reel/DU55K4pkaY4/",
       "date": "2026-02-18",
+      "url": "https://www.instagram.com/asimetria17/reel/DU55K4pkaY4/",
       "caption": "ATBLM (teaser con CUANDO ESCRIBÍA ASIMETRÍA)",
       "track": "ATBLM",
       "type": "teaser",
@@ -631,8 +657,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/asimetria17/reel/DUqkUy7EY5T/",
       "date": "2026-02-14",
+      "url": "https://www.instagram.com/asimetria17/reel/DUqkUy7EY5T/",
       "caption": "Capítulo inédito de Jackass por @zeballos17",
       "track": "AMOR FIADO",
       "type": "promo",
@@ -643,8 +669,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/asimetria17/reel/DUZNWhfkqxz/",
       "date": "2026-02-05",
+      "url": "https://www.instagram.com/asimetria17/reel/DUZNWhfkqxz/",
       "caption": "CUANDO ESCRIBÍA ASIMETRÍA | Prod. @christianrich y @fossezm | Dirigido por @josefog.will | Protagonizado por @zeballos17 y @juanminujin",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "release",
@@ -655,8 +681,8 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.instagram.com/asimetria17/reel/DURe_gpEmSQ/",
       "date": "2026-02-02",
+      "url": "https://www.instagram.com/asimetria17/reel/DURe_gpEmSQ/",
       "caption": "CUANDO ESCRIBÍA ASIMETRÍA | Estreno este jueves 5/2 en el canal de YouTube @zeballos17",
       "track": "CUANDO ESCRIBÍA ASIMETRÍA",
       "type": "teaser",
@@ -667,16 +693,376 @@
       "account": "@asimetria17"
     },
     {
-      "url": "https://www.tiktok.com/@zeballosrap/video/7620821513733754143",
       "date": "2026-03-24",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7620821513733754143",
       "caption": "Después de un 'nosotros' siempre hay un 'pero' ❤️‍🩹⛓️‍💥 #amorfiado",
       "track": "AMOR FIADO",
       "type": "kiosko",
-      "views": 357,
+      "views": 561,
       "likes": 0,
       "saves": 0,
       "platform": "tiktok",
       "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-04-07",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7625987383661448469",
+      "caption": "Buenos y lluviosos días para todos",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 2747,
+      "likes": 715,
+      "saves": 9,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-04-04",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7624955744797953300",
+      "caption": "Al menos lo feo los tiene a los malos contentos",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 6539,
+      "likes": 1287,
+      "saves": 46,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-04-03",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7624513338881477909",
+      "caption": "Perfumadoo",
+      "track": "PERFUMADOO",
+      "type": "release",
+      "views": 2245,
+      "likes": 257,
+      "saves": 14,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-03-28",
+      "url": "https://www.tiktok.com/@zeballos1717/video/7622432829451799829",
+      "caption": "sonido original",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 8414,
+      "likes": 1359,
+      "saves": 46,
+      "platform": "tiktok",
+      "account": "@zeballos1717"
+    },
+    {
+      "date": "2026-03-27",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7621947532805016863",
+      "caption": "Se los digo yo y vos tambien compa deciles… #zeballos17 #asimetria17 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 6460,
+      "likes": 813,
+      "saves": 17,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-28",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7622308587490020638",
+      "caption": "No sé decirte que no ⛓️ #zeballos17 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 1243,
+      "likes": 145,
+      "saves": 7,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-28",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7622328202651815198",
+      "caption": "Yo diría que Nacho aprueba ⛓️ 🤝 @Nacho Lahuerta #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 1146,
+      "likes": 108,
+      "saves": 9,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-28",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7622449543799491871",
+      "caption": "*musica de suspenso* #zeballos17 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 2136,
+      "likes": 327,
+      "saves": 12,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-31",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7623258387416943903",
+      "caption": "Ya vieron el Vlog1 en LA??? Vayan a yt!! Cocinando el discazo #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 2350,
+      "likes": 504,
+      "saves": 5,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-04-01",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7623501908417858847",
+      "caption": "Cafecito hipster con los rappers en LA. Full vlog en @zeballos.vlog #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 422,
+      "likes": 62,
+      "saves": 4,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-04-01",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7623543787507191071",
+      "caption": "No saben lo feliz que me pone ver que los pibes arrancan a viajar por esto ⛓️ #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 564,
+      "likes": 67,
+      "saves": 5,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-04-02",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7624218062861962526",
+      "caption": "Realmente no están listos para lo que está por salir al aire… Preguntale al tío ⛓️ #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 552,
+      "likes": 63,
+      "saves": 6,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-04-06",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7625725908439076126",
+      "caption": "Tu mama llora por tu mala actitud uuu… #zeballos17 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 1278,
+      "likes": 205,
+      "saves": 11,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-04-06",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7625727840373247262",
+      "caption": "Despues de darle una mordida al azar, que es lo peor que te podría pasar? #zeballos17 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 695,
+      "likes": 128,
+      "saves": 4,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-04-07",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7625727991774973214",
+      "caption": "Yo no tengo oyentes tengo hinchas… #zeballos17 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 546,
+      "likes": 104,
+      "saves": 2,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-04-07",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7625729029743725855",
+      "caption": "En unas horas están todos gritando ATBLM ⛓️ #zeballos17 #asimetria17 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 329,
+      "likes": 36,
+      "saves": 8,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-04-07",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7625729281586482462",
+      "caption": "Hijo de la asimetria soy distinto si investigan… #zeballos17 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 1131,
+      "likes": 214,
+      "saves": 10,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-04-06",
+      "url": "https://www.tiktok.com/@zeballosrap/video/7625730774062386463",
+      "caption": "Yo no tengo oyentes tengo hinchas… #zeballos17 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "kiosko",
+      "views": 369,
+      "likes": 103,
+      "saves": 5,
+      "platform": "tiktok",
+      "account": "@zeballosrap"
+    },
+    {
+      "date": "2026-03-26",
+      "url": "https://www.instagram.com/reel/DWXABCWkRYu/",
+      "caption": "La mirada propia chocando contra una fuerza que va para adelante #amorfiado @spotifyargentina",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 12828,
+      "likes": 3286,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-03-27",
+      "url": "https://www.instagram.com/p/DWY_z80DqXS/",
+      "caption": "Quién tiene ganas de ver un poco más de lo que hicimos en L.A? 📷 @nacho.yaniero",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 0,
+      "likes": 12745,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-03-28",
+      "url": "https://www.instagram.com/reel/DWcV7B2ktbF/",
+      "caption": "En Los Ángeles terminamos de darle vida a AMOR FIADO junto a @christianrich 🐎 Próximamente vlog #1",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 10609,
+      "likes": 3767,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-03-31",
+      "url": "https://www.instagram.com/reel/DWkOxTwDk_B/",
+      "caption": "vamos a estar RAPEANDO en el maldito @antelarena… El 20 de junio tenemos una cita.",
+      "track": "AMOR FIADO",
+      "type": "launch",
+      "views": 20770,
+      "likes": 5281,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-04-01",
+      "url": "https://www.instagram.com/p/DWl7D34DuCy/",
+      "caption": "MONTEVIDEOO ENTRADAS YA HABILITADAS, Rap de Uruguay para Uruguay 🇺🇾 en @antelarena",
+      "track": "AMOR FIADO",
+      "type": "launch",
+      "views": 0,
+      "likes": 5279,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-04-01",
+      "url": "https://www.instagram.com/reel/DWmxJMPDhui/",
+      "caption": "Nos vemos en Microestadio Ferro el 13 de junio. Entradas a la venta mañana 12 hs 🐎",
+      "track": "AMOR FIADO",
+      "type": "launch",
+      "views": 14152,
+      "likes": 4607,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-04-02",
+      "url": "https://www.instagram.com/p/DWol7VGDoNe/",
+      "caption": "Ahora si BUENOS AIRES YA HABILITAMOS LAS ENTRADAS, el 13 de junio @microestadioforro",
+      "track": "AMOR FIADO",
+      "type": "launch",
+      "views": 0,
+      "likes": 4344,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-04-04",
+      "url": "https://www.instagram.com/p/DWtu4a9Dmbs/",
+      "caption": "Quería fama pero soy un TOP TIER 🐎🇺🇾",
+      "track": "BEL AIR",
+      "type": "promo",
+      "views": 0,
+      "likes": 9387,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-04-07",
+      "url": "https://www.instagram.com/reel/DW1XH9RDkeS/",
+      "caption": "5to año consecutivo que la música nos hace viajar a otro continente 🙏🏼🇪🇸 Entradas a la venta mañana 13 hs 🐎",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 3830,
+      "likes": 1255,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@zeballos17"
+    },
+    {
+      "date": "2026-03-27",
+      "url": "https://www.instagram.com/reel/DWZEiYUESya/",
+      "caption": "CALL ME 😮‍💨 La data de L.A son todo videoclips #zeballos17 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "promo",
+      "views": 5994,
+      "likes": 1615,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-04-01",
+      "url": "https://www.instagram.com/reel/DWmncBSEj0k/",
+      "caption": "Sale el show más importante de tu carrera y vos tipo 🐎 @zeballos17 #amorfiado",
+      "track": "AMOR FIADO",
+      "type": "launch",
+      "views": 5411,
+      "likes": 1771,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
+    },
+    {
+      "date": "2026-04-04",
+      "url": "https://www.instagram.com/reel/DWt1InxkQjk/",
+      "caption": "Quería fama pero soy un TOP TIER 🐎 #zeballos17 #amorfiado",
+      "track": "BEL AIR",
+      "type": "promo",
+      "views": 2497,
+      "likes": 1071,
+      "saves": 0,
+      "platform": "instagram",
+      "account": "@asimetria17"
     }
   ],
   "viewsHistory": [
