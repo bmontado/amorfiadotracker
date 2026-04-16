@@ -4099,46 +4099,83 @@ const AmorFiadoDashboard = () => {
               </div>
               {malpDaily.length > 0 ? (() => {
                 const maxS = Math.max(...malpDaily.map(x => x.streams));
-                const barH = 210;
+                const chartW = 100; // percentage
+                const chartH = 200;
+                const pad = { top: 25, bottom: 30, left: 0, right: 0 };
+                const innerH = chartH - pad.top - pad.bottom;
+                const n = malpDaily.length;
+                const step = n > 1 ? chartW / (n - 1) : chartW;
+
+                // SVG path builders
+                const totalPts = malpDaily.map((d, i) => ({ x: n > 1 ? (i / (n - 1)) * 100 : 50, y: pad.top + innerH - (d.streams / maxS * innerH) }));
+                const algoPts = malpDaily.map((d, i) => ({ x: n > 1 ? (i / (n - 1)) * 100 : 50, y: pad.top + innerH - (d.algo / maxS * innerH) }));
+                const baseLine = pad.top + innerH;
+
+                const pathLine = (pts) => pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ');
+                const pathArea = (pts) => pathLine(pts) + ` L${pts[pts.length - 1].x},${baseLine} L${pts[0].x},${baseLine} Z`;
+
                 return (
-                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: barH + 'px', padding: '0 4px' }}>
-                    {malpDaily.map((d, i) => {
-                      const totalH = maxS > 0 ? (d.streams / maxS * (barH - 40)) : 0;
-                      const algoH = maxS > 0 ? (d.algo / maxS * (barH - 40)) : 0;
-                      const organicH = totalH - algoH;
-                      const algoPct = d.streams > 0 ? (d.algo / d.streams * 100).toFixed(0) : 0;
-                      const isFirst = d.fullDate === '2026-04-13';
-                      return (
-                        <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-                          <span style={{ color: '#e2e8f0', fontSize: '0.58rem', fontWeight: 700, textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>{formatNumber(d.streams)}</span>
-                          <div style={{ width: '100%', maxWidth: '56px', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-                            <div style={{
-                              height: organicH + 'px', minHeight: organicH > 0 ? '3px' : '0',
-                              background: 'linear-gradient(180deg, #4ade80 0%, #16a34a 100%)',
-                              borderRadius: '8px 8px 0 0',
-                              boxShadow: '0 -2px 8px rgba(74,222,128,0.2)',
-                            }} />
-                            <div style={{
-                              height: algoH + 'px', minHeight: algoH > 0 ? '3px' : '0',
-                              background: 'linear-gradient(180deg, #fb923c 0%, #ea580c 100%)',
-                              borderRadius: organicH === 0 ? '8px 8px 4px 4px' : '0 0 4px 4px',
-                              boxShadow: '0 2px 8px rgba(249,115,22,0.2)',
-                            }} />
-                            {isFirst && <div style={{ position: 'absolute', top: '-2px', left: 0, right: 0, height: '2px', background: '#f97316', borderRadius: '1px' }} />}
+                  <div style={{ position: 'relative' }}>
+                    <svg viewBox={`0 0 100 ${chartH}`} preserveAspectRatio="none" style={{ width: '100%', height: chartH + 'px', display: 'block' }}>
+                      <defs>
+                        <linearGradient id="malpOrgGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#4ade80" stopOpacity="0.35" />
+                          <stop offset="100%" stopColor="#4ade80" stopOpacity="0.02" />
+                        </linearGradient>
+                        <linearGradient id="malpAlgoGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#f97316" stopOpacity="0.4" />
+                          <stop offset="100%" stopColor="#f97316" stopOpacity="0.02" />
+                        </linearGradient>
+                      </defs>
+                      {/* Grid lines */}
+                      {[0.25, 0.5, 0.75].map((f, gi) => (
+                        <line key={gi} x1="0" x2="100" y1={pad.top + innerH * (1 - f)} y2={pad.top + innerH * (1 - f)} stroke="rgba(148,163,184,0.08)" strokeWidth="0.3" />
+                      ))}
+                      {/* Total area (organic = total - algo) */}
+                      <path d={pathArea(totalPts)} fill="url(#malpOrgGrad)" />
+                      {/* Algo area */}
+                      <path d={pathArea(algoPts)} fill="url(#malpAlgoGrad)" />
+                      {/* Total line */}
+                      <path d={pathLine(totalPts)} fill="none" stroke="#4ade80" strokeWidth="0.5" strokeLinejoin="round" />
+                      {/* Algo line */}
+                      <path d={pathLine(algoPts)} fill="none" stroke="#f97316" strokeWidth="0.4" strokeLinejoin="round" strokeDasharray="1,0.5" />
+                      {/* Dots */}
+                      {totalPts.map((p, i) => (
+                        <circle key={'t' + i} cx={p.x} cy={p.y} r="0.8" fill="#4ade80" />
+                      ))}
+                      {algoPts.map((p, i) => (
+                        <circle key={'a' + i} cx={p.x} cy={p.y} r="0.6" fill="#f97316" />
+                      ))}
+                    </svg>
+                    {/* Overlayed labels */}
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
+                      {malpDaily.map((d, i) => {
+                        const xPct = n > 1 ? (i / (n - 1)) * 100 : 50;
+                        const algoPct = d.streams > 0 ? (d.algo / d.streams * 100).toFixed(0) : 0;
+                        return (
+                          <div key={i} style={{ position: 'absolute', left: xPct + '%', bottom: '0px', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <span style={{ color: '#94a3b8', fontSize: '0.52rem', fontWeight: 500 }}>{d.date}</span>
                           </div>
-                          <span style={{ color: '#94a3b8', fontSize: '0.55rem', fontWeight: 500 }}>{d.date}</span>
-                          <span style={{ color: 'rgba(249,115,22,0.6)', fontSize: '0.48rem' }}>{algoPct}%</span>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                      {malpDaily.map((d, i) => {
+                        const xPct = n > 1 ? (i / (n - 1)) * 100 : 50;
+                        const yPct = (d.streams / maxS);
+                        return (
+                          <div key={'v' + i} style={{ position: 'absolute', left: xPct + '%', top: (pad.top + innerH - yPct * innerH - 18) + 'px', transform: 'translateX(-50%)' }}>
+                            <span style={{ color: '#e2e8f0', fontSize: '0.55rem', fontWeight: 700, textShadow: '0 1px 4px rgba(0,0,0,0.6)', whiteSpace: 'nowrap' }}>{formatNumber(d.streams)}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 );
               })() : (
                 <p style={{ color: '#64748b', fontSize: '0.85rem' }}>Esperando datos diarios...</p>
               )}
-              <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'center', gap: '2rem' }}>
-                <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>Total orgánico: <strong style={{ color: '#4ade80' }}>{formatNumber(malpTotalStreams - malpAlgoTotal)}</strong></span>
-                <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>Total algorítmico: <strong style={{ color: '#f97316' }}>{formatNumber(malpAlgoTotal)}</strong></span>
+              <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'center', gap: '2rem' }}>
+                <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>Orgánico: <strong style={{ color: '#4ade80' }}>{formatNumber(malpTotalStreams - malpAlgoTotal)}</strong></span>
+                <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>Algorítmico: <strong style={{ color: '#f97316' }}>{formatNumber(malpAlgoTotal)}</strong></span>
                 <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>{malpOrganicPct.toFixed(0)}% orgánico</span>
               </div>
             </div>
@@ -4230,7 +4267,9 @@ const AmorFiadoDashboard = () => {
                         fontWeight: isTop ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                       }}>{t.name}</span>
                       <div style={{ flex: 1, position: 'relative', height: '20px' }}>
-                        <div style={{ position: 'absolute', width: (maxPost > 0 ? t.pre / maxPost * 100 : 0) + '%', height: '20px', background: 'rgba(148,163,184,0.08)', borderRadius: '6px', border: '1px dashed rgba(148,163,184,0.15)' }} />
+                        <div style={{ position: 'absolute', width: (maxPost > 0 ? t.pre / maxPost * 100 : 0) + '%', height: '20px', background: 'rgba(148,163,184,0.08)', borderRadius: '6px', border: '1px dashed rgba(148,163,184,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '6px' }}>
+                          <span style={{ color: '#64748b', fontSize: '0.52rem', fontWeight: 500 }}>{formatNumber(t.pre)}</span>
+                        </div>
                         <div style={{
                           position: 'relative', width: (maxPost > 0 ? t.post / maxPost * 100 : 0) + '%', height: '20px', minWidth: '2px',
                           background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #15803d)' : t.change > 0 ? 'linear-gradient(90deg, #3b82f6, #1d4ed8)' : 'rgba(239,68,68,0.4)',
@@ -4264,11 +4303,13 @@ const AmorFiadoDashboard = () => {
               </div>
 
               {/* Day slider */}
-              {algoPostDays.length > 0 && (
-                <div style={{ margin: '0.75rem 0 1.25rem', padding: '0.75rem 1rem', background: 'rgba(15,23,42,0.5)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>
-                      {malpAlgoDay === -1 ? 'Promedio post-lanzamiento' : (() => {
+              {algoPostDays.length > 0 && (() => {
+                const slW = Math.min(100, Math.max(30, algoPostDays.length * 18));
+                return (
+                <div style={{ margin: '0.75rem 0 1.25rem', padding: '0.6rem 1rem', background: 'rgba(15,23,42,0.5)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)', maxWidth: slW + '%' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                    <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>
+                      {malpAlgoDay === -1 ? 'Promedio post' : (() => {
                         const d = algoPostDays[malpAlgoDay];
                         return d ? new Date(d.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
                       })()}
@@ -4277,8 +4318,8 @@ const AmorFiadoDashboard = () => {
                       background: malpAlgoDay === -1 ? 'rgba(249,115,22,0.2)' : 'rgba(51,65,85,0.3)',
                       border: malpAlgoDay === -1 ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(255,255,255,0.06)',
                       borderRadius: '6px', color: malpAlgoDay === -1 ? '#f97316' : '#94a3b8',
-                      fontSize: '0.62rem', padding: '3px 10px', cursor: 'pointer', fontWeight: 600,
-                    }}>Promedio</button>
+                      fontSize: '0.58rem', padding: '2px 8px', cursor: 'pointer', fontWeight: 600,
+                    }}>Avg</button>
                   </div>
                   <input
                     type="range" min={0} max={algoPostDays.length - 1}
@@ -4286,31 +4327,35 @@ const AmorFiadoDashboard = () => {
                     onChange={e => setMalpAlgoDay(Number(e.target.value))}
                     style={{ ...sliderTrack, accentColor: '#f97316' }}
                   />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px' }}>
                     {algoPostDays.map((d, i) => (
-                      <span key={i} style={{ color: (malpAlgoDay === i || (malpAlgoDay === -1 && i === algoPostDays.length - 1)) ? '#f97316' : '#475569', fontSize: '0.5rem', cursor: 'pointer' }} onClick={() => setMalpAlgoDay(i)}>{d.label}</span>
+                      <span key={i} style={{ color: (malpAlgoDay === i || (malpAlgoDay === -1 && i === algoPostDays.length - 1)) ? '#f97316' : '#475569', fontSize: '0.48rem', cursor: 'pointer' }} onClick={() => setMalpAlgoDay(i)}>{d.label}</span>
                     ))}
                   </div>
                 </div>
-              )}
+                );
+              })()}
 
               {/* Algo bars */}
               {(() => {
                 const getTrackAlgo = (t) => {
                   if (malpAlgoDay === -1) {
-                    // Average of all post days
-                    const avg = algoPostDays.length > 0 ? algoPostDays.reduce((s, d) => s + d.tracks[t].pct, 0) / algoPostDays.length : 0;
-                    return avg;
+                    const avgPct = algoPostDays.length > 0 ? algoPostDays.reduce((s, d) => s + d.tracks[t].pct, 0) / algoPostDays.length : 0;
+                    const avgAbs = algoPostDays.length > 0 ? Math.round(algoPostDays.reduce((s, d) => s + d.tracks[t].algo, 0) / algoPostDays.length) : 0;
+                    return { pct: avgPct, abs: avgAbs };
                   }
                   const day = algoPostDays[malpAlgoDay];
-                  return day ? day.tracks[t].pct : 0;
+                  return day ? { pct: day.tracks[t].pct, abs: day.tracks[t].algo } : { pct: 0, abs: 0 };
+                };
+                const getPreAbs = (t) => {
+                  return algoPreDays.length > 0 ? Math.round(algoPreDays.reduce((s, d) => s + d.tracks[t].algo, 0) / algoPreDays.length) : 0;
                 };
 
                 const algoRows = OG_TRACKS.map(t => {
                   const pre = algoPreAvg[t];
-                  const post = getTrackAlgo(t);
-                  const diff = post - pre;
-                  return { name: t, pre, post, diff };
+                  const postData = getTrackAlgo(t);
+                  const diff = postData.pct - pre;
+                  return { name: t, pre, post: postData.pct, preAbs: getPreAbs(t), postAbs: postData.abs, diff };
                 }).sort((a, b) => b.diff - a.diff);
 
                 const maxAlgoPct = Math.max(...algoRows.map(t => Math.max(t.pre, t.post)), 1);
@@ -4338,6 +4383,7 @@ const AmorFiadoDashboard = () => {
                                 <div style={{ width: (t.pre / Math.max(maxAlgoPct, 50) * 100) + '%', height: '100%', background: 'rgba(148,163,184,0.25)', borderRadius: '4px' }} />
                               </div>
                               <span style={{ color: '#64748b', fontSize: '0.58rem', width: '32px', textAlign: 'right', fontFamily: 'monospace' }}>{t.pre.toFixed(0)}%</span>
+                              <span style={{ color: '#475569', fontSize: '0.5rem', width: '42px', textAlign: 'right' }}>{formatNumber(t.preAbs)}</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                               <span style={{ color: '#475569', fontSize: '0.48rem', width: '22px', fontFamily: 'monospace' }}>now</span>
@@ -4353,6 +4399,7 @@ const AmorFiadoDashboard = () => {
                                 color: isHot ? '#fb923c' : isWarm ? '#818cf8' : '#94a3b8',
                                 fontSize: '0.58rem', fontWeight: 700, width: '32px', textAlign: 'right', fontFamily: 'monospace',
                               }}>{t.post.toFixed(0)}%</span>
+                              <span style={{ color: isHot ? '#fb923c' : isWarm ? '#818cf8' : '#94a3b8', fontSize: '0.5rem', fontWeight: 600, width: '42px', textAlign: 'right' }}>{formatNumber(t.postAbs)}</span>
                             </div>
                           </div>
                           <div style={{
@@ -4469,11 +4516,13 @@ const AmorFiadoDashboard = () => {
                 </p>
 
                 {/* Slider */}
-                {listPostDays.length > 0 && (
-                  <div style={{ margin: '0.5rem 0 1.25rem', padding: '0.75rem 1rem', background: 'rgba(15,23,42,0.5)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                      <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>
-                        {malpListDay === -1 ? 'Promedio post-lanzamiento' : (() => {
+                {listPostDays.length > 0 && (() => {
+                  const slW = Math.min(100, Math.max(30, listPostDays.length * 18));
+                  return (
+                  <div style={{ margin: '0.5rem 0 1.25rem', padding: '0.6rem 1rem', background: 'rgba(15,23,42,0.5)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)', maxWidth: slW + '%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                      <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>
+                        {malpListDay === -1 ? 'Promedio post' : (() => {
                           const d = listPostDays[malpListDay];
                           return d ? new Date(d.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
                         })()}
@@ -4482,8 +4531,8 @@ const AmorFiadoDashboard = () => {
                         background: malpListDay === -1 ? 'rgba(249,115,22,0.2)' : 'rgba(51,65,85,0.3)',
                         border: malpListDay === -1 ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(255,255,255,0.06)',
                         borderRadius: '6px', color: malpListDay === -1 ? '#f97316' : '#94a3b8',
-                        fontSize: '0.62rem', padding: '3px 10px', cursor: 'pointer', fontWeight: 600,
-                      }}>Promedio</button>
+                        fontSize: '0.58rem', padding: '2px 8px', cursor: 'pointer', fontWeight: 600,
+                      }}>Avg</button>
                     </div>
                     <input
                       type="range" min={0} max={listPostDays.length - 1}
@@ -4491,13 +4540,14 @@ const AmorFiadoDashboard = () => {
                       onChange={e => setMalpListDay(Number(e.target.value))}
                       style={{ ...sliderTrack, accentColor: '#f97316' }}
                     />
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px' }}>
                       {listPostDays.map((d, i) => (
-                        <span key={i} style={{ color: (malpListDay === i || (malpListDay === -1 && i === listPostDays.length - 1)) ? '#f97316' : '#475569', fontSize: '0.5rem', cursor: 'pointer' }} onClick={() => setMalpListDay(i)}>{d.label}</span>
+                        <span key={i} style={{ color: (malpListDay === i || (malpListDay === -1 && i === listPostDays.length - 1)) ? '#f97316' : '#475569', fontSize: '0.48rem', cursor: 'pointer' }} onClick={() => setMalpListDay(i)}>{d.label}</span>
                       ))}
                     </div>
                   </div>
-                )}
+                  );
+                })()}
 
                 {/* Per-track bars */}
                 {(() => {
@@ -4531,7 +4581,9 @@ const AmorFiadoDashboard = () => {
                           fontWeight: isTop ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                         }}>{t.name}</span>
                         <div style={{ flex: 1, position: 'relative', height: '20px' }}>
-                          <div style={{ position: 'absolute', width: (maxLP > 0 ? t.pre / maxLP * 100 : 0) + '%', height: '20px', background: 'rgba(96,165,250,0.08)', borderRadius: '6px', border: '1px dashed rgba(96,165,250,0.15)' }} />
+                          <div style={{ position: 'absolute', width: (maxLP > 0 ? t.pre / maxLP * 100 : 0) + '%', height: '20px', background: 'rgba(96,165,250,0.08)', borderRadius: '6px', border: '1px dashed rgba(96,165,250,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '6px' }}>
+                            <span style={{ color: '#64748b', fontSize: '0.52rem', fontWeight: 500 }}>{formatNumber(t.pre)}</span>
+                          </div>
                           <div style={{
                             position: 'relative', width: (maxLP > 0 ? t.post / maxLP * 100 : 0) + '%', height: '20px', minWidth: '2px',
                             background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #15803d)' : t.change > 0 ? 'linear-gradient(90deg, #60a5fa, #2563eb)' : 'rgba(239,68,68,0.4)',
