@@ -3948,6 +3948,7 @@ const AmorFiadoDashboard = () => {
         const preDays = dl.filter(e => e.date < MALP_RELEASE).slice(-7);
         const postDays = dl.filter(e => e.date >= MALP_RELEASE);
         const aLog = liveData.algoLog || [];
+        const lLog = liveData.listenersLog || [];
 
         // ── MALPARIDO daily + algo per day ──
         const malpDaily = dl.filter(e => (e.tracks['MALPARIDO'] || 0) > 0).map(e => {
@@ -4247,6 +4248,107 @@ const AmorFiadoDashboard = () => {
                   </div>
                 );
               })()}
+            </div>
+
+            {/* ── Listeners Delta ── */}
+            <div style={card}>
+              <h3 style={{ color: '#f1f5f9', fontSize: '1rem', margin: '0 0 0.3rem' }}>👥 Listeners diarios — Audiencia nueva post-Malparido</h3>
+              <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem' }}>
+                Listeners únicos por día (todos los tracks sumados) · La línea punteada marca el lanzamiento
+              </p>
+              {(() => {
+                const lWindow = lLog.slice(-21);
+                if (lWindow.length === 0) return <p style={{ color: '#64748b' }}>Esperando datos de listeners...</p>;
+
+                const albumListeners = lWindow.map(e => {
+                  const total = Object.values(e.tracks).reduce((s, v) => s + v, 0);
+                  return { date: e.date, label: e.date.slice(5).replace('-0', '-').replace(/^0/, ''), total, isPost: e.date >= MALP_RELEASE };
+                });
+                const maxL = Math.max(...albumListeners.map(e => e.total), 1);
+                const chartH = 170;
+                const preListAvg = albumListeners.filter(e => !e.isPost).slice(-7);
+                const postListAvg = albumListeners.filter(e => e.isPost);
+                const preAvgL = preListAvg.length > 0 ? Math.round(preListAvg.reduce((s, e) => s + e.total, 0) / preListAvg.length) : 0;
+                const postAvgL = postListAvg.length > 0 ? Math.round(postListAvg.reduce((s, e) => s + e.total, 0) / postListAvg.length) : 0;
+                const listLift = preAvgL > 0 ? ((postAvgL - preAvgL) / preAvgL * 100) : 0;
+
+                return (
+                  <div>
+                    <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1rem' }}>
+                      <div style={{ background: 'rgba(59,130,246,0.1)', borderRadius: '8px', padding: '0.5rem 1rem' }}>
+                        <span style={{ color: '#64748b', fontSize: '0.6rem', textTransform: 'uppercase' }}>Pre avg (7d)</span>
+                        <div style={{ color: '#60a5fa', fontSize: '1.1rem', fontWeight: 700 }}>{formatNumber(preAvgL)}/día</div>
+                      </div>
+                      <div style={{ background: 'rgba(249,115,22,0.1)', borderRadius: '8px', padding: '0.5rem 1rem' }}>
+                        <span style={{ color: '#64748b', fontSize: '0.6rem', textTransform: 'uppercase' }}>Post avg ({postListAvg.length}d)</span>
+                        <div style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700 }}>{formatNumber(postAvgL)}/día</div>
+                      </div>
+                      <div style={{ background: listLift > 0 ? 'rgba(74,222,128,0.1)' : 'rgba(239,68,68,0.1)', borderRadius: '8px', padding: '0.5rem 1rem' }}>
+                        <span style={{ color: '#64748b', fontSize: '0.6rem', textTransform: 'uppercase' }}>Cambio</span>
+                        <div style={{ color: listLift > 0 ? '#4ade80' : '#f87171', fontSize: '1.1rem', fontWeight: 700 }}>{listLift > 0 ? '+' : ''}{listLift.toFixed(0)}%</div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: chartH + 'px', position: 'relative' }}>
+                      {preAvgL > 0 && (
+                        <div style={{ position: 'absolute', bottom: (preAvgL / maxL * chartH) + 'px', left: 0, right: 0, borderBottom: '1px dashed rgba(96,165,250,0.4)', zIndex: 1 }}>
+                          <span style={{ position: 'absolute', right: 0, top: '-12px', color: '#60a5fa', fontSize: '0.5rem' }}>pre avg</span>
+                        </div>
+                      )}
+                      {albumListeners.map((d, i) => {
+                        const h = d.total / maxL * (chartH - 15);
+                        const isRelease = d.date === MALP_RELEASE;
+                        return (
+                          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            {d.isPost && (
+                              <span style={{ color: '#f97316', fontSize: '0.5rem', fontWeight: 600, marginBottom: '2px' }}>{formatNumber(d.total)}</span>
+                            )}
+                            <div style={{
+                              width: '100%', height: h + 'px', minHeight: '2px',
+                              background: d.isPost
+                                ? 'linear-gradient(180deg, #f97316, #ea580c)'
+                                : 'linear-gradient(180deg, rgba(96,165,250,0.5), rgba(96,165,250,0.2))',
+                              borderRadius: '3px 3px 1px 1px',
+                              borderLeft: isRelease ? '2px dashed #f97316' : 'none',
+                            }} />
+                            <span style={{ color: d.isPost ? '#f97316' : '#475569', fontSize: '0.45rem', marginTop: '2px', transform: 'rotate(-45deg)', whiteSpace: 'nowrap' }}>{d.label}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Per-track listener halo */}
+              <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(51,65,85,0.4)', paddingTop: '1rem' }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.75rem', margin: '0 0 0.75rem' }}>Listeners diarios por track: <span style={{ color: '#64748b' }}>pre (7d avg)</span> vs <span style={{ color: '#f97316' }}>post avg</span></p>
+                {(() => {
+                  const preL = lLog.filter(e => e.date < MALP_RELEASE).slice(-7);
+                  const postL = lLog.filter(e => e.date >= MALP_RELEASE);
+                  const listHalo = OG_TRACKS.map(t => {
+                    const pre = preL.length > 0 ? Math.round(preL.reduce((s, e) => s + (e.tracks[t] || 0), 0) / preL.length) : 0;
+                    const post = postL.length > 0 ? Math.round(postL.reduce((s, e) => s + (e.tracks[t] || 0), 0) / postL.length) : 0;
+                    const change = pre > 0 ? ((post - pre) / pre * 100) : 0;
+                    return { name: t, pre, post, change };
+                  }).sort((a, b) => b.change - a.change);
+                  const maxLP = Math.max(...listHalo.map(h => h.post), 1);
+
+                  return listHalo.map((t, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem' }}>
+                      <span style={{ color: '#94a3b8', fontSize: '0.72rem', width: '200px', textAlign: 'right' }}>{t.name}</span>
+                      <div style={{ flex: 1, position: 'relative', height: '22px' }}>
+                        <div style={{ position: 'absolute', width: (maxLP > 0 ? t.pre / maxLP * 100 : 0) + '%', height: '22px', background: 'rgba(96,165,250,0.1)', borderRadius: '4px', border: '1px dashed rgba(96,165,250,0.25)' }} />
+                        <div style={{ position: 'relative', width: (maxLP > 0 ? t.post / maxLP * 100 : 0) + '%', height: '22px', background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #16a34a)' : t.change > 0 ? 'linear-gradient(90deg, #60a5fa, #3b82f6)' : 'rgba(239,68,68,0.5)', borderRadius: '4px', minWidth: '2px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '6px' }}>
+                          <span style={{ color: '#f1f5f9', fontSize: '0.6rem', fontWeight: 600 }}>{formatNumber(t.post)}/d</span>
+                        </div>
+                      </div>
+                      <span style={{ color: t.change > 50 ? '#4ade80' : t.change > 0 ? '#60a5fa' : '#f87171', fontSize: '0.75rem', fontWeight: 700, width: '55px', textAlign: 'right' }}>
+                        {t.change > 0 ? '+' : ''}{t.change.toFixed(0)}%
+                      </span>
+                    </div>
+                  ));
+                })()}
+              </div>
             </div>
           </div>
         );
