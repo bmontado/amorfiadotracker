@@ -181,6 +181,8 @@ const AmorFiadoDashboard = () => {
   const [malpAlgoDay, setMalpAlgoDay] = useState(-1);     // -1 = all post days avg
   const [malpListDay, setMalpListDay] = useState(-1);     // -1 = all post days avg
   const [malpExpandedTrack, setMalpExpandedTrack] = useState(null); // track name or null
+  const [malpHoveredBar, setMalpHoveredBar] = useState(null);       // index in listeners chart
+  const [malpHoveredDisc, setMalpHoveredDisc] = useState(null);     // index in discovery chart
   const [adminView, setAdminView] = useState('table');   // 'table' | 'form'
   const [adminEditDate, setAdminEditDate] = useState(''); // fecha siendo editada
   const [adminDate, setAdminDate] = useState(() => new Date().toISOString().split('T')[0]);
@@ -4314,10 +4316,12 @@ const AmorFiadoDashboard = () => {
                     const isExpanded = malpExpandedTrack === t.name;
                     const isAlgoHot = t.algoDiff > 10;
                     const isAlgoWarm = t.algoDiff > 3;
-                    // Stacked bar proportions
-                    const orgW = t.post > 0 ? ((t.organicPost) / maxBar * 100) : 0;
-                    const algoW = t.post > 0 ? ((t.algoPostAbs) / maxBar * 100) : 0;
+                    // Bar proportions
+                    const postTotal = t.organicPost + t.algoPostAbs;
+                    const orgW = t.post > 0 ? (t.organicPost / maxBar * 100) : 0;
+                    const algoW = t.post > 0 ? (t.algoPostAbs / maxBar * 100) : 0;
                     const preW = t.pre / maxBar * 100;
+                    const postW = orgW + algoW;
 
                     return (
                       <div key={i}>
@@ -4325,8 +4329,8 @@ const AmorFiadoDashboard = () => {
                         <div
                           onClick={() => setMalpExpandedTrack(isExpanded ? null : t.name)}
                           style={{
-                            display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: isExpanded ? 0 : '0.5rem',
-                            padding: '0.5rem 0.6rem', borderRadius: isExpanded ? '10px 10px 0 0' : '10px',
+                            display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: isExpanded ? 0 : '0.6rem',
+                            padding: '0.55rem 0.6rem', borderRadius: isExpanded ? '10px 10px 0 0' : '10px',
                             background: isExpanded ? 'rgba(249,115,22,0.06)' : isTop ? 'rgba(74,222,128,0.04)' : 'transparent',
                             border: isExpanded ? '1px solid rgba(249,115,22,0.12)' : '1px solid transparent',
                             borderBottom: isExpanded ? '1px solid rgba(255,255,255,0.03)' : '1px solid transparent',
@@ -4336,61 +4340,60 @@ const AmorFiadoDashboard = () => {
                           {/* Track name */}
                           <span style={{
                             color: isExpanded ? '#fb923c' : isTop ? '#e2e8f0' : '#94a3b8',
-                            fontSize: '0.7rem', width: '170px', textAlign: 'right',
+                            fontSize: '0.7rem', width: '140px', textAlign: 'right',
                             fontWeight: isExpanded || isTop ? 600 : 400,
                             whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                           }}>{t.name}</span>
 
-                          {/* Stacked bar: pre (dashed) + organic + algo */}
-                          <div style={{ flex: 1, position: 'relative', height: '22px' }}>
-                            {/* Pre reference bar */}
-                            <div style={{
-                              position: 'absolute', left: 0, top: '1px', width: preW + '%', height: '20px',
-                              borderRadius: '6px',
-                              border: '1.5px dashed rgba(148,163,184,0.35)',
-                              background: 'rgba(148,163,184,0.04)',
-                              display: 'flex', alignItems: 'center', paddingLeft: '6px',
-                              zIndex: 0,
-                            }}>
-                              <span style={{ color: '#64748b', fontSize: '0.55rem', fontWeight: 600 }}>{formatNumber(t.pre)}</span>
-                            </div>
-                            {/* Post stacked bar (organic + algo) */}
-                            <div style={{
-                              position: 'relative', display: 'flex', height: '22px',
-                              width: (orgW + algoW) + '%', minWidth: '2px', zIndex: 1,
-                            }}>
-                              {/* Organic portion */}
+                          {/* Dual-row bar: Pre on top, Post below */}
+                          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                            {/* PRE bar — thin, muted, distinct style */}
+                            <div style={{ position: 'relative', height: '10px', display: 'flex', alignItems: 'center' }}>
                               <div style={{
-                                width: orgW > 0 ? (t.organicPost / (t.organicPost + t.algoPostAbs) * 100) + '%' : '100%',
-                                height: '100%',
-                                background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #15803d)' : t.change > 0 ? 'linear-gradient(90deg, #3b82f6, #1d4ed8)' : 'rgba(239,68,68,0.4)',
-                                borderRadius: '6px 0 0 6px',
-                                boxShadow: t.change > 50 ? '0 2px 6px rgba(34,197,94,0.15)' : 'none',
+                                width: preW + '%', height: '8px', minWidth: '2px',
+                                borderRadius: '4px',
+                                background: 'linear-gradient(90deg, rgba(148,163,184,0.25), rgba(100,116,139,0.15))',
+                                border: '1px solid rgba(148,163,184,0.2)',
                               }} />
-                              {/* Algo portion */}
-                              {t.algoPostAbs > 0 && (
+                              <span style={{ marginLeft: '6px', color: '#64748b', fontSize: '0.52rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                {formatNumber(t.pre)}/d <span style={{ color: '#475569', fontWeight: 400 }}>pre</span>
+                              </span>
+                            </div>
+                            {/* POST bar — stacked organic + algo */}
+                            <div style={{ position: 'relative', height: '18px', display: 'flex', alignItems: 'center' }}>
+                              <div style={{
+                                display: 'flex', height: '16px', width: postW + '%', minWidth: '2px',
+                                borderRadius: '5px', overflow: 'hidden',
+                              }}>
+                                {/* Organic portion */}
                                 <div style={{
-                                  width: (t.algoPostAbs / (t.organicPost + t.algoPostAbs) * 100) + '%',
+                                  width: postTotal > 0 ? (t.organicPost / postTotal * 100) + '%' : '100%',
                                   height: '100%',
-                                  background: isAlgoHot ? 'linear-gradient(90deg, #f97316, #ef4444)' : 'linear-gradient(90deg, #f97316, #ea580c)',
-                                  borderRadius: '0 6px 6px 0',
-                                  opacity: 0.85,
+                                  background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #16a34a)' : t.change > 0 ? 'linear-gradient(90deg, #3b82f6, #2563eb)' : 'rgba(239,68,68,0.5)',
+                                  boxShadow: t.change > 50 ? '0 2px 6px rgba(34,197,94,0.15)' : 'none',
                                 }} />
-                              )}
-                              {/* Value label */}
-                              <span style={{
-                                position: 'absolute', right: '6px', top: '50%', transform: 'translateY(-50%)',
-                                color: '#f1f5f9', fontSize: '0.58rem', fontWeight: 600, textShadow: '0 1px 3px rgba(0,0,0,0.5)',
-                              }}>{formatNumber(t.post)}/d</span>
+                                {/* Algo portion */}
+                                {t.algoPostAbs > 0 && (
+                                  <div style={{
+                                    width: (t.algoPostAbs / postTotal * 100) + '%',
+                                    height: '100%',
+                                    background: isAlgoHot ? 'linear-gradient(90deg, #f97316, #ef4444)' : 'linear-gradient(90deg, #f97316, #ea580c)',
+                                    opacity: 0.9,
+                                  }} />
+                                )}
+                              </div>
+                              <span style={{ marginLeft: '6px', color: '#e2e8f0', fontSize: '0.58rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                                {formatNumber(t.post)}/d
+                              </span>
                             </div>
                           </div>
 
                           {/* Change badge */}
                           <div style={{
-                            minWidth: '50px', textAlign: 'center', padding: '2px 6px', borderRadius: '6px',
+                            minWidth: '52px', textAlign: 'center', padding: '3px 7px', borderRadius: '6px',
                             background: t.change > 50 ? 'rgba(74,222,128,0.1)' : t.change > 0 ? 'rgba(96,165,250,0.1)' : 'rgba(248,113,113,0.1)',
                           }}>
-                            <span style={{ color: t.change > 50 ? '#4ade80' : t.change > 0 ? '#60a5fa' : '#f87171', fontSize: '0.72rem', fontWeight: 700 }}>
+                            <span style={{ color: t.change > 50 ? '#4ade80' : t.change > 0 ? '#60a5fa' : '#f87171', fontSize: '0.75rem', fontWeight: 700 }}>
                               {t.change > 0 ? '+' : ''}{t.change.toFixed(0)}%
                             </span>
                           </div>
@@ -4574,85 +4577,193 @@ const AmorFiadoDashboard = () => {
                       </div>
                     </div>
                     {listTimeline.length > 1 && (() => {
-                      const chartH = 160;
-                      const padTop = 20, padBot = 28;
-                      const innerH = chartH - padTop - padBot;
-                      const n = listTimeline.length;
-                      // stacked bar chart approach
-                      const barW = Math.min(30, 90 / n);
-                      const gap = (100 - barW * n) / (n + 1);
-
+                      const chartH = 200;
                       return (
-                        <svg viewBox={`0 0 100 ${chartH}`} preserveAspectRatio="none" style={{ width: '100%', height: chartH + 'px', display: 'block' }}>
-                          <defs>
-                            <linearGradient id="audAlbum" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.9" />
-                              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.5" />
-                            </linearGradient>
-                            <linearGradient id="audMalp" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#f97316" stopOpacity="0.95" />
-                              <stop offset="100%" stopColor="#ea580c" stopOpacity="0.6" />
-                            </linearGradient>
-                          </defs>
-                          {/* Release marker */}
-                          {(() => {
-                            const releaseIdx = listTimeline.findIndex(d => d.isPost);
-                            if (releaseIdx < 0) return null;
-                            const x = gap + releaseIdx * (barW + gap);
-                            return <line x1={x - gap/2} y1={padTop - 5} x2={x - gap/2} y2={chartH - padBot} stroke="#f97316" strokeWidth="0.3" strokeDasharray="1,1" opacity="0.5" />;
-                          })()}
-                          {/* Pre-avg line */}
+                        <div style={{ position: 'relative', height: chartH + 'px' }}>
+                          {/* Y-axis labels */}
+                          <div style={{ position: 'absolute', left: 0, top: 0, bottom: 28, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '44px', pointerEvents: 'none' }}>
+                            {[maxListT, Math.round(maxListT * 0.66), Math.round(maxListT * 0.33), 0].map((v, vi) => (
+                              <span key={vi} style={{ color: '#475569', fontSize: '0.5rem', fontFamily: 'monospace' }}>{formatNumber(v)}</span>
+                            ))}
+                          </div>
+                          {/* Grid lines */}
+                          <div style={{ position: 'absolute', left: '48px', right: 0, top: 0, bottom: 28, pointerEvents: 'none' }}>
+                            {[0, 0.33, 0.66, 1].map((pct, gi) => (
+                              <div key={gi} style={{ position: 'absolute', left: 0, right: 0, top: ((1 - pct) * 100) + '%', borderBottom: '1px solid rgba(71,85,105,0.12)' }} />
+                            ))}
+                          </div>
+                          {/* Pre-avg reference line */}
                           {preListAvg > 0 && (
-                            <line x1="0" y1={padTop + innerH - (preListAvg / maxListT * innerH)} x2="100" y2={padTop + innerH - (preListAvg / maxListT * innerH)} stroke="#475569" strokeWidth="0.25" strokeDasharray="1.5,1.5" opacity="0.6" />
+                            <div style={{ position: 'absolute', left: '48px', right: 0, bottom: 28 + (preListAvg / maxListT * (chartH - 28)) + 'px', borderBottom: '1.5px dashed rgba(148,163,184,0.3)', zIndex: 2, pointerEvents: 'none' }}>
+                              <span style={{ position: 'absolute', right: 0, top: '-13px', color: '#64748b', fontSize: '0.48rem', background: 'rgba(15,23,42,0.85)', padding: '1px 5px', borderRadius: '3px' }}>pre avg {formatNumber(preListAvg)}</span>
+                            </div>
                           )}
-                          {/* Bars */}
-                          {listTimeline.map((d, i) => {
-                            const x = gap + i * (barW + gap);
-                            const albumH = d.album / maxListT * innerH;
-                            const malpH = d.malp / maxListT * innerH;
-                            const albumY = padTop + innerH - albumH - malpH;
-                            const malpY = padTop + innerH - malpH;
-                            return (
-                              <g key={i}>
-                                <rect x={x} y={albumY} width={barW} height={albumH + malpH} rx="0.8" fill="url(#audAlbum)" opacity={d.isPost ? 1 : 0.5} />
-                                {d.malp > 0 && <rect x={x} y={malpY} width={barW} height={malpH} rx="0.5" fill="url(#audMalp)" />}
-                                <text x={x + barW / 2} y={chartH - padBot + 10} textAnchor="middle" fill={d.isPost ? '#94a3b8' : '#475569'} fontSize="2.5" fontWeight={d.isPost ? '600' : '400'}>{d.label.replace('04-', '').replace('03-', '')}</text>
-                              </g>
-                            );
-                          })}
-                        </svg>
+                          {/* Bars container */}
+                          <div style={{ marginLeft: '48px', display: 'flex', alignItems: 'flex-end', gap: '2px', height: (chartH - 28) + 'px', position: 'relative' }}>
+                            {listTimeline.map((d, i) => {
+                              const totalH = d.total / maxListT * 100;
+                              const albumPct = d.total > 0 ? d.album / d.total * 100 : 100;
+                              const malpPct = d.total > 0 ? d.malp / d.total * 100 : 0;
+                              const isHovered = malpHoveredBar === i;
+                              const releaseIdx = listTimeline.findIndex(x => x.isPost);
+                              const isRelease = i === releaseIdx;
+                              return (
+                                <div key={i}
+                                  onMouseEnter={() => setMalpHoveredBar(i)}
+                                  onMouseLeave={() => setMalpHoveredBar(null)}
+                                  style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', justifyContent: 'flex-end', position: 'relative', cursor: 'pointer' }}
+                                >
+                                  {/* Release marker line */}
+                                  {isRelease && (
+                                    <div style={{ position: 'absolute', top: -4, left: '-1px', bottom: 0, borderLeft: '1.5px dashed rgba(249,115,22,0.5)', zIndex: 3, pointerEvents: 'none' }}>
+                                      <span style={{ position: 'absolute', top: -2, left: 4, color: '#f97316', fontSize: '0.42rem', fontWeight: 800, whiteSpace: 'nowrap', background: 'rgba(249,115,22,0.12)', padding: '1px 4px', borderRadius: '3px' }}>MALP</span>
+                                    </div>
+                                  )}
+                                  {/* Tooltip */}
+                                  {isHovered && (
+                                    <div style={{
+                                      position: 'absolute', bottom: totalH + 8 + '%', left: '50%', transform: 'translateX(-50%)',
+                                      background: 'rgba(15,23,42,0.95)', border: '1px solid rgba(249,115,22,0.25)',
+                                      borderRadius: '8px', padding: '0.5rem 0.65rem', zIndex: 20, whiteSpace: 'nowrap',
+                                      boxShadow: '0 4px 20px rgba(0,0,0,0.5)', minWidth: '110px',
+                                    }}>
+                                      <div style={{ color: '#e2e8f0', fontSize: '0.65rem', fontWeight: 700, marginBottom: '0.3rem', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.25rem' }}>{d.date}</div>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.15rem' }}>
+                                        <span style={{ color: '#60a5fa', fontSize: '0.58rem' }}>Álbum</span>
+                                        <span style={{ color: '#e2e8f0', fontSize: '0.62rem', fontWeight: 700 }}>{formatNumber(d.album)}</span>
+                                      </div>
+                                      {d.malp > 0 && (
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.15rem' }}>
+                                          <span style={{ color: '#f97316', fontSize: '0.58rem' }}>MALPARIDO</span>
+                                          <span style={{ color: '#e2e8f0', fontSize: '0.62rem', fontWeight: 700 }}>{formatNumber(d.malp)}</span>
+                                        </div>
+                                      )}
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.2rem', marginTop: '0.15rem' }}>
+                                        <span style={{ color: '#94a3b8', fontSize: '0.58rem' }}>Total</span>
+                                        <span style={{ color: '#f1f5f9', fontSize: '0.65rem', fontWeight: 800 }}>{formatNumber(d.total)}</span>
+                                      </div>
+                                      {preListAvg > 0 && (
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', marginTop: '0.1rem' }}>
+                                          <span style={{ color: '#64748b', fontSize: '0.52rem' }}>vs pre avg</span>
+                                          <span style={{ color: d.album > preListAvg ? '#4ade80' : '#f87171', fontSize: '0.58rem', fontWeight: 700 }}>
+                                            {d.album > preListAvg ? '+' : ''}{preListAvg > 0 ? ((d.album - preListAvg) / preListAvg * 100).toFixed(0) : 0}%
+                                          </span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                  {/* Stacked bar */}
+                                  <div style={{
+                                    width: '100%', height: totalH + '%', minHeight: '2px', borderRadius: '4px 4px 1px 1px',
+                                    display: 'flex', flexDirection: 'column', overflow: 'hidden',
+                                    opacity: isHovered ? 1 : d.isPost ? 0.9 : 0.5,
+                                    transition: 'opacity 0.15s, box-shadow 0.15s',
+                                    boxShadow: isHovered ? '0 0 12px rgba(96,165,250,0.3)' : 'none',
+                                  }}>
+                                    {/* Album portion */}
+                                    <div style={{ flex: albumPct, background: 'linear-gradient(180deg, #60a5fa, #3b82f6)' }} />
+                                    {/* MALPARIDO portion */}
+                                    {malpPct > 0 && <div style={{ flex: malpPct, background: 'linear-gradient(180deg, #f97316, #ea580c)' }} />}
+                                  </div>
+                                  {/* Date label */}
+                                  <span style={{
+                                    color: isHovered ? '#e2e8f0' : d.isPost ? '#94a3b8' : '#475569',
+                                    fontSize: '0.46rem', marginTop: '4px',
+                                    transform: 'rotate(-45deg)', transformOrigin: 'center', whiteSpace: 'nowrap',
+                                    fontWeight: isHovered ? 700 : d.isPost ? 600 : 400,
+                                  }}>{d.label.replace('04-', '').replace('03-', '')}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
                       );
                     })()}
                   </div>
 
-                  {/* Discovery ratio mini-chart */}
+                  {/* Discovery ratio chart */}
                   <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
                       <div>
                         <span style={{ color: '#94a3b8', fontSize: '0.72rem', fontWeight: 600 }}>Índice de descubrimiento</span>
                         <p style={{ color: '#475569', fontSize: '0.58rem', margin: '0.15rem 0 0' }}>Oyentes / Streams — Más alto = más oyentes únicos descubriendo tu música</p>
                       </div>
+                      {malpHoveredDisc !== null && discoveryTimeline[malpHoveredDisc] && (
+                        <div style={{ background: 'rgba(34,211,238,0.08)', borderRadius: '8px', padding: '0.3rem 0.7rem', border: '1px solid rgba(34,211,238,0.15)' }}>
+                          <span style={{ color: '#22d3ee', fontSize: '0.7rem', fontWeight: 700 }}>{(discoveryTimeline[malpHoveredDisc].ratio * 100).toFixed(1)}%</span>
+                          <span style={{ color: '#64748b', fontSize: '0.55rem', marginLeft: '0.4rem' }}>{discoveryTimeline[malpHoveredDisc].date}</span>
+                        </div>
+                      )}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: '50px' }}>
-                      {discoveryTimeline.map((d, i) => {
-                        const maxR = Math.max(...discoveryTimeline.map(x => x.ratio), 0.01);
-                        const h = (d.ratio / maxR) * 44 + 4;
-                        return (
-                          <div key={i} title={`${d.date}: ${(d.ratio * 100).toFixed(1)}%`} style={{
-                            flex: 1, height: h + 'px', borderRadius: '3px 3px 0 0',
-                            background: d.isPost
-                              ? 'linear-gradient(180deg, #22d3ee, rgba(34,211,238,0.4))'
-                              : 'rgba(71,85,105,0.3)',
-                            transition: 'height 0.3s',
-                          }} />
-                        );
-                      })}
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px' }}>
-                      <span style={{ color: '#475569', fontSize: '0.5rem' }}>{discoveryTimeline[0]?.date}</span>
-                      <span style={{ color: '#64748b', fontSize: '0.5rem', fontWeight: 600 }}>post-MALPARIDO →</span>
-                      <span style={{ color: '#475569', fontSize: '0.5rem' }}>{discoveryTimeline[discoveryTimeline.length - 1]?.date}</span>
-                    </div>
+                    {(() => {
+                      const maxR = Math.max(...discoveryTimeline.map(x => x.ratio), 0.01);
+                      const preDiscAvg = (() => {
+                        const pre = discoveryTimeline.filter(d => !d.isPost);
+                        return pre.length > 0 ? pre.reduce((s, d) => s + d.ratio, 0) / pre.length : 0;
+                      })();
+                      return (
+                        <div style={{ position: 'relative' }}>
+                          {/* Pre-avg reference */}
+                          {preDiscAvg > 0 && (
+                            <div style={{ position: 'absolute', left: 0, right: 0, bottom: 28 + (preDiscAvg / maxR * 90) + 'px', borderBottom: '1.5px dashed rgba(148,163,184,0.25)', zIndex: 2, pointerEvents: 'none' }}>
+                              <span style={{ position: 'absolute', right: 0, top: '-12px', color: '#64748b', fontSize: '0.45rem', background: 'rgba(15,23,42,0.85)', padding: '1px 4px', borderRadius: '3px' }}>pre avg {(preDiscAvg * 100).toFixed(1)}%</span>
+                            </div>
+                          )}
+                          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: '110px', position: 'relative' }}>
+                            {discoveryTimeline.map((d, i) => {
+                              const h = (d.ratio / maxR) * 90 + 4;
+                              const isHovered = malpHoveredDisc === i;
+                              const vsAvg = preDiscAvg > 0 ? ((d.ratio - preDiscAvg) / preDiscAvg * 100) : 0;
+                              return (
+                                <div key={i}
+                                  onMouseEnter={() => setMalpHoveredDisc(i)}
+                                  onMouseLeave={() => setMalpHoveredDisc(null)}
+                                  style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%', position: 'relative', cursor: 'pointer' }}
+                                >
+                                  {/* Hover tooltip */}
+                                  {isHovered && (
+                                    <div style={{
+                                      position: 'absolute', bottom: h + 6 + 'px', left: '50%', transform: 'translateX(-50%)',
+                                      background: 'rgba(15,23,42,0.95)', border: '1px solid rgba(34,211,238,0.25)',
+                                      borderRadius: '8px', padding: '0.45rem 0.6rem', zIndex: 20, whiteSpace: 'nowrap',
+                                      boxShadow: '0 4px 16px rgba(0,0,0,0.5)', minWidth: '95px',
+                                    }}>
+                                      <div style={{ color: '#e2e8f0', fontSize: '0.62rem', fontWeight: 700, marginBottom: '0.2rem' }}>{d.date}</div>
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.8rem', marginBottom: '0.1rem' }}>
+                                        <span style={{ color: '#22d3ee', fontSize: '0.55rem' }}>Ratio</span>
+                                        <span style={{ color: '#22d3ee', fontSize: '0.62rem', fontWeight: 700 }}>{(d.ratio * 100).toFixed(1)}%</span>
+                                      </div>
+                                      {preDiscAvg > 0 && (
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.8rem' }}>
+                                          <span style={{ color: '#64748b', fontSize: '0.52rem' }}>vs pre</span>
+                                          <span style={{ color: vsAvg > 0 ? '#4ade80' : '#f87171', fontSize: '0.58rem', fontWeight: 700 }}>
+                                            {vsAvg > 0 ? '+' : ''}{vsAvg.toFixed(0)}%
+                                          </span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                  <div style={{
+                                    width: '100%', height: h + 'px', borderRadius: '4px 4px 1px 1px',
+                                    background: d.isPost
+                                      ? 'linear-gradient(180deg, #22d3ee, rgba(34,211,238,0.35))'
+                                      : 'linear-gradient(180deg, rgba(100,116,139,0.5), rgba(71,85,105,0.2))',
+                                    opacity: isHovered ? 1 : 0.8,
+                                    transition: 'opacity 0.15s, box-shadow 0.15s',
+                                    boxShadow: isHovered ? '0 0 10px rgba(34,211,238,0.3)' : 'none',
+                                  }} />
+                                </div>
+                              );
+                            })}
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
+                            <span style={{ color: '#475569', fontSize: '0.5rem' }}>{discoveryTimeline[0]?.date}</span>
+                            <span style={{ color: '#64748b', fontSize: '0.5rem', fontWeight: 600 }}>post-MALPARIDO →</span>
+                            <span style={{ color: '#475569', fontSize: '0.5rem' }}>{discoveryTimeline[discoveryTimeline.length - 1]?.date}</span>
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                 </div>
