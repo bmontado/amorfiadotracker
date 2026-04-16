@@ -5504,5 +5504,26 @@
         "MALPARIDO": 60250
       }
     }
-  ]
+  ],
+  "audienceSnapshot": {
+    "scrapedAt": "2026-04-16T20:00:00-03:00",
+    "period": "last_28_days",
+    "monthlyListeners": 769934,
+    "monthlyListenersChange": 20.2,
+    "totalStreams28d": 5105417,
+    "totalStreamsChange": 40.8,
+    "monthlyActiveListeners": 516987,
+    "monthlyActiveListenersChange": 25.9,
+    "newActiveListeners": 128068,
+    "newActiveListenersChange": 124.9,
+    "superListeners": 42714,
+    "superListenersChange": 39.3,
+    "totalAudience2yr": 5351831,
+    "segments28d": {
+      "newListeners": 189223,
+      "newActiveListeners": 119477,
+      "reactivatedListeners": 210546
+    },
+    "malpReleaseDate": "2026-04-13"
+  }
 }

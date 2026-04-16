@@ -4607,6 +4607,174 @@ const AmorFiadoDashboard = () => {
                 })()}
               </div>
             </div>
+
+            {/* ═══ IMPACTO EN AUDIENCIA ═══ */}
+            {(() => {
+              const aud = liveData.audienceSnapshot || {};
+              const seg = aud.segments28d || {};
+              // Compute daily listener totals from listenersLog
+              const listAll = (lLog || []);
+              const listTimeline = listAll.slice(-21).map(e => {
+                const total = Object.values(e.tracks || {}).reduce((s, v) => s + v, 0);
+                const malpL = e.tracks?.['MALPARIDO'] || 0;
+                const albumL = total - malpL;
+                return { date: e.date, label: e.date.slice(5), total, malp: malpL, album: albumL, isPost: e.date >= MALP_RELEASE };
+              });
+              const preListAvg = (() => {
+                const pre = listTimeline.filter(d => !d.isPost).slice(-7);
+                return pre.length > 0 ? Math.round(pre.reduce((s, d) => s + d.album, 0) / pre.length) : 0;
+              })();
+              const postListAvg = (() => {
+                const post = listTimeline.filter(d => d.isPost);
+                return post.length > 0 ? Math.round(post.reduce((s, d) => s + d.album, 0) / post.length) : 0;
+              })();
+              const listenerLift = preListAvg > 0 ? ((postListAvg - preListAvg) / preListAvg * 100) : 0;
+
+              // Discovery ratio: listeners per stream (high = broad discovery)
+              const discoveryTimeline = dl.slice(-21).map((e, idx) => {
+                const dayStreams = Object.values(e.tracks || {}).reduce((s, v) => s + v, 0);
+                const lEntry = listAll.find(l => l.date === e.date);
+                const dayListeners = lEntry ? Object.values(lEntry.tracks || {}).reduce((s, v) => s + v, 0) : 0;
+                return {
+                  date: e.label || e.date.slice(5),
+                  ratio: dayStreams > 0 ? (dayListeners / dayStreams) : 0,
+                  isPost: e.date >= MALP_RELEASE,
+                };
+              });
+
+              const maxListT = Math.max(...listTimeline.map(d => d.total), 1);
+
+              return (
+                <div style={glass}>
+                  <div style={{ marginBottom: '1.25rem' }}>
+                    <h3 style={{ color: '#f1f5f9', fontSize: '1.05rem', margin: 0, fontWeight: 700 }}>Impacto en audiencia</h3>
+                    <p style={{ color: '#64748b', fontSize: '0.72rem', margin: '0.2rem 0 0' }}>Crecimiento de oyentes y descubrimiento post-MALPARIDO</p>
+                  </div>
+
+                  {/* Audience KPIs */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '0.6rem', marginBottom: '1.5rem' }}>
+                    {[
+                      { label: 'Monthly listeners', value: formatNumber(aud.monthlyListeners || 0), delta: aud.monthlyListenersChange, color: '#60a5fa' },
+                      { label: 'New active listeners', value: formatNumber(aud.newActiveListeners || 0), delta: aud.newActiveListenersChange, color: '#4ade80' },
+                      { label: 'Super listeners', value: formatNumber(aud.superListeners || 0), delta: aud.superListenersChange, color: '#a78bfa' },
+                      { label: 'New listeners 28d', value: formatNumber(seg.newListeners || 0), delta: null, color: '#22d3ee' },
+                      { label: 'Reactivated', value: formatNumber(seg.reactivatedListeners || 0), delta: null, color: '#f97316' },
+                      { label: 'Album listener lift', value: (listenerLift > 0 ? '+' : '') + listenerLift.toFixed(0) + '%', delta: null, color: listenerLift > 0 ? '#4ade80' : '#f87171' },
+                    ].map((k, i) => (
+                      <div key={i} style={{
+                        background: 'rgba(15,23,42,0.4)', borderRadius: '12px', padding: '0.8rem 0.7rem',
+                        border: '1px solid rgba(255,255,255,0.04)', textAlign: 'center',
+                      }}>
+                        <div style={{ color: '#94a3b8', fontSize: '0.55rem', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.35rem', fontWeight: 500 }}>{k.label}</div>
+                        <div style={{ color: k.color, fontSize: '1.2rem', fontWeight: 800, letterSpacing: '-0.02em' }}>{k.value}</div>
+                        {k.delta !== null && k.delta !== undefined && (
+                          <div style={{ color: k.delta > 0 ? '#4ade80' : '#f87171', fontSize: '0.6rem', fontWeight: 600, marginTop: '0.15rem' }}>
+                            {k.delta > 0 ? '+' : ''}{k.delta.toFixed(1)}%
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Listeners timeline chart */}
+                  <div style={{ marginBottom: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
+                      <span style={{ color: '#94a3b8', fontSize: '0.72rem', fontWeight: 600 }}>Oyentes diarios (álbum + MALPARIDO)</span>
+                      <div style={{ display: 'flex', gap: '0.8rem' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#60a5fa', fontSize: '0.6rem' }}>
+                          <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#60a5fa', display: 'inline-block' }} /> Álbum
+                        </span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#f97316', fontSize: '0.6rem' }}>
+                          <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#f97316', display: 'inline-block' }} /> MALPARIDO
+                        </span>
+                      </div>
+                    </div>
+                    {listTimeline.length > 1 && (() => {
+                      const chartH = 160;
+                      const padTop = 20, padBot = 28;
+                      const innerH = chartH - padTop - padBot;
+                      const n = listTimeline.length;
+                      // stacked bar chart approach
+                      const barW = Math.min(30, 90 / n);
+                      const gap = (100 - barW * n) / (n + 1);
+
+                      return (
+                        <svg viewBox={`0 0 100 ${chartH}`} preserveAspectRatio="none" style={{ width: '100%', height: chartH + 'px', display: 'block' }}>
+                          <defs>
+                            <linearGradient id="audAlbum" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.9" />
+                              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.5" />
+                            </linearGradient>
+                            <linearGradient id="audMalp" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#f97316" stopOpacity="0.95" />
+                              <stop offset="100%" stopColor="#ea580c" stopOpacity="0.6" />
+                            </linearGradient>
+                          </defs>
+                          {/* Release marker */}
+                          {(() => {
+                            const releaseIdx = listTimeline.findIndex(d => d.isPost);
+                            if (releaseIdx < 0) return null;
+                            const x = gap + releaseIdx * (barW + gap);
+                            return <line x1={x - gap/2} y1={padTop - 5} x2={x - gap/2} y2={chartH - padBot} stroke="#f97316" strokeWidth="0.3" strokeDasharray="1,1" opacity="0.5" />;
+                          })()}
+                          {/* Pre-avg line */}
+                          {preListAvg > 0 && (
+                            <line x1="0" y1={padTop + innerH - (preListAvg / maxListT * innerH)} x2="100" y2={padTop + innerH - (preListAvg / maxListT * innerH)} stroke="#475569" strokeWidth="0.25" strokeDasharray="1.5,1.5" opacity="0.6" />
+                          )}
+                          {/* Bars */}
+                          {listTimeline.map((d, i) => {
+                            const x = gap + i * (barW + gap);
+                            const albumH = d.album / maxListT * innerH;
+                            const malpH = d.malp / maxListT * innerH;
+                            const albumY = padTop + innerH - albumH - malpH;
+                            const malpY = padTop + innerH - malpH;
+                            return (
+                              <g key={i}>
+                                <rect x={x} y={albumY} width={barW} height={albumH + malpH} rx="0.8" fill="url(#audAlbum)" opacity={d.isPost ? 1 : 0.5} />
+                                {d.malp > 0 && <rect x={x} y={malpY} width={barW} height={malpH} rx="0.5" fill="url(#audMalp)" />}
+                                <text x={x + barW / 2} y={chartH - padBot + 10} textAnchor="middle" fill={d.isPost ? '#94a3b8' : '#475569'} fontSize="2.5" fontWeight={d.isPost ? '600' : '400'}>{d.label.replace('04-', '').replace('03-', '')}</text>
+                              </g>
+                            );
+                          })}
+                        </svg>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Discovery ratio mini-chart */}
+                  <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
+                      <div>
+                        <span style={{ color: '#94a3b8', fontSize: '0.72rem', fontWeight: 600 }}>Índice de descubrimiento</span>
+                        <p style={{ color: '#475569', fontSize: '0.58rem', margin: '0.15rem 0 0' }}>Oyentes / Streams — Más alto = más oyentes únicos descubriendo tu música</p>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', height: '50px' }}>
+                      {discoveryTimeline.map((d, i) => {
+                        const maxR = Math.max(...discoveryTimeline.map(x => x.ratio), 0.01);
+                        const h = (d.ratio / maxR) * 44 + 4;
+                        return (
+                          <div key={i} title={`${d.date}: ${(d.ratio * 100).toFixed(1)}%`} style={{
+                            flex: 1, height: h + 'px', borderRadius: '3px 3px 0 0',
+                            background: d.isPost
+                              ? 'linear-gradient(180deg, #22d3ee, rgba(34,211,238,0.4))'
+                              : 'rgba(71,85,105,0.3)',
+                            transition: 'height 0.3s',
+                          }} />
+                        );
+                      })}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px' }}>
+                      <span style={{ color: '#475569', fontSize: '0.5rem' }}>{discoveryTimeline[0]?.date}</span>
+                      <span style={{ color: '#64748b', fontSize: '0.5rem', fontWeight: 600 }}>post-MALPARIDO →</span>
+                      <span style={{ color: '#475569', fontSize: '0.5rem' }}>{discoveryTimeline[discoveryTimeline.length - 1]?.date}</span>
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })()}
+
           </div>
         );
       })()}
