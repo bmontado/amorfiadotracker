@@ -180,6 +180,7 @@ const AmorFiadoDashboard = () => {
   const emptyTracks = () => { const t = {}; TRACKS.forEach(tr => { t[tr] = ''; }); return t; };
   const [malpAlgoDay, setMalpAlgoDay] = useState(-1);     // -1 = all post days avg
   const [malpListDay, setMalpListDay] = useState(-1);     // -1 = all post days avg
+  const [malpExpandedTrack, setMalpExpandedTrack] = useState(null); // track name or null
   const [adminView, setAdminView] = useState('table');   // 'table' | 'form'
   const [adminEditDate, setAdminEditDate] = useState(''); // fecha siendo editada
   const [adminDate, setAdminDate] = useState(() => new Date().toISOString().split('T')[0]);
@@ -4180,7 +4181,7 @@ const AmorFiadoDashboard = () => {
               </div>
             </div>
 
-            {/* ═══ EFECTO HALO ═══ */}
+            {/* ═══ EFECTO HALO UNIFICADO ═══ */}
             <div style={glass}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                 <h3 style={{ color: '#f1f5f9', fontSize: '1.05rem', margin: 0, fontWeight: 700 }}>Efecto halo en el álbum</h3>
@@ -4249,361 +4250,244 @@ const AmorFiadoDashboard = () => {
                 );
               })()}
 
-              {/* Per-track halo bars */}
+              {/* ── UNIFIED PER-TRACK BREAKDOWN ── */}
               <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '1.25rem' }}>
-                <p style={{ color: '#94a3b8', fontSize: '0.72rem', margin: '0 0 1rem', fontWeight: 500 }}>
-                  Promedio diario por track — <span style={{ color: '#64748b' }}>pre 7d</span> vs <span style={{ color: '#f97316' }}>post {postDays.length}d</span>
-                </p>
-                {haloData.map((t, i) => {
-                  const isTop = i < 3;
-                  return (
-                    <div key={i} style={{
-                      display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem',
-                      padding: '0.4rem 0.6rem', borderRadius: '10px',
-                      background: isTop ? 'rgba(74,222,128,0.04)' : 'transparent',
-                    }}>
-                      <span style={{
-                        color: isTop ? '#e2e8f0' : '#94a3b8', fontSize: '0.7rem', width: '190px', textAlign: 'right',
-                        fontWeight: isTop ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                      }}>{t.name}</span>
-                      <div style={{ flex: 1, position: 'relative', height: '20px' }}>
-                        <div style={{ position: 'absolute', width: (maxPost > 0 ? t.pre / maxPost * 100 : 0) + '%', height: '20px', background: 'rgba(148,163,184,0.08)', borderRadius: '6px', border: '1px dashed rgba(148,163,184,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '6px' }}>
-                          <span style={{ color: '#64748b', fontSize: '0.52rem', fontWeight: 500 }}>{formatNumber(t.pre)}</span>
-                        </div>
-                        <div style={{
-                          position: 'relative', width: (maxPost > 0 ? t.post / maxPost * 100 : 0) + '%', height: '20px', minWidth: '2px',
-                          background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #15803d)' : t.change > 0 ? 'linear-gradient(90deg, #3b82f6, #1d4ed8)' : 'rgba(239,68,68,0.4)',
-                          borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px',
-                          boxShadow: t.change > 50 ? '0 2px 8px rgba(34,197,94,0.2)' : 'none',
-                        }}>
-                          <span style={{ color: '#f1f5f9', fontSize: '0.58rem', fontWeight: 600 }}>{formatNumber(t.post)}/d</span>
-                        </div>
-                      </div>
-                      <div style={{
-                        minWidth: '52px', textAlign: 'center', padding: '2px 6px', borderRadius: '6px',
-                        background: t.change > 50 ? 'rgba(74,222,128,0.1)' : t.change > 0 ? 'rgba(96,165,250,0.1)' : 'rgba(248,113,113,0.1)',
-                      }}>
-                        <span style={{ color: t.change > 50 ? '#4ade80' : t.change > 0 ? '#60a5fa' : '#f87171', fontSize: '0.72rem', fontWeight: 700 }}>
-                          {t.change > 0 ? '+' : ''}{t.change.toFixed(0)}%
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* ═══ PUSH ALGORÍTMICO — CON SLIDER DÍA A DÍA ═══ */}
-            <div style={glass}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <div>
-                  <h3 style={{ color: '#f1f5f9', fontSize: '1.05rem', margin: 0, fontWeight: 700 }}>Push algorítmico post-Malparido</h3>
-                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: '0.2rem 0 0' }}>% algorítmico de cada track · Deslizá para ver día a día</p>
-                </div>
-              </div>
-
-              {/* Day slider */}
-              {algoPostDays.length > 0 && (() => {
-                const slW = Math.min(100, Math.max(30, algoPostDays.length * 18));
-                return (
-                <div style={{ margin: '0.75rem 0 1.25rem', padding: '0.6rem 1rem', background: 'rgba(15,23,42,0.5)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)', maxWidth: slW + '%' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-                    <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>
-                      {malpAlgoDay === -1 ? 'Promedio post' : (() => {
-                        const d = algoPostDays[malpAlgoDay];
-                        return d ? new Date(d.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
-                      })()}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                  <p style={{ color: '#94a3b8', fontSize: '0.72rem', margin: 0, fontWeight: 500 }}>
+                    Streams por track — <span style={{ color: '#64748b' }}>pre 7d</span> vs <span style={{ color: '#f97316' }}>post {postDays.length}d</span> · <span style={{ color: '#475569' }}>Tocá un track para el desglose</span>
+                  </p>
+                  <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '0.55rem' }}>
+                      <span style={{ width: '16px', height: '4px', borderRadius: '2px', background: 'rgba(148,163,184,0.3)', display: 'inline-block', border: '1px dashed rgba(148,163,184,0.4)' }} />
+                      <span style={{ color: '#64748b' }}>Pre</span>
                     </span>
-                    <button onClick={() => setMalpAlgoDay(-1)} style={{
-                      background: malpAlgoDay === -1 ? 'rgba(249,115,22,0.2)' : 'rgba(51,65,85,0.3)',
-                      border: malpAlgoDay === -1 ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(255,255,255,0.06)',
-                      borderRadius: '6px', color: malpAlgoDay === -1 ? '#f97316' : '#94a3b8',
-                      fontSize: '0.58rem', padding: '2px 8px', cursor: 'pointer', fontWeight: 600,
-                    }}>Avg</button>
-                  </div>
-                  <input
-                    type="range" min={0} max={algoPostDays.length - 1}
-                    value={malpAlgoDay === -1 ? algoPostDays.length - 1 : malpAlgoDay}
-                    onChange={e => setMalpAlgoDay(Number(e.target.value))}
-                    style={{ ...sliderTrack, accentColor: '#f97316' }}
-                  />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px' }}>
-                    {algoPostDays.map((d, i) => (
-                      <span key={i} style={{ color: (malpAlgoDay === i || (malpAlgoDay === -1 && i === algoPostDays.length - 1)) ? '#f97316' : '#475569', fontSize: '0.48rem', cursor: 'pointer' }} onClick={() => setMalpAlgoDay(i)}>{d.label}</span>
-                    ))}
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '0.55rem' }}>
+                      <span style={{ width: '16px', height: '6px', borderRadius: '2px', background: 'linear-gradient(90deg, #4ade80, #22c55e)', display: 'inline-block' }} />
+                      <span style={{ color: '#4ade80' }}>Orgánico</span>
+                    </span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '0.55rem' }}>
+                      <span style={{ width: '16px', height: '6px', borderRadius: '2px', background: 'linear-gradient(90deg, #f97316, #ef4444)', display: 'inline-block' }} />
+                      <span style={{ color: '#f97316' }}>Algorítmico</span>
+                    </span>
                   </div>
                 </div>
-                );
-              })()}
 
-              {/* Algo bars */}
-              {(() => {
-                const getTrackAlgo = (t) => {
-                  if (malpAlgoDay === -1) {
-                    const avgPct = algoPostDays.length > 0 ? algoPostDays.reduce((s, d) => s + d.tracks[t].pct, 0) / algoPostDays.length : 0;
-                    const avgAbs = algoPostDays.length > 0 ? Math.round(algoPostDays.reduce((s, d) => s + d.tracks[t].algo, 0) / algoPostDays.length) : 0;
-                    return { pct: avgPct, abs: avgAbs };
-                  }
-                  const day = algoPostDays[malpAlgoDay];
-                  return day ? { pct: day.tracks[t].pct, abs: day.tracks[t].algo } : { pct: 0, abs: 0 };
-                };
-                const getPreAbs = (t) => {
-                  return algoPreDays.length > 0 ? Math.round(algoPreDays.reduce((s, d) => s + d.tracks[t].algo, 0) / algoPreDays.length) : 0;
-                };
+                {(() => {
+                  // Build unified data per track: streams (pre/post), algo (pre/post abs+pct), listeners (pre/post)
+                  const getTrackAlgo = (t) => {
+                    if (malpAlgoDay === -1) {
+                      const avgPct = algoPostDays.length > 0 ? algoPostDays.reduce((s, d) => s + d.tracks[t].pct, 0) / algoPostDays.length : 0;
+                      const avgAbs = algoPostDays.length > 0 ? Math.round(algoPostDays.reduce((s, d) => s + d.tracks[t].algo, 0) / algoPostDays.length) : 0;
+                      return { pct: avgPct, abs: avgAbs };
+                    }
+                    const day = algoPostDays[malpAlgoDay];
+                    return day ? { pct: day.tracks[t].pct, abs: day.tracks[t].algo } : { pct: 0, abs: 0 };
+                  };
+                  const getPreAlgoAbs = (t) => algoPreDays.length > 0 ? Math.round(algoPreDays.reduce((s, d) => s + d.tracks[t].algo, 0) / algoPreDays.length) : 0;
+                  const getPostListeners = (t) => {
+                    const postL = lLog.filter(e => e.date >= MALP_RELEASE);
+                    return postL.length > 0 ? Math.round(postL.reduce((s, e) => s + (e.tracks[t] || 0), 0) / postL.length) : 0;
+                  };
 
-                const algoRows = OG_TRACKS.map(t => {
-                  const pre = algoPreAvg[t];
-                  const postData = getTrackAlgo(t);
-                  const diff = postData.pct - pre;
-                  return { name: t, pre, post: postData.pct, preAbs: getPreAbs(t), postAbs: postData.abs, diff };
-                }).sort((a, b) => b.diff - a.diff);
+                  const unified = OG_TRACKS.map(t => {
+                    const postAlgo = getTrackAlgo(t);
+                    const preAlgoA = getPreAlgoAbs(t);
+                    const organicPost = postAvg[t] - postAlgo.abs;
+                    const organicPre = preAvg[t] - preAlgoA;
+                    return {
+                      name: t,
+                      pre: preAvg[t], post: postAvg[t],
+                      change: preAvg[t] > 0 ? ((postAvg[t] - preAvg[t]) / preAvg[t] * 100) : 0,
+                      algoPrePct: algoPreAvg[t], algoPostPct: postAlgo.pct,
+                      algoPreAbs: preAlgoA, algoPostAbs: postAlgo.abs,
+                      organicPre, organicPost,
+                      algoDiff: postAlgo.pct - algoPreAvg[t],
+                      listPre: listPreAvg[t], listPost: getPostListeners(t),
+                      listChange: listPreAvg[t] > 0 ? ((getPostListeners(t) - listPreAvg[t]) / listPreAvg[t] * 100) : 0,
+                    };
+                  }).sort((a, b) => b.change - a.change);
 
-                const maxAlgoPct = Math.max(...algoRows.map(t => Math.max(t.pre, t.post)), 1);
+                  const maxBar = Math.max(...unified.map(t => t.post), 1);
 
-                return (
-                  <div>
-                    {algoRows.map((t, i) => {
-                      const isHot = t.diff > 10;
-                      const isWarm = t.diff > 3;
-                      return (
-                        <div key={i} style={{
-                          display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem',
-                          padding: '0.5rem 0.75rem', borderRadius: '12px',
-                          background: isHot ? 'rgba(249,115,22,0.06)' : 'transparent',
-                          border: isHot ? '1px solid rgba(249,115,22,0.12)' : '1px solid transparent',
-                        }}>
+                  const rows = unified.map((t, i) => {
+                    const isTop = i < 3;
+                    const isExpanded = malpExpandedTrack === t.name;
+                    const isAlgoHot = t.algoDiff > 10;
+                    const isAlgoWarm = t.algoDiff > 3;
+                    // Stacked bar proportions
+                    const orgW = t.post > 0 ? ((t.organicPost) / maxBar * 100) : 0;
+                    const algoW = t.post > 0 ? ((t.algoPostAbs) / maxBar * 100) : 0;
+                    const preW = t.pre / maxBar * 100;
+
+                    return (
+                      <div key={i}>
+                        {/* Main row — clickable */}
+                        <div
+                          onClick={() => setMalpExpandedTrack(isExpanded ? null : t.name)}
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: isExpanded ? 0 : '0.5rem',
+                            padding: '0.5rem 0.6rem', borderRadius: isExpanded ? '10px 10px 0 0' : '10px',
+                            background: isExpanded ? 'rgba(249,115,22,0.06)' : isTop ? 'rgba(74,222,128,0.04)' : 'transparent',
+                            border: isExpanded ? '1px solid rgba(249,115,22,0.12)' : '1px solid transparent',
+                            borderBottom: isExpanded ? '1px solid rgba(255,255,255,0.03)' : '1px solid transparent',
+                            cursor: 'pointer', transition: 'all 0.2s',
+                          }}
+                        >
+                          {/* Track name */}
                           <span style={{
-                            color: isHot ? '#fb923c' : '#94a3b8', fontSize: '0.7rem', width: '175px', textAlign: 'right',
-                            fontWeight: isHot ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                            color: isExpanded ? '#fb923c' : isTop ? '#e2e8f0' : '#94a3b8',
+                            fontSize: '0.7rem', width: '170px', textAlign: 'right',
+                            fontWeight: isExpanded || isTop ? 600 : 400,
+                            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                           }}>{t.name}</span>
-                          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <span style={{ color: '#475569', fontSize: '0.48rem', width: '22px', fontFamily: 'monospace' }}>pre</span>
-                              <div style={{ flex: 1, height: '8px', background: 'rgba(15,23,42,0.5)', borderRadius: '4px', overflow: 'hidden' }}>
-                                <div style={{ width: (t.pre / Math.max(maxAlgoPct, 50) * 100) + '%', height: '100%', background: 'rgba(148,163,184,0.25)', borderRadius: '4px' }} />
-                              </div>
-                              <span style={{ color: '#64748b', fontSize: '0.58rem', width: '32px', textAlign: 'right', fontFamily: 'monospace' }}>{t.pre.toFixed(0)}%</span>
-                              <span style={{ color: '#475569', fontSize: '0.5rem', width: '42px', textAlign: 'right' }}>{formatNumber(t.preAbs)}</span>
+
+                          {/* Stacked bar: pre (dashed) + organic + algo */}
+                          <div style={{ flex: 1, position: 'relative', height: '22px' }}>
+                            {/* Pre reference bar */}
+                            <div style={{
+                              position: 'absolute', left: 0, top: '1px', width: preW + '%', height: '20px',
+                              borderRadius: '6px',
+                              border: '1.5px dashed rgba(148,163,184,0.35)',
+                              background: 'rgba(148,163,184,0.04)',
+                              display: 'flex', alignItems: 'center', paddingLeft: '6px',
+                              zIndex: 0,
+                            }}>
+                              <span style={{ color: '#64748b', fontSize: '0.55rem', fontWeight: 600 }}>{formatNumber(t.pre)}</span>
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <span style={{ color: '#475569', fontSize: '0.48rem', width: '22px', fontFamily: 'monospace' }}>now</span>
-                              <div style={{ flex: 1, height: '8px', background: 'rgba(15,23,42,0.5)', borderRadius: '4px', overflow: 'hidden' }}>
+                            {/* Post stacked bar (organic + algo) */}
+                            <div style={{
+                              position: 'relative', display: 'flex', height: '22px',
+                              width: (orgW + algoW) + '%', minWidth: '2px', zIndex: 1,
+                            }}>
+                              {/* Organic portion */}
+                              <div style={{
+                                width: orgW > 0 ? (t.organicPost / (t.organicPost + t.algoPostAbs) * 100) + '%' : '100%',
+                                height: '100%',
+                                background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #15803d)' : t.change > 0 ? 'linear-gradient(90deg, #3b82f6, #1d4ed8)' : 'rgba(239,68,68,0.4)',
+                                borderRadius: '6px 0 0 6px',
+                                boxShadow: t.change > 50 ? '0 2px 6px rgba(34,197,94,0.15)' : 'none',
+                              }} />
+                              {/* Algo portion */}
+                              {t.algoPostAbs > 0 && (
                                 <div style={{
-                                  width: (t.post / Math.max(maxAlgoPct, 50) * 100) + '%', height: '100%',
-                                  background: isHot ? 'linear-gradient(90deg, #f97316, #ef4444)' : isWarm ? 'linear-gradient(90deg, #3b82f6, #8b5cf6)' : 'rgba(148,163,184,0.35)',
-                                  borderRadius: '4px',
-                                  boxShadow: isHot ? '0 0 10px rgba(249,115,22,0.3)' : 'none',
+                                  width: (t.algoPostAbs / (t.organicPost + t.algoPostAbs) * 100) + '%',
+                                  height: '100%',
+                                  background: isAlgoHot ? 'linear-gradient(90deg, #f97316, #ef4444)' : 'linear-gradient(90deg, #f97316, #ea580c)',
+                                  borderRadius: '0 6px 6px 0',
+                                  opacity: 0.85,
                                 }} />
-                              </div>
+                              )}
+                              {/* Value label */}
                               <span style={{
-                                color: isHot ? '#fb923c' : isWarm ? '#818cf8' : '#94a3b8',
-                                fontSize: '0.58rem', fontWeight: 700, width: '32px', textAlign: 'right', fontFamily: 'monospace',
-                              }}>{t.post.toFixed(0)}%</span>
-                              <span style={{ color: isHot ? '#fb923c' : isWarm ? '#818cf8' : '#94a3b8', fontSize: '0.5rem', fontWeight: 600, width: '42px', textAlign: 'right' }}>{formatNumber(t.postAbs)}</span>
+                                position: 'absolute', right: '6px', top: '50%', transform: 'translateY(-50%)',
+                                color: '#f1f5f9', fontSize: '0.58rem', fontWeight: 600, textShadow: '0 1px 3px rgba(0,0,0,0.5)',
+                              }}>{formatNumber(t.post)}/d</span>
                             </div>
                           </div>
+
+                          {/* Change badge */}
                           <div style={{
-                            background: isHot ? 'rgba(249,115,22,0.12)' : isWarm ? 'rgba(99,102,241,0.1)' : 'rgba(51,65,85,0.25)',
-                            borderRadius: '8px', padding: '0.2rem 0.5rem', minWidth: '50px', textAlign: 'center',
-                            border: isHot ? '1px solid rgba(249,115,22,0.2)' : '1px solid transparent',
+                            minWidth: '50px', textAlign: 'center', padding: '2px 6px', borderRadius: '6px',
+                            background: t.change > 50 ? 'rgba(74,222,128,0.1)' : t.change > 0 ? 'rgba(96,165,250,0.1)' : 'rgba(248,113,113,0.1)',
                           }}>
-                            <span style={{ color: isHot ? '#fb923c' : isWarm ? '#818cf8' : '#94a3b8', fontSize: '0.72rem', fontWeight: 800 }}>
-                              {t.diff > 0 ? '+' : ''}{t.diff.toFixed(0)}pp
+                            <span style={{ color: t.change > 50 ? '#4ade80' : t.change > 0 ? '#60a5fa' : '#f87171', fontSize: '0.72rem', fontWeight: 700 }}>
+                              {t.change > 0 ? '+' : ''}{t.change.toFixed(0)}%
                             </span>
                           </div>
+
+                          {/* Expand arrow */}
+                          <span style={{ color: '#475569', fontSize: '0.6rem', transition: 'transform 0.2s', transform: isExpanded ? 'rotate(180deg)' : 'rotate(0)' }}>▼</span>
                         </div>
-                      );
-                    })}
 
-                    {/* Insight */}
-                    <div style={{ marginTop: '1.25rem', padding: '0.75rem 1rem', background: 'linear-gradient(135deg, rgba(249,115,22,0.06), rgba(168,85,247,0.04))', borderRadius: '12px', borderLeft: '3px solid #f97316' }}>
-                      <p style={{ color: '#94a3b8', fontSize: '0.75rem', margin: 0, lineHeight: 1.5 }}>
-                        {(() => {
-                          const hotTracks = algoRows.filter(t => t.diff > 10);
-                          if (hotTracks.length > 0) {
-                            return `Spotify está empujando fuerte ${hotTracks.map(t => t.name).join(', ')} en algoritmo post-Malparido. El feat con Duki está activando el discovery para todo el catálogo.`;
-                          }
-                          const warmTracks = algoRows.filter(t => t.diff > 3);
-                          if (warmTracks.length > 0) {
-                            return `Movimiento algorítmico moderado en ${warmTracks.length} tracks. Spotify reacciona al nuevo tráfico — monitorear los próximos días.`;
-                          }
-                          return 'El push algorítmico aún no se activó. Normal en los primeros días — suele reaccionar 3-5 días después del spike.';
-                        })()}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-
-            {/* ═══ LISTENERS — CON SLIDER DÍA A DÍA ═══ */}
-            <div style={glass}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <div>
-                  <h3 style={{ color: '#f1f5f9', fontSize: '1.05rem', margin: 0, fontWeight: 700 }}>Audiencia nueva post-Malparido</h3>
-                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: '0.2rem 0 0' }}>Listeners únicos diarios · Deslizá para ver día a día</p>
-                </div>
-              </div>
-
-              {/* Summary stats */}
-              {(() => {
-                const lWindow = lLog.slice(-21);
-                if (lWindow.length === 0) return <p style={{ color: '#64748b' }}>Esperando datos de listeners...</p>;
-                const albumListeners = lWindow.map(e => {
-                  const total = Object.values(e.tracks).reduce((s, v) => s + v, 0);
-                  return { date: e.date, label: e.date.slice(5).replace('-0', '-').replace(/^0/, ''), total, isPost: e.date >= MALP_RELEASE };
-                });
-                const maxL = Math.max(...albumListeners.map(e => e.total), 1);
-                const chartH = 180;
-                const preListAvg = albumListeners.filter(e => !e.isPost).slice(-7);
-                const postListAvg = albumListeners.filter(e => e.isPost);
-                const preAvgL = preListAvg.length > 0 ? Math.round(preListAvg.reduce((s, e) => s + e.total, 0) / preListAvg.length) : 0;
-                const postAvgL = postListAvg.length > 0 ? Math.round(postListAvg.reduce((s, e) => s + e.total, 0) / postListAvg.length) : 0;
-                const listLift = preAvgL > 0 ? ((postAvgL - preAvgL) / preAvgL * 100) : 0;
-
-                return (
-                  <div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1.25rem' }}>
-                      {[
-                        { label: 'Pre avg (7d)', value: formatNumber(preAvgL) + '/día', color: '#60a5fa', bg: 'rgba(59,130,246,0.08)' },
-                        { label: `Post avg (${postListAvg.length}d)`, value: formatNumber(postAvgL) + '/día', color: '#f97316', bg: 'rgba(249,115,22,0.08)' },
-                        { label: 'Cambio', value: (listLift > 0 ? '+' : '') + listLift.toFixed(0) + '%', color: listLift > 0 ? '#4ade80' : '#f87171', bg: listLift > 0 ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)' },
-                      ].map((s, i) => (
-                        <div key={i} style={{ background: s.bg, borderRadius: '12px', padding: '0.6rem 0.8rem', border: '1px solid rgba(255,255,255,0.04)' }}>
-                          <span style={{ color: '#64748b', fontSize: '0.58rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.label}</span>
-                          <div style={{ color: s.color, fontSize: '1.15rem', fontWeight: 800, marginTop: '0.15rem' }}>{s.value}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Timeline */}
-                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: chartH + 'px', position: 'relative' }}>
-                      {preAvgL > 0 && (
-                        <div style={{ position: 'absolute', bottom: (preAvgL / maxL * chartH) + 'px', left: 0, right: 0, borderBottom: '1px dashed rgba(96,165,250,0.3)', zIndex: 1 }}>
-                          <span style={{ position: 'absolute', right: 0, top: '-14px', color: '#60a5fa', fontSize: '0.5rem', background: 'rgba(15,23,42,0.8)', padding: '1px 4px', borderRadius: '3px' }}>pre avg</span>
-                        </div>
-                      )}
-                      {albumListeners.map((d, i) => {
-                        const h = d.total / maxL * (chartH - 20);
-                        const isRelease = d.date === MALP_RELEASE;
-                        return (
-                          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            {d.isPost && (
-                              <span style={{ color: '#fb923c', fontSize: '0.48rem', fontWeight: 700, marginBottom: '2px' }}>{formatNumber(d.total)}</span>
-                            )}
-                            <div style={{
-                              width: '100%', height: h + 'px', minHeight: '2px',
-                              background: d.isPost
-                                ? 'linear-gradient(180deg, #f97316, #c2410c)'
-                                : 'linear-gradient(180deg, rgba(96,165,250,0.45), rgba(96,165,250,0.15))',
-                              borderRadius: '4px 4px 1px 1px',
-                              borderLeft: isRelease ? '2px solid #f97316' : 'none',
-                              boxShadow: d.isPost ? '0 -2px 8px rgba(249,115,22,0.12)' : 'none',
-                            }} />
-                            <span style={{ color: d.isPost ? '#f97316' : '#475569', fontSize: '0.44rem', marginTop: '3px', transform: 'rotate(-45deg)', whiteSpace: 'nowrap' }}>{d.label}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Per-track listener slider */}
-              <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '1.25rem' }}>
-                <p style={{ color: '#94a3b8', fontSize: '0.72rem', margin: '0 0 0.5rem', fontWeight: 500 }}>
-                  Listeners por track — <span style={{ color: '#64748b' }}>pre 7d avg</span> vs <span style={{ color: '#f97316' }}>{malpListDay === -1 ? 'post avg' : 'día seleccionado'}</span>
-                </p>
-
-                {/* Slider */}
-                {listPostDays.length > 0 && (() => {
-                  const slW = Math.min(100, Math.max(30, listPostDays.length * 18));
-                  return (
-                  <div style={{ margin: '0.5rem 0 1.25rem', padding: '0.6rem 1rem', background: 'rgba(15,23,42,0.5)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)', maxWidth: slW + '%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-                      <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>
-                        {malpListDay === -1 ? 'Promedio post' : (() => {
-                          const d = listPostDays[malpListDay];
-                          return d ? new Date(d.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
-                        })()}
-                      </span>
-                      <button onClick={() => setMalpListDay(-1)} style={{
-                        background: malpListDay === -1 ? 'rgba(249,115,22,0.2)' : 'rgba(51,65,85,0.3)',
-                        border: malpListDay === -1 ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(255,255,255,0.06)',
-                        borderRadius: '6px', color: malpListDay === -1 ? '#f97316' : '#94a3b8',
-                        fontSize: '0.58rem', padding: '2px 8px', cursor: 'pointer', fontWeight: 600,
-                      }}>Avg</button>
-                    </div>
-                    <input
-                      type="range" min={0} max={listPostDays.length - 1}
-                      value={malpListDay === -1 ? listPostDays.length - 1 : malpListDay}
-                      onChange={e => setMalpListDay(Number(e.target.value))}
-                      style={{ ...sliderTrack, accentColor: '#f97316' }}
-                    />
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3px' }}>
-                      {listPostDays.map((d, i) => (
-                        <span key={i} style={{ color: (malpListDay === i || (malpListDay === -1 && i === listPostDays.length - 1)) ? '#f97316' : '#475569', fontSize: '0.48rem', cursor: 'pointer' }} onClick={() => setMalpListDay(i)}>{d.label}</span>
-                      ))}
-                    </div>
-                  </div>
-                  );
-                })()}
-
-                {/* Per-track bars */}
-                {(() => {
-                  const preL = lLog.filter(e => e.date < MALP_RELEASE).slice(-7);
-                  const postL = lLog.filter(e => e.date >= MALP_RELEASE);
-                  const getPostVal = (t) => {
-                    if (malpListDay === -1) {
-                      return postL.length > 0 ? Math.round(postL.reduce((s, e) => s + (e.tracks[t] || 0), 0) / postL.length) : 0;
-                    }
-                    const day = listPostDays[malpListDay];
-                    return day ? (day.tracks[t] || 0) : 0;
-                  };
-                  const listHalo = OG_TRACKS.map(t => {
-                    const pre = listPreAvg[t];
-                    const post = getPostVal(t);
-                    const change = pre > 0 ? ((post - pre) / pre * 100) : 0;
-                    return { name: t, pre, post, change };
-                  }).sort((a, b) => b.change - a.change);
-                  const maxLP = Math.max(...listHalo.map(h => h.post), 1);
-
-                  return listHalo.map((t, i) => {
-                    const isTop = i < 3;
-                    return (
-                      <div key={i} style={{
-                        display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem',
-                        padding: '0.4rem 0.6rem', borderRadius: '10px',
-                        background: isTop ? 'rgba(96,165,250,0.04)' : 'transparent',
-                      }}>
-                        <span style={{
-                          color: isTop ? '#e2e8f0' : '#94a3b8', fontSize: '0.7rem', width: '190px', textAlign: 'right',
-                          fontWeight: isTop ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-                        }}>{t.name}</span>
-                        <div style={{ flex: 1, position: 'relative', height: '20px' }}>
-                          <div style={{ position: 'absolute', width: (maxLP > 0 ? t.pre / maxLP * 100 : 0) + '%', height: '20px', background: 'rgba(96,165,250,0.08)', borderRadius: '6px', border: '1px dashed rgba(96,165,250,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '6px' }}>
-                            <span style={{ color: '#64748b', fontSize: '0.52rem', fontWeight: 500 }}>{formatNumber(t.pre)}</span>
-                          </div>
+                        {/* Expanded detail panel */}
+                        {isExpanded && (
                           <div style={{
-                            position: 'relative', width: (maxLP > 0 ? t.post / maxLP * 100 : 0) + '%', height: '20px', minWidth: '2px',
-                            background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #15803d)' : t.change > 0 ? 'linear-gradient(90deg, #60a5fa, #2563eb)' : 'rgba(239,68,68,0.4)',
-                            borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px',
-                            boxShadow: t.change > 50 ? '0 2px 8px rgba(34,197,94,0.15)' : 'none',
+                            padding: '0.75rem 0.8rem', marginBottom: '0.5rem',
+                            background: 'rgba(15,23,42,0.4)',
+                            borderRadius: '0 0 10px 10px',
+                            border: '1px solid rgba(249,115,22,0.12)', borderTop: 'none',
                           }}>
-                            <span style={{ color: '#f1f5f9', fontSize: '0.58rem', fontWeight: 600 }}>{formatNumber(t.post)}/d</span>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
+                              {/* Organic breakdown */}
+                              <div style={{ background: 'rgba(34,197,94,0.06)', borderRadius: '10px', padding: '0.6rem', border: '1px solid rgba(34,197,94,0.1)' }}>
+                                <div style={{ color: '#4ade80', fontSize: '0.55rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>Orgánico</div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                                  <span style={{ color: '#64748b', fontSize: '0.58rem' }}>Pre</span>
+                                  <span style={{ color: '#94a3b8', fontSize: '0.7rem', fontWeight: 700 }}>{formatNumber(t.organicPre)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                                  <span style={{ color: '#64748b', fontSize: '0.58rem' }}>Post</span>
+                                  <span style={{ color: '#4ade80', fontSize: '0.7rem', fontWeight: 700 }}>{formatNumber(t.organicPost)}</span>
+                                </div>
+                                <div style={{ borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '0.25rem', display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ color: '#64748b', fontSize: '0.55rem' }}>Cambio</span>
+                                  <span style={{ color: t.organicPost > t.organicPre ? '#4ade80' : '#f87171', fontSize: '0.65rem', fontWeight: 700 }}>
+                                    {t.organicPre > 0 ? ((t.organicPost - t.organicPre) / t.organicPre * 100 > 0 ? '+' : '') + ((t.organicPost - t.organicPre) / t.organicPre * 100).toFixed(0) + '%' : '—'}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Algorithmic breakdown */}
+                              <div style={{ background: 'rgba(249,115,22,0.06)', borderRadius: '10px', padding: '0.6rem', border: '1px solid rgba(249,115,22,0.1)' }}>
+                                <div style={{ color: '#f97316', fontSize: '0.55rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>Algorítmico</div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                                  <span style={{ color: '#64748b', fontSize: '0.58rem' }}>Pre</span>
+                                  <span style={{ color: '#94a3b8', fontSize: '0.7rem', fontWeight: 700 }}>{formatNumber(t.algoPreAbs)} <span style={{ fontSize: '0.5rem', color: '#64748b' }}>({t.algoPrePct.toFixed(0)}%)</span></span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                                  <span style={{ color: '#64748b', fontSize: '0.58rem' }}>Post</span>
+                                  <span style={{ color: '#f97316', fontSize: '0.7rem', fontWeight: 700 }}>{formatNumber(t.algoPostAbs)} <span style={{ fontSize: '0.5rem', color: '#64748b' }}>({t.algoPostPct.toFixed(0)}%)</span></span>
+                                </div>
+                                <div style={{ borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '0.25rem', display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ color: '#64748b', fontSize: '0.55rem' }}>Diff</span>
+                                  <span style={{ color: isAlgoHot ? '#fb923c' : isAlgoWarm ? '#818cf8' : '#94a3b8', fontSize: '0.65rem', fontWeight: 700 }}>
+                                    {t.algoDiff > 0 ? '+' : ''}{t.algoDiff.toFixed(0)}pp
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Listeners breakdown */}
+                              <div style={{ background: 'rgba(96,165,250,0.06)', borderRadius: '10px', padding: '0.6rem', border: '1px solid rgba(96,165,250,0.1)' }}>
+                                <div style={{ color: '#60a5fa', fontSize: '0.55rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>Oyentes</div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                                  <span style={{ color: '#64748b', fontSize: '0.58rem' }}>Pre</span>
+                                  <span style={{ color: '#94a3b8', fontSize: '0.7rem', fontWeight: 700 }}>{formatNumber(t.listPre)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                                  <span style={{ color: '#64748b', fontSize: '0.58rem' }}>Post</span>
+                                  <span style={{ color: '#60a5fa', fontSize: '0.7rem', fontWeight: 700 }}>{formatNumber(t.listPost)}</span>
+                                </div>
+                                <div style={{ borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '0.25rem', display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ color: '#64748b', fontSize: '0.55rem' }}>Cambio</span>
+                                  <span style={{ color: t.listChange > 0 ? '#4ade80' : '#f87171', fontSize: '0.65rem', fontWeight: 700 }}>
+                                    {t.listChange > 0 ? '+' : ''}{t.listChange.toFixed(0)}%
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                        <div style={{
-                          minWidth: '52px', textAlign: 'center', padding: '2px 6px', borderRadius: '6px',
-                          background: t.change > 50 ? 'rgba(74,222,128,0.1)' : t.change > 0 ? 'rgba(96,165,250,0.1)' : 'rgba(248,113,113,0.1)',
-                        }}>
-                          <span style={{ color: t.change > 50 ? '#4ade80' : t.change > 0 ? '#60a5fa' : '#f87171', fontSize: '0.72rem', fontWeight: 700 }}>
-                            {t.change > 0 ? '+' : ''}{t.change.toFixed(0)}%
-                          </span>
-                        </div>
+                        )}
                       </div>
                     );
                   });
+
+                  // Insight text
+                  const hotTracks = unified.filter(t => t.algoDiff > 10);
+                  const warmTracks = unified.filter(t => t.algoDiff > 3);
+                  const insightText = hotTracks.length > 0
+                    ? `Spotify está empujando fuerte ${hotTracks.map(t => t.name).join(', ')} en algoritmo post-Malparido. El feat con Duki está activando el discovery para todo el catálogo.`
+                    : warmTracks.length > 0
+                    ? `Movimiento algorítmico moderado en ${warmTracks.length} tracks. Spotify reacciona al nuevo tráfico — monitorear los próximos días.`
+                    : 'El push algorítmico aún no se activó. Normal en los primeros días — suele reaccionar 3-5 días después del spike.';
+
+                  return (
+                    <>
+                      {rows}
+                      <div style={{ marginTop: '1rem', padding: '0.75rem 1rem', background: 'linear-gradient(135deg, rgba(249,115,22,0.06), rgba(168,85,247,0.04))', borderRadius: '12px', borderLeft: '3px solid #f97316' }}>
+                        <p style={{ color: '#94a3b8', fontSize: '0.75rem', margin: 0, lineHeight: 1.5 }}>{insightText}</p>
+                      </div>
+                    </>
+                  );
                 })()}
               </div>
             </div>
