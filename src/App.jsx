@@ -38,7 +38,7 @@ const DEFAULT_LIVE_DATA = {
   },
   albumLiveTotal: 1433444,
   liveTotals: {
-    'CUANDO ESCRIBÍA ASIMETRÍA': 349412, 'ATBLM': 306595, 'UN GUSTO': 143251,
+    'CUANDO ESCRIBÍA ASIMETRÍA': 349412, 'ATBLM': 306595, 'MALPARIDO': 178261, 'UN GUSTO': 143251,
     'CALL ME': 93133, 'MAN OF WORD': 90225, 'CHANGES': 79614,
     'HIELO': 75502, 'OJOS TRISTES': 71348, 'ALQUILER': 63067,
     'YA NO': 59997, 'TOP TIER': 51077, 'HAZLO CALLAO': 50223,
@@ -849,6 +849,7 @@ const AmorFiadoDashboard = () => {
     { id: 'social', label: 'Social Impact' },
     { id: 'engagement', label: 'Release Engagement' },
     { id: 'algo', label: '🤖 Algo Push' },
+    { id: 'malparido', label: '🔥 Malparido Impact' },
     ...(isAdmin ? [{ id: 'admin', label: '⚙️ Admin' }] : []),
   ];
 
@@ -3937,7 +3938,235 @@ const AmorFiadoDashboard = () => {
         );
       })()}
 
-      {/* ── ⚙️ Admin ────────────────────────────────────────────────────────── */}
+      {/* ── 🔥 Malparido Impact ──────────────────────────────────────────── */}
+      {activeTab === 'malparido' && (() => {
+        const malp = liveData.malparidoRelease || {};
+        const MALP_RELEASE = '2026-04-13';
+        const OG_TRACKS = ['CUANDO ESCRIBÍA ASIMETRÍA','MAN OF WORD','ATBLM','CALL ME','ALQUILER','HIELO','UN GUSTO','CHANGES','OJOS TRISTES','HAZLO CALLAO','YA NO','TOP TIER'];
+
+        // Get dailyLog entries with MALPARIDO data
+        const dl = dailyLog.filter(e => e.tracks);
+        const preDays = dl.filter(e => e.date < MALP_RELEASE).slice(-7); // 7 days before
+        const postDays = dl.filter(e => e.date >= MALP_RELEASE);
+
+        // MALPARIDO daily chart data
+        const malpDaily = dl.filter(e => e.tracks['MALPARIDO'] > 0).map(e => ({
+          date: e.label || e.date.slice(5),
+          streams: e.tracks['MALPARIDO'],
+        }));
+
+        // Algo split for MALPARIDO
+        const aLog = liveData.algoLog || [];
+        const malpAlgo = aLog.filter(e => e.tracks?.['MALPARIDO'] > 0);
+        const malpTotalStreams = malpDaily.reduce((s, e) => s + e.streams, 0);
+        const malpAlgoTotal = malpAlgo.reduce((s, e) => s + (e.tracks['MALPARIDO'] || 0), 0);
+        const malpOrganicPct = malpTotalStreams > 0 ? ((malpTotalStreams - malpAlgoTotal) / malpTotalStreams * 100) : 0;
+
+        // Album halo: avg daily before vs after
+        const preAvg = {};
+        const postAvg = {};
+        OG_TRACKS.forEach(t => {
+          preAvg[t] = preDays.length > 0 ? Math.round(preDays.reduce((s, e) => s + (e.tracks[t] || 0), 0) / preDays.length) : 0;
+          postAvg[t] = postDays.length > 0 ? Math.round(postDays.reduce((s, e) => s + (e.tracks[t] || 0), 0) / postDays.length) : 0;
+        });
+
+        // Sort by halo impact (% change)
+        const haloData = OG_TRACKS.map(t => ({
+          name: t,
+          pre: preAvg[t],
+          post: postAvg[t],
+          change: preAvg[t] > 0 ? ((postAvg[t] - preAvg[t]) / preAvg[t] * 100) : 0,
+        })).sort((a, b) => b.change - a.change);
+
+        // Album total before vs after
+        const preAlbumAvg = preDays.length > 0 ? Math.round(preDays.reduce((s, e) => s + OG_TRACKS.reduce((ss, t) => ss + (e.tracks[t] || 0), 0), 0) / preDays.length) : 0;
+        const postAlbumAvg = postDays.length > 0 ? Math.round(postDays.reduce((s, e) => s + OG_TRACKS.reduce((ss, t) => ss + (e.tracks[t] || 0), 0), 0) / postDays.length) : 0;
+        const albumLift = preAlbumAvg > 0 ? ((postAlbumAvg - preAlbumAvg) / preAlbumAvg * 100) : 0;
+
+        // Compare MALPARIDO day 1 vs other tracks' day 1
+        const day1Comparison = OG_TRACKS.map(t => {
+          const firstDay = dl.find(e => e.date === '2026-03-20'); // first full day of album
+          return { name: t, day1: firstDay?.tracks[t] || 0 };
+        });
+        day1Comparison.push({ name: 'MALPARIDO', day1: 166328 });
+        day1Comparison.sort((a, b) => b.day1 - a.day1);
+
+        // Card style
+        const card = { background: 'rgba(15,23,42,0.6)', borderRadius: '16px', border: '1px solid rgba(51,65,85,0.5)', padding: '1.5rem' };
+        const statBox = { background: 'rgba(15,23,42,0.8)', borderRadius: '12px', padding: '1rem', textAlign: 'center', flex: 1, minWidth: '120px' };
+        const maxPost = Math.max(...haloData.map(h => h.post), 1);
+
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Header */}
+            <div style={{ ...card, background: 'linear-gradient(135deg, rgba(239,68,68,0.15), rgba(249,115,22,0.1))' }}>
+              <h2 style={{ margin: '0 0 0.5rem', fontSize: '1.5rem', color: '#f1f5f9' }}>
+                🔥 MALPARIDO <span style={{ color: '#f97316', fontSize: '0.9rem', fontWeight: 400 }}>feat. Duki</span>
+              </h2>
+              <p style={{ color: '#94a3b8', fontSize: '0.85rem', margin: 0 }}>
+                Track #13 · Lanzado {MALP_RELEASE} · Impacto en el álbum Amor Fiado
+              </p>
+            </div>
+
+            {/* Key Stats Row */}
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              {[
+                { label: 'Streams totales', value: formatNumber(malp.liveTotal || 178261), color: '#f97316' },
+                { label: 'Listeners', value: formatNumber(malp.listeners28d || 93532), color: '#3b82f6' },
+                { label: 'Saves', value: formatNumber(malp.saves28d || 39142), color: '#a78bfa' },
+                { label: 'Playlist adds', value: formatNumber(malp.playlistAdds || 22584), color: '#22d3ee' },
+                { label: '% Orgánico', value: malpOrganicPct.toFixed(1) + '%', color: '#4ade80' },
+                { label: 'Álbum lift', value: (albumLift > 0 ? '+' : '') + albumLift.toFixed(0) + '%', color: albumLift > 0 ? '#4ade80' : '#f87171' },
+              ].map((s, i) => (
+                <div key={i} style={statBox}>
+                  <div style={{ color: '#64748b', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.3rem' }}>{s.label}</div>
+                  <div style={{ color: s.color, fontSize: '1.4rem', fontWeight: 700 }}>{s.value}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* MALPARIDO Daily Streams */}
+            <div style={card}>
+              <h3 style={{ color: '#f1f5f9', fontSize: '1rem', margin: '0 0 1rem' }}>📈 Streams diarios — MALPARIDO</h3>
+              {malpDaily.length > 0 ? (
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: '6px', height: '180px' }}>
+                  {malpDaily.map((d, i) => {
+                    const maxS = Math.max(...malpDaily.map(x => x.streams));
+                    const h = maxS > 0 ? (d.streams / maxS * 160) : 0;
+                    return (
+                      <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ color: '#f97316', fontSize: '0.65rem', fontWeight: 600 }}>{formatNumber(d.streams)}</span>
+                        <div style={{ width: '100%', maxWidth: '60px', height: h + 'px', background: 'linear-gradient(180deg, #f97316, #ea580c)', borderRadius: '6px 6px 2px 2px', minHeight: '4px' }} />
+                        <span style={{ color: '#64748b', fontSize: '0.6rem' }}>{d.date}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p style={{ color: '#64748b', fontSize: '0.85rem' }}>Esperando datos diarios...</p>
+              )}
+            </div>
+
+            {/* Day 1 Comparison */}
+            <div style={card}>
+              <h3 style={{ color: '#f1f5f9', fontSize: '1rem', margin: '0 0 0.3rem' }}>⚡ Primer día completo vs otros tracks del álbum</h3>
+              <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem' }}>Malparido (14 Abr) vs álbum original (20 Mar)</p>
+              {day1Comparison.slice(0, 6).map((t, i) => {
+                const maxD1 = day1Comparison[0].day1;
+                const w = maxD1 > 0 ? (t.day1 / maxD1 * 100) : 0;
+                const isMalp = t.name === 'MALPARIDO';
+                return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <span style={{ color: isMalp ? '#f97316' : '#94a3b8', fontSize: '0.72rem', width: '200px', textAlign: 'right', fontWeight: isMalp ? 700 : 400 }}>{t.name}</span>
+                    <div style={{ flex: 1, background: 'rgba(51,65,85,0.3)', borderRadius: '4px', height: '22px', overflow: 'hidden' }}>
+                      <div style={{ width: w + '%', height: '100%', background: isMalp ? 'linear-gradient(90deg, #f97316, #ea580c)' : 'rgba(148,163,184,0.3)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '6px' }}>
+                        <span style={{ color: '#f1f5f9', fontSize: '0.65rem', fontWeight: 600 }}>{formatNumber(t.day1)}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Halo Effect */}
+            <div style={card}>
+              <h3 style={{ color: '#f1f5f9', fontSize: '1rem', margin: '0 0 0.3rem' }}>🌊 Efecto halo en el álbum</h3>
+              <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem' }}>
+                Promedio diario: 7 días pre-Malparido vs post-lanzamiento ({postDays.length} día{postDays.length !== 1 ? 's' : ''})
+                {preAlbumAvg > 0 && <span> · Álbum total: {formatNumber(preAlbumAvg)}/día → {formatNumber(postAlbumAvg)}/día</span>}
+              </p>
+              {haloData.map((t, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem' }}>
+                  <span style={{ color: '#94a3b8', fontSize: '0.72rem', width: '200px', textAlign: 'right' }}>{t.name}</span>
+                  <div style={{ flex: 1, position: 'relative' }}>
+                    {/* Pre bar (ghost) */}
+                    <div style={{ position: 'absolute', width: (maxPost > 0 ? t.pre / maxPost * 100 : 0) + '%', height: '20px', background: 'rgba(148,163,184,0.15)', borderRadius: '4px', border: '1px dashed rgba(148,163,184,0.3)' }} />
+                    {/* Post bar */}
+                    <div style={{ position: 'relative', width: (maxPost > 0 ? t.post / maxPost * 100 : 0) + '%', height: '20px', background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #16a34a)' : t.change > 0 ? 'linear-gradient(90deg, #3b82f6, #2563eb)' : 'rgba(239,68,68,0.5)', borderRadius: '4px', minWidth: '2px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '6px' }}>
+                      <span style={{ color: '#f1f5f9', fontSize: '0.6rem', fontWeight: 600 }}>{formatNumber(t.post)}/d</span>
+                    </div>
+                  </div>
+                  <span style={{ color: t.change > 50 ? '#4ade80' : t.change > 0 ? '#60a5fa' : '#f87171', fontSize: '0.75rem', fontWeight: 700, width: '55px', textAlign: 'right' }}>
+                    {t.change > 0 ? '+' : ''}{t.change.toFixed(0)}%
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Organic vs Algo */}
+            <div style={card}>
+              <h3 style={{ color: '#f1f5f9', fontSize: '1rem', margin: '0 0 1rem' }}>🤖 Orgánico vs Algorítmico — MALPARIDO</h3>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div style={{ width: '120px', height: '120px', borderRadius: '50%', background: `conic-gradient(#4ade80 0% ${malpOrganicPct}%, #f97316 ${malpOrganicPct}% 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+                    <span style={{ color: '#4ade80', fontSize: '1.2rem', fontWeight: 700 }}>{malpOrganicPct.toFixed(0)}%</span>
+                    <span style={{ color: '#64748b', fontSize: '0.55rem' }}>orgánico</span>
+                  </div>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ color: '#4ade80', fontSize: '0.8rem' }}>● Orgánico: {formatNumber(malpTotalStreams - malpAlgoTotal)}</span>
+                    <span style={{ color: '#f97316', fontSize: '0.8rem' }}>● Algorítmico: {formatNumber(malpAlgoTotal)}</span>
+                  </div>
+                  <p style={{ color: '#94a3b8', fontSize: '0.78rem', margin: 0 }}>
+                    {malpOrganicPct > 90
+                      ? 'El crecimiento es casi 100% orgánico — tracción real de la audiencia de Duki + fanbase existente.'
+                      : malpOrganicPct > 70
+                      ? 'Mayormente orgánico con algo de push algorítmico. Spotify está empezando a empujarlo.'
+                      : 'Spotify está empujando fuerte este track en algoritmo — buen momentum.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Algo push on album tracks post-release */}
+            <div style={card}>
+              <h3 style={{ color: '#f1f5f9', fontSize: '1rem', margin: '0 0 0.3rem' }}>🎯 Push algorítmico post-Malparido en tracks del álbum</h3>
+              <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem' }}>% algorítmico promedio: 7d pre vs post-lanzamiento</p>
+              {(() => {
+                const algoHalo = OG_TRACKS.map(t => {
+                  const preAlgo = preDays.length > 0 ? preDays.reduce((s, e) => {
+                    const aEntry = aLog.find(a => a.date === e.date);
+                    return s + (aEntry?.tracks?.[t] || 0);
+                  }, 0) / preDays.length : 0;
+                  const postAlgoArr = postDays.map(e => {
+                    const aEntry = aLog.find(a => a.date === e.date);
+                    return aEntry?.tracks?.[t] || 0;
+                  });
+                  const postAlgo = postAlgoArr.length > 0 ? postAlgoArr.reduce((a, b) => a + b, 0) / postAlgoArr.length : 0;
+                  const preStreamsAvg = preAvg[t] || 1;
+                  const postStreamsAvg = postAvg[t] || 1;
+                  return {
+                    name: t,
+                    preAlgoPct: preStreamsAvg > 0 ? (preAlgo / preStreamsAvg * 100) : 0,
+                    postAlgoPct: postStreamsAvg > 0 ? (postAlgo / postStreamsAvg * 100) : 0,
+                  };
+                }).sort((a, b) => (b.postAlgoPct - b.preAlgoPct) - (a.postAlgoPct - a.preAlgoPct));
+
+                return algoHalo.map((t, i) => {
+                  const diff = t.postAlgoPct - t.preAlgoPct;
+                  return (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                      <span style={{ color: '#94a3b8', fontSize: '0.72rem', width: '200px', textAlign: 'right' }}>{t.name}</span>
+                      <div style={{ flex: 1, display: 'flex', gap: '4px', alignItems: 'center' }}>
+                        <div style={{ background: 'rgba(148,163,184,0.2)', borderRadius: '4px', height: '16px', width: Math.max(t.preAlgoPct * 2, 2) + 'px' }} />
+                        <span style={{ color: '#64748b', fontSize: '0.6rem' }}>{t.preAlgoPct.toFixed(0)}%</span>
+                        <span style={{ color: '#475569', fontSize: '0.7rem' }}>→</span>
+                        <div style={{ background: diff > 5 ? '#22c55e' : diff > 0 ? '#3b82f6' : '#64748b', borderRadius: '4px', height: '16px', width: Math.max(t.postAlgoPct * 2, 2) + 'px' }} />
+                        <span style={{ color: diff > 5 ? '#4ade80' : '#94a3b8', fontSize: '0.6rem', fontWeight: 600 }}>{t.postAlgoPct.toFixed(0)}%</span>
+                      </div>
+                      <span style={{ color: diff > 5 ? '#4ade80' : diff > 0 ? '#60a5fa' : '#94a3b8', fontSize: '0.7rem', fontWeight: 600, width: '50px', textAlign: 'right' }}>
+                        {diff > 0 ? '+' : ''}{diff.toFixed(0)}pp
+                      </span>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* ── ⚙️ Admin ────────────────────────────────────────────────────────── */}
       {activeTab === 'admin' && isAdmin && (() => {
         const inp = {

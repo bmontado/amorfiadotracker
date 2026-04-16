@@ -1,9 +1,9 @@
 {
   "lastUpdated": {
-    "spotify": "2026-04-12T17:00:00-03:00",
+    "spotify": "2026-04-16T17:00:00-03:00",
     "social": "2026-04-07"
   },
-  "albumLiveTotal": 1655968,
+  "albumLiveTotal": 1834229,
   "liveTotals": {
     "CUANDO ESCRIBÍA ASIMETRÍA": 360144,
     "MAN OF WORD": 98754,
@@ -16,7 +16,8 @@
     "OJOS TRISTES": 77379,
     "HAZLO CALLAO": 54031,
     "YA NO": 65450,
-    "TOP TIER": 55645
+    "TOP TIER": 55645,
+    "MALPARIDO": 178261
   },
   "dailyLog": [
     {
@@ -473,6 +474,66 @@
         "HAZLO CALLAO": 1379,
         "YA NO": 1920,
         "TOP TIER": 1690
+      }
+    },
+    {
+      "date": "2026-04-12",
+      "label": "12 Abr",
+      "note": "",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 3091,
+        "MAN OF WORD": 2632,
+        "ATBLM": 4138,
+        "CALL ME": 3113,
+        "ALQUILER": 1417,
+        "HIELO": 2033,
+        "UN GUSTO": 5156,
+        "CHANGES": 2504,
+        "OJOS TRISTES": 1842,
+        "HAZLO CALLAO": 1090,
+        "YA NO": 1777,
+        "TOP TIER": 1706,
+        "MALPARIDO": 0
+      }
+    },
+    {
+      "date": "2026-04-13",
+      "label": "13 Abr",
+      "note": "Malparido lanzamiento",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 6727,
+        "MAN OF WORD": 4330,
+        "ATBLM": 6808,
+        "CALL ME": 5423,
+        "ALQUILER": 2646,
+        "HIELO": 3396,
+        "UN GUSTO": 8142,
+        "CHANGES": 4195,
+        "OJOS TRISTES": 3087,
+        "HAZLO CALLAO": 2053,
+        "YA NO": 2938,
+        "TOP TIER": 2841,
+        "MALPARIDO": 11933
+      }
+    },
+    {
+      "date": "2026-04-14",
+      "label": "14 Abr",
+      "note": "Malparido lanzamiento",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 22403,
+        "MAN OF WORD": 6715,
+        "ATBLM": 9751,
+        "CALL ME": 7071,
+        "ALQUILER": 4059,
+        "HIELO": 4840,
+        "UN GUSTO": 9846,
+        "CHANGES": 7884,
+        "OJOS TRISTES": 5025,
+        "HAZLO CALLAO": 3430,
+        "YA NO": 4128,
+        "TOP TIER": 3498,
+        "MALPARIDO": 166328
       }
     }
   ],
@@ -2079,6 +2140,66 @@
         "TOP TIER": 61852
       },
       "total": 1251712
+    },
+    {
+      "date": "2026-04-12",
+      "label": "12 Abr",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 131596,
+        "MAN OF WORD": 112256,
+        "ATBLM": 180355,
+        "CALL ME": 117337,
+        "ALQUILER": 75066,
+        "HIELO": 92317,
+        "UN GUSTO": 186648,
+        "CHANGES": 101533,
+        "OJOS TRISTES": 87222,
+        "HAZLO CALLAO": 60072,
+        "YA NO": 74251,
+        "TOP TIER": 63558,
+        "MALPARIDO": 0
+      },
+      "total": 1282211
+    },
+    {
+      "date": "2026-04-13",
+      "label": "13 Abr",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 138323,
+        "MAN OF WORD": 116586,
+        "ATBLM": 187163,
+        "CALL ME": 122760,
+        "ALQUILER": 77712,
+        "HIELO": 95713,
+        "UN GUSTO": 194790,
+        "CHANGES": 105728,
+        "OJOS TRISTES": 90309,
+        "HAZLO CALLAO": 62125,
+        "YA NO": 77189,
+        "TOP TIER": 66399,
+        "MALPARIDO": 11933
+      },
+      "total": 1346730
+    },
+    {
+      "date": "2026-04-14",
+      "label": "14 Abr",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 160726,
+        "MAN OF WORD": 123301,
+        "ATBLM": 196914,
+        "CALL ME": 129831,
+        "ALQUILER": 81771,
+        "HIELO": 100553,
+        "UN GUSTO": 204636,
+        "CHANGES": 113612,
+        "OJOS TRISTES": 95334,
+        "HAZLO CALLAO": 65555,
+        "YA NO": 81317,
+        "TOP TIER": 69897,
+        "MALPARIDO": 178261
+      },
+      "total": 1601708
     }
   ],
   "trackMetricsMeta": {
@@ -3934,6 +4055,60 @@
         "YA NO": 329,
         "TOP TIER": 150
       }
+    },
+    {
+      "date": "2026-04-12",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 485,
+        "MAN OF WORD": 605,
+        "ATBLM": 729,
+        "CALL ME": 526,
+        "ALQUILER": 157,
+        "HIELO": 294,
+        "UN GUSTO": 1369,
+        "CHANGES": 698,
+        "OJOS TRISTES": 281,
+        "HAZLO CALLAO": 81,
+        "YA NO": 391,
+        "TOP TIER": 326,
+        "MALPARIDO": 0
+      }
+    },
+    {
+      "date": "2026-04-13",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 1878,
+        "MAN OF WORD": 728,
+        "ATBLM": 1090,
+        "CALL ME": 935,
+        "ALQUILER": 288,
+        "HIELO": 325,
+        "UN GUSTO": 2165,
+        "CHANGES": 1101,
+        "OJOS TRISTES": 317,
+        "HAZLO CALLAO": 171,
+        "YA NO": 487,
+        "TOP TIER": 504,
+        "MALPARIDO": 34
+      }
+    },
+    {
+      "date": "2026-04-14",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 14335,
+        "MAN OF WORD": 1143,
+        "ATBLM": 2038,
+        "CALL ME": 828,
+        "ALQUILER": 205,
+        "HIELO": 295,
+        "UN GUSTO": 1810,
+        "CHANGES": 3476,
+        "OJOS TRISTES": 477,
+        "HAZLO CALLAO": 290,
+        "YA NO": 552,
+        "TOP TIER": 124,
+        "MALPARIDO": 1930
+      }
     }
   ],
   "algorithmicHistory": [
@@ -4770,5 +4945,15 @@
     "YA NO": 65450,
     "TOP TIER": 55645
   },
-  "total": 1135029
+  "total": 1135029,
+  "malparidoRelease": {
+    "trackId": "4wjIqViyNbifMldqFsdZk2",
+    "releaseDate": "2026-04-13",
+    "feat": "Duki",
+    "liveTotal": 178261,
+    "listeners28d": 93532,
+    "saves28d": 39142,
+    "playlistAdds": 22584,
+    "scrapedAt": "2026-04-16T17:00:00-03:00"
+  }
 }
