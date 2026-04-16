@@ -178,6 +178,8 @@ const AmorFiadoDashboard = () => {
     'OJOS TRISTES', 'HAZLO CALLAO', 'YA NO', 'TOP TIER',
   ];
   const emptyTracks = () => { const t = {}; TRACKS.forEach(tr => { t[tr] = ''; }); return t; };
+  const [malpAlgoDay, setMalpAlgoDay] = useState(-1);     // -1 = all post days avg
+  const [malpListDay, setMalpListDay] = useState(-1);     // -1 = all post days avg
   const [adminView, setAdminView] = useState('table');   // 'table' | 'form'
   const [adminEditDate, setAdminEditDate] = useState(''); // fecha siendo editada
   const [adminDate, setAdminDate] = useState(() => new Date().toISOString().split('T')[0]);
@@ -3955,14 +3957,14 @@ const AmorFiadoDashboard = () => {
           const aEntry = aLog.find(a => a.date === e.date);
           const algoS = aEntry?.tracks?.['MALPARIDO'] || 0;
           const totalS = e.tracks['MALPARIDO'];
-          return { date: e.label || e.date.slice(5), streams: totalS, algo: algoS, organic: totalS - algoS };
+          return { date: e.label || e.date.slice(5), fullDate: e.date, streams: totalS, algo: algoS, organic: totalS - algoS };
         });
         const malpTotalStreams = malpDaily.reduce((s, e) => s + e.streams, 0);
         const malpAlgoTotal = malpDaily.reduce((s, e) => s + e.algo, 0);
         const malpOrganicPct = malpTotalStreams > 0 ? ((malpTotalStreams - malpAlgoTotal) / malpTotalStreams * 100) : 0;
 
         // ── Album halo: daily timeline (pre + post) ──
-        const haloWindow = dl.slice(-21); // up to 3 weeks window
+        const haloWindow = dl.slice(-21);
         const haloTimeline = haloWindow.map(e => {
           const albumTotal = OG_TRACKS.reduce((s, t) => s + (e.tracks[t] || 0), 0);
           return { date: e.label || e.date.slice(5), fullDate: e.date, streams: albumTotal, isPost: e.date >= MALP_RELEASE };
@@ -3984,169 +3986,224 @@ const AmorFiadoDashboard = () => {
         const postAlbumAvg = postDays.length > 0 ? Math.round(postDays.reduce((s, e) => s + OG_TRACKS.reduce((ss, t) => ss + (e.tracks[t] || 0), 0), 0) / postDays.length) : 0;
         const albumLift = preAlbumAvg > 0 ? ((postAlbumAvg - preAlbumAvg) / preAlbumAvg * 100) : 0;
 
-        // Day 1 comparison
-        const day1Comparison = OG_TRACKS.map(t => {
-          const firstDay = dl.find(e => e.date === '2026-03-20');
-          return { name: t, day1: firstDay?.tracks[t] || 0 };
-        });
-        day1Comparison.push({ name: 'MALPARIDO', day1: 166328 });
-        day1Comparison.sort((a, b) => b.day1 - a.day1);
-
-        // Algo push per track
-        const algoHalo = OG_TRACKS.map(t => {
-          const preAlgo = preDays.length > 0 ? preDays.reduce((s, e) => { const a = aLog.find(x => x.date === e.date); return s + (a?.tracks?.[t] || 0); }, 0) / preDays.length : 0;
-          const postAlgoArr = postDays.map(e => { const a = aLog.find(x => x.date === e.date); return a?.tracks?.[t] || 0; });
-          const postAlgo = postAlgoArr.length > 0 ? postAlgoArr.reduce((a, b) => a + b, 0) / postAlgoArr.length : 0;
-          const preS = preAvg[t] || 1; const postS = postAvg[t] || 1;
-          return { name: t, preAlgoPct: (preAlgo / preS * 100), postAlgoPct: (postAlgo / postS * 100), preAlgoAbs: Math.round(preAlgo), postAlgoAbs: Math.round(postAlgo) };
-        }).sort((a, b) => (b.postAlgoPct - b.preAlgoPct) - (a.postAlgoPct - a.preAlgoPct));
-
-        // Algo timeline per track (daily)
-        const algoTimelineTracks = OG_TRACKS.map(t => {
-          const timeline = haloWindow.map(e => {
-            const a = aLog.find(x => x.date === e.date);
-            return { date: e.label || e.date.slice(5), fullDate: e.date, algo: a?.tracks?.[t] || 0, total: e.tracks[t] || 0, isPost: e.date >= MALP_RELEASE };
+        // ── Algo push: daily per track (for slider) ──
+        const algoDailyAll = haloWindow.map(e => {
+          const a = aLog.find(x => x.date === e.date);
+          const dayData = {};
+          OG_TRACKS.forEach(t => {
+            const totalS = e.tracks[t] || 0;
+            const algoS = a?.tracks?.[t] || 0;
+            dayData[t] = { total: totalS, algo: algoS, pct: totalS > 0 ? (algoS / totalS * 100) : 0 };
           });
-          return { name: t, timeline };
+          return { date: e.date, label: e.label || e.date.slice(5), isPost: e.date >= MALP_RELEASE, tracks: dayData };
+        });
+        const algoPostDays = algoDailyAll.filter(d => d.isPost);
+        const algoPreDays = algoDailyAll.filter(d => !d.isPost).slice(-7);
+
+        // Algo avg pre
+        const algoPreAvg = {};
+        OG_TRACKS.forEach(t => {
+          algoPreAvg[t] = algoPreDays.length > 0 ? algoPreDays.reduce((s, d) => s + d.tracks[t].pct, 0) / algoPreDays.length : 0;
         });
 
-        const card = { background: 'rgba(15,23,42,0.6)', borderRadius: '16px', border: '1px solid rgba(51,65,85,0.5)', padding: '1.5rem' };
-        const statBox = { background: 'rgba(15,23,42,0.8)', borderRadius: '12px', padding: '1rem', textAlign: 'center', flex: 1, minWidth: '120px' };
+        // ── Listeners daily per track (for slider) ──
+        const listDailyAll = (lLog.length > 0 ? lLog : []).slice(-21).map(e => {
+          return { date: e.date, label: e.date.slice(5).replace('-0', '-').replace(/^0/, ''), isPost: e.date >= MALP_RELEASE, tracks: e.tracks || {} };
+        });
+        const listPostDays = listDailyAll.filter(d => d.isPost);
+        const listPreDays = listDailyAll.filter(d => !d.isPost).slice(-7);
+        const listPreAvg = {};
+        OG_TRACKS.forEach(t => {
+          listPreAvg[t] = listPreDays.length > 0 ? Math.round(listPreDays.reduce((s, d) => s + (d.tracks[t] || 0), 0) / listPreDays.length) : 0;
+        });
+
+        // ── Premium styles ──
+        const glass = {
+          background: 'rgba(15,23,42,0.55)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderRadius: '20px',
+          border: '1px solid rgba(255,255,255,0.06)',
+          padding: '1.75rem',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)',
+        };
         const maxPost = Math.max(...haloData.map(h => h.post), 1);
 
+        // ── Slider style ──
+        const sliderTrack = {
+          width: '100%', height: '6px', borderRadius: '3px',
+          background: 'rgba(51,65,85,0.5)',
+          outline: 'none', cursor: 'pointer',
+          WebkitAppearance: 'none', appearance: 'none',
+        };
+
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {/* Header */}
-            <div style={{ ...card, background: 'linear-gradient(135deg, rgba(239,68,68,0.15), rgba(249,115,22,0.1))' }}>
-              <h2 style={{ margin: '0 0 0.5rem', fontSize: '1.5rem', color: '#f1f5f9' }}>
-                🔥 MALPARIDO <span style={{ color: '#f97316', fontSize: '0.9rem', fontWeight: 400 }}>feat. Duki</span>
-              </h2>
-              <p style={{ color: '#94a3b8', fontSize: '0.85rem', margin: 0 }}>
-                Track #13 · Lanzado {MALP_RELEASE} · Impacto en el álbum Amor Fiado
-              </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+            {/* ═══ HEADER ═══ */}
+            <div style={{
+              ...glass,
+              background: 'linear-gradient(135deg, rgba(239,68,68,0.12) 0%, rgba(249,115,22,0.08) 50%, rgba(168,85,247,0.06) 100%)',
+              position: 'relative', overflow: 'hidden',
+            }}>
+              <div style={{ position: 'absolute', top: '-50%', right: '-10%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                  <h2 style={{ margin: 0, fontSize: '1.6rem', fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.02em' }}>MALPARIDO</h2>
+                  <span style={{ color: '#f97316', fontSize: '0.85rem', fontWeight: 500, opacity: 0.9 }}>feat. Duki</span>
+                </div>
+                <p style={{ color: '#94a3b8', fontSize: '0.82rem', margin: 0, fontWeight: 400 }}>
+                  Track #13 · Lanzado {new Date(MALP_RELEASE + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })} · Impacto en Amor Fiado
+                </p>
+              </div>
             </div>
 
-            {/* Key Stats Row */}
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            {/* ═══ KEY STATS ═══ */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem' }}>
               {[
-                { label: 'Streams totales', value: formatNumber(malp.liveTotal || 178261), color: '#f97316' },
-                { label: 'Listeners', value: formatNumber(malp.listeners28d || 93532), color: '#3b82f6' },
-                { label: 'Saves', value: formatNumber(malp.saves28d || 39142), color: '#a78bfa' },
-                { label: 'Playlist adds', value: formatNumber(malp.playlistAdds || 22584), color: '#22d3ee' },
-                { label: '% Orgánico', value: malpOrganicPct.toFixed(1) + '%', color: '#4ade80' },
-                { label: 'Álbum lift', value: (albumLift > 0 ? '+' : '') + albumLift.toFixed(0) + '%', color: albumLift > 0 ? '#4ade80' : '#f87171' },
+                { label: 'Streams totales', value: formatNumber(malp.liveTotal || 178261), color: '#f97316', glow: 'rgba(249,115,22,0.15)' },
+                { label: 'Listeners', value: formatNumber(malp.listeners28d || 93532), color: '#3b82f6', glow: 'rgba(59,130,246,0.12)' },
+                { label: 'Saves', value: formatNumber(malp.saves28d || 39142), color: '#a78bfa', glow: 'rgba(167,139,250,0.12)' },
+                { label: 'Playlist adds', value: formatNumber(malp.playlistAdds || 22584), color: '#22d3ee', glow: 'rgba(34,211,238,0.12)' },
+                { label: '% Orgánico', value: malpOrganicPct.toFixed(1) + '%', color: '#4ade80', glow: 'rgba(74,222,128,0.12)' },
+                { label: 'Álbum lift', value: (albumLift > 0 ? '+' : '') + albumLift.toFixed(0) + '%', color: albumLift > 0 ? '#4ade80' : '#f87171', glow: albumLift > 0 ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.12)' },
               ].map((s, i) => (
-                <div key={i} style={statBox}>
-                  <div style={{ color: '#64748b', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.3rem' }}>{s.label}</div>
-                  <div style={{ color: s.color, fontSize: '1.4rem', fontWeight: 700 }}>{s.value}</div>
+                <div key={i} style={{
+                  background: `linear-gradient(135deg, ${s.glow}, rgba(15,23,42,0.7))`,
+                  borderRadius: '16px', padding: '1.1rem 1rem', textAlign: 'center',
+                  border: '1px solid rgba(255,255,255,0.04)',
+                  boxShadow: `0 4px 20px ${s.glow}`,
+                  transition: 'transform 0.2s',
+                }}>
+                  <div style={{ color: '#94a3b8', fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.4rem', fontWeight: 500 }}>{s.label}</div>
+                  <div style={{ color: s.color, fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.02em' }}>{s.value}</div>
                 </div>
               ))}
             </div>
 
-            {/* ── MALPARIDO Daily Streams + Organic/Algo stacked bars ── */}
-            <div style={card}>
-              <h3 style={{ color: '#f1f5f9', fontSize: '1rem', margin: '0 0 0.3rem' }}>📈 Streams diarios — MALPARIDO</h3>
-              <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-                <span style={{ color: '#4ade80', fontSize: '0.7rem' }}>● Orgánico ({formatNumber(malpTotalStreams - malpAlgoTotal)})</span>
-                <span style={{ color: '#f97316', fontSize: '0.7rem' }}>● Algorítmico ({formatNumber(malpAlgoTotal)})</span>
-                <span style={{ color: '#64748b', fontSize: '0.7rem', marginLeft: 'auto' }}>{malpOrganicPct.toFixed(0)}% orgánico total</span>
-              </div>
-              {malpDaily.length > 0 ? (
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: '6px', height: '200px' }}>
-                  {malpDaily.map((d, i) => {
-                    const maxS = Math.max(...malpDaily.map(x => x.streams));
-                    const totalH = maxS > 0 ? (d.streams / maxS * 170) : 0;
-                    const algoH = maxS > 0 ? (d.algo / maxS * 170) : 0;
-                    const organicH = totalH - algoH;
-                    const algoPct = d.streams > 0 ? (d.algo / d.streams * 100).toFixed(0) : 0;
-                    return (
-                      <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
-                        <span style={{ color: '#f1f5f9', fontSize: '0.6rem', fontWeight: 600 }}>{formatNumber(d.streams)}</span>
-                        <div style={{ width: '100%', maxWidth: '60px', display: 'flex', flexDirection: 'column' }}>
-                          <div style={{ height: organicH + 'px', background: 'linear-gradient(180deg, #4ade80, #22c55e)', borderRadius: '6px 6px 0 0', minHeight: organicH > 0 ? '2px' : '0' }} />
-                          <div style={{ height: algoH + 'px', background: 'linear-gradient(180deg, #f97316, #ea580c)', borderRadius: algoH > 0 && organicH === 0 ? '6px 6px 2px 2px' : '0 0 2px 2px', minHeight: algoH > 0 ? '2px' : '0' }} />
-                        </div>
-                        <span style={{ color: '#64748b', fontSize: '0.55rem' }}>{d.date}</span>
-                        <span style={{ color: '#f97316', fontSize: '0.5rem', opacity: 0.7 }}>{algoPct}% algo</span>
-                      </div>
-                    );
-                  })}
+            {/* ═══ STREAMS DIARIOS — MALPARIDO ═══ */}
+            <div style={glass}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <div>
+                  <h3 style={{ color: '#f1f5f9', fontSize: '1.05rem', margin: 0, fontWeight: 700 }}>Streams diarios</h3>
+                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: '0.2rem 0 0' }}>Desglose orgánico vs algorítmico</p>
                 </div>
-              ) : (
-                <p style={{ color: '#64748b', fontSize: '0.85rem' }}>Esperando datos diarios...</p>
-              )}
-            </div>
-
-            {/* Day 1 Comparison */}
-            <div style={card}>
-              <h3 style={{ color: '#f1f5f9', fontSize: '1rem', margin: '0 0 0.3rem' }}>⚡ Primer día completo vs otros tracks del álbum</h3>
-              <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem' }}>Malparido (14 Abr) vs álbum original (20 Mar)</p>
-              {day1Comparison.slice(0, 6).map((t, i) => {
-                const maxD1 = day1Comparison[0].day1;
-                const w = maxD1 > 0 ? (t.day1 / maxD1 * 100) : 0;
-                const isMalp = t.name === 'MALPARIDO';
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#4ade80', fontSize: '0.68rem' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#4ade80', display: 'inline-block' }} /> Orgánico
+                  </span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#f97316', fontSize: '0.68rem' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#f97316', display: 'inline-block' }} /> Algorítmico
+                  </span>
+                </div>
+              </div>
+              {malpDaily.length > 0 ? (() => {
+                const maxS = Math.max(...malpDaily.map(x => x.streams));
+                const barH = 210;
                 return (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <span style={{ color: isMalp ? '#f97316' : '#94a3b8', fontSize: '0.72rem', width: '200px', textAlign: 'right', fontWeight: isMalp ? 700 : 400 }}>{t.name}</span>
-                    <div style={{ flex: 1, background: 'rgba(51,65,85,0.3)', borderRadius: '4px', height: '22px', overflow: 'hidden' }}>
-                      <div style={{ width: w + '%', height: '100%', background: isMalp ? 'linear-gradient(90deg, #f97316, #ea580c)' : 'rgba(148,163,184,0.3)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '6px' }}>
-                        <span style={{ color: '#f1f5f9', fontSize: '0.65rem', fontWeight: 600 }}>{formatNumber(t.day1)}</span>
-                      </div>
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: barH + 'px', padding: '0 4px' }}>
+                    {malpDaily.map((d, i) => {
+                      const totalH = maxS > 0 ? (d.streams / maxS * (barH - 40)) : 0;
+                      const algoH = maxS > 0 ? (d.algo / maxS * (barH - 40)) : 0;
+                      const organicH = totalH - algoH;
+                      const algoPct = d.streams > 0 ? (d.algo / d.streams * 100).toFixed(0) : 0;
+                      const isFirst = d.fullDate === '2026-04-13';
+                      return (
+                        <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                          <span style={{ color: '#e2e8f0', fontSize: '0.58rem', fontWeight: 700, textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>{formatNumber(d.streams)}</span>
+                          <div style={{ width: '100%', maxWidth: '56px', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                            <div style={{
+                              height: organicH + 'px', minHeight: organicH > 0 ? '3px' : '0',
+                              background: 'linear-gradient(180deg, #4ade80 0%, #16a34a 100%)',
+                              borderRadius: '8px 8px 0 0',
+                              boxShadow: '0 -2px 8px rgba(74,222,128,0.2)',
+                            }} />
+                            <div style={{
+                              height: algoH + 'px', minHeight: algoH > 0 ? '3px' : '0',
+                              background: 'linear-gradient(180deg, #fb923c 0%, #ea580c 100%)',
+                              borderRadius: organicH === 0 ? '8px 8px 4px 4px' : '0 0 4px 4px',
+                              boxShadow: '0 2px 8px rgba(249,115,22,0.2)',
+                            }} />
+                            {isFirst && <div style={{ position: 'absolute', top: '-2px', left: 0, right: 0, height: '2px', background: '#f97316', borderRadius: '1px' }} />}
+                          </div>
+                          <span style={{ color: '#94a3b8', fontSize: '0.55rem', fontWeight: 500 }}>{d.date}</span>
+                          <span style={{ color: 'rgba(249,115,22,0.6)', fontSize: '0.48rem' }}>{algoPct}%</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 );
-              })}
+              })() : (
+                <p style={{ color: '#64748b', fontSize: '0.85rem' }}>Esperando datos diarios...</p>
+              )}
+              <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'center', gap: '2rem' }}>
+                <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>Total orgánico: <strong style={{ color: '#4ade80' }}>{formatNumber(malpTotalStreams - malpAlgoTotal)}</strong></span>
+                <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>Total algorítmico: <strong style={{ color: '#f97316' }}>{formatNumber(malpAlgoTotal)}</strong></span>
+                <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>{malpOrganicPct.toFixed(0)}% orgánico</span>
+              </div>
             </div>
 
-            {/* ── Halo Effect Timeline ── */}
-            <div style={card}>
-              <h3 style={{ color: '#f1f5f9', fontSize: '1rem', margin: '0 0 0.3rem' }}>🌊 Efecto halo — Timeline del álbum (12 tracks originales)</h3>
-              <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 0.3rem' }}>
-                Streams diarios totales · La línea punteada marca el lanzamiento de Malparido
-                {preAlbumAvg > 0 && <span> · Pre: {formatNumber(preAlbumAvg)}/día → Post: {formatNumber(postAlbumAvg)}/día (<span style={{ color: albumLift > 0 ? '#4ade80' : '#f87171' }}>{albumLift > 0 ? '+' : ''}{albumLift.toFixed(0)}%</span>)</span>}
+            {/* ═══ EFECTO HALO ═══ */}
+            <div style={glass}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <h3 style={{ color: '#f1f5f9', fontSize: '1.05rem', margin: 0, fontWeight: 700 }}>Efecto halo en el álbum</h3>
+                {preAlbumAvg > 0 && (
+                  <div style={{
+                    background: albumLift > 0 ? 'rgba(74,222,128,0.1)' : 'rgba(248,113,113,0.1)',
+                    borderRadius: '20px', padding: '0.3rem 0.8rem',
+                    border: `1px solid ${albumLift > 0 ? 'rgba(74,222,128,0.2)' : 'rgba(248,113,113,0.2)'}`,
+                  }}>
+                    <span style={{ color: albumLift > 0 ? '#4ade80' : '#f87171', fontSize: '0.78rem', fontWeight: 700 }}>
+                      {albumLift > 0 ? '+' : ''}{albumLift.toFixed(0)}% lift
+                    </span>
+                  </div>
+                )}
+              </div>
+              <p style={{ color: '#64748b', fontSize: '0.72rem', margin: '0 0 0.25rem' }}>
+                Streams diarios combinados de los 12 tracks originales
               </p>
-              <p style={{ color: '#475569', fontSize: '0.68rem', margin: '0 0 1rem' }}>
-                Monitoreando por 2 semanas post-lanzamiento · {postDays.length} de 14 días registrados
+              <p style={{ color: '#475569', fontSize: '0.65rem', margin: '0 0 1rem' }}>
+                Pre: {formatNumber(preAlbumAvg)}/día → Post: {formatNumber(postAlbumAvg)}/día · {postDays.length} de 14 días monitoreados
               </p>
+
+              {/* Timeline chart */}
               {haloTimeline.length > 0 && (() => {
                 const maxH = Math.max(...haloTimeline.map(e => e.streams), 1);
-                const chartH = 180;
-                const releaseIdx = haloTimeline.findIndex(e => e.fullDate === MALP_RELEASE);
+                const chartH = 190;
                 return (
-                  <div style={{ position: 'relative' }}>
-                    {/* Y-axis labels */}
-                    <div style={{ position: 'absolute', left: 0, top: 0, bottom: 25, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '40px' }}>
-                      <span style={{ color: '#475569', fontSize: '0.55rem' }}>{formatNumber(maxH)}</span>
-                      <span style={{ color: '#475569', fontSize: '0.55rem' }}>{formatNumber(Math.round(maxH / 2))}</span>
-                      <span style={{ color: '#475569', fontSize: '0.55rem' }}>0</span>
+                  <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
+                    <div style={{ position: 'absolute', left: 0, top: 0, bottom: 30, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '42px' }}>
+                      {[maxH, Math.round(maxH * 0.66), Math.round(maxH * 0.33), 0].map((v, vi) => (
+                        <span key={vi} style={{ color: '#475569', fontSize: '0.52rem', fontFamily: 'monospace' }}>{formatNumber(v)}</span>
+                      ))}
                     </div>
-                    {/* Chart area */}
-                    <div style={{ marginLeft: '45px', display: 'flex', alignItems: 'flex-end', gap: '2px', height: chartH + 'px', position: 'relative' }}>
-                      {/* Pre-avg reference line */}
+                    <div style={{ marginLeft: '48px', display: 'flex', alignItems: 'flex-end', gap: '2px', height: chartH + 'px', position: 'relative' }}>
                       {preAlbumAvg > 0 && (
-                        <div style={{ position: 'absolute', bottom: (preAlbumAvg / maxH * chartH) + 'px', left: 0, right: 0, borderBottom: '1px dashed rgba(148,163,184,0.3)', zIndex: 1 }}>
-                          <span style={{ position: 'absolute', right: 0, top: '-12px', color: '#64748b', fontSize: '0.5rem' }}>pre avg</span>
+                        <div style={{ position: 'absolute', bottom: (preAlbumAvg / maxH * chartH) + 'px', left: 0, right: 0, borderBottom: '1px dashed rgba(148,163,184,0.25)', zIndex: 1 }}>
+                          <span style={{ position: 'absolute', right: 0, top: '-14px', color: '#64748b', fontSize: '0.5rem', background: 'rgba(15,23,42,0.8)', padding: '1px 4px', borderRadius: '3px' }}>pre avg</span>
                         </div>
                       )}
                       {haloTimeline.map((d, i) => {
-                        const h = d.streams / maxH * (chartH - 10);
+                        const h = d.streams / maxH * (chartH - 15);
                         const isRelease = d.fullDate === MALP_RELEASE;
                         return (
                           <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
                             {isRelease && (
-                              <div style={{ position: 'absolute', top: -20, left: '50%', transform: 'translateX(-50)', zIndex: 2 }}>
-                                <span style={{ color: '#f97316', fontSize: '0.55rem', fontWeight: 700, whiteSpace: 'nowrap' }}>🔥 MALPARIDO</span>
+                              <div style={{ position: 'absolute', top: -22, left: '50%', transform: 'translateX(-50%)', zIndex: 2 }}>
+                                <span style={{ color: '#f97316', fontSize: '0.5rem', fontWeight: 800, whiteSpace: 'nowrap', background: 'rgba(249,115,22,0.15)', padding: '1px 6px', borderRadius: '4px' }}>MALPARIDO</span>
                               </div>
                             )}
                             <div style={{
                               width: '100%', height: h + 'px', minHeight: '2px',
                               background: d.isPost
-                                ? 'linear-gradient(180deg, #f97316, #ea580c)'
-                                : 'linear-gradient(180deg, rgba(148,163,184,0.4), rgba(148,163,184,0.2))',
-                              borderRadius: '3px 3px 1px 1px',
-                              borderLeft: isRelease ? '2px dashed #f97316' : 'none',
+                                ? 'linear-gradient(180deg, #f97316 0%, #c2410c 100%)'
+                                : 'linear-gradient(180deg, rgba(148,163,184,0.35), rgba(148,163,184,0.12))',
+                              borderRadius: '4px 4px 1px 1px',
+                              borderLeft: isRelease ? '2px solid #f97316' : 'none',
+                              boxShadow: d.isPost ? '0 -2px 8px rgba(249,115,22,0.15)' : 'none',
+                              transition: 'height 0.3s ease',
                             }} />
-                            <span style={{ color: d.isPost ? '#f97316' : '#475569', fontSize: '0.48rem', marginTop: '3px', transform: 'rotate(-45deg)', transformOrigin: 'center', whiteSpace: 'nowrap' }}>{d.date}</span>
+                            <span style={{ color: d.isPost ? '#f97316' : '#475569', fontSize: '0.46rem', marginTop: '4px', transform: 'rotate(-45deg)', transformOrigin: 'center', whiteSpace: 'nowrap' }}>{d.date}</span>
                           </div>
                         );
                       })}
@@ -4154,94 +4211,176 @@ const AmorFiadoDashboard = () => {
                   </div>
                 );
               })()}
+
               {/* Per-track halo bars */}
-              <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(51,65,85,0.4)', paddingTop: '1rem' }}>
-                <p style={{ color: '#94a3b8', fontSize: '0.75rem', margin: '0 0 0.75rem' }}>Promedio diario por track: <span style={{ color: '#64748b' }}>pre (7d)</span> vs <span style={{ color: '#f97316' }}>post ({postDays.length}d)</span></p>
-                {haloData.map((t, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem' }}>
-                    <span style={{ color: '#94a3b8', fontSize: '0.72rem', width: '200px', textAlign: 'right' }}>{t.name}</span>
-                    <div style={{ flex: 1, position: 'relative', height: '22px' }}>
-                      <div style={{ position: 'absolute', width: (maxPost > 0 ? t.pre / maxPost * 100 : 0) + '%', height: '22px', background: 'rgba(148,163,184,0.12)', borderRadius: '4px', border: '1px dashed rgba(148,163,184,0.25)' }} />
-                      <div style={{ position: 'relative', width: (maxPost > 0 ? t.post / maxPost * 100 : 0) + '%', height: '22px', background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #16a34a)' : t.change > 0 ? 'linear-gradient(90deg, #3b82f6, #2563eb)' : 'rgba(239,68,68,0.5)', borderRadius: '4px', minWidth: '2px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '6px' }}>
-                        <span style={{ color: '#f1f5f9', fontSize: '0.6rem', fontWeight: 600 }}>{formatNumber(t.post)}/d</span>
+              <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '1.25rem' }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.72rem', margin: '0 0 1rem', fontWeight: 500 }}>
+                  Promedio diario por track — <span style={{ color: '#64748b' }}>pre 7d</span> vs <span style={{ color: '#f97316' }}>post {postDays.length}d</span>
+                </p>
+                {haloData.map((t, i) => {
+                  const isTop = i < 3;
+                  return (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem',
+                      padding: '0.4rem 0.6rem', borderRadius: '10px',
+                      background: isTop ? 'rgba(74,222,128,0.04)' : 'transparent',
+                    }}>
+                      <span style={{
+                        color: isTop ? '#e2e8f0' : '#94a3b8', fontSize: '0.7rem', width: '190px', textAlign: 'right',
+                        fontWeight: isTop ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                      }}>{t.name}</span>
+                      <div style={{ flex: 1, position: 'relative', height: '20px' }}>
+                        <div style={{ position: 'absolute', width: (maxPost > 0 ? t.pre / maxPost * 100 : 0) + '%', height: '20px', background: 'rgba(148,163,184,0.08)', borderRadius: '6px', border: '1px dashed rgba(148,163,184,0.15)' }} />
+                        <div style={{
+                          position: 'relative', width: (maxPost > 0 ? t.post / maxPost * 100 : 0) + '%', height: '20px', minWidth: '2px',
+                          background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #15803d)' : t.change > 0 ? 'linear-gradient(90deg, #3b82f6, #1d4ed8)' : 'rgba(239,68,68,0.4)',
+                          borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px',
+                          boxShadow: t.change > 50 ? '0 2px 8px rgba(34,197,94,0.2)' : 'none',
+                        }}>
+                          <span style={{ color: '#f1f5f9', fontSize: '0.58rem', fontWeight: 600 }}>{formatNumber(t.post)}/d</span>
+                        </div>
+                      </div>
+                      <div style={{
+                        minWidth: '52px', textAlign: 'center', padding: '2px 6px', borderRadius: '6px',
+                        background: t.change > 50 ? 'rgba(74,222,128,0.1)' : t.change > 0 ? 'rgba(96,165,250,0.1)' : 'rgba(248,113,113,0.1)',
+                      }}>
+                        <span style={{ color: t.change > 50 ? '#4ade80' : t.change > 0 ? '#60a5fa' : '#f87171', fontSize: '0.72rem', fontWeight: 700 }}>
+                          {t.change > 0 ? '+' : ''}{t.change.toFixed(0)}%
+                        </span>
                       </div>
                     </div>
-                    <span style={{ color: t.change > 50 ? '#4ade80' : t.change > 0 ? '#60a5fa' : '#f87171', fontSize: '0.75rem', fontWeight: 700, width: '55px', textAlign: 'right' }}>
-                      {t.change > 0 ? '+' : ''}{t.change.toFixed(0)}%
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
-            {/* ── Algo Push Visualization ── */}
-            <div style={card}>
-              <h3 style={{ color: '#f1f5f9', fontSize: '1rem', margin: '0 0 0.3rem' }}>🎯 Push algorítmico post-Malparido</h3>
-              <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1.2rem' }}>
-                Cómo cambió el % algorítmico de cada track después del lanzamiento de Malparido
-              </p>
-              {/* Algo heatmap-style grid */}
+            {/* ═══ PUSH ALGORÍTMICO — CON SLIDER DÍA A DÍA ═══ */}
+            <div style={glass}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <div>
+                  <h3 style={{ color: '#f1f5f9', fontSize: '1.05rem', margin: 0, fontWeight: 700 }}>Push algorítmico post-Malparido</h3>
+                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: '0.2rem 0 0' }}>% algorítmico de cada track · Deslizá para ver día a día</p>
+                </div>
+              </div>
+
+              {/* Day slider */}
+              {algoPostDays.length > 0 && (
+                <div style={{ margin: '0.75rem 0 1.25rem', padding: '0.75rem 1rem', background: 'rgba(15,23,42,0.5)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>
+                      {malpAlgoDay === -1 ? 'Promedio post-lanzamiento' : (() => {
+                        const d = algoPostDays[malpAlgoDay];
+                        return d ? new Date(d.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
+                      })()}
+                    </span>
+                    <button onClick={() => setMalpAlgoDay(-1)} style={{
+                      background: malpAlgoDay === -1 ? 'rgba(249,115,22,0.2)' : 'rgba(51,65,85,0.3)',
+                      border: malpAlgoDay === -1 ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(255,255,255,0.06)',
+                      borderRadius: '6px', color: malpAlgoDay === -1 ? '#f97316' : '#94a3b8',
+                      fontSize: '0.62rem', padding: '3px 10px', cursor: 'pointer', fontWeight: 600,
+                    }}>Promedio</button>
+                  </div>
+                  <input
+                    type="range" min={0} max={algoPostDays.length - 1}
+                    value={malpAlgoDay === -1 ? algoPostDays.length - 1 : malpAlgoDay}
+                    onChange={e => setMalpAlgoDay(Number(e.target.value))}
+                    style={{ ...sliderTrack, accentColor: '#f97316' }}
+                  />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
+                    {algoPostDays.map((d, i) => (
+                      <span key={i} style={{ color: (malpAlgoDay === i || (malpAlgoDay === -1 && i === algoPostDays.length - 1)) ? '#f97316' : '#475569', fontSize: '0.5rem', cursor: 'pointer' }} onClick={() => setMalpAlgoDay(i)}>{d.label}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Algo bars */}
               {(() => {
-                const maxAlgoPct = Math.max(...algoHalo.map(t => Math.max(t.preAlgoPct, t.postAlgoPct)), 1);
+                const getTrackAlgo = (t) => {
+                  if (malpAlgoDay === -1) {
+                    // Average of all post days
+                    const avg = algoPostDays.length > 0 ? algoPostDays.reduce((s, d) => s + d.tracks[t].pct, 0) / algoPostDays.length : 0;
+                    return avg;
+                  }
+                  const day = algoPostDays[malpAlgoDay];
+                  return day ? day.tracks[t].pct : 0;
+                };
+
+                const algoRows = OG_TRACKS.map(t => {
+                  const pre = algoPreAvg[t];
+                  const post = getTrackAlgo(t);
+                  const diff = post - pre;
+                  return { name: t, pre, post, diff };
+                }).sort((a, b) => b.diff - a.diff);
+
+                const maxAlgoPct = Math.max(...algoRows.map(t => Math.max(t.pre, t.post)), 1);
+
                 return (
                   <div>
-                    {algoHalo.map((t, i) => {
-                      const diff = t.postAlgoPct - t.preAlgoPct;
-                      const isHot = diff > 10;
-                      const isWarm = diff > 3;
+                    {algoRows.map((t, i) => {
+                      const isHot = t.diff > 10;
+                      const isWarm = t.diff > 3;
                       return (
-                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', padding: '0.5rem 0.75rem', borderRadius: '10px', background: isHot ? 'rgba(249,115,22,0.08)' : 'transparent', border: isHot ? '1px solid rgba(249,115,22,0.2)' : '1px solid transparent' }}>
-                          <span style={{ color: isHot ? '#f97316' : '#94a3b8', fontSize: '0.72rem', width: '180px', textAlign: 'right', fontWeight: isHot ? 600 : 400 }}>{t.name}</span>
-                          {/* Gauge visualization */}
-                          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                            {/* Pre bar */}
+                        <div key={i} style={{
+                          display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem',
+                          padding: '0.5rem 0.75rem', borderRadius: '12px',
+                          background: isHot ? 'rgba(249,115,22,0.06)' : 'transparent',
+                          border: isHot ? '1px solid rgba(249,115,22,0.12)' : '1px solid transparent',
+                        }}>
+                          <span style={{
+                            color: isHot ? '#fb923c' : '#94a3b8', fontSize: '0.7rem', width: '175px', textAlign: 'right',
+                            fontWeight: isHot ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                          }}>{t.name}</span>
+                          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <span style={{ color: '#475569', fontSize: '0.5rem', width: '25px' }}>pre</span>
-                              <div style={{ flex: 1, height: '10px', background: 'rgba(15,23,42,0.6)', borderRadius: '5px', overflow: 'hidden' }}>
-                                <div style={{ width: (t.preAlgoPct / Math.max(maxAlgoPct, 50) * 100) + '%', height: '100%', background: 'rgba(148,163,184,0.3)', borderRadius: '5px' }} />
+                              <span style={{ color: '#475569', fontSize: '0.48rem', width: '22px', fontFamily: 'monospace' }}>pre</span>
+                              <div style={{ flex: 1, height: '8px', background: 'rgba(15,23,42,0.5)', borderRadius: '4px', overflow: 'hidden' }}>
+                                <div style={{ width: (t.pre / Math.max(maxAlgoPct, 50) * 100) + '%', height: '100%', background: 'rgba(148,163,184,0.25)', borderRadius: '4px' }} />
                               </div>
-                              <span style={{ color: '#64748b', fontSize: '0.6rem', width: '35px', textAlign: 'right' }}>{t.preAlgoPct.toFixed(0)}%</span>
+                              <span style={{ color: '#64748b', fontSize: '0.58rem', width: '32px', textAlign: 'right', fontFamily: 'monospace' }}>{t.pre.toFixed(0)}%</span>
                             </div>
-                            {/* Post bar */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <span style={{ color: '#475569', fontSize: '0.5rem', width: '25px' }}>post</span>
-                              <div style={{ flex: 1, height: '10px', background: 'rgba(15,23,42,0.6)', borderRadius: '5px', overflow: 'hidden' }}>
+                              <span style={{ color: '#475569', fontSize: '0.48rem', width: '22px', fontFamily: 'monospace' }}>now</span>
+                              <div style={{ flex: 1, height: '8px', background: 'rgba(15,23,42,0.5)', borderRadius: '4px', overflow: 'hidden' }}>
                                 <div style={{
-                                  width: (t.postAlgoPct / Math.max(maxAlgoPct, 50) * 100) + '%', height: '100%',
-                                  background: isHot ? 'linear-gradient(90deg, #f97316, #ef4444)' : isWarm ? 'linear-gradient(90deg, #3b82f6, #6366f1)' : 'rgba(148,163,184,0.4)',
-                                  borderRadius: '5px',
-                                  boxShadow: isHot ? '0 0 8px rgba(249,115,22,0.4)' : 'none',
+                                  width: (t.post / Math.max(maxAlgoPct, 50) * 100) + '%', height: '100%',
+                                  background: isHot ? 'linear-gradient(90deg, #f97316, #ef4444)' : isWarm ? 'linear-gradient(90deg, #3b82f6, #8b5cf6)' : 'rgba(148,163,184,0.35)',
+                                  borderRadius: '4px',
+                                  boxShadow: isHot ? '0 0 10px rgba(249,115,22,0.3)' : 'none',
                                 }} />
                               </div>
-                              <span style={{ color: isHot ? '#f97316' : isWarm ? '#60a5fa' : '#94a3b8', fontSize: '0.6rem', fontWeight: 600, width: '35px', textAlign: 'right' }}>{t.postAlgoPct.toFixed(0)}%</span>
+                              <span style={{
+                                color: isHot ? '#fb923c' : isWarm ? '#818cf8' : '#94a3b8',
+                                fontSize: '0.58rem', fontWeight: 700, width: '32px', textAlign: 'right', fontFamily: 'monospace',
+                              }}>{t.post.toFixed(0)}%</span>
                             </div>
                           </div>
-                          {/* Change badge */}
                           <div style={{
-                            background: isHot ? 'rgba(249,115,22,0.15)' : isWarm ? 'rgba(59,130,246,0.1)' : 'rgba(51,65,85,0.3)',
-                            borderRadius: '8px', padding: '0.25rem 0.6rem', minWidth: '55px', textAlign: 'center',
-                            border: isHot ? '1px solid rgba(249,115,22,0.3)' : '1px solid transparent',
+                            background: isHot ? 'rgba(249,115,22,0.12)' : isWarm ? 'rgba(99,102,241,0.1)' : 'rgba(51,65,85,0.25)',
+                            borderRadius: '8px', padding: '0.2rem 0.5rem', minWidth: '50px', textAlign: 'center',
+                            border: isHot ? '1px solid rgba(249,115,22,0.2)' : '1px solid transparent',
                           }}>
-                            <span style={{ color: isHot ? '#f97316' : isWarm ? '#60a5fa' : '#94a3b8', fontSize: '0.75rem', fontWeight: 700 }}>
-                              {diff > 0 ? '+' : ''}{diff.toFixed(0)}pp
+                            <span style={{ color: isHot ? '#fb923c' : isWarm ? '#818cf8' : '#94a3b8', fontSize: '0.72rem', fontWeight: 800 }}>
+                              {t.diff > 0 ? '+' : ''}{t.diff.toFixed(0)}pp
                             </span>
                           </div>
                         </div>
                       );
                     })}
-                    {/* Summary insight */}
-                    <div style={{ marginTop: '1rem', padding: '0.75rem 1rem', background: 'rgba(249,115,22,0.06)', borderRadius: '10px', borderLeft: '3px solid #f97316' }}>
-                      <p style={{ color: '#94a3b8', fontSize: '0.78rem', margin: 0 }}>
+
+                    {/* Insight */}
+                    <div style={{ marginTop: '1.25rem', padding: '0.75rem 1rem', background: 'linear-gradient(135deg, rgba(249,115,22,0.06), rgba(168,85,247,0.04))', borderRadius: '12px', borderLeft: '3px solid #f97316' }}>
+                      <p style={{ color: '#94a3b8', fontSize: '0.75rem', margin: 0, lineHeight: 1.5 }}>
                         {(() => {
-                          const hotTracks = algoHalo.filter(t => (t.postAlgoPct - t.preAlgoPct) > 10);
+                          const hotTracks = algoRows.filter(t => t.diff > 10);
                           if (hotTracks.length > 0) {
-                            return `Spotify está empujando fuerte ${hotTracks.map(t => t.name).join(', ')} en algoritmo después del lanzamiento de Malparido. Esto sugiere que el efecto del feat con Duki está activando el algoritmo de discovery para el catálogo de Zeballos.`;
+                            return `Spotify está empujando fuerte ${hotTracks.map(t => t.name).join(', ')} en algoritmo post-Malparido. El feat con Duki está activando el discovery para todo el catálogo.`;
                           }
-                          const warmTracks = algoHalo.filter(t => (t.postAlgoPct - t.preAlgoPct) > 3);
+                          const warmTracks = algoRows.filter(t => t.diff > 3);
                           if (warmTracks.length > 0) {
-                            return `Hay movimiento algorítmico moderado en ${warmTracks.length} tracks. Spotify está reaccionando al nuevo tráfico pero todavía no hay un push masivo — monitorear los próximos días.`;
+                            return `Movimiento algorítmico moderado en ${warmTracks.length} tracks. Spotify reacciona al nuevo tráfico — monitorear los próximos días.`;
                           }
-                          return 'El push algorítmico aún no se activó. Es normal en los primeros días — el algoritmo suele reaccionar 3-5 días después del spike de streams.';
+                          return 'El push algorítmico aún no se activó. Normal en los primeros días — suele reaccionar 3-5 días después del spike.';
                         })()}
                       </p>
                     </div>
@@ -4250,22 +4389,25 @@ const AmorFiadoDashboard = () => {
               })()}
             </div>
 
-            {/* ── Listeners Delta ── */}
-            <div style={card}>
-              <h3 style={{ color: '#f1f5f9', fontSize: '1rem', margin: '0 0 0.3rem' }}>👥 Listeners diarios — Audiencia nueva post-Malparido</h3>
-              <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '0 0 1rem' }}>
-                Listeners únicos por día (todos los tracks sumados) · La línea punteada marca el lanzamiento
-              </p>
+            {/* ═══ LISTENERS — CON SLIDER DÍA A DÍA ═══ */}
+            <div style={glass}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <div>
+                  <h3 style={{ color: '#f1f5f9', fontSize: '1.05rem', margin: 0, fontWeight: 700 }}>Audiencia nueva post-Malparido</h3>
+                  <p style={{ color: '#64748b', fontSize: '0.72rem', margin: '0.2rem 0 0' }}>Listeners únicos diarios · Deslizá para ver día a día</p>
+                </div>
+              </div>
+
+              {/* Summary stats */}
               {(() => {
                 const lWindow = lLog.slice(-21);
                 if (lWindow.length === 0) return <p style={{ color: '#64748b' }}>Esperando datos de listeners...</p>;
-
                 const albumListeners = lWindow.map(e => {
                   const total = Object.values(e.tracks).reduce((s, v) => s + v, 0);
                   return { date: e.date, label: e.date.slice(5).replace('-0', '-').replace(/^0/, ''), total, isPost: e.date >= MALP_RELEASE };
                 });
                 const maxL = Math.max(...albumListeners.map(e => e.total), 1);
-                const chartH = 170;
+                const chartH = 180;
                 const preListAvg = albumListeners.filter(e => !e.isPost).slice(-7);
                 const postListAvg = albumListeners.filter(e => e.isPost);
                 const preAvgL = preListAvg.length > 0 ? Math.round(preListAvg.reduce((s, e) => s + e.total, 0) / preListAvg.length) : 0;
@@ -4274,43 +4416,44 @@ const AmorFiadoDashboard = () => {
 
                 return (
                   <div>
-                    <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1rem' }}>
-                      <div style={{ background: 'rgba(59,130,246,0.1)', borderRadius: '8px', padding: '0.5rem 1rem' }}>
-                        <span style={{ color: '#64748b', fontSize: '0.6rem', textTransform: 'uppercase' }}>Pre avg (7d)</span>
-                        <div style={{ color: '#60a5fa', fontSize: '1.1rem', fontWeight: 700 }}>{formatNumber(preAvgL)}/día</div>
-                      </div>
-                      <div style={{ background: 'rgba(249,115,22,0.1)', borderRadius: '8px', padding: '0.5rem 1rem' }}>
-                        <span style={{ color: '#64748b', fontSize: '0.6rem', textTransform: 'uppercase' }}>Post avg ({postListAvg.length}d)</span>
-                        <div style={{ color: '#f97316', fontSize: '1.1rem', fontWeight: 700 }}>{formatNumber(postAvgL)}/día</div>
-                      </div>
-                      <div style={{ background: listLift > 0 ? 'rgba(74,222,128,0.1)' : 'rgba(239,68,68,0.1)', borderRadius: '8px', padding: '0.5rem 1rem' }}>
-                        <span style={{ color: '#64748b', fontSize: '0.6rem', textTransform: 'uppercase' }}>Cambio</span>
-                        <div style={{ color: listLift > 0 ? '#4ade80' : '#f87171', fontSize: '1.1rem', fontWeight: 700 }}>{listLift > 0 ? '+' : ''}{listLift.toFixed(0)}%</div>
-                      </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                      {[
+                        { label: 'Pre avg (7d)', value: formatNumber(preAvgL) + '/día', color: '#60a5fa', bg: 'rgba(59,130,246,0.08)' },
+                        { label: `Post avg (${postListAvg.length}d)`, value: formatNumber(postAvgL) + '/día', color: '#f97316', bg: 'rgba(249,115,22,0.08)' },
+                        { label: 'Cambio', value: (listLift > 0 ? '+' : '') + listLift.toFixed(0) + '%', color: listLift > 0 ? '#4ade80' : '#f87171', bg: listLift > 0 ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)' },
+                      ].map((s, i) => (
+                        <div key={i} style={{ background: s.bg, borderRadius: '12px', padding: '0.6rem 0.8rem', border: '1px solid rgba(255,255,255,0.04)' }}>
+                          <span style={{ color: '#64748b', fontSize: '0.58rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.label}</span>
+                          <div style={{ color: s.color, fontSize: '1.15rem', fontWeight: 800, marginTop: '0.15rem' }}>{s.value}</div>
+                        </div>
+                      ))}
                     </div>
+
+                    {/* Timeline */}
                     <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: chartH + 'px', position: 'relative' }}>
                       {preAvgL > 0 && (
-                        <div style={{ position: 'absolute', bottom: (preAvgL / maxL * chartH) + 'px', left: 0, right: 0, borderBottom: '1px dashed rgba(96,165,250,0.4)', zIndex: 1 }}>
-                          <span style={{ position: 'absolute', right: 0, top: '-12px', color: '#60a5fa', fontSize: '0.5rem' }}>pre avg</span>
+                        <div style={{ position: 'absolute', bottom: (preAvgL / maxL * chartH) + 'px', left: 0, right: 0, borderBottom: '1px dashed rgba(96,165,250,0.3)', zIndex: 1 }}>
+                          <span style={{ position: 'absolute', right: 0, top: '-14px', color: '#60a5fa', fontSize: '0.5rem', background: 'rgba(15,23,42,0.8)', padding: '1px 4px', borderRadius: '3px' }}>pre avg</span>
                         </div>
                       )}
                       {albumListeners.map((d, i) => {
-                        const h = d.total / maxL * (chartH - 15);
+                        const h = d.total / maxL * (chartH - 20);
                         const isRelease = d.date === MALP_RELEASE;
                         return (
                           <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             {d.isPost && (
-                              <span style={{ color: '#f97316', fontSize: '0.5rem', fontWeight: 600, marginBottom: '2px' }}>{formatNumber(d.total)}</span>
+                              <span style={{ color: '#fb923c', fontSize: '0.48rem', fontWeight: 700, marginBottom: '2px' }}>{formatNumber(d.total)}</span>
                             )}
                             <div style={{
                               width: '100%', height: h + 'px', minHeight: '2px',
                               background: d.isPost
-                                ? 'linear-gradient(180deg, #f97316, #ea580c)'
-                                : 'linear-gradient(180deg, rgba(96,165,250,0.5), rgba(96,165,250,0.2))',
-                              borderRadius: '3px 3px 1px 1px',
-                              borderLeft: isRelease ? '2px dashed #f97316' : 'none',
+                                ? 'linear-gradient(180deg, #f97316, #c2410c)'
+                                : 'linear-gradient(180deg, rgba(96,165,250,0.45), rgba(96,165,250,0.15))',
+                              borderRadius: '4px 4px 1px 1px',
+                              borderLeft: isRelease ? '2px solid #f97316' : 'none',
+                              boxShadow: d.isPost ? '0 -2px 8px rgba(249,115,22,0.12)' : 'none',
                             }} />
-                            <span style={{ color: d.isPost ? '#f97316' : '#475569', fontSize: '0.45rem', marginTop: '2px', transform: 'rotate(-45deg)', whiteSpace: 'nowrap' }}>{d.label}</span>
+                            <span style={{ color: d.isPost ? '#f97316' : '#475569', fontSize: '0.44rem', marginTop: '3px', transform: 'rotate(-45deg)', whiteSpace: 'nowrap' }}>{d.label}</span>
                           </div>
                         );
                       })}
@@ -4319,34 +4462,96 @@ const AmorFiadoDashboard = () => {
                 );
               })()}
 
-              {/* Per-track listener halo */}
-              <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(51,65,85,0.4)', paddingTop: '1rem' }}>
-                <p style={{ color: '#94a3b8', fontSize: '0.75rem', margin: '0 0 0.75rem' }}>Listeners diarios por track: <span style={{ color: '#64748b' }}>pre (7d avg)</span> vs <span style={{ color: '#f97316' }}>post avg</span></p>
+              {/* Per-track listener slider */}
+              <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '1.25rem' }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.72rem', margin: '0 0 0.5rem', fontWeight: 500 }}>
+                  Listeners por track — <span style={{ color: '#64748b' }}>pre 7d avg</span> vs <span style={{ color: '#f97316' }}>{malpListDay === -1 ? 'post avg' : 'día seleccionado'}</span>
+                </p>
+
+                {/* Slider */}
+                {listPostDays.length > 0 && (
+                  <div style={{ margin: '0.5rem 0 1.25rem', padding: '0.75rem 1rem', background: 'rgba(15,23,42,0.5)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <span style={{ color: '#94a3b8', fontSize: '0.68rem' }}>
+                        {malpListDay === -1 ? 'Promedio post-lanzamiento' : (() => {
+                          const d = listPostDays[malpListDay];
+                          return d ? new Date(d.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
+                        })()}
+                      </span>
+                      <button onClick={() => setMalpListDay(-1)} style={{
+                        background: malpListDay === -1 ? 'rgba(249,115,22,0.2)' : 'rgba(51,65,85,0.3)',
+                        border: malpListDay === -1 ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(255,255,255,0.06)',
+                        borderRadius: '6px', color: malpListDay === -1 ? '#f97316' : '#94a3b8',
+                        fontSize: '0.62rem', padding: '3px 10px', cursor: 'pointer', fontWeight: 600,
+                      }}>Promedio</button>
+                    </div>
+                    <input
+                      type="range" min={0} max={listPostDays.length - 1}
+                      value={malpListDay === -1 ? listPostDays.length - 1 : malpListDay}
+                      onChange={e => setMalpListDay(Number(e.target.value))}
+                      style={{ ...sliderTrack, accentColor: '#f97316' }}
+                    />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
+                      {listPostDays.map((d, i) => (
+                        <span key={i} style={{ color: (malpListDay === i || (malpListDay === -1 && i === listPostDays.length - 1)) ? '#f97316' : '#475569', fontSize: '0.5rem', cursor: 'pointer' }} onClick={() => setMalpListDay(i)}>{d.label}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Per-track bars */}
                 {(() => {
                   const preL = lLog.filter(e => e.date < MALP_RELEASE).slice(-7);
                   const postL = lLog.filter(e => e.date >= MALP_RELEASE);
+                  const getPostVal = (t) => {
+                    if (malpListDay === -1) {
+                      return postL.length > 0 ? Math.round(postL.reduce((s, e) => s + (e.tracks[t] || 0), 0) / postL.length) : 0;
+                    }
+                    const day = listPostDays[malpListDay];
+                    return day ? (day.tracks[t] || 0) : 0;
+                  };
                   const listHalo = OG_TRACKS.map(t => {
-                    const pre = preL.length > 0 ? Math.round(preL.reduce((s, e) => s + (e.tracks[t] || 0), 0) / preL.length) : 0;
-                    const post = postL.length > 0 ? Math.round(postL.reduce((s, e) => s + (e.tracks[t] || 0), 0) / postL.length) : 0;
+                    const pre = listPreAvg[t];
+                    const post = getPostVal(t);
                     const change = pre > 0 ? ((post - pre) / pre * 100) : 0;
                     return { name: t, pre, post, change };
                   }).sort((a, b) => b.change - a.change);
                   const maxLP = Math.max(...listHalo.map(h => h.post), 1);
 
-                  return listHalo.map((t, i) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem' }}>
-                      <span style={{ color: '#94a3b8', fontSize: '0.72rem', width: '200px', textAlign: 'right' }}>{t.name}</span>
-                      <div style={{ flex: 1, position: 'relative', height: '22px' }}>
-                        <div style={{ position: 'absolute', width: (maxLP > 0 ? t.pre / maxLP * 100 : 0) + '%', height: '22px', background: 'rgba(96,165,250,0.1)', borderRadius: '4px', border: '1px dashed rgba(96,165,250,0.25)' }} />
-                        <div style={{ position: 'relative', width: (maxLP > 0 ? t.post / maxLP * 100 : 0) + '%', height: '22px', background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #16a34a)' : t.change > 0 ? 'linear-gradient(90deg, #60a5fa, #3b82f6)' : 'rgba(239,68,68,0.5)', borderRadius: '4px', minWidth: '2px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '6px' }}>
-                          <span style={{ color: '#f1f5f9', fontSize: '0.6rem', fontWeight: 600 }}>{formatNumber(t.post)}/d</span>
+                  return listHalo.map((t, i) => {
+                    const isTop = i < 3;
+                    return (
+                      <div key={i} style={{
+                        display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem',
+                        padding: '0.4rem 0.6rem', borderRadius: '10px',
+                        background: isTop ? 'rgba(96,165,250,0.04)' : 'transparent',
+                      }}>
+                        <span style={{
+                          color: isTop ? '#e2e8f0' : '#94a3b8', fontSize: '0.7rem', width: '190px', textAlign: 'right',
+                          fontWeight: isTop ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                        }}>{t.name}</span>
+                        <div style={{ flex: 1, position: 'relative', height: '20px' }}>
+                          <div style={{ position: 'absolute', width: (maxLP > 0 ? t.pre / maxLP * 100 : 0) + '%', height: '20px', background: 'rgba(96,165,250,0.08)', borderRadius: '6px', border: '1px dashed rgba(96,165,250,0.15)' }} />
+                          <div style={{
+                            position: 'relative', width: (maxLP > 0 ? t.post / maxLP * 100 : 0) + '%', height: '20px', minWidth: '2px',
+                            background: t.change > 50 ? 'linear-gradient(90deg, #22c55e, #15803d)' : t.change > 0 ? 'linear-gradient(90deg, #60a5fa, #2563eb)' : 'rgba(239,68,68,0.4)',
+                            borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '8px',
+                            boxShadow: t.change > 50 ? '0 2px 8px rgba(34,197,94,0.15)' : 'none',
+                          }}>
+                            <span style={{ color: '#f1f5f9', fontSize: '0.58rem', fontWeight: 600 }}>{formatNumber(t.post)}/d</span>
+                          </div>
+                        </div>
+                        <div style={{
+                          minWidth: '52px', textAlign: 'center', padding: '2px 6px', borderRadius: '6px',
+                          background: t.change > 50 ? 'rgba(74,222,128,0.1)' : t.change > 0 ? 'rgba(96,165,250,0.1)' : 'rgba(248,113,113,0.1)',
+                        }}>
+                          <span style={{ color: t.change > 50 ? '#4ade80' : t.change > 0 ? '#60a5fa' : '#f87171', fontSize: '0.72rem', fontWeight: 700 }}>
+                            {t.change > 0 ? '+' : ''}{t.change.toFixed(0)}%
+                          </span>
                         </div>
                       </div>
-                      <span style={{ color: t.change > 50 ? '#4ade80' : t.change > 0 ? '#60a5fa' : '#f87171', fontSize: '0.75rem', fontWeight: 700, width: '55px', textAlign: 'right' }}>
-                        {t.change > 0 ? '+' : ''}{t.change.toFixed(0)}%
-                      </span>
-                    </div>
-                  ));
+                    );
+                  });
                 })()}
               </div>
             </div>
