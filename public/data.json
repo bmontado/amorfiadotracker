@@ -1,23 +1,23 @@
 {
   "lastUpdated": {
-    "spotify": "2026-04-16T20:00:00-03:00",
+    "spotify": "2026-04-17T14:00:00-03:00",
     "social": "2026-04-07"
   },
-  "albumLiveTotal": 1903937,
+  "albumLiveTotal": 1978347,
   "liveTotals": {
-    "CUANDO ESCRIBÍA ASIMETRÍA": 377394,
-    "MAN OF WORD": 105494,
-    "ATBLM": 328376,
-    "CALL ME": 109670,
-    "ALQUILER": 71917,
-    "HIELO": 86779,
-    "UN GUSTO": 168889,
-    "CHANGES": 98168,
-    "OJOS TRISTES": 81557,
-    "HAZLO CALLAO": 56918,
-    "YA NO": 69230,
-    "TOP TIER": 58762,
-    "MALPARIDO": 290783
+    "CUANDO ESCRIBÍA ASIMETRÍA": 193754,
+    "MAN OF WORD": 138515,
+    "ATBLM": 217052,
+    "CALL ME": 145514,
+    "ALQUILER": 89169,
+    "HIELO": 110522,
+    "UN GUSTO": 222685,
+    "CHANGES": 130866,
+    "OJOS TRISTES": 103582,
+    "HAZLO CALLAO": 71251,
+    "YA NO": 88746,
+    "TOP TIER": 75997,
+    "MALPARIDO": 390694
   },
   "dailyLog": [
     {
@@ -554,6 +554,26 @@
         "YA NO": 3780,
         "TOP TIER": 3117,
         "MALPARIDO": 112522
+      }
+    },
+    {
+      "date": "2026-04-16",
+      "label": "D16",
+      "note": "Streams derivados de 28d totals de S4A Releases. Algo y listeners estimados.",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 15778,
+        "MAN OF WORD": 8474,
+        "ATBLM": 10752,
+        "CALL ME": 8311,
+        "ALQUILER": 3300,
+        "HIELO": 5267,
+        "UN GUSTO": 9230,
+        "CHANGES": 6956,
+        "OJOS TRISTES": 4070,
+        "HAZLO CALLAO": 2809,
+        "YA NO": 3649,
+        "TOP TIER": 2983,
+        "MALPARIDO": 99911
       }
     }
   ],
@@ -1707,7 +1727,8 @@
   "liveHistory": [
     {
       "date": "2026-03-19",
-      "label": "19 Mar",
+      "label": "D+0",
+      "albumTotal": 21756,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 5814,
         "MAN OF WORD": 1293,
@@ -1720,13 +1741,14 @@
         "OJOS TRISTES": 649,
         "HAZLO CALLAO": 486,
         "YA NO": 472,
-        "TOP TIER": 383
-      },
-      "total": 21756
+        "TOP TIER": 383,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-20",
-      "label": "20 Mar",
+      "label": "D+1",
+      "albumTotal": 147545,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 16689,
         "MAN OF WORD": 12291,
@@ -1739,13 +1761,14 @@
         "OJOS TRISTES": 11554,
         "HAZLO CALLAO": 8070,
         "YA NO": 8541,
-        "TOP TIER": 7444
-      },
-      "total": 147545
+        "TOP TIER": 7444,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-21",
-      "label": "21 Mar",
+      "label": "D+2",
+      "albumTotal": 218295,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 23768,
         "MAN OF WORD": 18259,
@@ -1758,13 +1781,14 @@
         "OJOS TRISTES": 17262,
         "HAZLO CALLAO": 12154,
         "YA NO": 12929,
-        "TOP TIER": 11308
-      },
-      "total": 218295
+        "TOP TIER": 11308,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-22",
-      "label": "22 Mar",
+      "label": "D+3",
+      "albumTotal": 272444,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 29232,
         "MAN OF WORD": 22746,
@@ -1777,13 +1801,14 @@
         "OJOS TRISTES": 21482,
         "HAZLO CALLAO": 15120,
         "YA NO": 16399,
-        "TOP TIER": 14187
-      },
-      "total": 272444
+        "TOP TIER": 14187,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-23",
-      "label": "23 Mar",
+      "label": "D+4",
+      "albumTotal": 342279,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 36241,
         "MAN OF WORD": 28879,
@@ -1796,13 +1821,14 @@
         "OJOS TRISTES": 26753,
         "HAZLO CALLAO": 18897,
         "YA NO": 20713,
-        "TOP TIER": 17904
-      },
-      "total": 342279
+        "TOP TIER": 17904,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-24",
-      "label": "24 Mar",
+      "label": "D+5",
+      "albumTotal": 407699,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 42401,
         "MAN OF WORD": 35020,
@@ -1815,13 +1841,14 @@
         "OJOS TRISTES": 31472,
         "HAZLO CALLAO": 22696,
         "YA NO": 24600,
-        "TOP TIER": 21219
-      },
-      "total": 407699
+        "TOP TIER": 21219,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-25",
-      "label": "25 Mar",
+      "label": "D+6",
+      "albumTotal": 480756,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 49441,
         "MAN OF WORD": 42311,
@@ -1834,13 +1861,14 @@
         "OJOS TRISTES": 36359,
         "HAZLO CALLAO": 26619,
         "YA NO": 28790,
-        "TOP TIER": 24793
-      },
-      "total": 480756
+        "TOP TIER": 24793,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-26",
-      "label": "26 Mar",
+      "label": "D+7",
+      "albumTotal": 544158,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 56243,
         "MAN OF WORD": 47890,
@@ -1853,13 +1881,14 @@
         "OJOS TRISTES": 40723,
         "HAZLO CALLAO": 29675,
         "YA NO": 32387,
-        "TOP TIER": 27927
-      },
-      "total": 544158
+        "TOP TIER": 27927,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-27",
-      "label": "27 Mar",
+      "label": "D+8",
+      "albumTotal": 604828,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 62477,
         "MAN OF WORD": 53237,
@@ -1872,13 +1901,14 @@
         "OJOS TRISTES": 44838,
         "HAZLO CALLAO": 32347,
         "YA NO": 36014,
-        "TOP TIER": 30974
-      },
-      "total": 604828
+        "TOP TIER": 30974,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-28",
-      "label": "28 Mar",
+      "label": "D+9",
+      "albumTotal": 651255,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 67331,
         "MAN OF WORD": 57323,
@@ -1891,13 +1921,14 @@
         "OJOS TRISTES": 48025,
         "HAZLO CALLAO": 34419,
         "YA NO": 38966,
-        "TOP TIER": 33252
-      },
-      "total": 651255
+        "TOP TIER": 33252,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-29",
-      "label": "29 Mar",
+      "label": "D+10",
+      "albumTotal": 687854,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 70820,
         "MAN OF WORD": 60459,
@@ -1910,13 +1941,14 @@
         "OJOS TRISTES": 50300,
         "HAZLO CALLAO": 36074,
         "YA NO": 40945,
-        "TOP TIER": 34932
-      },
-      "total": 687854
+        "TOP TIER": 34932,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-30",
-      "label": "30 Mar",
+      "label": "D+11",
+      "albumTotal": 737533,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 75796,
         "MAN OF WORD": 65259,
@@ -1929,13 +1961,14 @@
         "OJOS TRISTES": 53465,
         "HAZLO CALLAO": 38380,
         "YA NO": 43628,
-        "TOP TIER": 37201
-      },
-      "total": 737533
+        "TOP TIER": 37201,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-03-31",
-      "label": "31 Mar",
+      "label": "D+12",
+      "albumTotal": 784773,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 80171,
         "MAN OF WORD": 69487,
@@ -1948,13 +1981,14 @@
         "OJOS TRISTES": 56450,
         "HAZLO CALLAO": 40259,
         "YA NO": 46319,
-        "TOP TIER": 39325
-      },
-      "total": 784773
+        "TOP TIER": 39325,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-01",
-      "label": "1 Abr",
+      "label": "D+13",
+      "albumTotal": 833353,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 84960,
         "MAN OF WORD": 73493,
@@ -1967,13 +2001,14 @@
         "OJOS TRISTES": 59404,
         "HAZLO CALLAO": 42159,
         "YA NO": 49001,
-        "TOP TIER": 41607
-      },
-      "total": 833353
+        "TOP TIER": 41607,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-02",
-      "label": "2 Abr",
+      "label": "D+14",
+      "albumTotal": 876416,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 89362,
         "MAN OF WORD": 76948,
@@ -1986,13 +2021,14 @@
         "OJOS TRISTES": 61950,
         "HAZLO CALLAO": 43871,
         "YA NO": 51204,
-        "TOP TIER": 43617
-      },
-      "total": 876416
+        "TOP TIER": 43617,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-03",
-      "label": "3 Abr",
+      "label": "D+15",
+      "albumTotal": 912157,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 92889,
         "MAN OF WORD": 79857,
@@ -2005,13 +2041,14 @@
         "OJOS TRISTES": 64130,
         "HAZLO CALLAO": 45424,
         "YA NO": 53201,
-        "TOP TIER": 45394
-      },
-      "total": 912157
+        "TOP TIER": 45394,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-04",
-      "label": "4 Abr",
+      "label": "D+16",
+      "albumTotal": 946317,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 96215,
         "MAN OF WORD": 82692,
@@ -2024,13 +2061,14 @@
         "OJOS TRISTES": 66182,
         "HAZLO CALLAO": 46921,
         "YA NO": 55156,
-        "TOP TIER": 47141
-      },
-      "total": 946317
+        "TOP TIER": 47141,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-05",
-      "label": "5 Abr",
+      "label": "D+17",
+      "albumTotal": 980208,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 99636,
         "MAN OF WORD": 85670,
@@ -2043,13 +2081,14 @@
         "OJOS TRISTES": 68255,
         "HAZLO CALLAO": 48241,
         "YA NO": 57188,
-        "TOP TIER": 48799
-      },
-      "total": 980208
+        "TOP TIER": 48799,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-06",
-      "label": "6 Abr",
+      "label": "D+18",
+      "albumTotal": 1029186,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 104934,
         "MAN OF WORD": 90228,
@@ -2062,12 +2101,14 @@
         "OJOS TRISTES": 71353,
         "HAZLO CALLAO": 50224,
         "YA NO": 59998,
-        "TOP TIER": 51078
-      },
-      "total": 1029186
+        "TOP TIER": 51078,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-07",
+      "label": "D+19",
+      "albumTotal": 1079321,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 110509,
         "MAN OF WORD": 94703,
@@ -2080,13 +2121,14 @@
         "OJOS TRISTES": 74504,
         "HAZLO CALLAO": 52186,
         "YA NO": 63001,
-        "TOP TIER": 53418
-      },
-      "total": 1079321,
-      "label": "7 Abr"
+        "TOP TIER": 53418,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-08",
+      "label": "D+20",
+      "albumTotal": 1126244,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 115666,
         "MAN OF WORD": 98754,
@@ -2099,14 +2141,14 @@
         "OJOS TRISTES": 77379,
         "HAZLO CALLAO": 54031,
         "YA NO": 65450,
-        "TOP TIER": 55645
-      },
-      "total": 1126244,
-      "label": "8 Abr"
+        "TOP TIER": 55645,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-09",
-      "label": "9 Abr",
+      "label": "D+21",
+      "albumTotal": 1172175,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 120583,
         "MAN OF WORD": 102763,
@@ -2119,13 +2161,14 @@
         "OJOS TRISTES": 79983,
         "HAZLO CALLAO": 55957,
         "YA NO": 68121,
-        "TOP TIER": 57877
-      },
-      "total": 1172175
+        "TOP TIER": 57877,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-10",
-      "label": "10 Abr",
+      "label": "D+22",
+      "albumTotal": 1215751,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 125080,
         "MAN OF WORD": 106491,
@@ -2138,13 +2181,14 @@
         "OJOS TRISTES": 82847,
         "HAZLO CALLAO": 57603,
         "YA NO": 70554,
-        "TOP TIER": 60162
-      },
-      "total": 1215751
+        "TOP TIER": 60162,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-11",
-      "label": "11 Abr",
+      "label": "D+23",
+      "albumTotal": 1251712,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 128505,
         "MAN OF WORD": 109624,
@@ -2157,13 +2201,14 @@
         "OJOS TRISTES": 85380,
         "HAZLO CALLAO": 58982,
         "YA NO": 72474,
-        "TOP TIER": 61852
-      },
-      "total": 1251712
+        "TOP TIER": 61852,
+        "MALPARIDO": 0
+      }
     },
     {
       "date": "2026-04-12",
-      "label": "12 Abr",
+      "label": "D+24",
+      "albumTotal": 1282211,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 131596,
         "MAN OF WORD": 112256,
@@ -2178,12 +2223,12 @@
         "YA NO": 74251,
         "TOP TIER": 63558,
         "MALPARIDO": 0
-      },
-      "total": 1282211
+      }
     },
     {
       "date": "2026-04-13",
-      "label": "13 Abr",
+      "label": "D+25",
+      "albumTotal": 1346730,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 138323,
         "MAN OF WORD": 116586,
@@ -2198,12 +2243,12 @@
         "YA NO": 77189,
         "TOP TIER": 66399,
         "MALPARIDO": 11933
-      },
-      "total": 1346730
+      }
     },
     {
       "date": "2026-04-14",
-      "label": "14 Abr",
+      "label": "D+26",
+      "albumTotal": 1601708,
       "tracks": {
         "CUANDO ESCRIBÍA ASIMETRÍA": 160726,
         "MAN OF WORD": 123301,
@@ -2218,13 +2263,47 @@
         "YA NO": 81317,
         "TOP TIER": 69897,
         "MALPARIDO": 178261
-      },
-      "total": 1601708
+      }
     },
     {
       "date": "2026-04-15",
-      "total": 1796857,
-      "label": "Abr 15"
+      "label": "D+27",
+      "albumTotal": 1796857,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 177976,
+        "MAN OF WORD": 130041,
+        "ATBLM": 206300,
+        "CALL ME": 137203,
+        "ALQUILER": 85869,
+        "HIELO": 105255,
+        "UN GUSTO": 213455,
+        "CHANGES": 123910,
+        "OJOS TRISTES": 99512,
+        "HAZLO CALLAO": 68442,
+        "YA NO": 85097,
+        "TOP TIER": 73014,
+        "MALPARIDO": 290783
+      }
+    },
+    {
+      "date": "2026-04-16",
+      "label": "D+28",
+      "albumTotal": 1978347,
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 193754,
+        "MAN OF WORD": 138515,
+        "ATBLM": 217052,
+        "CALL ME": 145514,
+        "ALQUILER": 89169,
+        "HIELO": 110522,
+        "UN GUSTO": 222685,
+        "CHANGES": 130866,
+        "OJOS TRISTES": 103582,
+        "HAZLO CALLAO": 71251,
+        "YA NO": 88746,
+        "TOP TIER": 75997,
+        "MALPARIDO": 390694
+      }
     }
   ],
   "trackMetricsMeta": {
@@ -4152,6 +4231,25 @@
         "TOP TIER": 79,
         "MALPARIDO": 7420
       }
+    },
+    {
+      "date": "2026-04-16",
+      "label": "D16",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 9645,
+        "MAN OF WORD": 2085,
+        "ATBLM": 2750,
+        "CALL ME": 1750,
+        "ALQUILER": 486,
+        "HIELO": 737,
+        "UN GUSTO": 1756,
+        "CHANGES": 3801,
+        "OJOS TRISTES": 334,
+        "HAZLO CALLAO": 195,
+        "YA NO": 524,
+        "TOP TIER": 85,
+        "MALPARIDO": 4960
+      }
     }
   ],
   "algorithmicHistory": [
@@ -5502,6 +5600,25 @@
         "YA NO": 2895,
         "TOP TIER": 2325,
         "MALPARIDO": 60250
+      }
+    },
+    {
+      "date": "2026-04-16",
+      "label": "D16",
+      "tracks": {
+        "CUANDO ESCRIBÍA ASIMETRÍA": 13173,
+        "MAN OF WORD": 6670,
+        "ATBLM": 8489,
+        "CALL ME": 6225,
+        "ALQUILER": 2668,
+        "HIELO": 4050,
+        "UN GUSTO": 6800,
+        "CHANGES": 5902,
+        "OJOS TRISTES": 3140,
+        "HAZLO CALLAO": 2257,
+        "YA NO": 2812,
+        "TOP TIER": 2249,
+        "MALPARIDO": 53222
       }
     }
   ],
